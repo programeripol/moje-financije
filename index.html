@@ -130,10 +130,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .inst-btn{width:100%;background:#1565c0;color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:20px}
 .inst-btn:hover{background:#0d47a1}
 
-/* ── TOAST ── */
-#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1565c0;color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;text-align:center;max-width:320px;line-height:1.5}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
 /* ── PLAN TOTAL ROW ── */
 .plan-total-row{display:flex;align-items:center;justify-content:space-between;background:#eef2ff;border-radius:10px;padding:9px 12px;margin-top:8px}
 .plan-total-val{font-size:16px;font-weight:700;color:#1565c0}
@@ -146,6 +142,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .save-goal-del:hover{color:#ef4444}
 .add-goal-btn{width:100%;border:1.5px dashed #c0ccee;background:none;color:#1565c0;border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:.15s}
 .add-goal-btn:hover{background:#f0f4ff}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1565c0;color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;text-align:center;max-width:320px;line-height:1.5}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ── PROGRESS BAR ── */
 .prog-bar{height:3px;background:#e0e7f0;border-radius:2px;margin-top:8px;overflow:hidden;display:none}
@@ -744,7 +744,6 @@ function renderSavingsGoals(){
 function addSavingsGoal(name='', amount=0){
   savingsGoals.push({name, amount});
   renderSavingsGoals();
-  // Focus the new name input
   setTimeout(()=>{
     const inputs = document.querySelectorAll('.save-goal-row .goal-name');
     if(inputs.length) inputs[inputs.length-1].focus();
@@ -773,16 +772,14 @@ function totalSavingsPlan(){
   }catch(e){ return profileData.save_plan||0; }
 }
 
-// ── SPLASH SCREEN ──────────────────────────────────────────────────────
 let splashHidden = false;
 const splashStart = Date.now();
-const SPLASH_MIN_MS = 2000; // minimalno 2 sekunde
+const SPLASH_MIN_MS = 2000;
 
 function hideSplash(){
   if(splashHidden) return;
   const elapsed = Date.now() - splashStart;
   if(elapsed < SPLASH_MIN_MS){
-    // Prerano — čekaj ostatak
     setTimeout(hideSplash, SPLASH_MIN_MS - elapsed);
     return;
   }
@@ -803,10 +800,11 @@ setTimeout(hideSplash, 4000);
 // ── INSTALL MODAL ──────────────────────────────────────────────────────
 function showInstallModal(){
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-  if(isStandalone) return; // Već instalirana kao app
+  if(isStandalone) return;
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const isAndroid = /Android/.test(navigator.userAgent);
   const content = document.getElementById('install-modal-content');
+  if(!content) return;
   if(isIOS){
     content.innerHTML = `
       <div class="inst-header">
@@ -816,19 +814,19 @@ function showInstallModal(){
       </div>
       <div class="inst-step"><div class="inst-num">1</div><div>Klikni <strong>Dijeli</strong> gumb u Safariju — ikona kvadrata sa strelicom gore (↑) na dnu ekrana</div></div>
       <div class="inst-step"><div class="inst-num">2</div><div>Skrolaj i odaberi <strong>"Dodaj na početni zaslon"</strong> (Add to Home Screen)</div></div>
-      <div class="inst-note">⚠️ Radi samo u <strong>Safariju</strong> — ako koristiš Chrome na iPhoneu, otvori ovu stranicu u Safariju</div>`;
+      <div class="inst-note">⚠️ Radi samo u <strong>Safariju</strong> — ako koristiš Chrome na iPhoneu, otvori u Safariju</div>`;
   } else if(deferredInstall){
-    const platform = isAndroid ? 'Android' : 'Desktop';
+    const isAndroidDev = /Android/.test(navigator.userAgent);
     content.innerHTML = `
       <div class="inst-header">
         <span class="inst-icon">⬇️</span>
         <h2 class="inst-title">Instaliraj aplikaciju</h2>
-        <p class="inst-sub">Dodaj "Ima se, može se" na ${isAndroid ? 'Home Screen' : 'Desktop'} — radi offline, brže se otvara</p>
+        <p class="inst-sub">Dodaj "Ima se, može se" na ${isAndroidDev ? 'Home Screen' : 'Desktop'} — radi offline, brže se otvara</p>
       </div>
       <button class="inst-btn" onclick="installAppNow()">⬇ Instaliraj sada</button>
       <div class="inst-note" style="margin-top:12px">Izgleda i radi kao prava aplikacija — bez browsera</div>`;
   } else {
-    return; // Nema ništa za pokazati
+    return;
   }
   document.getElementById('install-modal').classList.add('open');
 }
@@ -847,11 +845,10 @@ async function installAppNow(){
 }
 
 function maybeShowInstallModal(){
-  // Pokaži jednom — kad user otvori app i nije je instalirao
   const shown = localStorage.getItem('mf_install_shown');
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
   if(!shown && !isStandalone){
-    setTimeout(showInstallModal, 1500); // Malo odgodi da se app učita
+    setTimeout(showInstallModal, 1500);
   }
 }
 
@@ -929,9 +926,9 @@ function signOut(){
 
 function showApp(){
   document.getElementById('s-onboarding').style.display = 'none';
-  goTab('skener'); // postavi ikone PRIJE nego nav postane vidljiv
+  goTab('skener');
   document.getElementById('nav').style.display = 'block';
-  maybeShowInstallModal(); // pokaži install popup jednom ako nije instalirana
+  maybeShowInstallModal();
 }
 
 // ── NAVIGATION ───────────────────────────────────────────────────────
@@ -1130,17 +1127,14 @@ async function saveProfileToSheet(data){
 
 function fillProfileForm(){
   const f = (id, key) => { const el = document.getElementById(id); if(el) el.value = profileData[key] || ''; };
-  // Prihodi
   f('p-income','income');
   f('p-income-side','income_side');
   f('p-income-passive','income_passive');
   recalcIncome();
-  // Fiksni i varijabilni troškovi
   f('p-stanarina','plan_Stanarina'); f('p-rezije','plan_Rezije');
   f('p-tcom','plan_T-com'); f('p-allianz','plan_Allianz');
   f('p-software','plan_Software'); f('p-food','plan_Food');
   f('p-fuel','plan_Fuel'); f('p-pets','plan_Pets'); f('p-other','plan_Other');
-  // Štednja — učitaj ciljeve, ili migriraj stari save_plan
   try { savingsGoals = JSON.parse(profileData.save_goals_json || 'null') || []; } catch(e){ savingsGoals = []; }
   if(savingsGoals.length === 0 && (profileData.save_plan||0) > 0){
     savingsGoals = [{name:'Štednja', amount: profileData.save_plan}];
@@ -1158,7 +1152,7 @@ async function saveProfile(){
     income: g('p-income'),
     income_side: g('p-income-side'),
     income_passive: g('p-income-passive'),
-    save_plan: saveTotalAmt,               // backward compat — ukupna štednja
+    save_plan: saveTotalAmt,
     save_goals_json: JSON.stringify(savingsGoals),
     'plan_Stanarina': g('p-stanarina'), 'plan_Rezije': g('p-rezije'),
     'plan_T-com': g('p-tcom'), 'plan_Allianz': g('p-allianz'),
@@ -1334,4 +1328,266 @@ async function loadGoals(){
               ${desc ? ` · ${desc}` : ''}
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            <span class="goal-type ${isLoan?'loan':'savings'}">${isLoan?'Rata':'Stednja'}</span>
+            <button class="btn-danger" onclick="deleteGoal(${i+2})">Brisi</button>
+          </div>
+        </div>
+        <div class="goal-progress"><div class="goal-fill ${isLoan?'loan':'savings'}" style="width:${Math.max(0,Math.min(100,pct))}%"></div></div>
+        <div class="goal-pct">${Math.max(0,pct)}% ${isLoan?'otplaceno':'postignuto'}</div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    list.innerHTML = '<div class="empty-state">Greška: '+e.message+'</div>';
+  }
+}
+
+function showGoalForm(){ document.getElementById('goal-form').style.display='block'; }
+function hideGoalForm(){ document.getElementById('goal-form').style.display='none'; }
+function toggleGoalType(){
+  const isLoan = document.getElementById('gf-type').value === 'loan';
+  document.getElementById('gf-savings-fields').style.display = isLoan ? 'none' : 'block';
+  document.getElementById('gf-loan-fields').style.display    = isLoan ? 'block' : 'none';
+}
+
+async function saveGoal(){
+  const type    = document.getElementById('gf-type').value;
+  const isLoan  = type === 'loan';
+  const name    = document.getElementById('gf-name').value.trim();
+  if(!name){ alert('Unesi naziv!'); return; }
+
+  const row = [
+    name, type,
+    isLoan ? (parseFloat(document.getElementById('gf-total-loan').value)||0)  : (parseFloat(document.getElementById('gf-target').value)||0),
+    isLoan ? 0 : (parseFloat(document.getElementById('gf-current').value)||0),
+    isLoan ? (parseFloat(document.getElementById('gf-monthly-loan').value)||0) : (parseFloat(document.getElementById('gf-monthly-save').value)||0),
+    isLoan ? (parseInt(document.getElementById('gf-remaining').value)||0) : 0,
+    document.getElementById('gf-desc').value.trim(),
+    today()
+  ];
+
+  const st = document.getElementById('goal-status');
+  st.style.display='block'; st.className='status loading'; st.textContent='Snimam...';
+  try{
+    await appendRows(sheetId, 'Ciljevi', [row]);
+    hideGoalForm();
+    st.style.display='none';
+    // Reset form
+    ['gf-name','gf-target','gf-current','gf-monthly-save','gf-monthly-loan','gf-remaining','gf-total-loan','gf-desc'].forEach(id=>{ document.getElementById(id).value=''; });
+    loadGoals();
+  }catch(e){
+    st.className='status err'; st.textContent='Greška: '+e.message;
+  }
+}
+
+async function deleteGoal(rowIndex){
+  if(!confirm('Obriši ovaj cilj?')) return;
+  // Clear row in sheet
+  await gfetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent('Ciljevi!A'+rowIndex+':H'+rowIndex)}:clear`,
+    {method:'POST'}
+  );
+  loadGoals();
+}
+
+// ── SCANNER ───────────────────────────────────────────────────────────
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag');
+  handleFile(e.dataTransfer.files[0]);
+}
+function handleFile(file){
+  if(!file) return;
+  currentImgFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    currentImgSrc = ev.target.result;
+    document.getElementById('upload-zone').style.display = 'none';
+    const prev = document.getElementById('receipt-preview');
+    prev.src = currentImgSrc;
+    prev.style.display = 'block';
+    document.getElementById('change-img').style.display = 'block';
+    document.getElementById('meta-date').value = today();
+    document.getElementById('save-btn').disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+function buildFilename(){
+  const store = (document.getElementById('meta-store').value||'racun').trim()
+    .replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+  const date = document.getElementById('meta-date').value || today();
+  const ext  = currentImgFile ? currentImgFile.name.split('.').pop().toLowerCase() : 'jpg';
+  return `${store}_${date}.${ext}`;
+}
+
+async function uploadToDrive(file, filename){
+  setProgress(20);
+  const meta = JSON.stringify({ name: filename, parents: [monthFolderId] });
+  const form = new FormData();
+  form.append('metadata', new Blob([meta],{type:'application/json'}));
+  form.append('file', file);
+  const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink',{
+    method:'POST', headers:{Authorization:'Bearer '+token}, body:form
+  });
+  if(!r.ok) throw new Error(await r.text());
+  const d = await r.json();
+  setProgress(75);
+  await fetch(`https://www.googleapis.com/drive/v3/files/${d.id}/permissions`,{
+    method:'POST', headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+    body:JSON.stringify({role:'reader',type:'anyone'})
+  });
+  return { id: d.id, url: `https://drive.google.com/file/d/${d.id}/view` };
+}
+
+async function saveReceipt(){
+  const store  = document.getElementById('meta-store').value.trim();
+  const date   = document.getElementById('meta-date').value;
+  const amount = parseFloat((document.getElementById('meta-amount').value||'').replace(',','.'))||0;
+  const cat    = document.getElementById('meta-cat').value;
+  const note   = document.getElementById('meta-note').value.trim();
+
+  if(!store)  { showScan('Unesi naziv ducana!','err'); return; }
+  if(!date)   { showScan('Unesi datum!','err'); return; }
+  if(!amount) { showScan('Unesi iznos!','err'); return; }
+  if(!token)  { signIn(); return; }
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Snimam...';
+  showScan('Uploadam sliku...','loading');
+  setProgress(5);
+
+  try{
+    await ensureResources();
+    let driveUrl='', driveId='';
+    if(currentImgFile){
+      const d = await uploadToDrive(currentImgFile, buildFilename());
+      driveUrl = d.url; driveId = d.id;
+    }
+    setProgress(90);
+    const month = curMonth();
+    const row   = await findNextTrackerRow(month);
+    const rowData = Array(14).fill('');
+    rowData[1]  = date;
+    rowData[5]  = amount;
+    rowData[8]  = cat;
+    rowData[11] = note ? `${store} — ${note}` : store;
+    rowData[12] = driveUrl;
+    rowData[13] = driveId;
+    await writeRange(sheetId, `${month}!A${row}`, [rowData]);
+    setProgress(100);
+
+    showScan(
+      `Zapisano! <strong>${store}</strong> · ${eur(amount)} · ${cat}<br>` +
+      `<small style="color:#15803d">Podaci su u Google Sheets, slika u Drive.</small><br><br>` +
+      `<button onclick="noviRacun()" style="padding:9px 20px;border-radius:9px;border:none;background:#1565c0;color:#fff;font-size:14px;font-family:Poppins,sans-serif;font-weight:500;cursor:pointer">+ Novi racun</button>`,
+      'ok'
+    );
+    setTimeout(()=>{ setProgress(0); loadGallery(); }, 600);
+  }catch(e){
+    showScan('Greška: '+e.message,'err');
+    setProgress(0);
+  }
+  btn.disabled=false;
+  btn.textContent='Spremi u Sheets';
+}
+
+function showScan(html, cls){
+  const s = document.getElementById('scan-status');
+  if(!s) return;
+  if(!html){ s.style.display='none'; s.className='status'; s.innerHTML=''; return; }
+  s.className = 'status ' + (cls||'');
+  s.innerHTML = html;
+  s.style.display = 'block';
+}
+
+function setProgress(pct){
+  const bar  = document.getElementById('prog-bar');
+  const fill = document.getElementById('prog-fill');
+  if(!bar||!fill) return;
+  if(pct > 0){
+    bar.style.display = 'block';
+    fill.style.width  = Math.min(100, pct) + '%';
+  } else {
+    bar.style.display = 'none';
+    fill.style.width  = '0%';
+  }
+}
+
+function noviRacun(){
+  currentImgFile = null;
+  currentImgSrc  = null;
+  document.getElementById('receipt-preview').style.display = 'none';
+  document.getElementById('change-img').style.display      = 'none';
+  document.getElementById('upload-zone').style.display     = 'block';
+  document.getElementById('meta-store').value  = '';
+  document.getElementById('meta-amount').value = '';
+  document.getElementById('meta-note').value   = '';
+  document.getElementById('meta-date').value   = today();
+  document.getElementById('save-btn').disabled = true;
+  showScan('', '');
+  setProgress(0);
+}
+
+async function loadGallery(){
+  const grid = document.getElementById('gallery-grid');
+  if(!grid || !sheetId) return;
+  try{
+    const rows = await getRows(sheetId, curMonth(), 'B57:N500');
+    const items = rows.filter(r => r && r[0]);
+    if(!items.length){
+      grid.innerHTML = '<div class="empty-state">Nema još unesenih računa.</div>';
+      return;
+    }
+    grid.innerHTML = items.map(r => {
+      const datum   = r[0]  || '';
+      const iznos   = parseFloat(r[4])||0;
+      const kat     = r[7]  || '';
+      const bilj    = r[10] || '';
+      const driveUrl= r[11] || '';
+      const imgUrl  = driveUrl
+        ? driveUrl.replace('https://drive.google.com/file/d/','https://drive.google.com/thumbnail?sz=w200&id=').replace('/view','')
+        : '';
+      const name    = bilj || kat;
+      return `<div class="g-card" ${driveUrl ? `onclick="window.open('${driveUrl}','_blank')"` : ''}>
+        ${imgUrl
+          ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+          : ''}
+        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>🧾</div>
+        <div class="g-info">
+          <div class="g-row">
+            <span class="g-name">${name}</span>
+            <span class="g-amt">€${iznos.toFixed(2)}</span>
+          </div>
+          <div class="g-date">${datum}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    grid.innerHTML = '<div class="empty-state">Greška: '+e.message+'</div>';
+  }
+}
+
+// ── MetaMask SES fix: expose all onclick functions on window ──────────
+window.signIn      = signIn;
+window.tryOneTap   = tryOneTap;
+window.onOneTap    = onOneTap;
+window.signOut     = signOut;
+window.installApp  = installApp;
+window.goTab       = goTab;
+window.obStep      = obStep;
+window.saveReceipt = saveReceipt;
+window.showGoalForm= showGoalForm;
+window.hideGoalForm= hideGoalForm;
+window.saveGoal    = saveGoal;
+window.saveProfile = saveProfile;
+window.deleteGoal  = deleteGoal;
+window.noviRacun   = noviRacun;
+window.toggleGoalType = toggleGoalType;
+window.handleDrop  = handleDrop;
+window.handleFile  = handleFile;
+
+</script>
+</body>
+</html>
