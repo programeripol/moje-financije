@@ -134,6 +134,19 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1565c0;color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;text-align:center;max-width:320px;line-height:1.5}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* ── PLAN TOTAL ROW ── */
+.plan-total-row{display:flex;align-items:center;justify-content:space-between;background:#eef2ff;border-radius:10px;padding:9px 12px;margin-top:8px}
+.plan-total-val{font-size:16px;font-weight:700;color:#1565c0}
+
+/* ── SAVINGS GOALS ── */
+.save-goal-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.save-goal-row .goal-name{flex:1;min-width:0;font-size:13px}
+.save-goal-row .goal-amt{width:96px;flex-shrink:0;font-size:13px}
+.save-goal-del{background:none;border:none;color:#ccc;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;transition:.15s}
+.save-goal-del:hover{color:#ef4444}
+.add-goal-btn{width:100%;border:1.5px dashed #c0ccee;background:none;color:#1565c0;border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:.15s}
+.add-goal-btn:hover{background:#f0f4ff}
+
 /* ── PROGRESS BAR ── */
 .prog-bar{height:3px;background:#e0e7f0;border-radius:2px;margin-top:8px;overflow:hidden;display:none}
 .prog-fill{height:100%;background:#1565c0;width:0%;transition:width .3s}
@@ -495,14 +508,22 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 <div class="screen" id="s-profil">
 
   <div class="card">
-    <div class="card-title">Prihodi</div>
+    <div class="card-title">Prihodi (neto, €/mj)</div>
     <div class="plan-row">
-      <span class="plan-label">Neto prihod (€/mj)</span>
-      <input type="number" class="plan-input" id="p-income" step="0.01" inputmode="decimal">
+      <span class="plan-label">💼 Plaća / Stalni prihodi</span>
+      <input type="number" class="plan-input" id="p-income" step="0.01" inputmode="decimal" oninput="recalcIncome()">
     </div>
     <div class="plan-row">
-      <span class="plan-label">Planirano za stednju (€/mj)</span>
-      <input type="number" class="plan-input" id="p-save-plan" step="0.01" inputmode="decimal">
+      <span class="plan-label">💻 Freelance / Side job</span>
+      <input type="number" class="plan-input" id="p-income-side" step="0.01" inputmode="decimal" oninput="recalcIncome()">
+    </div>
+    <div class="plan-row">
+      <span class="plan-label">📈 Pasivni prihodi</span>
+      <input type="number" class="plan-input" id="p-income-passive" step="0.01" inputmode="decimal" oninput="recalcIncome()">
+    </div>
+    <div class="plan-total-row">
+      <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupni prihodi</span>
+      <span class="plan-total-val" id="p-income-total">€ 0,00</span>
     </div>
   </div>
 
@@ -521,6 +542,16 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="plan-row"><span class="plan-label">Gorivo (Fuel)</span><input type="number" class="plan-input" id="p-fuel" step="0.01" inputmode="decimal"></div>
     <div class="plan-row"><span class="plan-label">Kucni ljubimci (Pets)</span><input type="number" class="plan-input" id="p-pets" step="0.01" inputmode="decimal"></div>
     <div class="plan-row"><span class="plan-label">Ostalo (Other)</span><input type="number" class="plan-input" id="p-other" step="0.01" inputmode="decimal"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Štednja (€/mj)</div>
+    <div id="save-goals-list"></div>
+    <button type="button" class="add-goal-btn" onclick="addSavingsGoal()">+ Dodaj cilj štednje</button>
+    <div class="plan-total-row" style="margin-top:10px">
+      <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupna štednja</span>
+      <span class="plan-total-val" id="p-save-total">€ 0,00</span>
+    </div>
   </div>
 
   <button class="btn btn-primary" onclick="saveProfile()">Spremi profil</button>
@@ -683,6 +714,63 @@ function tryAutoLogin(){
   } else {
     resetLoginBtn();        // normalni login gumb
   }
+}
+
+// ── INCOME RECALC ──────────────────────────────────────────────────────
+function recalcIncome(){
+  const a = parseFloat(document.getElementById('p-income').value)||0;
+  const b = parseFloat(document.getElementById('p-income-side').value)||0;
+  const c = parseFloat(document.getElementById('p-income-passive').value)||0;
+  const el = document.getElementById('p-income-total');
+  if(el) el.textContent = '€ ' + (a+b+c).toFixed(2).replace('.',',');
+}
+
+// ── SAVINGS GOALS ──────────────────────────────────────────────────────
+let savingsGoals = [];
+
+function renderSavingsGoals(){
+  const container = document.getElementById('save-goals-list');
+  if(!container) return;
+  container.innerHTML = savingsGoals.map((g, i) => `
+    <div class="save-goal-row">
+      <input type="text" class="goal-name" value="${g.name.replace(/"/g,'&quot;')}" placeholder="Npr. Godišnji odmor" oninput="savingsGoals[${i}].name=this.value">
+      <div class="euro-wrap" style="width:96px"><span>€</span><input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0" step="0.01" inputmode="decimal" oninput="savingsGoals[${i}].amount=parseFloat(this.value)||0;recalcSavings()"></div>
+      <button class="save-goal-del" onclick="removeSavingsGoal(${i})" title="Ukloni">×</button>
+    </div>
+  `).join('');
+  recalcSavings();
+}
+
+function addSavingsGoal(name='', amount=0){
+  savingsGoals.push({name, amount});
+  renderSavingsGoals();
+  // Focus the new name input
+  setTimeout(()=>{
+    const inputs = document.querySelectorAll('.save-goal-row .goal-name');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function removeSavingsGoal(i){
+  savingsGoals.splice(i,1);
+  renderSavingsGoals();
+}
+
+function recalcSavings(){
+  const total = savingsGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+  const el = document.getElementById('p-save-total');
+  if(el) el.textContent = '€ ' + total.toFixed(2).replace('.',',');
+}
+
+function totalIncome(){
+  return (profileData.income||0) + (profileData.income_side||0) + (profileData.income_passive||0);
+}
+
+function totalSavingsPlan(){
+  try{
+    const goals = JSON.parse(profileData.save_goals_json||'[]');
+    return goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+  }catch(e){ return profileData.save_plan||0; }
 }
 
 // ── SPLASH SCREEN ──────────────────────────────────────────────────────
@@ -1041,18 +1129,37 @@ async function saveProfileToSheet(data){
 }
 
 function fillProfileForm(){
-  const f = (id, key) => { document.getElementById(id).value = profileData[key] || ''; };
-  f('p-income','income'); f('p-save-plan','save_plan');
+  const f = (id, key) => { const el = document.getElementById(id); if(el) el.value = profileData[key] || ''; };
+  // Prihodi
+  f('p-income','income');
+  f('p-income-side','income_side');
+  f('p-income-passive','income_passive');
+  recalcIncome();
+  // Fiksni i varijabilni troškovi
   f('p-stanarina','plan_Stanarina'); f('p-rezije','plan_Rezije');
   f('p-tcom','plan_T-com'); f('p-allianz','plan_Allianz');
   f('p-software','plan_Software'); f('p-food','plan_Food');
   f('p-fuel','plan_Fuel'); f('p-pets','plan_Pets'); f('p-other','plan_Other');
+  // Štednja — učitaj ciljeve, ili migriraj stari save_plan
+  try { savingsGoals = JSON.parse(profileData.save_goals_json || 'null') || []; } catch(e){ savingsGoals = []; }
+  if(savingsGoals.length === 0 && (profileData.save_plan||0) > 0){
+    savingsGoals = [{name:'Štednja', amount: profileData.save_plan}];
+  }
+  if(savingsGoals.length === 0){
+    savingsGoals = [{name:'Hitni fond', amount:0}];
+  }
+  renderSavingsGoals();
 }
 
 async function saveProfile(){
   const g = id => parseFloat(document.getElementById(id).value)||0;
+  const saveTotalAmt = savingsGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
   const data = {
-    income: g('p-income'), save_plan: g('p-save-plan'),
+    income: g('p-income'),
+    income_side: g('p-income-side'),
+    income_passive: g('p-income-passive'),
+    save_plan: saveTotalAmt,               // backward compat — ukupna štednja
+    save_goals_json: JSON.stringify(savingsGoals),
     'plan_Stanarina': g('p-stanarina'), 'plan_Rezije': g('p-rezije'),
     'plan_T-com': g('p-tcom'), 'plan_Allianz': g('p-allianz'),
     'plan_Software': g('p-software'), 'plan_Food': g('p-food'),
@@ -1148,8 +1255,8 @@ async function loadPregled(){
       totalSpent += amt;
     });
 
-    const income   = profileData.income || 0;
-    const savePlan = profileData.save_plan || 0;
+    const income   = (profileData.income||0) + (profileData.income_side||0) + (profileData.income_passive||0);
+    const savePlan = totalSavingsPlan();
     const totalPlan= Object.keys(CAT_COLORS).reduce((s,c)=>{
       const v = profileData['plan_'+c]||0;
       return s + v;
@@ -1227,123 +1334,4 @@ async function loadGoals(){
               ${desc ? ` · ${desc}` : ''}
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-            <span class="goal-type ${isLoan?'loan':'savings'}">${isLoan?'Rata':'Stednja'}</span>
-            <button class="btn-danger" onclick="deleteGoal(${i+2})">Brisi</button>
-          </div>
-        </div>
-        <div class="goal-progress"><div class="goal-fill ${isLoan?'loan':'savings'}" style="width:${Math.max(0,Math.min(100,pct))}%"></div></div>
-        <div class="goal-pct">${Math.max(0,pct)}% ${isLoan?'otplaceno':'postignuto'}</div>
-      </div>`;
-    }).join('');
-  }catch(e){
-    list.innerHTML = '<div class="empty-state">Greška: '+e.message+'</div>';
-  }
-}
-
-function showGoalForm(){ document.getElementById('goal-form').style.display='block'; }
-function hideGoalForm(){ document.getElementById('goal-form').style.display='none'; }
-function toggleGoalType(){
-  const isLoan = document.getElementById('gf-type').value === 'loan';
-  document.getElementById('gf-savings-fields').style.display = isLoan ? 'none' : 'block';
-  document.getElementById('gf-loan-fields').style.display    = isLoan ? 'block' : 'none';
-}
-
-async function saveGoal(){
-  const type    = document.getElementById('gf-type').value;
-  const isLoan  = type === 'loan';
-  const name    = document.getElementById('gf-name').value.trim();
-  if(!name){ alert('Unesi naziv!'); return; }
-
-  const row = [
-    name, type,
-    isLoan ? (parseFloat(document.getElementById('gf-total-loan').value)||0)  : (parseFloat(document.getElementById('gf-target').value)||0),
-    isLoan ? 0 : (parseFloat(document.getElementById('gf-current').value)||0),
-    isLoan ? (parseFloat(document.getElementById('gf-monthly-loan').value)||0) : (parseFloat(document.getElementById('gf-monthly-save').value)||0),
-    isLoan ? (parseInt(document.getElementById('gf-remaining').value)||0) : 0,
-    document.getElementById('gf-desc').value.trim(),
-    today()
-  ];
-
-  const st = document.getElementById('goal-status');
-  st.style.display='block'; st.className='status loading'; st.textContent='Snimam...';
-  try{
-    await appendRows(sheetId, 'Ciljevi', [row]);
-    hideGoalForm();
-    st.style.display='none';
-    // Reset form
-    ['gf-name','gf-target','gf-current','gf-monthly-save','gf-monthly-loan','gf-remaining','gf-total-loan','gf-desc'].forEach(id=>{ document.getElementById(id).value=''; });
-    loadGoals();
-  }catch(e){
-    st.className='status err'; st.textContent='Greška: '+e.message;
-  }
-}
-
-async function deleteGoal(rowIndex){
-  if(!confirm('Obriši ovaj cilj?')) return;
-  // Clear row in sheet
-  await gfetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent('Ciljevi!A'+rowIndex+':H'+rowIndex)}:clear`,
-    {method:'POST'}
-  );
-  loadGoals();
-}
-
-// ── SCANNER ───────────────────────────────────────────────────────────
-function handleDrop(e){
-  e.preventDefault();
-  document.getElementById('upload-zone').classList.remove('drag');
-  handleFile(e.dataTransfer.files[0]);
-}
-function handleFile(file){
-  if(!file) return;
-  currentImgFile = file;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    currentImgSrc = ev.target.result;
-    document.getElementById('upload-zone').style.display = 'none';
-    const prev = document.getElementById('receipt-preview');
-    prev.src = currentImgSrc;
-    prev.style.display = 'block';
-    document.getElementById('change-img').style.display = 'block';
-    document.getElementById('meta-date').value = today();
-    document.getElementById('save-btn').disabled = false;
-  };
-  reader.readAsDataURL(file);
-}
-
-function buildFilename(){
-  const store = (document.getElementById('meta-store').value||'racun').trim()
-    .replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
-  const date = document.getElementById('meta-date').value || today();
-  const ext  = currentImgFile ? currentImgFile.name.split('.').pop().toLowerCase() : 'jpg';
-  return `${store}_${date}.${ext}`;
-}
-
-async function uploadToDrive(file, filename){
-  setProgress(20);
-  const meta = JSON.stringify({ name: filename, parents: [monthFolderId] });
-  const form = new FormData();
-  form.append('metadata', new Blob([meta],{type:'application/json'}));
-  form.append('file', file);
-  const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink',{
-    method:'POST', headers:{Authorization:'Bearer '+token}, body:form
-  });
-  if(!r.ok) throw new Error(await r.text());
-  const d = await r.json();
-  setProgress(75);
-  await fetch(`https://www.googleapis.com/drive/v3/files/${d.id}/permissions`,{
-    method:'POST', headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
-    body:JSON.stringify({role:'reader',type:'anyone'})
-  });
-  return { id: d.id, url: `https://drive.google.com/file/d/${d.id}/view` };
-}
-
-async function saveReceipt(){
-  const store  = document.getElementById('meta-store').value.trim();
-  const date   = document.getElementById('meta-date').value;
-  const amount = parseFloat((document.getElementById('meta-amount').value||'').replace(',','.'))||0;
-  const cat    = document.getElementById('meta-cat').value;
-  const note   = document.getElementById('meta-note').value.trim();
-
-  if(!store)  { showScan('Unesi naziv ducana!','err'); return; }
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px
