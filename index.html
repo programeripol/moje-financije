@@ -213,6 +213,20 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .plan-input{width:90px;padding:6px 10px;font-size:13px;border:1.5px solid #e0e7f0;border-radius:8px;font-family:inherit;text-align:right}
 .plan-input:focus{outline:none;border-color:#1565c0}
 
+/* ── MONTH NAV ── */
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;background:#fff;border-radius:14px;padding:10px 16px;box-shadow:0 1px 6px rgba(21,101,192,.08)}
+.month-nav-btn{background:none;border:none;font-size:26px;cursor:pointer;color:#1565c0;padding:0 6px;line-height:1;font-weight:300}
+.month-nav-btn:disabled{color:#c8d6e8;cursor:default}
+.month-nav-label{font-size:15px;font-weight:600;color:#1a1a2e}
+/* ── MONTH PLAN PANEL ── */
+.month-plan-panel{background:#fff;border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 8px rgba(21,101,192,.06)}
+.month-plan-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none}
+.month-plan-header-title{font-size:13px;font-weight:600;color:#1565c0}
+.month-plan-arrow{font-size:14px;color:#1565c0;transition:.2s}
+.month-plan-body{display:none;padding:0 16px 14px}
+.month-plan-body.open{display:block}
+.month-plan-section{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px}
+.month-plan-footer{display:flex;gap:10px;margin-top:14px}
 /* ── SETUP BANNER ── */
 #setup-banner{background:#fff3cd;border:1px solid #ffc107;border-radius:12px;padding:12px 16px;margin:10px 16px;font-size:12px;color:#856404;line-height:1.6;display:none}
 
@@ -424,6 +438,12 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 <!-- ══ PREGLED TAB ════════════════════════════════════════════════════ -->
 <div class="screen" id="s-pregled">
 
+  <div class="month-nav">
+    <button class="month-nav-btn" id="prev-month-btn" onclick="changeViewMonth(-1)">‹</button>
+    <span class="month-nav-label" id="month-nav-label">Svibanj 2026</span>
+    <button class="month-nav-btn" id="next-month-btn" onclick="changeViewMonth(1)">›</button>
+  </div>
+
   <div class="budget-hero" id="budget-hero">
     <div class="bh-label">Ukupno potrošeno ovaj mjesec</div>
     <div class="bh-amount" id="bh-spent">€ 0.00</div>
@@ -441,6 +461,37 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
         <div class="bh-stat-label">Stednja</div>
         <div class="bh-stat-val" id="bh-savings">€ 0</div>
       </div>
+    </div>
+  </div>
+
+  <div class="month-plan-panel" id="month-plan-panel">
+    <div class="month-plan-header" onclick="toggleMonthPlanEdit()">
+      <span class="month-plan-header-title">✏️ Uredi plan za ovaj mjesec</span>
+      <span class="month-plan-arrow" id="month-plan-arrow">▼</span>
+    </div>
+    <div class="month-plan-body" id="month-plan-body">
+      <div class="month-plan-section">Prihodi (neto, €/mj)</div>
+      <div class="plan-row"><span class="plan-label">💼 Plaća / Stalni</span><input type="number" class="plan-input" id="mp-income" step="0.01" inputmode="decimal"></div>
+      <div class="plan-row"><span class="plan-label">💻 Freelance</span><input type="number" class="plan-input" id="mp-income-side" step="0.01" inputmode="decimal"></div>
+      <div class="plan-row"><span class="plan-label">📈 Pasivni</span><input type="number" class="plan-input" id="mp-income-passive" step="0.01" inputmode="decimal"></div>
+      <div class="month-plan-section">Fiksni troškovi</div>
+      <div class="plan-row"><span class="plan-label">Stanarina</span><input type="number" class="plan-input" id="mp-stanarina" step="0.01" inputmode="decimal"></div>
+      <div class="plan-row"><span class="plan-label">Režije</span><input type="number" class="plan-input" id="mp-rezije" step="0.01" inputmode="decimal"></div>
+      <div class="plan-row"><span class="plan-label">T-com</span><input type="number" class="plan-input" id="mp-tcom" step="0.01" inputmode="decimal"></div>
+      <div class="plan-row"><span class="plan-label">Allianz</span><input type="number" class="plan-input" id="mp-allianz" step="0.01" inputmode="decimal"></div>
+      <div class="plan-row"><span class="plan-label">Software</span><input type="number" class="plan-input" id="mp-software" step="0.01" inputmode="decimal"></div>
+      <div class="month-plan-section">Varijabilni troškovi</div>
+      <div class="plan-row"><span class="plan-label">Hrana</span><input type="number" class="plan-input" id="mp-food" step="0.01" inputmode="decimal"></div>
+      <div class="plan-row"><span class="plan-label">Gorivo</span><input type="number" class="plan-input" id="mp-fuel" step="0.01" inputmode="decimal"></div>
+      <div class="plan-row"><span class="plan-label">Ljubimci</span><input type="number" class="plan-input" id="mp-pets" step="0.01" inputmode="decimal"></div>
+      <div class="plan-row"><span class="plan-label">Ostalo</span><input type="number" class="plan-input" id="mp-other" step="0.01" inputmode="decimal"></div>
+      <div class="month-plan-section">Štednja (€/mj)</div>
+      <div class="plan-row"><span class="plan-label">Planirano</span><input type="number" class="plan-input" id="mp-save" step="0.01" inputmode="decimal"></div>
+      <div class="month-plan-footer">
+        <button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>
+        <button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button>
+      </div>
+      <div class="status" id="month-plan-status" style="margin-top:8px"></div>
     </div>
   </div>
 
@@ -581,6 +632,8 @@ let monthFolderIds = JSON.parse(localStorage.getItem('mf_monthFolderIds_' + new 
 let monthFolderId  = null;
 let profileData    = {};
 let currentTab     = 'skener';
+let viewMonthIdx   = new Date().getMonth(); // 0-11, koji mjesec gledamo u Pregledu
+let monthPlanCache = {};                    // cache { "2026_05": {...} ili null }
 let currentImgFile = null;
 let currentImgSrc  = null;
 let obCurrentStep  = 1;
@@ -1050,6 +1103,7 @@ async function ensureResources(){
   }
 
   await ensureMonthSheet(curMonth());
+  await ensurePlanSheet();
   await loadProfile();
 }
 
@@ -1066,11 +1120,12 @@ async function findOrCreateYearSpreadsheet(){
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       properties:{title},
-      sheets:[{properties:{title:'Profil'}},{properties:{title:'Ciljevi'}}]
+      sheets:[{properties:{title:'Profil'}},{properties:{title:'Ciljevi'}},{properties:{title:'Planovi'}}]
     })
   });
   await appendRows(ss.spreadsheetId,'Profil',[['Kljuc','Vrijednost']]);
   await appendRows(ss.spreadsheetId,'Ciljevi',[['Naziv','Vrsta','Cilj','Trenutno','Mjescna','Preostalo rata','Opis','Datum']]);
+  await appendRows(ss.spreadsheetId,'Planovi',[['Kljuc','Vrijednost','Mjesec']]);
   return ss.spreadsheetId;
 }
 
@@ -1233,10 +1288,163 @@ async function obStep(dir){
 }
 
 // ── PREGLED ───────────────────────────────────────────────────────────
-async function loadPregled(){
+// ── MONTH PLAN ────────────────────────────────────────────────────────
+function monthKey(idx){
+  return `${curYear()}_${String(idx+1).padStart(2,'0')}`;
+}
+
+async function ensurePlanSheet(){
+  if(!sheetId) return;
+  const meta = await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+  const exists = meta.sheets && meta.sheets.some(s => s.properties.title === 'Planovi');
+  if(exists) return;
+  await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`,{
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({requests:[{addSheet:{properties:{title:'Planovi'}}}]})
+  });
+  await appendRows(sheetId,'Planovi',[['Kljuc','Vrijednost','Mjesec']]);
+}
+
+async function loadMonthPlan(idx){
+  const key = monthKey(idx);
+  if(monthPlanCache[key] !== undefined) return monthPlanCache[key];
   try{
-    // Čitaj iz EXPENSE TRACKER sekcije trenutnog mjeseca (redci 57+, B=datum, F=iznos, I=kat, L=bilješka)
-    const monthName = curMonth();
+    await ensurePlanSheet();
+    const rows = await getRows(sheetId,'Planovi','A2:C2000');
+    const plan = {};
+    rows.forEach(r=>{ if(r[2]===key && r[0]) plan[r[0]] = parseFloat(r[1])||0; });
+    monthPlanCache[key] = Object.keys(plan).length > 0 ? plan : null;
+  }catch(e){ monthPlanCache[key] = null; }
+  return monthPlanCache[key];
+}
+
+async function saveMonthPlan(idx, data){
+  const key = monthKey(idx);
+  await ensurePlanSheet();
+  const rows = await getRows(sheetId,'Planovi','A2:C2000');
+  const keep = rows.filter(r => r[2] !== key);
+  const add  = Object.entries(data).map(([k,v])=>[k,String(v),key]);
+  await gfetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent('Planovi!A2:C2000')}:clear`,
+    {method:'POST'}
+  );
+  if(keep.length) await appendRows(sheetId,'Planovi',keep);
+  if(add.length)  await appendRows(sheetId,'Planovi',add);
+  monthPlanCache[key] = data;
+}
+
+function getEffectivePlan(monthPlan){
+  if(!monthPlan) return profileData;
+  return Object.assign({}, profileData, monthPlan);
+}
+
+function renderMonthNav(){
+  const curIdx = new Date().getMonth();
+  const label  = MONTHS_HR[viewMonthIdx] + ' ' + curYear();
+  const el = document.getElementById('month-nav-label');
+  if(el) el.textContent = label;
+  const prev = document.getElementById('prev-month-btn');
+  const next = document.getElementById('next-month-btn');
+  if(prev) prev.disabled = (viewMonthIdx === 0);
+  if(next) next.disabled = (viewMonthIdx >= curIdx);
+  const ht = document.getElementById('header-title');
+  if(ht && currentTab === 'pregled') ht.textContent = 'Pregled — ' + label;
+}
+
+function changeViewMonth(delta){
+  const curIdx = new Date().getMonth();
+  const newIdx = viewMonthIdx + delta;
+  if(newIdx < 0 || newIdx > curIdx) return;
+  viewMonthIdx = newIdx;
+  // Zatvori plan panel ako je otvoren
+  const body = document.getElementById('month-plan-body');
+  if(body) body.classList.remove('open');
+  const arrow = document.getElementById('month-plan-arrow');
+  if(arrow) arrow.textContent = '▼';
+  renderMonthNav();
+  loadPregled();
+}
+
+function toggleMonthPlanEdit(){
+  const body  = document.getElementById('month-plan-body');
+  const arrow = document.getElementById('month-plan-arrow');
+  if(!body) return;
+  const isOpen = body.classList.toggle('open');
+  if(arrow) arrow.textContent = isOpen ? '▲' : '▼';
+  if(isOpen) fillMonthPlanForm();
+}
+
+async function fillMonthPlanForm(){
+  const plan = await loadMonthPlan(viewMonthIdx);
+  const eff  = getEffectivePlan(plan);
+  const setV = (id, key) => { const el = document.getElementById(id); if(el) el.value = eff[key]||''; };
+  setV('mp-income','income');
+  setV('mp-income-side','income_side');
+  setV('mp-income-passive','income_passive');
+  setV('mp-stanarina','plan_Stanarina');
+  setV('mp-rezije','plan_Rezije');
+  setV('mp-tcom','plan_T-com');
+  setV('mp-allianz','plan_Allianz');
+  setV('mp-software','plan_Software');
+  setV('mp-food','plan_Food');
+  setV('mp-fuel','plan_Fuel');
+  setV('mp-pets','plan_Pets');
+  setV('mp-other','plan_Other');
+  setV('mp-save','save_plan');
+}
+
+async function saveMonthPlanNow(){
+  const st = document.getElementById('month-plan-status');
+  if(st){ st.textContent='Spremam...'; st.className='status'; }
+  try{
+    const gv = id => parseFloat(document.getElementById(id)&&document.getElementById(id).value)||0;
+    const data = {
+      income:         gv('mp-income'),
+      income_side:    gv('mp-income-side'),
+      income_passive: gv('mp-income-passive'),
+      plan_Stanarina: gv('mp-stanarina'),
+      plan_Rezije:    gv('mp-rezije'),
+      'plan_T-com':   gv('mp-tcom'),
+      plan_Allianz:   gv('mp-allianz'),
+      plan_Software:  gv('mp-software'),
+      plan_Food:      gv('mp-food'),
+      plan_Fuel:      gv('mp-fuel'),
+      plan_Pets:      gv('mp-pets'),
+      plan_Other:     gv('mp-other'),
+      save_plan:      gv('mp-save')
+    };
+    await saveMonthPlan(viewMonthIdx, data);
+    if(st){ st.textContent='✓ Plan spremljen!'; st.className='status success'; }
+    loadPregled();
+    setTimeout(()=>{ if(st) st.textContent=''; },3000);
+  }catch(e){
+    if(st){ st.textContent='Greška: '+e.message; st.className='status error'; }
+  }
+}
+
+async function resetMonthPlanToProfile(){
+  const key = monthKey(viewMonthIdx);
+  try{
+    await ensurePlanSheet();
+    const rows = await getRows(sheetId,'Planovi','A2:C2000');
+    const keep = rows.filter(r => r[2] !== key);
+    await gfetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent('Planovi!A2:C2000')}:clear`,
+      {method:'POST'}
+    );
+    if(keep.length) await appendRows(sheetId,'Planovi',keep);
+    monthPlanCache[key] = null;
+    await fillMonthPlanForm();
+    loadPregled();
+    showToast('Plan resetiran na vrijednosti iz Profila.');
+  }catch(e){ showToast('Greška: '+e.message); }
+}
+
+async function loadPregled(){
+  renderMonthNav();
+  try{
+    // Čitaj iz EXPENSE TRACKER sekcije odabranog mjeseca
+    const monthName = MONTHS_HR[viewMonthIdx];
     const rows = await getRows(sheetId, monthName, 'A57:N500');
     const entries = rows.filter(r => r[1]); // B=datum mora biti popunjeno
 
@@ -1249,10 +1457,12 @@ async function loadPregled(){
       totalSpent += amt;
     });
 
-    const income   = (profileData.income||0) + (profileData.income_side||0) + (profileData.income_passive||0);
-    const savePlan = totalSavingsPlan();
-    const totalPlan= Object.keys(CAT_COLORS).reduce((s,c)=>{
-      const v = profileData['plan_'+c]||0;
+    const monthPlan = await loadMonthPlan(viewMonthIdx);
+    const effPlan   = getEffectivePlan(monthPlan);
+    const income    = (effPlan.income||0) + (effPlan.income_side||0) + (effPlan.income_passive||0);
+    const savePlan  = effPlan.save_plan || totalSavingsPlan();
+    const totalPlan = Object.keys(CAT_COLORS).reduce((s,c)=>{
+      const v = effPlan['plan_'+c]||0;
       return s + v;
     },0);
     const left = income - totalSpent;
@@ -1268,7 +1478,7 @@ async function loadPregled(){
     const cats = Object.keys(CAT_COLORS);
     const catHtml = cats.map(cat=>{
       const act  = actual[cat]||0;
-      const plan = profileData['plan_'+cat]||0;
+      const plan = effPlan['plan_'+cat]||0;
       if(!act && !plan) return '';
       const pct  = plan > 0 ? Math.min(100, (act/plan)*100) : 100;
       const over = plan > 0 && act > plan;
