@@ -100,17 +100,35 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .status.loading{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
 
 /* ── SPLASH SCREEN ── */
-#splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#0d47a1 0%,#1565c0 50%,#1e88e5 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;animation:splashAuto .5s 3s forwards}
-#splash.hide{animation:splashAuto .3s 0s forwards}
+#splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#0d47a1 0%,#1565c0 50%,#1e88e5 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;animation:splashAuto .5s 2.5s forwards}
+#splash.hide{animation:splashAuto .4s 0s forwards}
 .splash-icon{width:110px;height:110px;background:rgba(255,255,255,.15);border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:58px;box-shadow:0 12px 48px rgba(0,0,0,.25);margin-bottom:28px;animation:splashPop .5s cubic-bezier(.175,.885,.32,1.275) both}
 .splash-title{font-size:26px;font-weight:700;color:#fff;letter-spacing:.01em;margin-bottom:8px;text-align:center;animation:splashFade .6s .2s both}
 .splash-emoji{font-size:32px;animation:splashFade .6s .35s both}
 .splash-bar{width:60px;height:3px;background:rgba(255,255,255,.3);border-radius:2px;margin-top:40px;overflow:hidden;animation:splashFade .6s .4s both}
-.splash-bar-fill{height:100%;background:#fff;border-radius:2px;animation:splashLoad 1.4s .3s ease-out both}
+.splash-bar-fill{height:100%;background:#fff;border-radius:2px;animation:splashLoad 1.8s .15s ease-out both}
 @keyframes splashPop{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes splashFade{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes splashLoad{0%{width:0%}100%{width:100%}}
 @keyframes splashAuto{0%{opacity:1;visibility:visible}99%{opacity:0;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
+
+/* ── INSTALL MODAL ── */
+#install-modal{position:fixed;inset:0;z-index:99998;display:none;align-items:flex-end;justify-content:center}
+#install-modal.open{display:flex}
+#install-modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);animation:fadeIn .25s both}
+#install-modal-box{position:relative;background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 44px;width:100%;max-width:500px;z-index:1;animation:slideUp .3s cubic-bezier(.25,.8,.25,1) both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#install-modal-close{position:absolute;top:14px;right:16px;background:#f0f2f8;border:none;width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center}
+.inst-header{text-align:center;margin-bottom:22px}
+.inst-icon{font-size:52px;display:block;margin-bottom:10px}
+.inst-title{font-size:20px;font-weight:700;margin:0 0 5px;color:#1a1a2e}
+.inst-sub{font-size:13px;color:#777;margin:0}
+.inst-step{display:flex;align-items:flex-start;gap:14px;margin:13px 0;font-size:14px;line-height:1.5;color:#333}
+.inst-num{width:28px;height:28px;border-radius:50%;background:#1565c0;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:1px}
+.inst-note{background:#f0f4ff;border-radius:12px;padding:11px 14px;margin-top:16px;font-size:12px;color:#555;text-align:center;line-height:1.5}
+.inst-btn{width:100%;background:#1565c0;color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:20px}
+.inst-btn:hover{background:#0d47a1}
 
 /* ── TOAST ── */
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1565c0;color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;text-align:center;max-width:320px;line-height:1.5}
@@ -203,6 +221,15 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 </div>
 
 <div id="toast"></div>
+
+<!-- INSTALL MODAL -->
+<div id="install-modal">
+  <div id="install-modal-bg" onclick="hideInstallModal()"></div>
+  <div id="install-modal-box">
+    <button id="install-modal-close" onclick="hideInstallModal()">✕</button>
+    <div id="install-modal-content"></div>
+  </div>
+</div>
 
 <!-- HEADER -->
 <div id="header" style="display:none">
@@ -536,14 +563,9 @@ window.addEventListener('beforeinstallprompt', e => {
 window.addEventListener('appinstalled', () => {
   document.getElementById('install-btn').classList.remove('visible');
   deferredInstall = null;
+  localStorage.setItem('mf_install_shown', '1');
   showToast('Aplikacija je dodana na početni zaslon! 🎉');
 });
-async function installApp(){
-  if(!deferredInstall) return;
-  deferredInstall.prompt();
-  const { outcome } = await deferredInstall.userChoice;
-  if(outcome === 'accepted') deferredInstall = null;
-}
 
 // Registriraj service worker
 if('serviceWorker' in navigator){
@@ -561,7 +583,7 @@ const CAT_COLORS = {
 function wireButtons(){
   const on = (id, fn) => { const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
   on('google-btn',  () => signIn());
-  on('install-btn', () => installApp());
+  on('install-btn', () => showInstallModal());
   on('sign-out',    () => signOut());
   on('save-btn',    () => saveReceipt());
   on('ob-back',     () => obStep(-1));
@@ -665,9 +687,17 @@ function tryAutoLogin(){
 
 // ── SPLASH SCREEN ──────────────────────────────────────────────────────
 let splashHidden = false;
+const splashStart = Date.now();
+const SPLASH_MIN_MS = 2000; // minimalno 2 sekunde
 
 function hideSplash(){
   if(splashHidden) return;
+  const elapsed = Date.now() - splashStart;
+  if(elapsed < SPLASH_MIN_MS){
+    // Prerano — čekaj ostatak
+    setTimeout(hideSplash, SPLASH_MIN_MS - elapsed);
+    return;
+  }
   splashHidden = true;
   const el = document.getElementById('splash');
   if(!el) return;
@@ -679,8 +709,63 @@ function splashAuthComplete(){
   hideSplash();
 }
 
-// Uvijek sakrij splash nakon točno 3 sekunde — bez obzira na auth
-setTimeout(hideSplash, 3000);
+// Fallback: sakrij splash nakon max 4 sekunde
+setTimeout(hideSplash, 4000);
+
+// ── INSTALL MODAL ──────────────────────────────────────────────────────
+function showInstallModal(){
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if(isStandalone) return; // Već instalirana kao app
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isAndroid = /Android/.test(navigator.userAgent);
+  const content = document.getElementById('install-modal-content');
+  if(isIOS){
+    content.innerHTML = `
+      <div class="inst-header">
+        <span class="inst-icon">📱</span>
+        <h2 class="inst-title">Dodaj na Home Screen</h2>
+        <p class="inst-sub">Instaliraj app na iPhone/iPad u 2 koraka</p>
+      </div>
+      <div class="inst-step"><div class="inst-num">1</div><div>Klikni <strong>Dijeli</strong> gumb u Safariju — ikona kvadrata sa strelicom gore (↑) na dnu ekrana</div></div>
+      <div class="inst-step"><div class="inst-num">2</div><div>Skrolaj i odaberi <strong>"Dodaj na početni zaslon"</strong> (Add to Home Screen)</div></div>
+      <div class="inst-note">⚠️ Radi samo u <strong>Safariju</strong> — ako koristiš Chrome na iPhoneu, otvori ovu stranicu u Safariju</div>`;
+  } else if(deferredInstall){
+    const platform = isAndroid ? 'Android' : 'Desktop';
+    content.innerHTML = `
+      <div class="inst-header">
+        <span class="inst-icon">⬇️</span>
+        <h2 class="inst-title">Instaliraj aplikaciju</h2>
+        <p class="inst-sub">Dodaj "Ima se, može se" na ${isAndroid ? 'Home Screen' : 'Desktop'} — radi offline, brže se otvara</p>
+      </div>
+      <button class="inst-btn" onclick="installAppNow()">⬇ Instaliraj sada</button>
+      <div class="inst-note" style="margin-top:12px">Izgleda i radi kao prava aplikacija — bez browsera</div>`;
+  } else {
+    return; // Nema ništa za pokazati
+  }
+  document.getElementById('install-modal').classList.add('open');
+}
+
+function hideInstallModal(){
+  document.getElementById('install-modal').classList.remove('open');
+  localStorage.setItem('mf_install_shown', '1');
+}
+
+async function installAppNow(){
+  if(!deferredInstall) return;
+  hideInstallModal();
+  deferredInstall.prompt();
+  const { outcome } = await deferredInstall.userChoice;
+  if(outcome === 'accepted') deferredInstall = null;
+}
+
+function maybeShowInstallModal(){
+  // Pokaži jednom — kad user otvori app i nije je instalirao
+  const shown = localStorage.getItem('mf_install_shown');
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if(!shown && !isStandalone){
+    setTimeout(showInstallModal, 1500); // Malo odgodi da se app učita
+  }
+}
 
 async function onToken(resp){
   if(resp.error){
@@ -758,6 +843,7 @@ function showApp(){
   document.getElementById('s-onboarding').style.display = 'none';
   goTab('skener'); // postavi ikone PRIJE nego nav postane vidljiv
   document.getElementById('nav').style.display = 'block';
+  maybeShowInstallModal(); // pokaži install popup jednom ako nije instalirana
 }
 
 // ── NAVIGATION ───────────────────────────────────────────────────────
@@ -1261,146 +1347,3 @@ async function saveReceipt(){
   const note   = document.getElementById('meta-note').value.trim();
 
   if(!store)  { showScan('Unesi naziv ducana!','err'); return; }
-  if(!date)   { showScan('Unesi datum!','err'); return; }
-  if(!amount) { showScan('Unesi iznos!','err'); return; }
-  if(!token)  { signIn(); return; }
-
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  btn.textContent = 'Snimam...';
-  showScan('Uploadam sliku...','loading');
-  setProgress(5);
-
-  try{
-    await ensureResources();
-    let driveUrl='', driveId='';
-    if(currentImgFile){
-      const d = await uploadToDrive(currentImgFile, buildFilename());
-      driveUrl = d.url; driveId = d.id;
-    }
-    setProgress(90);
-    const month = curMonth();
-    const row   = await findNextTrackerRow(month);
-    const rowData = Array(14).fill('');
-    rowData[1]  = date;
-    rowData[5]  = amount;
-    rowData[8]  = cat;
-    rowData[11] = note ? `${store} — ${note}` : store;
-    rowData[12] = driveUrl;
-    rowData[13] = driveId;
-    await writeRange(sheetId, `${month}!A${row}`, [rowData]);
-    setProgress(100);
-
-    showScan(
-      `Zapisano! <strong>${store}</strong> · ${eur(amount)} · ${cat}<br>` +
-      `<small style="color:#15803d">Podaci su u Google Sheets, slika u Drive.</small><br><br>` +
-      `<button onclick="noviRacun()" style="padding:9px 20px;border-radius:9px;border:none;background:#1565c0;color:#fff;font-size:14px;font-family:Poppins,sans-serif;font-weight:500;cursor:pointer">+ Novi racun</button>`,
-      'ok'
-    );
-    setTimeout(()=>{ setProgress(0); loadGallery(); }, 600);
-  }catch(e){
-    showScan('Greška: '+e.message,'err');
-    setProgress(0);
-  }
-  btn.disabled=false;
-  btn.textContent='Spremi u Sheets';
-}
-
-function showScan(html, cls){
-  const s = document.getElementById('scan-status');
-  if(!s) return;
-  if(!html){ s.style.display='none'; s.className='status'; s.innerHTML=''; return; }
-  s.className = 'status ' + (cls||'');
-  s.innerHTML = html;
-  s.style.display = 'block';
-}
-
-function setProgress(pct){
-  const bar  = document.getElementById('prog-bar');
-  const fill = document.getElementById('prog-fill');
-  if(!bar||!fill) return;
-  if(pct > 0){
-    bar.style.display = 'block';
-    fill.style.width  = Math.min(100, pct) + '%';
-  } else {
-    bar.style.display = 'none';
-    fill.style.width  = '0%';
-  }
-}
-
-function noviRacun(){
-  currentImgFile = null;
-  currentImgSrc  = null;
-  document.getElementById('receipt-preview').style.display = 'none';
-  document.getElementById('change-img').style.display      = 'none';
-  document.getElementById('upload-zone').style.display     = 'block';
-  document.getElementById('meta-store').value  = '';
-  document.getElementById('meta-amount').value = '';
-  document.getElementById('meta-note').value   = '';
-  document.getElementById('meta-date').value   = today();
-  document.getElementById('save-btn').disabled = true;
-  showScan('', '');
-  setProgress(0);
-}
-
-async function loadGallery(){
-  const grid = document.getElementById('gallery-grid');
-  if(!grid || !sheetId) return;
-  try{
-    const rows = await getRows(sheetId, curMonth(), 'B57:N500');
-    const items = rows.filter(r => r && r[0]);
-    if(!items.length){
-      grid.innerHTML = '<div class="empty-state">Nema još unesenih računa.</div>';
-      return;
-    }
-    grid.innerHTML = items.map(r => {
-      const datum   = r[0]  || '';
-      const iznos   = parseFloat(r[4])||0;
-      const kat     = r[7]  || '';
-      const bilj    = r[10] || '';
-      const driveUrl= r[11] || '';
-      const imgUrl  = driveUrl
-        ? driveUrl.replace('https://drive.google.com/file/d/','https://drive.google.com/thumbnail?sz=w200&id=').replace('/view','')
-        : '';
-      const name    = bilj || kat;
-      return `<div class="g-card" ${driveUrl ? `onclick="window.open('${driveUrl}','_blank')"` : ''}>
-        ${imgUrl
-          ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
-          : ''}
-        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>🧾</div>
-        <div class="g-info">
-          <div class="g-row">
-            <span class="g-name">${name}</span>
-            <span class="g-amt">€${iznos.toFixed(2)}</span>
-          </div>
-          <div class="g-date">${datum}</div>
-        </div>
-      </div>`;
-    }).join('');
-  }catch(e){
-    grid.innerHTML = '<div class="empty-state">Greška: '+e.message+'</div>';
-  }
-}
-
-// ── MetaMask SES fix: expose all onclick functions on window ──────────
-window.signIn      = signIn;
-window.tryOneTap   = tryOneTap;
-window.onOneTap    = onOneTap;
-window.signOut     = signOut;
-window.installApp  = installApp;
-window.goTab       = goTab;
-window.obStep      = obStep;
-window.saveReceipt = saveReceipt;
-window.showGoalForm= showGoalForm;
-window.hideGoalForm= hideGoalForm;
-window.saveGoal    = saveGoal;
-window.saveProfile = saveProfile;
-window.deleteGoal  = deleteGoal;
-window.noviRacun   = noviRacun;
-window.toggleGoalType = toggleGoalType;
-window.handleDrop  = handleDrop;
-window.handleFile  = handleFile;
-
-</script>
-</body>
-</html>
