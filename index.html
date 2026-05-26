@@ -287,7 +287,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       <img class="nav-icon" id="icon-ciljevi" src="nav-ciljevi-bijeli.png" alt="Ciljevi">Ciljevi
     </button>
     <button class="nav-btn" id="nav-profil">
-      <img class="nav-icon" id="icon-profil" src="nav-profil-bijeli.png" alt="Profil">Profil
+      <img class="nav-icon" id="icon-profil" src="nav-profil-bijeli.png" alt="Profil">Moj Profil
     </button>
   </div>
 </div>
@@ -451,15 +451,15 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="bh-row">
       <div class="bh-stat">
         <div class="bh-stat-label">Prihod</div>
-        <div class="bh-stat-val" id="bh-income">€ 0</div>
+        <div class="bh-stat-val" id="bh-income">0 €</div>
       </div>
       <div class="bh-stat">
         <div class="bh-stat-label">Preostalo</div>
-        <div class="bh-stat-val" id="bh-left">€ 0</div>
+        <div class="bh-stat-val" id="bh-left">0 €</div>
       </div>
       <div class="bh-stat">
         <div class="bh-stat-label">Stednja</div>
-        <div class="bh-stat-val" id="bh-savings">€ 0</div>
+        <div class="bh-stat-val" id="bh-savings">0 €</div>
       </div>
     </div>
   </div>
@@ -470,10 +470,8 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       <span class="month-plan-arrow" id="month-plan-arrow">▼</span>
     </div>
     <div class="month-plan-body" id="month-plan-body">
-      <div class="month-plan-section">Prihodi (neto, €/mj)</div>
-      <div class="plan-row"><span class="plan-label">💼 Plaća / Stalni</span><input type="number" class="plan-input" id="mp-income" step="0.01" inputmode="decimal"></div>
-      <div class="plan-row"><span class="plan-label">💻 Freelance</span><input type="number" class="plan-input" id="mp-income-side" step="0.01" inputmode="decimal"></div>
-      <div class="plan-row"><span class="plan-label">📈 Pasivni</span><input type="number" class="plan-input" id="mp-income-passive" step="0.01" inputmode="decimal"></div>
+      <div class="month-plan-section">Prihodi (mj/€)</div>
+      <div class="plan-row"><span class="plan-label">Ukupni prihodi ovaj mj</span><input type="number" class="plan-input" id="mp-income-override" step="0.01" inputmode="decimal" placeholder="iz Profila"></div>
       <div class="month-plan-section">Fiksni troškovi</div>
       <div class="plan-row"><span class="plan-label">Stanarina</span><input type="number" class="plan-input" id="mp-stanarina" step="0.01" inputmode="decimal"></div>
       <div class="plan-row"><span class="plan-label">Režije</span><input type="number" class="plan-input" id="mp-rezije" step="0.01" inputmode="decimal"></div>
@@ -485,7 +483,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       <div class="plan-row"><span class="plan-label">Gorivo</span><input type="number" class="plan-input" id="mp-fuel" step="0.01" inputmode="decimal"></div>
       <div class="plan-row"><span class="plan-label">Ljubimci</span><input type="number" class="plan-input" id="mp-pets" step="0.01" inputmode="decimal"></div>
       <div class="plan-row"><span class="plan-label">Ostalo</span><input type="number" class="plan-input" id="mp-other" step="0.01" inputmode="decimal"></div>
-      <div class="month-plan-section">Štednja (€/mj)</div>
+      <div class="month-plan-section">Štednja (mj/€)</div>
       <div class="plan-row"><span class="plan-label">Planirano</span><input type="number" class="plan-input" id="mp-save" step="0.01" inputmode="decimal"></div>
       <div class="month-plan-footer">
         <button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>
@@ -536,11 +534,11 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
         <div class="field"><label>Cilj (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-target" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
         <div class="field"><label>Trenutno (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-current" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
       </div>
-      <div class="field"><label>Mjescna uplata (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-monthly-save" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
+      <div class="field"><label>Uplata (mj/€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-monthly-save" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
     </div>
     <div id="gf-loan-fields" style="display:none">
       <div class="row2">
-        <div class="field"><label>Rata (€/mj)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-monthly-loan" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
+        <div class="field"><label>Rata (mj/€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-monthly-loan" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
         <div class="field"><label>Preostalo rata</label><input type="number" id="gf-remaining" placeholder="npr. 18" min="1"></div>
       </div>
       <div class="field"><label>Ukupni dug (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-total-loan" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
@@ -559,49 +557,39 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 <div class="screen" id="s-profil">
 
   <div class="card">
-    <div class="card-title">Prihodi (neto, €/mj)</div>
-    <div class="plan-row">
-      <span class="plan-label">💼 Plaća / Stalni prihodi</span>
-      <input type="number" class="plan-input" id="p-income" step="0.01" inputmode="decimal" oninput="recalcIncome()">
-    </div>
-    <div class="plan-row">
-      <span class="plan-label">💻 Freelance / Side job</span>
-      <input type="number" class="plan-input" id="p-income-side" step="0.01" inputmode="decimal" oninput="recalcIncome()">
-    </div>
-    <div class="plan-row">
-      <span class="plan-label">📈 Pasivni prihodi</span>
-      <input type="number" class="plan-input" id="p-income-passive" step="0.01" inputmode="decimal" oninput="recalcIncome()">
-    </div>
-    <div class="plan-total-row">
+    <div class="card-title">Prihodi (mj/€)</div>
+    <div id="income-list"></div>
+    <button type="button" class="add-goal-btn" onclick="addIncomeGoal()">+ Dodaj prihod</button>
+    <div class="plan-total-row" style="margin-top:10px">
       <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupni prihodi</span>
-      <span class="plan-total-val" id="p-income-total">€ 0,00</span>
+      <span class="plan-total-val" id="p-income-total">0,00 €</span>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">Fiksni troskovi (€/mj)</div>
+    <div class="card-title">Fiksni troškovi (mj/€)</div>
     <div class="plan-row"><span class="plan-label">Stanarina</span><input type="number" class="plan-input" id="p-stanarina" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Rezije / komunalije</span><input type="number" class="plan-input" id="p-rezije" step="0.01" inputmode="decimal"></div>
+    <div class="plan-row"><span class="plan-label">Režije / komunalije</span><input type="number" class="plan-input" id="p-rezije" step="0.01" inputmode="decimal"></div>
     <div class="plan-row"><span class="plan-label">T-com / internet</span><input type="number" class="plan-input" id="p-tcom" step="0.01" inputmode="decimal"></div>
     <div class="plan-row"><span class="plan-label">Allianz / osiguranje</span><input type="number" class="plan-input" id="p-allianz" step="0.01" inputmode="decimal"></div>
     <div class="plan-row"><span class="plan-label">Software / pretplate</span><input type="number" class="plan-input" id="p-software" step="0.01" inputmode="decimal"></div>
   </div>
 
   <div class="card">
-    <div class="card-title">Plan varijabilnih troskova (€/mj)</div>
-    <div class="plan-row"><span class="plan-label">Hrana (Food)</span><input type="number" class="plan-input" id="p-food" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Gorivo (Fuel)</span><input type="number" class="plan-input" id="p-fuel" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Kucni ljubimci (Pets)</span><input type="number" class="plan-input" id="p-pets" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Ostalo (Other)</span><input type="number" class="plan-input" id="p-other" step="0.01" inputmode="decimal"></div>
+    <div class="card-title">Varijabilni troškovi (mj/€)</div>
+    <div class="plan-row"><span class="plan-label">Hrana</span><input type="number" class="plan-input" id="p-food" step="0.01" inputmode="decimal"></div>
+    <div class="plan-row"><span class="plan-label">Gorivo</span><input type="number" class="plan-input" id="p-fuel" step="0.01" inputmode="decimal"></div>
+    <div class="plan-row"><span class="plan-label">Ljubimci</span><input type="number" class="plan-input" id="p-pets" step="0.01" inputmode="decimal"></div>
+    <div class="plan-row"><span class="plan-label">Ostalo</span><input type="number" class="plan-input" id="p-other" step="0.01" inputmode="decimal"></div>
   </div>
 
   <div class="card">
-    <div class="card-title">Štednja (€/mj)</div>
+    <div class="card-title">Štednja (mj/€)</div>
     <div id="save-goals-list"></div>
     <button type="button" class="add-goal-btn" onclick="addSavingsGoal()">+ Dodaj cilj štednje</button>
     <div class="plan-total-row" style="margin-top:10px">
       <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupna štednja</span>
-      <span class="plan-total-val" id="p-save-total">€ 0,00</span>
+      <span class="plan-total-val" id="p-save-total">0,00 €</span>
     </div>
   </div>
 
@@ -695,7 +683,7 @@ window.onload = () => {
 };
 
 function today(){ return new Date().toISOString().slice(0,10); }
-function eur(n){ return '€ ' + parseFloat(n||0).toFixed(2).replace('.',','); }
+function eur(n){ return parseFloat(n||0).toFixed(2).replace('.',',') + ' €'; }
 
 function showToast(msg, duration=4000){
   const t = document.getElementById('toast');
@@ -769,13 +757,40 @@ function tryAutoLogin(){
   }
 }
 
-// ── INCOME RECALC ──────────────────────────────────────────────────────
+// ── INCOME GOALS (dynamic) ────────────────────────────────────────────
+let incomeGoals = [];
+
+function renderIncomeList(){
+  const container = document.getElementById('income-list');
+  if(!container) return;
+  container.innerHTML = incomeGoals.map((g, i) => `
+    <div class="save-goal-row">
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="incomeGoals[${i}].name=this.value">
+      <input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0,00" step="0.01" inputmode="decimal" oninput="incomeGoals[${i}].amount=parseFloat(this.value)||0;recalcIncome()">
+      <button class="save-goal-del" onclick="removeIncomeGoal(${i})" title="Ukloni">×</button>
+    </div>
+  `).join('');
+  recalcIncome();
+}
+
+function addIncomeGoal(name='', amount=0){
+  incomeGoals.push({name, amount});
+  renderIncomeList();
+  setTimeout(()=>{
+    const inputs = document.querySelectorAll('#income-list .goal-name');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function removeIncomeGoal(i){
+  incomeGoals.splice(i,1);
+  renderIncomeList();
+}
+
 function recalcIncome(){
-  const a = parseFloat(document.getElementById('p-income').value)||0;
-  const b = parseFloat(document.getElementById('p-income-side').value)||0;
-  const c = parseFloat(document.getElementById('p-income-passive').value)||0;
+  const total = incomeGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
   const el = document.getElementById('p-income-total');
-  if(el) el.textContent = '€ ' + (a+b+c).toFixed(2).replace('.',',');
+  if(el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
 }
 
 // ── SAVINGS GOALS ──────────────────────────────────────────────────────
@@ -811,11 +826,15 @@ function removeSavingsGoal(i){
 function recalcSavings(){
   const total = savingsGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
   const el = document.getElementById('p-save-total');
-  if(el) el.textContent = '€ ' + total.toFixed(2).replace('.',',');
+  if(el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
 }
 
 function totalIncome(){
-  return (profileData.income||0) + (profileData.income_side||0) + (profileData.income_passive||0);
+  try{
+    const goals = JSON.parse(profileData.income_goals_json||'[]');
+    if(goals.length > 0) return goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+  }catch(e){}
+  return (profileData.income||0)+(profileData.income_side||0)+(profileData.income_passive||0);
 }
 
 function totalSavingsPlan(){
@@ -861,7 +880,7 @@ function showInstallModal(){
   if(isIOS){
     content.innerHTML = `
       <div class="inst-header">
-        <span class="inst-icon">📱</span>
+        
         <h2 class="inst-title">Dodaj na Home Screen</h2>
         <p class="inst-sub">Instaliraj app na iPhone/iPad u 2 koraka</p>
       </div>
@@ -1182,10 +1201,16 @@ async function saveProfileToSheet(data){
 
 function fillProfileForm(){
   const f = (id, key) => { const el = document.getElementById(id); if(el) el.value = profileData[key] || ''; };
-  f('p-income','income');
-  f('p-income-side','income_side');
-  f('p-income-passive','income_passive');
-  recalcIncome();
+  // Dynamic income list
+  try { incomeGoals = JSON.parse(profileData.income_goals_json || 'null') || []; } catch(e){ incomeGoals = []; }
+  if(incomeGoals.length === 0){
+    // Migracija iz starog 3-polja formata
+    if((profileData.income||0) > 0)         incomeGoals.push({name:'Plaća',          amount: profileData.income});
+    if((profileData.income_side||0) > 0)    incomeGoals.push({name:'Freelance',       amount: profileData.income_side});
+    if((profileData.income_passive||0) > 0) incomeGoals.push({name:'Pasivni prihodi', amount: profileData.income_passive});
+  }
+  if(incomeGoals.length === 0) incomeGoals.push({name:'Plaća', amount: 0});
+  renderIncomeList();
   f('p-stanarina','plan_Stanarina'); f('p-rezije','plan_Rezije');
   f('p-tcom','plan_T-com'); f('p-allianz','plan_Allianz');
   f('p-software','plan_Software'); f('p-food','plan_Food');
@@ -1201,18 +1226,18 @@ function fillProfileForm(){
 }
 
 async function saveProfile(){
-  const g = id => parseFloat(document.getElementById(id).value)||0;
-  const saveTotalAmt = savingsGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
+  const g = id => parseFloat(document.getElementById(id)?.value)||0;
+  const saveTotalAmt   = savingsGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
+  const incomeTotalAmt = incomeGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
   const data = {
-    income: g('p-income'),
-    income_side: g('p-income-side'),
-    income_passive: g('p-income-passive'),
+    income_goals_json: JSON.stringify(incomeGoals),
+    income: incomeTotalAmt,
     save_plan: saveTotalAmt,
     save_goals_json: JSON.stringify(savingsGoals),
-    'plan_Stanarina': g('p-stanarina'), 'plan_Rezije': g('p-rezije'),
-    'plan_T-com': g('p-tcom'), 'plan_Allianz': g('p-allianz'),
-    'plan_Software': g('p-software'), 'plan_Food': g('p-food'),
-    'plan_Fuel': g('p-fuel'), 'plan_Pets': g('p-pets'), 'plan_Other': g('p-other')
+    plan_Stanarina: g('p-stanarina'), plan_Rezije: g('p-rezije'),
+    'plan_T-com': g('p-tcom'), plan_Allianz: g('p-allianz'),
+    plan_Software: g('p-software'), plan_Food: g('p-food'),
+    plan_Fuel: g('p-fuel'), plan_Pets: g('p-pets'), plan_Other: g('p-other')
   };
   const st = document.getElementById('profil-status');
   st.style.display='block'; st.className='status loading'; st.textContent='Snimam...';
@@ -1378,9 +1403,13 @@ async function fillMonthPlanForm(){
   const plan = await loadMonthPlan(viewMonthIdx);
   const eff  = getEffectivePlan(plan);
   const setV = (id, key) => { const el = document.getElementById(id); if(el) el.value = eff[key]||''; };
-  setV('mp-income','income');
-  setV('mp-income-side','income_side');
-  setV('mp-income-passive','income_passive');
+  const incEl = document.getElementById('mp-income-override');
+  if(incEl){
+    const ov = plan && plan.income_override != null ? plan.income_override : '';
+    incEl.value = ov;
+    const profTotal = totalIncome();
+    incEl.placeholder = profTotal > 0 ? profTotal.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
+  }
   setV('mp-stanarina','plan_Stanarina');
   setV('mp-rezije','plan_Rezije');
   setV('mp-tcom','plan_T-com');
@@ -1397,11 +1426,11 @@ async function saveMonthPlanNow(){
   const st = document.getElementById('month-plan-status');
   if(st){ st.textContent='Spremam...'; st.className='status'; }
   try{
-    const gv = id => parseFloat(document.getElementById(id)&&document.getElementById(id).value)||0;
-    const data = {
-      income:         gv('mp-income'),
-      income_side:    gv('mp-income-side'),
-      income_passive: gv('mp-income-passive'),
+    const gv = id => { const el = document.getElementById(id); return el && el.value !== '' ? parseFloat(el.value)||0 : 0; };
+    const incOvEl = document.getElementById('mp-income-override');
+    const data = {};
+    if(incOvEl && incOvEl.value !== '') data.income_override = parseFloat(incOvEl.value)||0;
+    Object.assign(data, {
       plan_Stanarina: gv('mp-stanarina'),
       plan_Rezije:    gv('mp-rezije'),
       'plan_T-com':   gv('mp-tcom'),
@@ -1412,7 +1441,7 @@ async function saveMonthPlanNow(){
       plan_Pets:      gv('mp-pets'),
       plan_Other:     gv('mp-other'),
       save_plan:      gv('mp-save')
-    };
+    });
     await saveMonthPlan(viewMonthIdx, data);
     if(st){ st.textContent='✓ Plan spremljen!'; st.className='status success'; }
     loadPregled();
@@ -1459,7 +1488,8 @@ async function loadPregled(){
 
     const monthPlan = await loadMonthPlan(viewMonthIdx);
     const effPlan   = getEffectivePlan(monthPlan);
-    const income    = (effPlan.income||0) + (effPlan.income_side||0) + (effPlan.income_passive||0);
+    const income    = (monthPlan && monthPlan.income_override != null)
+      ? monthPlan.income_override : totalIncome();
     const savePlan  = effPlan.save_plan || totalSavingsPlan();
     const totalPlan = Object.keys(CAT_COLORS).reduce((s,c)=>{
       const v = effPlan['plan_'+c]||0;
