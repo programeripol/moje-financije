@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>Moje Financije</title>
+<title>Ima se može se</title>
 <meta name="description" content="Prati prihode, planiraj troškove, štedi za ciljeve.">
 <meta name="theme-color" content="#1565c0">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Moje Financije">
+<meta name="apple-mobile-web-app-title" content="Ima se može se">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -44,7 +44,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;color:
 #s-login{align-items:center;justify-content:center;min-height:90vh;max-width:none}
 #s-login.active{display:flex}
 #login-card{background:#fff;border-radius:24px;padding:36px 28px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(21,101,192,.12);text-align:center}
-.app-icon{width:64px;height:64px;background:linear-gradient(135deg,#1565c0,#42a5f5);border-radius:18px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:30px}
+.login-logo{width:72px;height:72px;border-radius:18px;object-fit:cover;margin:0 auto 16px;display:block;box-shadow:0 4px 16px rgba(0,0,0,.15)}
 #login-card h2{font-size:22px;font-weight:700;margin-bottom:6px}
 #login-card p{font-size:13px;color:#888;margin-bottom:24px;line-height:1.6}
 #google-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1.5px solid #dde3f0;border-radius:12px;padding:13px 20px;width:100%;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:.15s}
@@ -104,9 +104,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 /* ── SPLASH SCREEN ── */
 #splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#0d47a1 0%,#1565c0 50%,#1e88e5 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;animation:splashAuto .5s 2.5s forwards}
 #splash.hide{animation:splashAuto .4s 0s forwards}
-.splash-icon{width:110px;height:110px;background:rgba(255,255,255,.15);border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:58px;box-shadow:0 12px 48px rgba(0,0,0,.25);margin-bottom:28px;animation:splashPop .5s cubic-bezier(.175,.885,.32,1.275) both}
+.splash-logo{width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 12px 48px rgba(0,0,0,.25);margin-bottom:28px;animation:splashPop .5s cubic-bezier(.175,.885,.32,1.275) both}
 .splash-title{font-size:26px;font-weight:700;color:#fff;letter-spacing:.01em;margin-bottom:8px;text-align:center;animation:splashFade .6s .2s both}
-.splash-emoji{font-size:32px;animation:splashFade .6s .35s both}
+
 .splash-bar{width:60px;height:3px;background:rgba(255,255,255,.3);border-radius:2px;margin-top:40px;overflow:hidden;animation:splashFade .6s .4s both}
 .splash-bar-fill{height:100%;background:#fff;border-radius:2px;animation:splashLoad 1.8s .15s ease-out both}
 @keyframes splashPop{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
@@ -269,9 +269,8 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
 <!-- SPLASH SCREEN -->
 <div id="splash">
-  <div class="splash-icon">€</div>
-  <div class="splash-title">Ima se, može se</div>
-  <div class="splash-emoji">💸</div>
+  <img src="ikonica-glavna.png" class="splash-logo" alt="">
+  <div class="splash-title">Ima se može se</div>
   <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
@@ -296,7 +295,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
 <!-- HEADER -->
 <div id="header" style="display:none">
-  <h1 id="header-title">Moje Financije</h1>
+  <h1 id="header-title">Ima se može se</h1>
   <div id="user-row">
     <button id="install-btn" title="Dodaj na početni zaslon">⬇ Instaliraj</button>
     <img id="user-avatar" src="" alt="">
@@ -331,8 +330,8 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 <!-- ══ LOGIN ══════════════════════════════════════════════════════════ -->
 <div class="screen active" id="s-login">
   <div id="login-card">
-    <div class="app-icon">💰</div>
-    <h2>Moje Financije</h2>
+    <img src="ikonica-glavna.png" class="login-logo" alt="Ima se može se">
+    <h2>Ima se može se</h2>
     <p>Prati prihode, planiraj troškove, štedi za ciljeve — sve na jednom mjestu.</p>
     <button id="google-btn" onclick="signIn()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
