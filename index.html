@@ -137,7 +137,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 /* ── SAVINGS GOALS ── */
 .save-goal-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .save-goal-row .goal-name{flex:1;min-width:0;font-size:13px}
-.save-goal-row .goal-amt{width:96px;flex-shrink:0;font-size:13px}
+.save-goal-row .goal-amt{width:80px;flex-shrink:0;font-size:13px;text-align:right}
+.save-goal-row .goal-eur{font-size:13px;color:#888;flex-shrink:0}
 .save-goal-del{background:none;border:none;color:#ccc;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;transition:.15s}
 .save-goal-del:hover{color:#ef4444}
 .add-goal-btn{width:100%;border:1.5px dashed #c0ccee;background:none;color:#1565c0;border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:.15s}
@@ -287,7 +288,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       <img class="nav-icon" id="icon-ciljevi" src="nav-ciljevi-bijeli.png" alt="Ciljevi">Ciljevi
     </button>
     <button class="nav-btn" id="nav-profil">
-      <img class="nav-icon" id="icon-profil" src="nav-profil-bijeli.png" alt="Profil">Moj Profil
+      <img class="nav-icon" id="icon-profil" src="nav-profil-bijeli.png" alt="Profil">Moj profil
     </button>
   </div>
 </div>
@@ -472,17 +473,10 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="month-plan-body" id="month-plan-body">
       <div class="month-plan-section">Prihodi (mj/€)</div>
       <div class="plan-row"><span class="plan-label">Ukupni prihodi ovaj mj</span><input type="number" class="plan-input" id="mp-income-override" step="0.01" inputmode="decimal" placeholder="iz Profila"></div>
-      <div class="month-plan-section">Fiksni troškovi</div>
-      <div class="plan-row"><span class="plan-label">Stanarina</span><input type="number" class="plan-input" id="mp-stanarina" step="0.01" inputmode="decimal"></div>
-      <div class="plan-row"><span class="plan-label">Režije</span><input type="number" class="plan-input" id="mp-rezije" step="0.01" inputmode="decimal"></div>
-      <div class="plan-row"><span class="plan-label">T-com</span><input type="number" class="plan-input" id="mp-tcom" step="0.01" inputmode="decimal"></div>
-      <div class="plan-row"><span class="plan-label">Allianz</span><input type="number" class="plan-input" id="mp-allianz" step="0.01" inputmode="decimal"></div>
-      <div class="plan-row"><span class="plan-label">Software</span><input type="number" class="plan-input" id="mp-software" step="0.01" inputmode="decimal"></div>
-      <div class="month-plan-section">Varijabilni troškovi</div>
-      <div class="plan-row"><span class="plan-label">Hrana</span><input type="number" class="plan-input" id="mp-food" step="0.01" inputmode="decimal"></div>
-      <div class="plan-row"><span class="plan-label">Gorivo</span><input type="number" class="plan-input" id="mp-fuel" step="0.01" inputmode="decimal"></div>
-      <div class="plan-row"><span class="plan-label">Ljubimci</span><input type="number" class="plan-input" id="mp-pets" step="0.01" inputmode="decimal"></div>
-      <div class="plan-row"><span class="plan-label">Ostalo</span><input type="number" class="plan-input" id="mp-other" step="0.01" inputmode="decimal"></div>
+      <div class="month-plan-section">Fiksni troškovi (mj/€)</div>
+      <div class="plan-row"><span class="plan-label">Ukupni fiksni ovaj mj</span><input type="number" class="plan-input" id="mp-fixed-override" step="0.01" inputmode="decimal" placeholder="iz Profila"></div>
+      <div class="month-plan-section">Varijabilni troškovi (mj/€)</div>
+      <div class="plan-row"><span class="plan-label">Ukupni varijabilni ovaj mj</span><input type="number" class="plan-input" id="mp-variable-override" step="0.01" inputmode="decimal" placeholder="iz Profila"></div>
       <div class="month-plan-section">Štednja (mj/€)</div>
       <div class="plan-row"><span class="plan-label">Planirano</span><input type="number" class="plan-input" id="mp-save" step="0.01" inputmode="decimal"></div>
       <div class="month-plan-footer">
@@ -568,19 +562,22 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
   <div class="card">
     <div class="card-title">Fiksni troškovi (mj/€)</div>
-    <div class="plan-row"><span class="plan-label">Stanarina</span><input type="number" class="plan-input" id="p-stanarina" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Režije / komunalije</span><input type="number" class="plan-input" id="p-rezije" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">T-com / internet</span><input type="number" class="plan-input" id="p-tcom" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Allianz / osiguranje</span><input type="number" class="plan-input" id="p-allianz" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Software / pretplate</span><input type="number" class="plan-input" id="p-software" step="0.01" inputmode="decimal"></div>
+    <div id="fixed-list"></div>
+    <button type="button" class="add-goal-btn" onclick="addFixedGoal()">+ Dodaj fiksni trošak</button>
+    <div class="plan-total-row" style="margin-top:10px">
+      <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupni fiksni</span>
+      <span class="plan-total-val" id="p-fixed-total">0,00 €</span>
+    </div>
   </div>
 
   <div class="card">
     <div class="card-title">Varijabilni troškovi (mj/€)</div>
-    <div class="plan-row"><span class="plan-label">Hrana</span><input type="number" class="plan-input" id="p-food" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Gorivo</span><input type="number" class="plan-input" id="p-fuel" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Ljubimci</span><input type="number" class="plan-input" id="p-pets" step="0.01" inputmode="decimal"></div>
-    <div class="plan-row"><span class="plan-label">Ostalo</span><input type="number" class="plan-input" id="p-other" step="0.01" inputmode="decimal"></div>
+    <div id="variable-list"></div>
+    <button type="button" class="add-goal-btn" onclick="addVariableGoal()">+ Dodaj varijabilni trošak</button>
+    <div class="plan-total-row" style="margin-top:10px">
+      <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupni varijabilni</span>
+      <span class="plan-total-val" id="p-variable-total">0,00 €</span>
+    </div>
   </div>
 
   <div class="card">
@@ -767,6 +764,7 @@ function renderIncomeList(){
     <div class="save-goal-row">
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="incomeGoals[${i}].name=this.value">
       <input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0,00" step="0.01" inputmode="decimal" oninput="incomeGoals[${i}].amount=parseFloat(this.value)||0;recalcIncome()">
+      <span class="goal-eur">€</span>
       <button class="save-goal-del" onclick="removeIncomeGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
@@ -793,6 +791,103 @@ function recalcIncome(){
   if(el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
 }
 
+// ── GOAL → CATEGORY MAPPING (za Pregled budget bars) ──────────────────
+const GOAL_TO_CAT = {
+  'Stanarina':'Stanarina',
+  'Režije':'Rezije','Komunalije':'Rezije','Struja':'Rezije',
+  'Internet':'T-com','T-com':'T-com',
+  'Zdravstveno osiguranje':'Allianz','Osiguranje':'Allianz','Allianz':'Allianz',
+  'Pretplate':'Software','Software':'Software','Netflix':'Software','Streaming':'Software',
+  'Hrana':'Food','Food':'Food','Namirnice':'Food','Supermarket':'Food',
+  'Gorivo':'Fuel','Fuel':'Fuel','Benzin':'Fuel',
+  'Ljubimci':'Pets','Pets':'Pets',
+  'Ostalo':'Other','Other':'Other'
+};
+
+// ── FIXED GOALS ────────────────────────────────────────────────────────
+let fixedGoals = [];
+
+function renderFixedList(){
+  const container = document.getElementById('fixed-list');
+  if(!container) return;
+  container.innerHTML = fixedGoals.map((g, i) => `
+    <div class="save-goal-row">
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Stanarina" oninput="fixedGoals[${i}].name=this.value">
+      <input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0,00" step="0.01" inputmode="decimal" oninput="fixedGoals[${i}].amount=parseFloat(this.value)||0;recalcFixed()">
+      <span class="goal-eur">€</span>
+      <button class="save-goal-del" onclick="removeFixedGoal(${i})" title="Ukloni">×</button>
+    </div>
+  `).join('');
+  recalcFixed();
+}
+
+function addFixedGoal(name='', amount=0){
+  fixedGoals.push({name, amount});
+  renderFixedList();
+  setTimeout(()=>{
+    const inputs = document.querySelectorAll('#fixed-list .goal-name');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function removeFixedGoal(i){ fixedGoals.splice(i,1); renderFixedList(); }
+
+function recalcFixed(){
+  const total = fixedGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+  const el = document.getElementById('p-fixed-total');
+  if(el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
+}
+
+function totalFixed(){
+  try{
+    const goals = JSON.parse(profileData.fixed_goals_json||'[]');
+    if(goals.length > 0) return goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+  }catch(e){}
+  return (profileData.plan_Stanarina||0)+(profileData.plan_Rezije||0)+(profileData['plan_T-com']||0)+(profileData.plan_Allianz||0)+(profileData.plan_Software||0);
+}
+
+// ── VARIABLE GOALS ─────────────────────────────────────────────────────
+let variableGoals = [];
+
+function renderVariableList(){
+  const container = document.getElementById('variable-list');
+  if(!container) return;
+  container.innerHTML = variableGoals.map((g, i) => `
+    <div class="save-goal-row">
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Hrana" oninput="variableGoals[${i}].name=this.value">
+      <input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0,00" step="0.01" inputmode="decimal" oninput="variableGoals[${i}].amount=parseFloat(this.value)||0;recalcVariable()">
+      <span class="goal-eur">€</span>
+      <button class="save-goal-del" onclick="removeVariableGoal(${i})" title="Ukloni">×</button>
+    </div>
+  `).join('');
+  recalcVariable();
+}
+
+function addVariableGoal(name='', amount=0){
+  variableGoals.push({name, amount});
+  renderVariableList();
+  setTimeout(()=>{
+    const inputs = document.querySelectorAll('#variable-list .goal-name');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function removeVariableGoal(i){ variableGoals.splice(i,1); renderVariableList(); }
+
+function recalcVariable(){
+  const total = variableGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+  const el = document.getElementById('p-variable-total');
+  if(el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
+}
+
+function totalVariable(){
+  try{
+    const goals = JSON.parse(profileData.variable_goals_json||'[]');
+    if(goals.length > 0) return goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+  }catch(e){}
+  return (profileData.plan_Food||0)+(profileData.plan_Fuel||0)+(profileData.plan_Pets||0)+(profileData.plan_Other||0);
+}
+
 // ── SAVINGS GOALS ──────────────────────────────────────────────────────
 let savingsGoals = [];
 
@@ -802,7 +897,8 @@ function renderSavingsGoals(){
   container.innerHTML = savingsGoals.map((g, i) => `
     <div class="save-goal-row">
       <input type="text" class="goal-name" value="${g.name.replace(/"/g,'&quot;')}" placeholder="Npr. Godišnji odmor" oninput="savingsGoals[${i}].name=this.value">
-      <div class="euro-wrap" style="width:96px"><span>€</span><input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0" step="0.01" inputmode="decimal" oninput="savingsGoals[${i}].amount=parseFloat(this.value)||0;recalcSavings()"></div>
+      <input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0,00" step="0.01" inputmode="decimal" oninput="savingsGoals[${i}].amount=parseFloat(this.value)||0;recalcSavings()">
+      <span class="goal-eur">€</span>
       <button class="save-goal-del" onclick="removeSavingsGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
@@ -1019,7 +1115,7 @@ function goTab(tab){
     if(el) el.src = `nav-${t}-${t === tab ? 'crni' : 'bijeli'}.png`;
   });
 
-  const titles = {skener:'Skener Računa', pregled:'Pregled — '+monthLabel(), ciljevi:'Ciljevi i Rate', profil:'Moj Profil'};
+  const titles = {skener:'Skener Računa', pregled:'Pregled — '+monthLabel(), ciljevi:'Ciljevi i Rate', profil:'Moj profil'};
   document.getElementById('header-title').textContent = titles[tab];
   if(tab==='pregled') loadPregled();
   if(tab==='ciljevi') loadGoals();
@@ -1211,10 +1307,24 @@ function fillProfileForm(){
   }
   if(incomeGoals.length === 0) incomeGoals.push({name:'Plaća', amount: 0});
   renderIncomeList();
-  f('p-stanarina','plan_Stanarina'); f('p-rezije','plan_Rezije');
-  f('p-tcom','plan_T-com'); f('p-allianz','plan_Allianz');
-  f('p-software','plan_Software'); f('p-food','plan_Food');
-  f('p-fuel','plan_Fuel'); f('p-pets','plan_Pets'); f('p-other','plan_Other');
+  // Fixed goals
+  try { fixedGoals = JSON.parse(profileData.fixed_goals_json || 'null') || []; } catch(e){ fixedGoals = []; }
+  if(fixedGoals.length === 0){
+    const fs = ['Stanarina','Režije','Internet','Zdravstveno osiguranje','Pretplate'];
+    const fk = ['plan_Stanarina','plan_Rezije','plan_T-com','plan_Allianz','plan_Software'];
+    fs.forEach((name,i) => { if((profileData[fk[i]]||0)>0 || fixedGoals.length===0) fixedGoals.push({name, amount: profileData[fk[i]]||0}); });
+  }
+  if(fixedGoals.length === 0) ['Stanarina','Režije','Internet','Zdravstveno osiguranje','Pretplate'].forEach(n=>fixedGoals.push({name:n,amount:0}));
+  renderFixedList();
+  // Variable goals
+  try { variableGoals = JSON.parse(profileData.variable_goals_json || 'null') || []; } catch(e){ variableGoals = []; }
+  if(variableGoals.length === 0){
+    const vs = ['Hrana','Gorivo','Ljubimci','Ostalo'];
+    const vk = ['plan_Food','plan_Fuel','plan_Pets','plan_Other'];
+    vs.forEach((name,i) => variableGoals.push({name, amount: profileData[vk[i]]||0}));
+  }
+  if(variableGoals.length === 0) ['Hrana','Gorivo','Ljubimci','Ostalo'].forEach(n=>variableGoals.push({name:n,amount:0}));
+  renderVariableList();
   try { savingsGoals = JSON.parse(profileData.save_goals_json || 'null') || []; } catch(e){ savingsGoals = []; }
   if(savingsGoals.length === 0 && (profileData.save_plan||0) > 0){
     savingsGoals = [{name:'Štednja', amount: profileData.save_plan}];
@@ -1229,15 +1339,23 @@ async function saveProfile(){
   const g = id => parseFloat(document.getElementById(id)?.value)||0;
   const saveTotalAmt   = savingsGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
   const incomeTotalAmt = incomeGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
+  const fixedTotalAmt    = fixedGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
+  const variableTotalAmt = variableGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
+  // Derive plan_* from dynamic goals for backward compat (Pregled bars)
+  const planDerived = {plan_Stanarina:0,plan_Rezije:0,'plan_T-com':0,plan_Allianz:0,plan_Software:0,plan_Food:0,plan_Fuel:0,plan_Pets:0,plan_Other:0};
+  [...fixedGoals,...variableGoals].forEach(goal=>{
+    const cat = GOAL_TO_CAT[goal.name];
+    if(cat) planDerived['plan_'+cat] = (planDerived['plan_'+cat]||0) + (parseFloat(goal.amount)||0);
+    else    planDerived['plan_Other'] = (planDerived['plan_Other']||0) + (parseFloat(goal.amount)||0);
+  });
   const data = {
     income_goals_json: JSON.stringify(incomeGoals),
     income: incomeTotalAmt,
+    fixed_goals_json: JSON.stringify(fixedGoals),
+    variable_goals_json: JSON.stringify(variableGoals),
     save_plan: saveTotalAmt,
     save_goals_json: JSON.stringify(savingsGoals),
-    plan_Stanarina: g('p-stanarina'), plan_Rezije: g('p-rezije'),
-    'plan_T-com': g('p-tcom'), plan_Allianz: g('p-allianz'),
-    plan_Software: g('p-software'), plan_Food: g('p-food'),
-    plan_Fuel: g('p-fuel'), plan_Pets: g('p-pets'), plan_Other: g('p-other')
+    ...planDerived
   };
   const st = document.getElementById('profil-status');
   st.style.display='block'; st.className='status loading'; st.textContent='Snimam...';
@@ -1410,15 +1528,18 @@ async function fillMonthPlanForm(){
     const profTotal = totalIncome();
     incEl.placeholder = profTotal > 0 ? profTotal.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
   }
-  setV('mp-stanarina','plan_Stanarina');
-  setV('mp-rezije','plan_Rezije');
-  setV('mp-tcom','plan_T-com');
-  setV('mp-allianz','plan_Allianz');
-  setV('mp-software','plan_Software');
-  setV('mp-food','plan_Food');
-  setV('mp-fuel','plan_Fuel');
-  setV('mp-pets','plan_Pets');
-  setV('mp-other','plan_Other');
+  const fxEl = document.getElementById('mp-fixed-override');
+  if(fxEl){
+    fxEl.value = plan && plan.fixed_override != null ? plan.fixed_override : '';
+    const profFixed = totalFixed();
+    fxEl.placeholder = profFixed > 0 ? profFixed.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
+  }
+  const vrEl = document.getElementById('mp-variable-override');
+  if(vrEl){
+    vrEl.value = plan && plan.variable_override != null ? plan.variable_override : '';
+    const profVar = totalVariable();
+    vrEl.placeholder = profVar > 0 ? profVar.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
+  }
   setV('mp-save','save_plan');
 }
 
@@ -1430,18 +1551,12 @@ async function saveMonthPlanNow(){
     const incOvEl = document.getElementById('mp-income-override');
     const data = {};
     if(incOvEl && incOvEl.value !== '') data.income_override = parseFloat(incOvEl.value)||0;
-    Object.assign(data, {
-      plan_Stanarina: gv('mp-stanarina'),
-      plan_Rezije:    gv('mp-rezije'),
-      'plan_T-com':   gv('mp-tcom'),
-      plan_Allianz:   gv('mp-allianz'),
-      plan_Software:  gv('mp-software'),
-      plan_Food:      gv('mp-food'),
-      plan_Fuel:      gv('mp-fuel'),
-      plan_Pets:      gv('mp-pets'),
-      plan_Other:     gv('mp-other'),
-      save_plan:      gv('mp-save')
-    });
+    const fxOvEl = document.getElementById('mp-fixed-override');
+    if(fxOvEl && fxOvEl.value !== '') data.fixed_override = parseFloat(fxOvEl.value)||0;
+    const vrOvEl = document.getElementById('mp-variable-override');
+    if(vrOvEl && vrOvEl.value !== '') data.variable_override = parseFloat(vrOvEl.value)||0;
+    const svEl = document.getElementById('mp-save');
+    if(svEl && svEl.value !== '') data.save_plan = parseFloat(svEl.value)||0;
     await saveMonthPlan(viewMonthIdx, data);
     if(st){ st.textContent='✓ Plan spremljen!'; st.className='status success'; }
     loadPregled();
@@ -1491,10 +1606,9 @@ async function loadPregled(){
     const income    = (monthPlan && monthPlan.income_override != null)
       ? monthPlan.income_override : totalIncome();
     const savePlan  = effPlan.save_plan || totalSavingsPlan();
-    const totalPlan = Object.keys(CAT_COLORS).reduce((s,c)=>{
-      const v = effPlan['plan_'+c]||0;
-      return s + v;
-    },0);
+    const fixedPlan = (monthPlan && monthPlan.fixed_override != null) ? monthPlan.fixed_override : totalFixed();
+    const varPlan   = (monthPlan && monthPlan.variable_override != null) ? monthPlan.variable_override : totalVariable();
+    const totalPlan = fixedPlan + varPlan;
     const left = income - totalSpent;
     const savings = income - totalSpent - savePlan;
 
@@ -1506,9 +1620,29 @@ async function loadPregled(){
 
     // Cat list
     const cats = Object.keys(CAT_COLORS);
+    // Build plan_* from effective plan (may come from derived goals or overrides)
+    const buildEffCatPlan = () => {
+      const cp = {};
+      Object.keys(CAT_COLORS).forEach(c => cp[c] = effPlan['plan_'+c]||0);
+      // If month has total overrides, scale proportionally from profile distribution
+      if(monthPlan && monthPlan.fixed_override != null){
+        const profFixed = totalFixed() || 1;
+        ['Stanarina','Rezije','T-com','Allianz','Software'].forEach(c=>{
+          cp[c] = Math.round((cp[c]/profFixed)*fixedPlan*100)/100;
+        });
+      }
+      if(monthPlan && monthPlan.variable_override != null){
+        const profVar = totalVariable() || 1;
+        ['Food','Fuel','Pets','Other'].forEach(c=>{
+          cp[c] = Math.round((cp[c]/profVar)*varPlan*100)/100;
+        });
+      }
+      return cp;
+    };
+    const effCatPlan = buildEffCatPlan();
     const catHtml = cats.map(cat=>{
       const act  = actual[cat]||0;
-      const plan = effPlan['plan_'+cat]||0;
+      const plan = effCatPlan[cat]||0;
       if(!act && !plan) return '';
       const pct  = plan > 0 ? Math.min(100, (act/plan)*100) : 100;
       const over = plan > 0 && act > plan;
