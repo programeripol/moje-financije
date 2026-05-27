@@ -242,6 +242,13 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 /* ── SETUP BANNER ── */
 #setup-banner{background:#fff3cd;border:1px solid #ffc107;border-radius:12px;padding:12px 16px;margin:10px 16px;font-size:12px;color:#856404;line-height:1.6;display:none}
 
+/* ── CARD TITLE ROW ── */
+.card-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-title-row .card-title{margin-bottom:0;font-size:13px;font-weight:600;color:#1a1a2e}
+.card-drive-link{font-size:18px;text-decoration:none;opacity:.6;transition:.15s;line-height:1}
+.card-drive-link:hover{opacity:1}
+.recent-toggle{width:100%;background:none;border:1px solid #e0e7f0;border-radius:10px;padding:8px;font-size:12px;font-weight:600;color:#1565c0;cursor:pointer;font-family:inherit;margin-top:8px;transition:.15s}
+.recent-toggle:hover{background:#f0f4ff}
 /* ── HELPERS ── */
 .section-title{font-size:15px;font-weight:600;margin-bottom:12px;color:#1a1a2e}
 .empty-state{text-align:center;padding:28px 0;color:#aaa;font-size:13px}
@@ -456,7 +463,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
 
   <hr class="divider">
-  <div class="section-title">Racuni ovog mjeseca</div>
+  <div class="section-title">Računi ovog mjeseca</div>
   <div id="gallery-grid"><div class="empty-state">Nema još unesenih računa.</div></div>
 
 </div>
@@ -518,8 +525,12 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </div>
 
   <div class="card">
-    <div class="card-title">Zadnjih 5 transakcija</div>
+    <div class="card-title-row">
+      <span class="card-title">Računi ovog mjeseca</span>
+      <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder">📁</a>
+    </div>
     <div id="recent-list"><div class="empty-state">Nema podataka.</div></div>
+    <button class="recent-toggle" id="recent-toggle-btn" style="display:none" onclick="toggleRecentList()">Prikaži sve ↓</button>
   </div>
 
 </div>
@@ -1158,6 +1169,7 @@ function goTab(tab){
 
   const titles = {skener:'Skener', pregled:'Pregled — '+monthLabel(), ciljevi:'Ciljevi i Rate', profil:'Moj profil'};
   document.getElementById('header-title').textContent = titles[tab];
+  if(tab==='skener')  { if(sheetId) loadGallery(); }
   if(tab==='pregled') loadPregled();
   if(tab==='ciljevi') loadGoals();
   if(tab==='profil')  fillProfileForm();
@@ -1704,20 +1716,52 @@ async function loadPregled(){
     }).filter(Boolean).join('');
     document.getElementById('cat-list').innerHTML = catHtml || '<div class="empty-state">Nema troskova ovaj mjesec.</div>';
 
-    // Recent (zadnjih 5, B=datum, F=iznos, I=kat, L=bilješka)
-    const recent = entries.slice(-5).reverse();
-    const recHtml = recent.length ? recent.map(r=>
-      `<div class="cat-row">
-        <div class="cat-dot" style="background:${CAT_COLORS[r[8]]||'#94a3b8'}"></div>
-        <span class="cat-label">${CAT_HR[r[8]]||r[11]||'?'} <span style="font-size:11px;color:#aaa">${r[1]||''}</span></span>
-        <span class="cat-amounts">${eur(r[5])}</span>
-      </div>`
-    ).join('') : '<div class="empty-state">Nema transakcija.</div>';
-    document.getElementById('recent-list').innerHTML = recHtml;
+    // Računi ovog mjeseca — zadnje 3 + expandabilne sve
+    allRecentEntries = entries.slice().reverse();
+    recentExpanded   = false;
+    renderRecentList();
+
+    // Drive folder link
+    const driveLink = document.getElementById('recent-drive-link');
+    if(driveLink){
+      const mKey = `${curYear()}_${String(viewMonthIdx+1).padStart(2,'0')}`;
+      const fid  = monthFolderIds[mKey] || monthFolderId;
+      if(fid){ driveLink.href = `https://drive.google.com/drive/folders/${fid}`; driveLink.style.display='inline'; }
+      else { driveLink.style.display='none'; }
+    }
 
   }catch(e){
     document.getElementById('cat-list').innerHTML = '<div class="empty-state">Greška: '+e.message+'</div>';
   }
+}
+
+// ── RECENT LIST ───────────────────────────────────────────────────────
+let allRecentEntries = [];
+let recentExpanded   = false;
+
+function renderRecentList(){
+  const toShow = recentExpanded ? allRecentEntries : allRecentEntries.slice(0, 3);
+  const recHtml = toShow.length ? toShow.map(r =>
+    `<div class="cat-row">
+      <div class="cat-dot" style="background:${CAT_COLORS[r[8]]||'#94a3b8'}"></div>
+      <span class="cat-label">${CAT_HR[r[8]]||r[11]||'?'} <span style="font-size:11px;color:#aaa">${r[1]||''}</span></span>
+      <span class="cat-amounts">${eur(r[5])}</span>
+    </div>`
+  ).join('') : '<div class="empty-state">Nema transakcija.</div>';
+  document.getElementById('recent-list').innerHTML = recHtml;
+
+  const btn = document.getElementById('recent-toggle-btn');
+  if(btn){
+    btn.style.display = allRecentEntries.length > 3 ? 'block' : 'none';
+    btn.textContent   = recentExpanded
+      ? 'Prikaži manje ↑'
+      : `Prikaži sve (${allRecentEntries.length}) ↓`;
+  }
+}
+
+function toggleRecentList(){
+  recentExpanded = !recentExpanded;
+  renderRecentList();
 }
 
 // ── GOALS ─────────────────────────────────────────────────────────────
@@ -1981,7 +2025,7 @@ async function loadGallery(){
         <div class="g-info">
           <div class="g-row">
             <span class="g-name">${name}</span>
-            <span class="g-amt">€${iznos.toFixed(2)}</span>
+            <span class="g-amt">${iznos.toFixed(2).replace('.',',')} €</span>
           </div>
           <div class="g-date">${datum}</div>
         </div>
@@ -2007,7 +2051,8 @@ window.saveGoal    = saveGoal;
 window.saveProfile = saveProfile;
 window.deleteGoal  = deleteGoal;
 window.noviRacun   = noviRacun;
-window.toggleGoalType = toggleGoalType;
+window.toggleGoalType    = toggleGoalType;
+window.toggleRecentList  = toggleRecentList;
 window.handleDrop  = handleDrop;
 window.handleFile  = handleFile;
 
