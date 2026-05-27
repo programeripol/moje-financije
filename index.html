@@ -722,7 +722,7 @@ function wireButtons(){
   on('profile-save-btn',() => saveProfile());
 }
 
-window.onload = () => {
+window.addEventListener('load', () => {
   if(CLIENT_ID.startsWith('TVOJ')) document.getElementById('setup-banner').style.display = 'block';
   document.getElementById('meta-date').value = today();
   if(navigator.standalone === false && /iphone|ipad|ipod/i.test(navigator.userAgent)){
@@ -733,7 +733,7 @@ window.onload = () => {
   if(checkOAuthReturn()) return;
   // Prikaži odgovarajući UI (ne ovisi o Google librariju)
   tryAutoLogin();
-};
+});
 
 function today(){ return new Date().toISOString().slice(0,10); }
 function eur(n){ return parseFloat(n||0).toFixed(2).replace('.',',') + ' €'; }
@@ -2092,5 +2092,4 @@ window.signOut     = signOut;
 window.installApp  = installApp;
 window.goTab       = goTab;
 window.obStep      = obStep;
-window.saveReceipt = saveReceipt;
-window.showG
+window.saveReceipt = saveRece
