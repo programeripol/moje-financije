@@ -963,6 +963,10 @@ function renderSavingsGoals(){
   if(!container) return;
   container.innerHTML = savingsGoals.map((g, i) => `
     <div class="save-goal-row">
+      <div class="goal-move">
+        <button class="goal-move-btn" onclick="moveGoal(savingsGoals,${i},-1,renderSavingsGoals)" ${i===0?'disabled':''}>▲</button>
+        <button class="goal-move-btn" onclick="moveGoal(savingsGoals,${i},1,renderSavingsGoals)" ${i===savingsGoals.length-1?'disabled':''}>▼</button>
+      </div>
       <input type="text" class="goal-name" value="${g.name.replace(/"/g,'&quot;')}" placeholder="Npr. Godišnji odmor" oninput="savingsGoals[${i}].name=this.value">
       <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
         value="${fmtVal(g.amount)}"
@@ -2066,15 +2070,4 @@ window.saveReceipt = saveReceipt;
 window.showGoalForm= showGoalForm;
 window.hideGoalForm= hideGoalForm;
 window.saveGoal    = saveGoal;
-window.saveProfile = saveProfile;
-window.deleteGoal  = deleteGoal;
-window.noviRacun   = noviRacun;
-window.toggleGoalType    = toggleGoalType;
-window.toggleRecentList  = toggleRecentList;
-window.handleDrop  = handleDrop;
-window.handleFile  = handleFile;
-
-</script>
-</body>
-</html>
-                                                                               
+window.saveProfile = saveProf
