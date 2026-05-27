@@ -1351,11 +1351,15 @@ function fillProfileForm(){
   // Fixed goals
   try { fixedGoals = JSON.parse(profileData.fixed_goals_json || 'null') || []; } catch(e){ fixedGoals = []; }
   if(fixedGoals.length === 0){
-    const fs = ['Stanarina','Režije','Internet','Zdravstveno osiguranje','Pretplate'];
-    const fk = ['plan_Stanarina','plan_Rezije','plan_T-com','plan_Allianz','plan_Software'];
-    fs.forEach((name,i) => { if((profileData[fk[i]]||0)>0 || fixedGoals.length===0) fixedGoals.push({name, amount: profileData[fk[i]]||0}); });
+    const fDef = [
+      {name:'Stanarina',           key:'plan_Stanarina'},
+      {name:'Režije',              key:'plan_Rezije'},
+      {name:'Internet',            key:'plan_T-com'},
+      {name:'Zdravstveno osiguranje', key:'plan_Allianz'},
+      {name:'Pretplate',           key:'plan_Software'}
+    ];
+    fDef.forEach(d => fixedGoals.push({name: d.name, amount: profileData[d.key]||0}));
   }
-  if(fixedGoals.length === 0) ['Stanarina','Režije','Internet','Zdravstveno osiguranje','Pretplate'].forEach(n=>fixedGoals.push({name:n,amount:0}));
   renderFixedList();
   // Variable goals
   try { variableGoals = JSON.parse(profileData.variable_goals_json || 'null') || []; } catch(e){ variableGoals = []; }
@@ -2010,3 +2014,4 @@ window.handleFile  = handleFile;
 </script>
 </body>
 </html>
+                                                                               
