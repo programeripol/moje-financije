@@ -81,6 +81,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .euro-wrap{position:relative}
 .euro-wrap span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#aaa;font-size:15px;pointer-events:none}
 .euro-wrap input{padding-left:26px}
+.amount-suffix-wrap{display:flex;align-items:center;gap:10px}
+.amount-suffix-wrap .eur-suf{font-size:20px;font-weight:600;color:#1a1a2e;flex-shrink:0}
 .big-amount input{font-size:22px;font-weight:600;color:#1565c0;padding-left:28px}
 
 /* ── BUTTONS ── */
@@ -409,7 +411,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   <div class="card">
     <div class="row2">
       <div class="field">
-        <label>Ducan</label>
+        <label>Dućan</label>
         <input type="text" id="meta-store" placeholder="npr. Kaufland" autocomplete="off">
       </div>
       <div class="field">
@@ -419,31 +421,37 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
     <div class="field">
       <label>Iznos</label>
-      <div class="euro-wrap big-amount"><span>€</span><input type="text" id="meta-amount" placeholder="0,00" inputmode="decimal"></div>
+      <div class="amount-suffix-wrap"><input type="text" id="meta-amount" class="field-input big-amount" placeholder="0,00" inputmode="decimal" style="flex:1"><span class="eur-suf">€</span></div>
     </div>
     <div class="field">
       <label>Kategorija</label>
       <select id="meta-cat">
-        <option value="Food">Food — hrana</option>
-        <option value="Pets">Pets — ljubimci</option>
-        <option value="Fuel">Fuel — gorivo</option>
-        <option value="Software">Software — pretplate</option>
-        <option value="Stanarina">Stanarina</option>
-        <option value="Rezije">Rezije</option>
-        <option value="T-com">T-com</option>
-        <option value="Allianz">Allianz</option>
-        <option value="Debt">Kredit / rata</option>
-        <option value="Savings">Stednja</option>
-        <option value="Other">Ostalo</option>
+        <optgroup label="── Fiksni troškovi ──">
+          <option value="Stanarina">Stanarina</option>
+          <option value="Rezije">Režije</option>
+          <option value="T-com">Internet</option>
+          <option value="Allianz">Osiguranje</option>
+          <option value="Software">Pretplate</option>
+        </optgroup>
+        <optgroup label="── Varijabilni troškovi ──">
+          <option value="Food">Hrana</option>
+          <option value="Fuel">Gorivo</option>
+          <option value="Pets">Ljubimci</option>
+          <option value="Other">Ostalo</option>
+        </optgroup>
+        <optgroup label="── Ostalo ──">
+          <option value="Savings">Štednja</option>
+          <option value="Debt">Kredit / rata</option>
+        </optgroup>
       </select>
     </div>
     <div class="field">
-      <label>Napomena</label>
+      <label>Opis</label>
       <input type="text" id="meta-note" placeholder="opcionalno">
     </div>
   </div>
 
-  <button class="btn btn-primary" id="save-btn" disabled>Spremi u Sheets</button>
+  <button class="btn btn-primary" id="save-btn" disabled>Spremi</button>
   <div class="status" id="scan-status"></div>
   <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
 
@@ -657,6 +665,11 @@ if('serviceWorker' in navigator){
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 
+const CAT_HR = {
+  Food:'Hrana', Pets:'Ljubimci', Fuel:'Gorivo', Software:'Pretplate',
+  Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
+  Allianz:'Osiguranje', Debt:'Kredit', Savings:'Štednja', Other:'Ostalo'
+};
 const CAT_COLORS = {
   Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa',
   Stanarina:'#1565c0', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
@@ -1143,7 +1156,7 @@ function goTab(tab){
     if(el) el.src = `nav-${t}-${t === tab ? 'crni' : 'bijeli'}.png`;
   });
 
-  const titles = {skener:'Skener Računa', pregled:'Pregled — '+monthLabel(), ciljevi:'Ciljevi i Rate', profil:'Moj profil'};
+  const titles = {skener:'Skener', pregled:'Pregled — '+monthLabel(), ciljevi:'Ciljevi i Rate', profil:'Moj profil'};
   document.getElementById('header-title').textContent = titles[tab];
   if(tab==='pregled') loadPregled();
   if(tab==='ciljevi') loadGoals();
@@ -1680,7 +1693,7 @@ async function loadPregled(){
       const over = plan > 0 && act > plan;
       return `<div class="cat-row">
         <div class="cat-dot" style="background:${CAT_COLORS[cat]}"></div>
-        <span class="cat-label">${cat}</span>
+        <span class="cat-label">${CAT_HR[cat]||cat}</span>
         <div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:${pct}%;background:${over?'#ef4444':CAT_COLORS[cat]}"></div></div>
         <span class="cat-amounts ${over?'cat-over':''}">${eur(act)}${plan?` / ${eur(plan)}`:''}</span>
       </div>`;
@@ -1692,7 +1705,7 @@ async function loadPregled(){
     const recHtml = recent.length ? recent.map(r=>
       `<div class="cat-row">
         <div class="cat-dot" style="background:${CAT_COLORS[r[8]]||'#94a3b8'}"></div>
-        <span class="cat-label">${r[11]||'?'} <span style="font-size:11px;color:#aaa">${r[1]||''}</span></span>
+        <span class="cat-label">${CAT_HR[r[8]]||r[11]||'?'} <span style="font-size:11px;color:#aaa">${r[1]||''}</span></span>
         <span class="cat-amounts">${eur(r[5])}</span>
       </div>`
     ).join('') : '<div class="empty-state">Nema transakcija.</div>';
