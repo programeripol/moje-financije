@@ -722,7 +722,7 @@ function wireButtons(){
   on('profile-save-btn',() => saveProfile());
 }
 
-window.addEventListener('load', () => {
+function _appInit(){
   if(CLIENT_ID.startsWith('TVOJ')) document.getElementById('setup-banner').style.display = 'block';
   document.getElementById('meta-date').value = today();
   if(navigator.standalone === false && /iphone|ipad|ipod/i.test(navigator.userAgent)){
@@ -733,7 +733,14 @@ window.addEventListener('load', () => {
   if(checkOAuthReturn()) return;
   // Prikaži odgovarajući UI (ne ovisi o Google librariju)
   tryAutoLogin();
-});
+}
+// Pokrenuti init odmah ako je DOM već spreman (MetaMask može odgoditi izvršavanje skripte),
+// inače pričekati load event
+if(document.readyState === 'loading'){
+  window.addEventListener('load', _appInit);
+} else {
+  _appInit();
+}
 
 function today(){ return new Date().toISOString().slice(0,10); }
 function eur(n){ return parseFloat(n||0).toFixed(2).replace('.',',') + ' €'; }
@@ -2085,11 +2092,4 @@ async function loadGallery(){
 }
 
 // ── MetaMask SES fix: expose all onclick functions on window ──────────
-window.signIn      = signIn;
-window.tryOneTap   = tryOneTap;
-window.onOneTap    = onOneTap;
-window.signOut     = signOut;
-window.installApp  = installApp;
-window.goTab       = goTab;
-window.obStep      = obStep;
-window.saveReceipt = saveRece
+window.signIn      = sign
