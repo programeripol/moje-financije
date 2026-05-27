@@ -139,8 +139,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 /* ── SAVINGS GOALS ── */
 .save-goal-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .save-goal-row .goal-name{flex:1;min-width:0;font-size:13px}
-.save-goal-row .goal-amt{width:80px;flex-shrink:0;font-size:13px;text-align:right}
-.save-goal-row .goal-eur{font-size:13px;color:#888;flex-shrink:0}
+.save-goal-row .goal-amt{width:108px;flex-shrink:0;font-size:13px;text-align:right}
 .save-goal-del{background:none;border:none;color:#ccc;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;transition:.15s}
 .save-goal-del:hover{color:#ef4444}
 .add-goal-btn{width:100%;border:1.5px dashed #c0ccee;background:none;color:#1565c0;border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:.15s}
@@ -592,7 +591,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <button type="button" class="add-goal-btn" onclick="addIncomeGoal()">+ Dodaj prihod</button>
     <div class="plan-total-row" style="margin-top:10px">
       <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupni prihodi</span>
-      <span class="plan-total-val" id="p-income-total">0,00 €</span>
+      <span class="plan-total-val" id="p-income-total">—</span>
     </div>
   </div>
 
@@ -602,7 +601,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <button type="button" class="add-goal-btn" onclick="addFixedGoal()">+ Dodaj fiksni trošak</button>
     <div class="plan-total-row" style="margin-top:10px">
       <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupni fiksni</span>
-      <span class="plan-total-val" id="p-fixed-total">0,00 €</span>
+      <span class="plan-total-val" id="p-fixed-total">—</span>
     </div>
   </div>
 
@@ -612,7 +611,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <button type="button" class="add-goal-btn" onclick="addVariableGoal()">+ Dodaj varijabilni trošak</button>
     <div class="plan-total-row" style="margin-top:10px">
       <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupni varijabilni</span>
-      <span class="plan-total-val" id="p-variable-total">0,00 €</span>
+      <span class="plan-total-val" id="p-variable-total">—</span>
     </div>
   </div>
 
@@ -622,7 +621,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <button type="button" class="add-goal-btn" onclick="addSavingsGoal()">+ Dodaj cilj štednje</button>
     <div class="plan-total-row" style="margin-top:10px">
       <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupna štednja</span>
-      <span class="plan-total-val" id="p-save-total">0,00 €</span>
+      <span class="plan-total-val" id="p-save-total">—</span>
     </div>
   </div>
 
@@ -809,14 +808,24 @@ function tryAutoLogin(){
 // ── INCOME GOALS (dynamic) ────────────────────────────────────────────
 let incomeGoals = [];
 
+// ── FORMAT ON BLUR ─────────────────────────────────────────────────────
+function fmtVal(v){ const n=parseFloat(v)||0; return n>0 ? n.toFixed(2).replace('.',',') + ' €' : ''; }
+function fmtParse(s){ return parseFloat((s||'').replace(/\s*€/,'').replace(',','.')) || 0; }
+function amtFocus(el){ el.value = el.value.replace(/\s*€/,''); el.select && el.select(); }
+function amtBlur(el,arr,i,fn){ const v=fmtParse(el.value); arr[i].amount=v; el.value=fmtVal(v); fn(); }
+function amtInput(el,arr,i){ arr[i].amount=fmtParse(el.value); }
+
 function renderIncomeList(){
   const container = document.getElementById('income-list');
   if(!container) return;
   container.innerHTML = incomeGoals.map((g, i) => `
     <div class="save-goal-row">
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="incomeGoals[${i}].name=this.value">
-      <input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0,00" step="0.01" inputmode="decimal" oninput="incomeGoals[${i}].amount=parseFloat(this.value)||0;recalcIncome()">
-      <span class="goal-eur">€</span>
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
+        value="${fmtVal(g.amount)}"
+        onfocus="amtFocus(this)"
+        oninput="amtInput(this,incomeGoals,${i})"
+        onblur="amtBlur(this,incomeGoals,${i},recalcIncome)">
       <button class="save-goal-del" onclick="removeIncomeGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
@@ -840,7 +849,7 @@ function removeIncomeGoal(i){
 function recalcIncome(){
   const total = incomeGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
   const el = document.getElementById('p-income-total');
-  if(el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
+  if(el) el.textContent = fmtVal(total);
 }
 
 // ── GOAL → CATEGORY MAPPING (za Pregled budget bars) ──────────────────
@@ -865,8 +874,11 @@ function renderFixedList(){
   container.innerHTML = fixedGoals.map((g, i) => `
     <div class="save-goal-row">
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Stanarina" oninput="fixedGoals[${i}].name=this.value">
-      <input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0,00" step="0.01" inputmode="decimal" oninput="fixedGoals[${i}].amount=parseFloat(this.value)||0;recalcFixed()">
-      <span class="goal-eur">€</span>
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
+        value="${fmtVal(g.amount)}"
+        onfocus="amtFocus(this)"
+        oninput="amtInput(this,fixedGoals,${i})"
+        onblur="amtBlur(this,fixedGoals,${i},recalcFixed)">
       <button class="save-goal-del" onclick="removeFixedGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
@@ -887,7 +899,7 @@ function removeFixedGoal(i){ fixedGoals.splice(i,1); renderFixedList(); }
 function recalcFixed(){
   const total = fixedGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
   const el = document.getElementById('p-fixed-total');
-  if(el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
+  if(el) el.textContent = fmtVal(total);
 }
 
 function totalFixed(){
@@ -907,8 +919,11 @@ function renderVariableList(){
   container.innerHTML = variableGoals.map((g, i) => `
     <div class="save-goal-row">
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Hrana" oninput="variableGoals[${i}].name=this.value">
-      <input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0,00" step="0.01" inputmode="decimal" oninput="variableGoals[${i}].amount=parseFloat(this.value)||0;recalcVariable()">
-      <span class="goal-eur">€</span>
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
+        value="${fmtVal(g.amount)}"
+        onfocus="amtFocus(this)"
+        oninput="amtInput(this,variableGoals,${i})"
+        onblur="amtBlur(this,variableGoals,${i},recalcVariable)">
       <button class="save-goal-del" onclick="removeVariableGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
@@ -929,7 +944,7 @@ function removeVariableGoal(i){ variableGoals.splice(i,1); renderVariableList();
 function recalcVariable(){
   const total = variableGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
   const el = document.getElementById('p-variable-total');
-  if(el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
+  if(el) el.textContent = fmtVal(total);
 }
 
 function totalVariable(){
@@ -949,8 +964,11 @@ function renderSavingsGoals(){
   container.innerHTML = savingsGoals.map((g, i) => `
     <div class="save-goal-row">
       <input type="text" class="goal-name" value="${g.name.replace(/"/g,'&quot;')}" placeholder="Npr. Godišnji odmor" oninput="savingsGoals[${i}].name=this.value">
-      <input type="number" class="goal-amt" value="${g.amount||''}" placeholder="0,00" step="0.01" inputmode="decimal" oninput="savingsGoals[${i}].amount=parseFloat(this.value)||0;recalcSavings()">
-      <span class="goal-eur">€</span>
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
+        value="${fmtVal(g.amount)}"
+        onfocus="amtFocus(this)"
+        oninput="amtInput(this,savingsGoals,${i})"
+        onblur="amtBlur(this,savingsGoals,${i},recalcSavings)">
       <button class="save-goal-del" onclick="removeSavingsGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
@@ -974,7 +992,7 @@ function removeSavingsGoal(i){
 function recalcSavings(){
   const total = savingsGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
   const el = document.getElementById('p-save-total');
-  if(el) el.textContent = total.toFixed(2).replace('.',',') + ' €';
+  if(el) el.textContent = fmtVal(total);
 }
 
 function totalIncome(){
