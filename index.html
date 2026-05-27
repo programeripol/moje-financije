@@ -147,6 +147,15 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 /* ── TOAST ── */
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1565c0;color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;text-align:center;max-width:320px;line-height:1.5}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.success{background:#16a34a}
+#toast.error{background:#dc2626}
+/* ── SAVE OVERLAY ── */
+#save-overlay{position:fixed;inset:0;z-index:99997;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(3px)}
+#save-overlay.open{display:flex}
+#save-overlay-box{background:#fff;border-radius:20px;padding:28px 36px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.save-spinner{width:36px;height:36px;border:3px solid #e0e7f8;border-top-color:#1565c0;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#save-overlay-msg{font-size:14px;font-weight:500;color:#1a1a2e}
 
 /* ── PROGRESS BAR ── */
 .prog-bar{height:3px;background:#e0e7f0;border-radius:2px;margin-top:8px;overflow:hidden;display:none}
@@ -249,6 +258,14 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 </div>
 
 <div id="toast"></div>
+
+<!-- SAVE OVERLAY -->
+<div id="save-overlay">
+  <div id="save-overlay-box">
+    <div class="save-spinner"></div>
+    <div id="save-overlay-msg">Sprema se...</div>
+  </div>
+</div>
 
 <!-- INSTALL MODAL -->
 <div id="install-modal">
@@ -590,8 +607,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
   </div>
 
-  <button class="btn btn-primary" onclick="saveProfile()">Spremi profil</button>
-  <div class="status" id="profil-status"></div>
+  <button class="btn btn-primary" id="profile-save-btn" onclick="saveProfile()">Spremi profil</button>
 
 </div>
 
@@ -682,11 +698,23 @@ window.onload = () => {
 function today(){ return new Date().toISOString().slice(0,10); }
 function eur(n){ return parseFloat(n||0).toFixed(2).replace('.',',') + ' €'; }
 
-function showToast(msg, duration=4000){
+function showToast(msg, duration=4000, type=''){
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), duration);
+  t.className = 'show' + (type ? ' '+type : '');
+  setTimeout(() => { t.className = ''; }, duration);
+}
+
+function showSaveOverlay(msg='Sprema se...'){
+  const ov = document.getElementById('save-overlay');
+  const tx = document.getElementById('save-overlay-msg');
+  if(tx) tx.textContent = msg;
+  if(ov) ov.classList.add('open');
+}
+
+function hideSaveOverlay(){
+  const ov = document.getElementById('save-overlay');
+  if(ov) ov.classList.remove('open');
 }
 function monthLabel(){ return curMonth() + ' ' + curYear(); }
 
@@ -1357,33 +1385,37 @@ async function saveProfile(){
     save_goals_json: JSON.stringify(savingsGoals),
     ...planDerived
   };
-  const st = document.getElementById('profil-status');
-  st.style.display='block'; st.className='status loading'; st.textContent='Snimam...';
+  const saveBtn = document.getElementById('profile-save-btn');
+  if(saveBtn) saveBtn.disabled = true;
+  showSaveOverlay('Sprema se...');
   const doSave = async () => {
-    if(!sheetId){ st.textContent='Učitavam resurse...'; await ensureResources(); }
+    if(!sheetId){ hideSaveOverlay(); showSaveOverlay('Učitavam resurse...'); await ensureResources(); }
     await saveProfileToSheet(data);
   };
   try{
     await doSave();
     profileData = data;
-    st.className='status ok'; st.textContent='Profil je spremnjen!';
-    setTimeout(()=>st.style.display='none',2500);
+    hideSaveOverlay();
+    showToast('Sve je spremljeno!', 3500, 'success');
   }catch(e){
     if(e.message === 'ERR_403_SHEET'){
-      // Stale tablica — kreiraj novu i pokušaj opet
-      st.textContent='Resetiram tablicu…';
+      showSaveOverlay('Resetiram tablicu...');
       try{
         await ensureResources();
         await saveProfileToSheet(data);
         profileData = data;
-        st.className='status ok'; st.textContent='Profil je spremnjen! (nova tablica)';
-        setTimeout(()=>st.style.display='none',2500);
+        hideSaveOverlay();
+        showToast('Sve je spremljeno!', 3500, 'success');
       }catch(e2){
-        st.className='status err'; st.textContent='Greška: '+e2.message+' — odjavi se i prijavi opet.';
+        hideSaveOverlay();
+        showToast('Greška: ' + e2.message, 6000, 'error');
       }
     } else {
-      st.className='status err'; st.textContent='Greška: '+e.message;
+      hideSaveOverlay();
+      showToast('Greška: ' + e.message, 6000, 'error');
     }
+  } finally {
+    if(saveBtn) saveBtn.disabled = false;
   }
 }
 
