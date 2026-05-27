@@ -2091,5 +2091,53 @@ async function loadGallery(){
   }
 }
 
+
+function moveGoal(arr, i, dir, renderFn){
+  const j = i + dir;
+  if(j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderFn();
+}
+
 // ── MetaMask SES fix: expose all onclick functions on window ──────────
-window.signIn      = sign
+window.signIn               = signIn;
+window.signOut              = signOut;
+window.goTab                = goTab;
+window.obStep               = obStep;
+window.saveReceipt          = saveReceipt;
+window.showGoalForm         = showGoalForm;
+window.hideGoalForm         = hideGoalForm;
+window.saveGoal             = saveGoal;
+window.deleteGoal           = deleteGoal;
+window.saveProfile          = saveProfile;
+window.hideInstallModal     = hideInstallModal;
+window.installAppNow        = installAppNow;
+window.noviRacun            = noviRacun;
+window.moveGoal             = moveGoal;
+window.addIncomeGoal        = addIncomeGoal;
+window.removeIncomeGoal     = removeIncomeGoal;
+window.addFixedGoal         = addFixedGoal;
+window.removeFixedGoal      = removeFixedGoal;
+window.addVariableGoal      = addVariableGoal;
+window.removeVariableGoal   = removeVariableGoal;
+window.addSavingsGoal       = addSavingsGoal;
+window.removeSavingsGoal    = removeSavingsGoal;
+window.changeViewMonth      = changeViewMonth;
+window.toggleMonthPlanEdit  = toggleMonthPlanEdit;
+window.saveMonthPlanNow     = saveMonthPlanNow;
+window.resetMonthPlanToProfile = resetMonthPlanToProfile;
+window.toggleRecentList     = toggleRecentList;
+window.amtFocus             = amtFocus;
+window.amtBlur              = amtBlur;
+window.amtInput             = amtInput;
+window.renderIncomeList     = renderIncomeList;
+window.renderFixedList      = renderFixedList;
+window.renderVariableList   = renderVariableList;
+window.renderSavingsGoals   = renderSavingsGoals;
+window.incomeGoals          = incomeGoals;
+window.fixedGoals           = fixedGoals;
+window.variableGoals        = variableGoals;
+window.savingsGoals         = savingsGoals;
+</script>
+</body>
+</html>
