@@ -724,9 +724,6 @@ function wireButtons(){
 function _appInit(){
   if(CLIENT_ID.startsWith('TVOJ')) document.getElementById('setup-banner').style.display = 'block';
   document.getElementById('meta-date').value = today();
-  if(navigator.standalone === false && /iphone|ipad|ipod/i.test(navigator.userAgent)){
-    setTimeout(()=>showToast('iOS: pritisni "Dijeli" → "Dodaj na početni zaslon" za app iskustvo',6000),3000);
-  }
   wireButtons();
   // Je li Google redirectao natrag s tokenom u URL-u?
   if(checkOAuthReturn()) return;
