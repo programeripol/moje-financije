@@ -732,6 +732,11 @@ if(document.readyState === 'loading'){
 }
 
 function today(){ return new Date().toISOString().slice(0,10); }
+function fmtDateHR(iso){
+  if(!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return d ? d.replace(/^0/,'')+'.'+m.replace(/^0/,'')+'.'+y+'.' : iso;
+}
 function eur(n){ return parseFloat(n||0).toFixed(2).replace('.',',') + ' €'; }
 
 function showToast(msg, duration=4000, type=''){
@@ -2071,7 +2076,7 @@ async function saveReceipt(){
     const month = curMonth();
     const row   = await findNextTrackerRow(month);
     const rowData = Array(14).fill('');
-    rowData[1]  = date;
+    rowData[1]  = fmtDateHR(date);
     rowData[5]  = amount;
     rowData[8]  = cat;
     rowData[11] = note ? `${store} — ${note}` : store;
