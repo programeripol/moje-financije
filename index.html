@@ -470,7 +470,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
     <div class="field">
       <label>Opis</label>
-      <input type="text" id="meta-note" placeholder="opcionalno">
+      <input type="text" id="meta-note" placeholder="">
     </div>
   </div>
 
@@ -1217,7 +1217,7 @@ function goTab(tab){
 
   const titles = {skener:'Skener', pregled:'Pregled', ciljevi:'Ciljevi i Rate', profil:'Moj profil'};
   document.getElementById('header-title').textContent = titles[tab];
-  if(tab==='skener')  { if(sheetId) loadGallery(); }
+  if(tab==='skener')  { setNotePlaceholder(); if(sheetId) loadGallery(); }
   if(tab==='pregled') loadPregled();
   if(tab==='ciljevi') loadGoals();
   if(tab==='profil')  fillProfileForm();
@@ -2130,6 +2130,21 @@ function noviRacun(){
   document.getElementById('save-btn').disabled = true;
   showScan('', '');
   setProgress(0);
+}
+
+const NOTE_PLACEHOLDERS = [
+  'Npr. shopping za podizanje raspoloženja',
+  'Npr. kava s curama i razgovor do kasno',
+  'Npr. nova knjiga jer je valjda bila potrebna',
+  'Npr. večera vani jer je bio dug tjedan',
+  'Npr. najslađa haljina ikad viđena',
+  'Npr. poklon sebi jer sam to zaslužila',
+  'Npr. spontana pustolovina u gradu',
+  'Npr. nešto za dušu, nije za objasniti',
+];
+function setNotePlaceholder(){
+  const el = document.getElementById('meta-note');
+  if(el) el.placeholder = NOTE_PLACEHOLDERS[Math.floor(Math.random()*NOTE_PLACEHOLDERS.length)];
 }
 
 async function loadGallery(){
