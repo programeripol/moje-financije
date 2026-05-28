@@ -171,6 +171,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 #upload-zone p{font-size:12px;color:#888}
 #upload-zone input{display:none}
 #receipt-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px}
+#pdf-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px;background:#f1f5f9;padding:20px 16px;text-align:center;cursor:pointer}
+#pdf-preview .pdf-icon{font-size:40px;margin-bottom:6px}
+#pdf-preview .pdf-name{font-size:13px;color:#475569;word-break:break-all}
 #change-img{display:none;width:100%;margin-bottom:12px}
 
 /* ── BUDGET OVERVIEW ── */
@@ -426,9 +429,14 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="uz-icon">+</div>
     <h3>Dodaj sliku računa</h3>
     <p>klikni, povuci ili fotografiraj</p>
-    <input type="file" id="file-input" accept="image/*" capture="environment" onchange="handleFile(this.files[0])">
+    <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
   </div>
   <img id="receipt-preview" onclick="document.getElementById('file-input').click()">
+  <div id="pdf-preview" onclick="document.getElementById('file-input').click()">
+    <div class="pdf-icon">📄</div>
+    <div class="pdf-name" id="pdf-name"></div>
+    <div style="font-size:12px;color:#94a3b8;margin-top:4px">Klikni za zamjenu</div>
+  </div>
   <button id="change-img" class="btn-outline" onclick="document.getElementById('file-input').click()">Promijeni sliku</button>
 
   <div class="card">
@@ -2006,18 +2014,27 @@ function handleDrop(e){
 function handleFile(file){
   if(!file) return;
   currentImgFile = file;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    currentImgSrc = ev.target.result;
-    document.getElementById('upload-zone').style.display = 'none';
-    const prev = document.getElementById('receipt-preview');
-    prev.src = currentImgSrc;
-    prev.style.display = 'block';
-    document.getElementById('change-img').style.display = 'block';
-    document.getElementById('meta-date').value = today();
-    document.getElementById('save-btn').disabled = false;
-  };
-  reader.readAsDataURL(file);
+  const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+  document.getElementById('upload-zone').style.display = 'none';
+  document.getElementById('change-img').style.display = 'block';
+  document.getElementById('meta-date').value = today();
+  document.getElementById('save-btn').disabled = false;
+  if(isPdf){
+    currentImgSrc = null;
+    document.getElementById('receipt-preview').style.display = 'none';
+    document.getElementById('pdf-name').textContent = file.name;
+    document.getElementById('pdf-preview').style.display = 'block';
+  } else {
+    document.getElementById('pdf-preview').style.display = 'none';
+    const reader = new FileReader();
+    reader.onload = ev => {
+      currentImgSrc = ev.target.result;
+      const prev = document.getElementById('receipt-preview');
+      prev.src = currentImgSrc;
+      prev.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
 }
 
 function buildFilename(){
@@ -2126,6 +2143,7 @@ function noviRacun(){
   currentImgFile = null;
   currentImgSrc  = null;
   document.getElementById('receipt-preview').style.display = 'none';
+  document.getElementById('pdf-preview').style.display = 'none';
   document.getElementById('change-img').style.display      = 'none';
   document.getElementById('upload-zone').style.display     = 'block';
   document.getElementById('meta-store').value  = '';
