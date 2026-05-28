@@ -643,6 +643,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </div>
 
   <button class="btn btn-primary" id="profile-save-btn" onclick="saveProfile()">Spremi profil</button>
+  <button class="btn-outline" style="width:100%;margin-top:8px;font-size:12px;color:#94a3b8;border-color:#e2e8f0" onclick="manualSheetConnect()">🔗 Poveži postojeću tablicu</button>
 
 </div>
 
@@ -650,7 +651,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────────
 const CLIENT_ID  = '409386581085-b0oped5kgb2smih4jbh7ss5jge42pnq8.apps.googleusercontent.com';
-const SCOPES     = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile';
+const SCOPES     = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.profile';
 const MONTHS_HR  = ['Sijecanj','Veljaca','Ozujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];
 
 function curYear()  { return new Date().getFullYear(); }
@@ -1256,11 +1257,8 @@ async function gfetch(url, opts={}){
       throw new Error('Sesija je istekla — klikni Odjavi se i prijavi se opet.');
     }
     if(r.status === 403 && url.includes('spreadsheets')){
-      // Stale sheetId — resetiraj pa neka ensureResources napravi novu tablicu
-      const yr = new Date().getFullYear();
-      sheetId = null;
-      localStorage.removeItem('mf_sheetId_' + yr);
-      throw new Error('ERR_403_SHEET');
+      // NE brišemo sheetId — 403 ne znači da tablica ne postoji
+      throw new Error('Pristup tablici odbijen (403). Provjeri je li tablica dostupna ili se odjavi i prijavi ponovo.');
     }
     throw new Error(`${r.status}: ${txt}`);
   }
@@ -1396,7 +1394,7 @@ async function loadProfile(){
   try{
     const rows = await getRows(sheetId, 'Profil', 'A2:B100');
     profileData = {};
-    rows.forEach(r => { if(r[0]) profileData[r[0]] = parseFloat(r[1])||0; });
+    rows.forEach(r => { if(r[0]) profileData[r[0]] = (r[1]&&r[1].startsWith('['))||false ? r[1] : (parseFloat(r[1])||0); });
   }catch(e){ profileData = {}; }
 }
 
@@ -2231,6 +2229,18 @@ async function loadGallery(){
 }
 
 
+function manualSheetConnect(){
+  const url = prompt('Zalijepi URL ili ID Google Sheeta\n(otvori spreadsheet, kopiraj link iz browsera):');
+  if(!url) return;
+  const match = url.match(/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  const id = match ? match[1] : url.trim();
+  if(!id || id.length < 20){ alert('Nevažeći ID tablice.'); return; }
+  localStorage.setItem('mf_sheetId_' + curYear(), id);
+  sheetId = id;
+  showToast('✓ Tablica spojena! Učitavam...');
+  ensureResources().catch(e => showToast('Greška: '+e.message));
+}
+
 async function deleteReceipt(sheetRow, driveId){
   if(!confirm('Obriši ovaj račun? (slika + podaci)')) return;
   showSaveOverlay('Brišem...');
@@ -2333,6 +2343,7 @@ window.hideGoalForm         = hideGoalForm;
 window.saveGoal             = saveGoal;
 window.deleteGoal           = deleteGoal;
 window.deleteReceipt        = deleteReceipt;
+window.manualSheetConnect   = manualSheetConnect;
 window.saveProfile          = saveProfile;
 window.hideInstallModal     = hideInstallModal;
 window.installAppNow        = installAppNow;
