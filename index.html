@@ -194,6 +194,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .cat-label{flex:1;font-size:13px;font-weight:500}
 .cat-bar-wrap{width:80px;height:6px;background:#e8edf8;border-radius:3px;overflow:hidden;flex-shrink:0}
 .cat-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.cat-section-header{font-size:11px;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 3px;padding-top:8px;border-top:1px solid #f0f2f8}
+.cat-section-header:first-of-type{border-top:none;margin-top:2px;padding-top:0}
 .cat-legend{display:flex;justify-content:flex-end;font-size:11px;color:#aaa;margin-bottom:2px;padding-right:0}
 .cat-legend-label{min-width:110px;text-align:right}
 .cat-amounts{font-size:12px;color:#888;text-align:right;white-space:nowrap;min-width:110px}
@@ -1823,55 +1825,53 @@ async function loadPregled(){
     document.getElementById('bh-left').textContent   = eur(left);
     document.getElementById('bh-savings').textContent= eur(Math.max(0,savings));
 
-    // Cat list
-    const cats = Object.keys(CAT_COLORS);
-    // Build plan_* from effective plan (JSON arrays > per-item > aggregate > profile)
-    const buildEffCatPlan = () => {
-      const cp = {};
-      Object.keys(CAT_COLORS).forEach(c => cp[c] = effPlan['plan_'+c]||0);
-      const applyGoals = (goals, cats) => {
-        cats.forEach(c => cp[c] = 0);
-        goals.forEach(g => {
-          const cat = GOAL_TO_CAT[g.name];
-          if(cat) cp[cat]=(cp[cat]||0)+(parseFloat(g.amount)||0);
-          else    cp['Other']=(cp['Other']||0)+(parseFloat(g.amount)||0);
-        });
-      };
-      // Fixed
-      if(monthPlan && monthPlan.fix_json){
-        try{ applyGoals(JSON.parse(monthPlan.fix_json), ['Stanarina','Rezije','T-com','Allianz','Software']); }catch(e){}
-      } else if(monthPlan && fixedGoals.some((_,i)=> monthPlan['fix_'+i] != null)){
-        applyGoals(fixedGoals.map((g,i)=>({name:g.name, amount:monthPlan['fix_'+i]!=null?monthPlan['fix_'+i]:g.amount})), ['Stanarina','Rezije','T-com','Allianz','Software']);
-      } else if(monthPlan && monthPlan.fixed_override != null){
-        const profFixed = totalFixed() || 1;
-        ['Stanarina','Rezije','T-com','Allianz','Software'].forEach(c=>{ cp[c]=Math.round((cp[c]/profFixed)*fixedPlan*100)/100; });
+    // Cat list — prikazuje svaki cilj iz plana kao vlastiti red
+    const getGoalList = (jsonKey, fallback) => {
+      if(monthPlan && monthPlan[jsonKey]){
+        try{ return JSON.parse(monthPlan[jsonKey]); }catch(e){}
       }
-      // Variable
-      if(monthPlan && monthPlan.var_json){
-        try{ applyGoals(JSON.parse(monthPlan.var_json), ['Food','Fuel','Pets','Other']); }catch(e){}
-      } else if(monthPlan && variableGoals.some((_,i)=> monthPlan['var_'+i] != null)){
-        applyGoals(variableGoals.map((g,i)=>({name:g.name, amount:monthPlan['var_'+i]!=null?monthPlan['var_'+i]:g.amount})), ['Food','Fuel','Pets','Other']);
-      } else if(monthPlan && monthPlan.variable_override != null){
-        const profVar = totalVariable() || 1;
-        ['Food','Fuel','Pets','Other'].forEach(c=>{ cp[c]=Math.round((cp[c]/profVar)*varPlan*100)/100; });
-      }
-      return cp;
+      return fallback;
     };
-    const effCatPlan = buildEffCatPlan();
-    const catHtml = cats.map(cat=>{
-      const act  = actual[cat]||0;
-      const plan = effCatPlan[cat]||0;
-      if(!act && !plan) return '';
-      const pct  = plan > 0 ? Math.min(100, (act/plan)*100) : (act > 0 ? 100 : 0);
-      const over = plan > 0 && act > plan;
-      const amtStr = plan > 0 ? `${eur(act)} / ${eur(plan)}` : eur(act);
-      return `<div class="cat-row">
-        <div class="cat-dot" style="background:${CAT_COLORS[cat]}"></div>
-        <span class="cat-label">${CAT_HR[cat]||cat}</span>
-        <div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:${pct}%;background:${over?'#ef4444':CAT_COLORS[cat]}"></div></div>
-        <span class="cat-amounts ${over?'cat-over':''}">${amtStr}</span>
-      </div>`;
-    }).filter(Boolean).join('');
+    const fixGoals = getGoalList('fix_json', fixedGoals);
+    const varGoals = getGoalList('var_json', variableGoals);
+    const savGoals = getGoalList('sav_json', savingsGoals);
+
+    const buildItemRows = (goals, forSavings) => {
+      if(!goals || !goals.length) return '';
+      const catTotals = {};
+      goals.forEach(g => {
+        const cat = GOAL_TO_CAT[g.name] || 'Other';
+        catTotals[cat] = (catTotals[cat]||0) + (parseFloat(g.amount)||0);
+      });
+      return goals.map(g => {
+        const amt   = parseFloat(g.amount)||0;
+        const cat   = GOAL_TO_CAT[g.name] || 'Other';
+        const color = CAT_COLORS[cat] || '#94a3b8';
+        const catAct   = forSavings ? 0 : (actual[cat]||0);
+        const catTotal = catTotals[cat] || 1;
+        const act  = amt > 0 ? Math.round(catAct*(amt/catTotal)*100)/100 : 0;
+        const pct  = amt > 0 ? Math.min(100,(act/amt)*100) : (act>0?100:0);
+        const over = amt > 0 && act > amt;
+        const amtStr = amt > 0 ? `${eur(act)} / ${eur(amt)}` : eur(act);
+        const name = (g.name||'Stavka').replace(/</g,'&lt;');
+        return `<div class="cat-row">
+          <div class="cat-dot" style="background:${color}"></div>
+          <span class="cat-label">${name}</span>
+          <div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:${pct}%;background:${over?'#ef4444':color}"></div></div>
+          <span class="cat-amounts ${over?'cat-over':''}">${amtStr}</span>
+        </div>`;
+      }).join('');
+    };
+
+    const secH = label => `<div class="cat-section-header">${label}</div>`;
+    const fixHtml = buildItemRows(fixGoals, false);
+    const varHtml = buildItemRows(varGoals, false);
+    const savHtml = buildItemRows(savGoals, true);
+    let catHtml = '';
+    if(fixHtml) catHtml += secH('Fiksni troškovi') + fixHtml;
+    if(varHtml) catHtml += secH('Varijabilni troškovi') + varHtml;
+    if(savHtml) catHtml += secH('Štednja') + savHtml;
+
     const catLegend = catHtml ? '<div class="cat-legend"><span></span><span class="cat-legend-label">potrošeno / predviđeno</span></div>' : '';
     document.getElementById('cat-list').innerHTML = catLegend + (catHtml || '<div class="empty-state">Nema troškova ovaj mjesec.</div>');
 
