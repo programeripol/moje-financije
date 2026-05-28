@@ -516,8 +516,10 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
 
   <hr class="divider">
-  <div class="section-title">Računi ovog mjeseca</div>
-  <div id="gallery-grid"><div class="empty-state">Nema još unesenih računa.</div></div>
+  <details class="collapsible-card" id="gallery-panel" open>
+  <summary class="collapsible-summary">Računi ovog mjeseca</summary>
+  <div id="gallery-grid" style="padding:0 16px 16px"><div class="empty-state">Nema još unesenih računa.</div></div>
+</details>
 
 </div>
 
