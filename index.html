@@ -14,7 +14,9 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;
+  document.getElementById('img-preview-wrap').style.display = 'none';
+  document.getElementById('img-preview-wrap').style.display = 'none';400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -2081,6 +2083,8 @@ function handleFile(file){
   currentImgFile = file;
   const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
   document.getElementById('upload-zone').style.display = 'none';
+  document.getElementById('img-preview-wrap').style.display = 'block';
+  document.getElementById('img-preview-wrap').style.display = 'block';
   
   document.getElementById('remove-file').style.display = 'flex';
   document.getElementById('meta-date').value = today();
