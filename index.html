@@ -485,24 +485,35 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="field">
       <label>Kategorija</label>
       <select id="meta-cat">
-        <optgroup label="── Fiksni troškovi ──">
+        <optgroup label="── Stanovanje ──">
           <option value="Stanarina">Stanarina</option>
           <option value="Rezije">Režije</option>
           <option value="T-com">Internet</option>
           <option value="Allianz">Osiguranje</option>
-          <option value="Software">Pretplate</option>
+          <option value="Dom">Dom</option>
         </optgroup>
-        <optgroup label="── Varijabilni troškovi ──">
+        <optgroup label="── Svakodnevno ──">
           <option value="Food">Hrana</option>
           <option value="Fuel">Gorivo</option>
           <option value="Pets">Ljubimci</option>
+        </optgroup>
+        <optgroup label="── Ja ──">
           <option value="Beauty">Kozmetika</option>
-          <option value="Other">Ostalo</option>
+          <option value="Zdravlje">Zdravlje</option>
+          <option value="Odijelo">Odjeća</option>
         </optgroup>
-        <optgroup label="── Ostalo ──">
+        <optgroup label="── Razvoj ──">
+          <option value="Edukacija">Edukacija</option>
+          <option value="Software">Pretplate</option>
+        </optgroup>
+        <optgroup label="── Slobodno ──">
+          <option value="Zabava">Zabava</option>
+        </optgroup>
+        <optgroup label="── Financije ──">
+          <option value="Debt">Kredit</option>
           <option value="Savings">Štednja</option>
-          <option value="Debt">Kredit / rata</option>
         </optgroup>
+        <option value="Other">Ostalo</option>
       </select>
     </div>
     <div class="field">
@@ -725,12 +736,14 @@ if('serviceWorker' in navigator){
 const CAT_HR = {
   Food:'Hrana', Pets:'Ljubimci', Fuel:'Gorivo', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
-  Allianz:'Osiguranje', Debt:'Kredit', Savings:'Štednja', Other:'Ostalo'
+  Allianz:'Osiguranje', Debt:'Kredit', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
+  Savings:'Štednja', Other:'Ostalo'
 };
 const CAT_COLORS = {
   Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
   Stanarina:'#1565c0', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
-  Allianz:'#ec4899', Debt:'#ef4444', Savings:'#10b981', Other:'#94a3b8'
+  Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
+  Savings:'#10b981', Other:'#94a3b8'
 };
 
 // ── INIT ─────────────────────────────────────────────────────────────
@@ -2518,17 +2531,35 @@ window.savingsGoals         = savingsGoals;
   </div>
   <div class="field"><label>Kategorija</label>
     <select id="edit-cat">
-      <optgroup label="── Fiksni troškovi ──">
-        <option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option>
-        <option value="T-com">Internet</option><option value="Allianz">Osiguranje</option><option value="Software">Pretplate</option>
+      <optgroup label="── Stanovanje ──">
+      <option value="Stanarina">Stanarina</option>
+      <option value="Rezije">Režije</option>
+      <option value="T-com">Internet</option>
+      <option value="Allianz">Osiguranje</option>
+      <option value="Dom">Dom</option>
       </optgroup>
-      <optgroup label="── Varijabilni troškovi ──">
-        <option value="Food">Hrana</option><option value="Fuel">Gorivo</option>
-        <option value="Pets">Ljubimci</option><option value="Other">Ostalo</option>
+      <optgroup label="── Svakodnevno ──">
+      <option value="Food">Hrana</option>
+      <option value="Fuel">Gorivo</option>
+      <option value="Pets">Ljubimci</option>
       </optgroup>
-      <optgroup label="── Ostalo ──">
-        <option value="Savings">Štednja</option><option value="Debt">Kredit / rata</option>
+      <optgroup label="── Ja ──">
+      <option value="Beauty">Kozmetika</option>
+      <option value="Zdravlje">Zdravlje</option>
+      <option value="Odijelo">Odjeća</option>
       </optgroup>
+      <optgroup label="── Razvoj ──">
+      <option value="Edukacija">Edukacija</option>
+      <option value="Software">Pretplate</option>
+      </optgroup>
+      <optgroup label="── Slobodno ──">
+      <option value="Zabava">Zabava</option>
+      </optgroup>
+      <optgroup label="── Financije ──">
+      <option value="Debt">Kredit</option>
+      <option value="Savings">Štednja</option>
+      </optgroup>
+      <option value="Other">Ostalo</option>
     </select>
   </div>
   <div class="field"><label>Bilješka (opcionalno)</label><input type="text" id="edit-note" placeholder="Opis..."></div>
