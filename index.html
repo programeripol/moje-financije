@@ -1847,7 +1847,8 @@ async function loadPregled(){
         const amt   = parseFloat(g.amount)||0;
         const cat   = GOAL_TO_CAT[g.name] || 'Other';
         const color = CAT_COLORS[cat] || '#94a3b8';
-        const catAct   = forSavings ? 0 : (actual[cat]||0);
+        const hasMapping = GOAL_TO_CAT[g.name] !== undefined;
+        const catAct   = (forSavings || !hasMapping) ? 0 : (actual[cat]||0);
         const catTotal = catTotals[cat] || 1;
         const act  = amt > 0 ? Math.round(catAct*(amt/catTotal)*100)/100 : 0;
         const pct  = amt > 0 ? Math.min(100,(act/amt)*100) : (act>0?100:0);
