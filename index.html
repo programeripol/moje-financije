@@ -1611,7 +1611,7 @@ function renderMonthNav(){
   if(prev) prev.disabled = (viewMonthIdx === 0);
   if(next) next.disabled = (viewMonthIdx >= curIdx);
   const ht = document.getElementById('header-title');
-  if(ht && currentTab === 'pregled') ht.textContent = 'Pregled — ' + label;
+  // naslov ostaje 'Pregled' — ne gazimo ga s nazivom mjeseca (mjesec se vidi u navigatoru)
 }
 
 function changeViewMonth(delta){
