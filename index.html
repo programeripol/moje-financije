@@ -2125,13 +2125,8 @@ async function saveReceipt(){
     await writeRange(sheetId, `${month}!A${row}`, [rowData]);
     setProgress(100);
 
-    showScan(
-      `Zapisano! <strong>${store}</strong> · ${eur(amount)} · ${cat}<br>` +
-      `<small style="color:#15803d">Podaci su u Google Sheets, slika u Drive.</small><br><br>` +
-      `<button onclick="noviRacun()" style="padding:9px 20px;border-radius:9px;border:none;background:#1565c0;color:#fff;font-size:14px;font-family:Poppins,sans-serif;font-weight:500;cursor:pointer">+ Novi racun</button>`,
-      'ok'
-    );
-    setTimeout(()=>{ setProgress(0); loadGallery(); }, 600);
+    showToast('✓ Spremljeno! ' + store + ' · ' + eur(amount), 3000, 'success');
+    setTimeout(()=>{ setProgress(0); loadGallery(); noviRacun(); }, 1800);
   }catch(e){
     showScan('Greška: '+e.message,'err');
     setProgress(0);
