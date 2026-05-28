@@ -175,8 +175,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 #pdf-preview .pdf-icon{font-size:40px;margin-bottom:6px}
 #pdf-preview .pdf-name{font-size:13px;color:#475569;word-break:break-all}
 #change-img{display:none;width:100%;margin-bottom:12px}
-#remove-file{display:none;width:100%;margin-bottom:12px;color:#ef4444;border-color:#ef4444}
-#remove-file:hover{background:#fef2f2}
+#remove-file{display:none;position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;color:#fff;font-size:18px;line-height:1;cursor:pointer;z-index:5;align-items:center;justify-content:center;padding:0;font-weight:300}
+#remove-file:hover{background:rgba(0,0,0,0.7)}
 
 /* ── BUDGET OVERVIEW ── */
 .budget-hero{background:linear-gradient(135deg,#1565c0,#1e88e5);border-radius:18px;padding:22px 20px;color:#fff;margin-bottom:16px}
@@ -217,7 +217,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 /* ── GALLERY ── */
 #gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
 .g-card{position:relative}
-.g-del-btn{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,0.55);border:none;color:#fff;font-size:14px;line-height:26px;text-align:center;cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center;padding:0}
+.g-del-btn{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;color:#fff;font-size:16px;line-height:1;cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center;padding:0;font-weight:300}
 .g-del-btn:active{background:rgba(200,0,0,0.8)}
 .g-card{background:#fff;border:1px solid #e8edf8;border-radius:12px;overflow:hidden;cursor:pointer;transition:.15s}
 .g-card:hover{box-shadow:0 3px 14px rgba(21,101,192,.12)}
@@ -451,14 +451,16 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <p>klikni, povuci ili fotografiraj</p>
     <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
   </div>
-  <img id="receipt-preview" onclick="document.getElementById('file-input').click()">
-  <div id="pdf-preview" onclick="document.getElementById('file-input').click()">
-    <div class="pdf-icon">📄</div>
-    <div class="pdf-name" id="pdf-name"></div>
-    <div style="font-size:12px;color:#94a3b8;margin-top:4px">Klikni za zamjenu</div>
+  <div style="position:relative;display:inline-block;width:100%">
+    <img id="receipt-preview" onclick="document.getElementById('file-input').click()">
+    <div id="pdf-preview" onclick="document.getElementById('file-input').click()">
+      <div class="pdf-icon">📄</div>
+      <div class="pdf-name" id="pdf-name"></div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:4px">Klikni za zamjenu</div>
+    </div>
+    <button id="remove-file" onclick="removeSelectedFile()">×</button>
   </div>
   <button id="change-img" class="btn-outline" onclick="document.getElementById('file-input').click()">Promijeni sliku</button>
-  <button id="remove-file" class="btn-outline" onclick="removeSelectedFile()">× Ukloni prilog</button>
 
   <div class="card">
     <div class="row2">
@@ -2062,7 +2064,7 @@ function handleFile(file){
   const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
   document.getElementById('upload-zone').style.display = 'none';
   document.getElementById('change-img').style.display = 'block';
-  document.getElementById('remove-file').style.display = 'block';
+  document.getElementById('remove-file').style.display = 'flex';
   document.getElementById('meta-date').value = today();
   document.getElementById('save-btn').disabled = false;
   if(isPdf){
@@ -2238,7 +2240,7 @@ async function loadGallery(){
       const safeId  = driveId.replace(/'/g,"\'");
       const safeBilj=name.replace(/'/g,"\\'");
       return `<div class="g-card" ${driveUrl ? `onclick="window.open('${safeUrl}','_blank')"` : ''}>
-        <button class="g-del-btn" title="Obriši račun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">🗑</button>
+        <button class="g-del-btn" title="Obriši račun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">×</button>
         <button class="g-edit-btn" title="Uredi" onclick="event.stopPropagation();openEditReceipt(${sheetRow},'${curMonth()}','${datum}',${iznos},'${kat}','${safeBilj}')">✏️</button>
         ${imgUrl
           ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
