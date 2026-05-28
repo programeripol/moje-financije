@@ -235,11 +235,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .month-nav-label{font-size:15px;font-weight:600;color:#1a1a2e}
 /* ── MONTH PLAN PANEL ── */
 .month-plan-panel{background:#fff;border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 8px rgba(21,101,192,.06)}
-.month-plan-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none}
-.month-plan-header-title{font-size:13px;font-weight:600;color:#1565c0}
-.month-plan-arrow{font-size:14px;color:#1565c0;transition:.2s}
-.month-plan-body{display:none;padding:0 16px 14px}
-.month-plan-body.open{display:block}
+.month-plan-panel > summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;list-style:none;font-size:13px;font-weight:600;color:#1565c0}
+.month-plan-panel > summary::-webkit-details-marker{display:none}
+.month-plan-panel > summary::after{content:'›';font-size:18px;font-weight:400;color:#1565c0;transition:transform .2s;display:inline-block}
+.month-plan-panel[open] > summary::after{transform:rotate(90deg)}
+.month-plan-body{padding:0 16px 14px}
 .month-plan-section{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px}
 .month-plan-footer{display:flex;gap:10px;margin-top:14px}
 /* ── SETUP BANNER ── */
@@ -513,13 +513,10 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
   </div>
 
-  <div class="month-plan-panel" id="month-plan-panel">
-    <div class="month-plan-header" onclick="toggleMonthPlanEdit()">
-      <span class="month-plan-header-title">✏️ Uredi plan za ovaj mjesec</span>
-      <span class="month-plan-arrow" id="month-plan-arrow">▼</span>
-    </div>
+  <details class="month-plan-panel" id="month-plan-panel">
+    <summary>Uredi plan za ovaj mjesec</summary>
     <div class="month-plan-body" id="month-plan-body"></div>
-  </div>
+  </details>
 
   <div class="card">
     <div class="card-title">Po kategoriji — plan vs stvarno</div>
@@ -662,6 +659,7 @@ let profileData    = {};
 let currentTab     = 'skener';
 let viewMonthIdx   = new Date().getMonth(); // 0-11, koji mjesec gledamo u Pregledu
 let monthPlanCache = {};                    // cache { "2026_05": {...} ili null }
+let mPlanIncGoals = [], mPlanFixGoals = [], mPlanVarGoals = [], mPlanSavGoals = [];
 let currentImgFile = null;
 let currentImgSrc  = null;
 let obCurrentStep  = 1;
@@ -707,6 +705,8 @@ function wireButtons(){
   on('ob-next',     () => obStep(1));
   // Nav gumbi
   ['skener','pregled','ciljevi','profil'].forEach(t => on('nav-'+t, () => goTab(t)));
+  const mpDetails = document.getElementById('month-plan-panel');
+  if(mpDetails) mpDetails.addEventListener('toggle', () => { if(mpDetails.open) fillMonthPlanForm(); });
   // Ostali gumbi
   on('goal-add-btn',    () => showGoalForm());
   on('goal-cancel-btn', () => hideGoalForm());
@@ -1587,6 +1587,7 @@ async function saveMonthPlan(idx, data){
 
 function effectiveIncomePlan(plan){
   if(!plan) return totalIncome();
+  if(plan.inc_json){ try{ return JSON.parse(plan.inc_json).reduce((s,g)=>s+(parseFloat(g.amount)||0),0); }catch(e){} }
   if(incomeGoals.some((_,i)=> plan['inc_'+i] != null))
     return incomeGoals.reduce((s,g,i)=>s+(plan['inc_'+i]!=null?parseFloat(plan['inc_'+i]):(parseFloat(g.amount)||0)),0);
   if(plan.income_override != null) return plan.income_override;
@@ -1594,6 +1595,7 @@ function effectiveIncomePlan(plan){
 }
 function effectiveFixedPlan(plan){
   if(!plan) return totalFixed();
+  if(plan.fix_json){ try{ return JSON.parse(plan.fix_json).reduce((s,g)=>s+(parseFloat(g.amount)||0),0); }catch(e){} }
   if(fixedGoals.some((_,i)=> plan['fix_'+i] != null))
     return fixedGoals.reduce((s,g,i)=>s+(plan['fix_'+i]!=null?parseFloat(plan['fix_'+i]):(parseFloat(g.amount)||0)),0);
   if(plan.fixed_override != null) return plan.fixed_override;
@@ -1601,6 +1603,7 @@ function effectiveFixedPlan(plan){
 }
 function effectiveVariablePlan(plan){
   if(!plan) return totalVariable();
+  if(plan.var_json){ try{ return JSON.parse(plan.var_json).reduce((s,g)=>s+(parseFloat(g.amount)||0),0); }catch(e){} }
   if(variableGoals.some((_,i)=> plan['var_'+i] != null))
     return variableGoals.reduce((s,g,i)=>s+(plan['var_'+i]!=null?parseFloat(plan['var_'+i]):(parseFloat(g.amount)||0)),0);
   if(plan.variable_override != null) return plan.variable_override;
@@ -1639,61 +1642,99 @@ function changeViewMonth(delta){
   loadPregled();
 }
 
-function toggleMonthPlanEdit(){
-  const body  = document.getElementById('month-plan-body');
-  const arrow = document.getElementById('month-plan-arrow');
-  if(!body) return;
-  const isOpen = body.classList.toggle('open');
-  if(arrow) arrow.textContent = isOpen ? '▲' : '▼';
-  if(isOpen) fillMonthPlanForm();
+function toggleMonthPlanEdit(){} // handled by <details> native toggle
+
+function renderMPInc(){
+  const c = document.getElementById('mp-inc-list'); if(!c) return;
+  c.innerHTML = mPlanIncGoals.map((g,i)=>`
+    <div class="save-goal-row" data-idx="${i}">
+      <span class="drag-handle">⠿</span>
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="mPlanIncGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
+      <button class="save-goal-del" onclick="removeMPInc(${i})">×</button>
+    </div>`).join('');
+  setupDragSort(c, mPlanIncGoals, renderMPInc);
 }
+function addMPInc(){ mPlanIncGoals.push({name:'',amount:0}); renderMPInc(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-inc-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
+function removeMPInc(i){ mPlanIncGoals.splice(i,1); renderMPInc(); }
+
+function renderMPFix(){
+  const c = document.getElementById('mp-fix-list'); if(!c) return;
+  c.innerHTML = mPlanFixGoals.map((g,i)=>`
+    <div class="save-goal-row" data-idx="${i}">
+      <span class="drag-handle">⠿</span>
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Stanarina" oninput="mPlanFixGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanFixGoals,${i})" onblur="amtBlur(this,mPlanFixGoals,${i},()=>{})">
+      <button class="save-goal-del" onclick="removeMPFix(${i})">×</button>
+    </div>`).join('');
+  setupDragSort(c, mPlanFixGoals, renderMPFix);
+}
+function addMPFix(){ mPlanFixGoals.push({name:'',amount:0}); renderMPFix(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-fix-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
+function removeMPFix(i){ mPlanFixGoals.splice(i,1); renderMPFix(); }
+
+function renderMPVar(){
+  const c = document.getElementById('mp-var-list'); if(!c) return;
+  c.innerHTML = mPlanVarGoals.map((g,i)=>`
+    <div class="save-goal-row" data-idx="${i}">
+      <span class="drag-handle">⠿</span>
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Hrana" oninput="mPlanVarGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanVarGoals,${i})" onblur="amtBlur(this,mPlanVarGoals,${i},()=>{})">
+      <button class="save-goal-del" onclick="removeMPVar(${i})">×</button>
+    </div>`).join('');
+  setupDragSort(c, mPlanVarGoals, renderMPVar);
+}
+function addMPVar(){ mPlanVarGoals.push({name:'',amount:0}); renderMPVar(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-var-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
+function removeMPVar(i){ mPlanVarGoals.splice(i,1); renderMPVar(); }
+
+function renderMPSav(){
+  const c = document.getElementById('mp-sav-list'); if(!c) return;
+  c.innerHTML = mPlanSavGoals.map((g,i)=>`
+    <div class="save-goal-row" data-idx="${i}">
+      <span class="drag-handle">⠿</span>
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Hitni fond" oninput="mPlanSavGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanSavGoals,${i})" onblur="amtBlur(this,mPlanSavGoals,${i},()=>{})">
+      <button class="save-goal-del" onclick="removeMPSav(${i})">×</button>
+    </div>`).join('');
+  setupDragSort(c, mPlanSavGoals, renderMPSav);
+}
+function addMPSav(){ mPlanSavGoals.push({name:'',amount:0}); renderMPSav(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-sav-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
+function removeMPSav(i){ mPlanSavGoals.splice(i,1); renderMPSav(); }
 
 async function fillMonthPlanForm(){
   const plan = await loadMonthPlan(viewMonthIdx);
+  const cp = arr => JSON.parse(JSON.stringify(arr));
+  try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || cp(incomeGoals); } catch(e){ mPlanIncGoals = cp(incomeGoals); }
+  try { mPlanFixGoals = JSON.parse(plan && plan.fix_json || 'null') || cp(fixedGoals); } catch(e){ mPlanFixGoals = cp(fixedGoals); }
+  try { mPlanVarGoals = JSON.parse(plan && plan.var_json || 'null') || cp(variableGoals); } catch(e){ mPlanVarGoals = cp(variableGoals); }
+  try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || cp(savingsGoals); } catch(e){ mPlanSavGoals = cp(savingsGoals); }
   const body = document.getElementById('month-plan-body');
   if(!body) return;
-  function itemSection(title, goals, prefix){
-    if(!goals.length) return '';
-    return '<div class="month-plan-section">'+title+'</div>' +
-      goals.map((g,i) => {
-        const sv = plan && plan[prefix+i] != null ? plan[prefix+i] : '';
-        const amt = parseFloat(g.amount)||0;
-        const ph = amt > 0 ? amt.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
-        return '<div class="plan-row"><span class="plan-label">'+(g.name||'—')+'</span>'+
-          '<input type="number" class="plan-input" id="mp-'+prefix+i+'" step="0.01" inputmode="decimal"'+
-          ' value="'+sv+'" placeholder="'+ph+'"></div>';
-      }).join('');
-  }
-  const savePlanVal = plan && plan.save_plan != null ? plan.save_plan : '';
-  const saveProfAmt = savingsGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
-  const savePh = saveProfAmt > 0 ? saveProfAmt.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
   body.innerHTML =
-    itemSection('Prihodi', incomeGoals, 'inc_') +
-    itemSection('Fiksni troškovi', fixedGoals, 'fix_') +
-    itemSection('Varijabilni troškovi', variableGoals, 'var_') +
-    '<div class="month-plan-section">Štednja</div>'+
-    '<div class="plan-row"><span class="plan-label">Planirano</span>'+
-    '<input type="number" class="plan-input" id="mp-save" step="0.01" inputmode="decimal"'+
-    ' value="'+savePlanVal+'" placeholder="'+savePh+'"></div>'+
+    '<div class="month-plan-section">Prihodi</div><div id="mp-inc-list"></div>'+
+    '<button class="add-goal-btn" onclick="addMPInc()">+ Dodaj prihod</button>'+
+    '<div class="month-plan-section">Fiksni troškovi</div><div id="mp-fix-list"></div>'+
+    '<button class="add-goal-btn" onclick="addMPFix()">+ Dodaj fiksni</button>'+
+    '<div class="month-plan-section">Varijabilni troškovi</div><div id="mp-var-list"></div>'+
+    '<button class="add-goal-btn" onclick="addMPVar()">+ Dodaj varijabilni</button>'+
+    '<div class="month-plan-section">Štednja</div><div id="mp-sav-list"></div>'+
+    '<button class="add-goal-btn" onclick="addMPSav()">+ Dodaj štednju</button>'+
     '<div class="month-plan-footer">'+
     '<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>'+
     '<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button>'+
     '</div>';
+  renderMPInc(); renderMPFix(); renderMPVar(); renderMPSav();
 }
 
 async function saveMonthPlanNow(){
   showSaveOverlay('Sprema se...');
   try{
-    const data = {};
-    const collect = (goals, prefix) => goals.forEach((_,i) => {
-      const el = document.getElementById('mp-'+prefix+i);
-      if(el && el.value !== '') data[prefix+i] = parseFloat(el.value)||0;
-    });
-    collect(incomeGoals, 'inc_');
-    collect(fixedGoals,  'fix_');
-    collect(variableGoals,'var_');
-    const svEl = document.getElementById('mp-save');
-    if(svEl && svEl.value !== '') data.save_plan = parseFloat(svEl.value)||0;
+    const data = {
+      inc_json: JSON.stringify(mPlanIncGoals),
+      fix_json: JSON.stringify(mPlanFixGoals),
+      var_json: JSON.stringify(mPlanVarGoals),
+      sav_json: JSON.stringify(mPlanSavGoals),
+      save_plan: mPlanSavGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0)
+    };
     await saveMonthPlan(viewMonthIdx, data);
     hideSaveOverlay();
     showToast('✓ Plan spremljen!');
@@ -1716,6 +1757,10 @@ async function resetMonthPlanToProfile(){
     );
     if(keep.length) await appendRows(sheetId,'Planovi',keep);
     monthPlanCache[key] = null;
+    mPlanIncGoals = JSON.parse(JSON.stringify(incomeGoals));
+    mPlanFixGoals = JSON.parse(JSON.stringify(fixedGoals));
+    mPlanVarGoals = JSON.parse(JSON.stringify(variableGoals));
+    mPlanSavGoals = JSON.parse(JSON.stringify(savingsGoals));
     await fillMonthPlanForm();
     loadPregled();
     showToast('Plan resetiran na vrijednosti iz Profila.');
@@ -1757,37 +1802,35 @@ async function loadPregled(){
 
     // Cat list
     const cats = Object.keys(CAT_COLORS);
-    // Build plan_* from effective plan (per-item overrides > aggregate override > profile)
+    // Build plan_* from effective plan (JSON arrays > per-item > aggregate > profile)
     const buildEffCatPlan = () => {
       const cp = {};
       Object.keys(CAT_COLORS).forEach(c => cp[c] = effPlan['plan_'+c]||0);
-      // Per-item fixed overrides — map each goal to its category
-      if(monthPlan && fixedGoals.some((_,i)=> monthPlan['fix_'+i] != null)){
-        ['Stanarina','Rezije','T-com','Allianz','Software'].forEach(c=> cp[c]=0);
-        fixedGoals.forEach((g,i)=>{
-          const amt = monthPlan['fix_'+i]!=null ? parseFloat(monthPlan['fix_'+i]) : (parseFloat(g.amount)||0);
+      const applyGoals = (goals, cats) => {
+        cats.forEach(c => cp[c] = 0);
+        goals.forEach(g => {
           const cat = GOAL_TO_CAT[g.name];
-          if(cat) cp[cat]=(cp[cat]||0)+amt; else cp['Other']=(cp['Other']||0)+amt;
+          if(cat) cp[cat]=(cp[cat]||0)+(parseFloat(g.amount)||0);
+          else    cp['Other']=(cp['Other']||0)+(parseFloat(g.amount)||0);
         });
+      };
+      // Fixed
+      if(monthPlan && monthPlan.fix_json){
+        try{ applyGoals(JSON.parse(monthPlan.fix_json), ['Stanarina','Rezije','T-com','Allianz','Software']); }catch(e){}
+      } else if(monthPlan && fixedGoals.some((_,i)=> monthPlan['fix_'+i] != null)){
+        applyGoals(fixedGoals.map((g,i)=>({name:g.name, amount:monthPlan['fix_'+i]!=null?monthPlan['fix_'+i]:g.amount})), ['Stanarina','Rezije','T-com','Allianz','Software']);
       } else if(monthPlan && monthPlan.fixed_override != null){
         const profFixed = totalFixed() || 1;
-        ['Stanarina','Rezije','T-com','Allianz','Software'].forEach(c=>{
-          cp[c] = Math.round((cp[c]/profFixed)*fixedPlan*100)/100;
-        });
+        ['Stanarina','Rezije','T-com','Allianz','Software'].forEach(c=>{ cp[c]=Math.round((cp[c]/profFixed)*fixedPlan*100)/100; });
       }
-      // Per-item variable overrides
-      if(monthPlan && variableGoals.some((_,i)=> monthPlan['var_'+i] != null)){
-        ['Food','Fuel','Pets','Other'].forEach(c=> cp[c]=0);
-        variableGoals.forEach((g,i)=>{
-          const amt = monthPlan['var_'+i]!=null ? parseFloat(monthPlan['var_'+i]) : (parseFloat(g.amount)||0);
-          const cat = GOAL_TO_CAT[g.name];
-          if(cat) cp[cat]=(cp[cat]||0)+amt; else cp['Other']=(cp['Other']||0)+amt;
-        });
+      // Variable
+      if(monthPlan && monthPlan.var_json){
+        try{ applyGoals(JSON.parse(monthPlan.var_json), ['Food','Fuel','Pets','Other']); }catch(e){}
+      } else if(monthPlan && variableGoals.some((_,i)=> monthPlan['var_'+i] != null)){
+        applyGoals(variableGoals.map((g,i)=>({name:g.name, amount:monthPlan['var_'+i]!=null?monthPlan['var_'+i]:g.amount})), ['Food','Fuel','Pets','Other']);
       } else if(monthPlan && monthPlan.variable_override != null){
         const profVar = totalVariable() || 1;
-        ['Food','Fuel','Pets','Other'].forEach(c=>{
-          cp[c] = Math.round((cp[c]/profVar)*varPlan*100)/100;
-        });
+        ['Food','Fuel','Pets','Other'].forEach(c=>{ cp[c]=Math.round((cp[c]/profVar)*varPlan*100)/100; });
       }
       return cp;
     };
@@ -2250,6 +2293,12 @@ window.addSavingsGoal       = addSavingsGoal;
 window.removeSavingsGoal    = removeSavingsGoal;
 window.changeViewMonth      = changeViewMonth;
 window.toggleMonthPlanEdit  = toggleMonthPlanEdit;
+window.addMPInc = addMPInc; window.removeMPInc = removeMPInc;
+window.addMPFix = addMPFix; window.removeMPFix = removeMPFix;
+window.addMPVar = addMPVar; window.removeMPVar = removeMPVar;
+window.addMPSav = addMPSav; window.removeMPSav = removeMPSav;
+window.mPlanIncGoals = mPlanIncGoals; window.mPlanFixGoals = mPlanFixGoals;
+window.mPlanVarGoals = mPlanVarGoals; window.mPlanSavGoals = mPlanSavGoals;
 window.saveMonthPlanNow     = saveMonthPlanNow;
 window.resetMonthPlanToProfile = resetMonthPlanToProfile;
 window.toggleRecentList     = toggleRecentList;
