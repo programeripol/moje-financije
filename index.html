@@ -1327,8 +1327,10 @@ async function ensureDriveFolders(){
 async function ensureResources(){
   await ensureDriveFolders();
 
-  if(!sheetId){
-    sheetId = await findOrCreateYearSpreadsheet();
+  // Uvijek pronađi pravu tablicu po imenu (ne oslanjamo se samo na localStorage)
+  const foundId = await findOrCreateYearSpreadsheet();
+  if(foundId && foundId !== sheetId){
+    sheetId = foundId;
     localStorage.setItem('mf_sheetId_' + curYear(), sheetId);
   }
 
@@ -1339,12 +1341,16 @@ async function ensureResources(){
 
 async function findOrCreateYearSpreadsheet(){
   const title = yearTitle();
-  // Pokušaj naći postojeću tablicu (može neuspjeti s drive.file scope)
+  // Traži postojeću tablicu po imenu (drive scope)
   try {
-    const q = encodeURIComponent(`mimeType='application/vnd.google-apps.spreadsheet' and name='${title}' and trashed=false`);
-    const r = await gfetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`);
-    if(r.files?.length) return r.files[0].id;
-  } catch(e) { /* scope ograničenje — stvaramo novu */ }
+    const q = encodeURIComponent(`mimeType='application/vnd.google-apps.spreadsheet' and name='${title}'`);
+    const r = await gfetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,modifiedTime)&orderBy=modifiedTime desc`);
+    if(r.files?.length) return r.files[0].id; // Uzmi najnovije modificiranu
+  } catch(e) {
+    // Ako pretraga ne radi, vrati cached sheetId ako postoji
+    const cached = localStorage.getItem('mf_sheetId_' + curYear());
+    if(cached) return cached;
+  }
 
   const ss = await gfetch('https://sheets.googleapis.com/v4/spreadsheets',{
     method:'POST', headers:{'Content-Type':'application/json'},
