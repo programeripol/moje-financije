@@ -465,7 +465,6 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
     <button id="remove-file" onclick="removeSelectedFile()">×</button>
   </div>
-  <button id="change-img" class="btn-outline" onclick="document.getElementById('file-input').click()">Promijeni sliku</button>
 
   <div class="card">
     <div class="row2">
@@ -2084,7 +2083,7 @@ function handleFile(file){
   currentImgFile = file;
   const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
   document.getElementById('upload-zone').style.display = 'none';
-  document.getElementById('change-img').style.display = 'block';
+  
   document.getElementById('remove-file').style.display = 'flex';
   document.getElementById('meta-date').value = today();
   document.getElementById('save-btn').disabled = false;
