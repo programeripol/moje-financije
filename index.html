@@ -273,6 +273,21 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .card-drive-link{font-size:18px;text-decoration:none;opacity:.6;transition:.15s;line-height:1}
 .card-drive-link:hover{opacity:1}
 .recent-toggle{width:100%;background:none;border:1px solid #e0e7f0;border-radius:10px;padding:8px;font-size:12px;font-weight:600;color:#1565c0;cursor:pointer;font-family:inherit;margin-top:8px;transition:.15s}
+/* receipt rows */
+.receipt-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #f0f2f8;cursor:pointer;transition:background .1s;border-radius:4px}
+.receipt-row:last-child{border-bottom:none}
+.receipt-row:hover{background:#f8faff}
+.receipt-naziv{flex:1;font-size:13px;color:#1a1a2e;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.receipt-kat{font-size:11px;color:#94a3b8;white-space:nowrap;flex-shrink:0;max-width:72px;overflow:hidden;text-overflow:ellipsis}
+.receipt-datum{font-size:11px;color:#94a3b8;white-space:nowrap;flex-shrink:0}
+.receipt-iznos{font-size:13px;font-weight:600;color:#1a1a2e;white-space:nowrap;min-width:56px;text-align:right}
+.g-edit-btn{position:absolute;top:6px;left:6px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:28px;height:28px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+#edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9990;display:none}
+#edit-drawer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 36px;z-index:9991;max-width:500px;margin:0 auto;box-shadow:0 -4px 30px rgba(21,101,192,.15);transform:translateY(100%);transition:transform .3s cubic-bezier(.25,.8,.25,1)}
+#edit-drawer.open{transform:translateY(0)}
+#edit-overlay.open{display:block}
+.drawer-handle{width:40px;height:4px;background:#e0e7f0;border-radius:2px;margin:0 auto 18px}
+.drawer-title{font-size:13px;font-weight:600;color:#1565c0;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px}
 .recent-toggle:hover{background:#f0f4ff}
 /* ── HELPERS ── */
 .section-title{font-size:15px;font-weight:600;margin-bottom:12px;color:#1a1a2e}
@@ -1797,7 +1812,8 @@ async function loadPregled(){
     // Čitaj iz EXPENSE TRACKER sekcije odabranog mjeseca
     const monthName = MONTHS_HR[viewMonthIdx];
     const rows = await getRows(sheetId, monthName, 'A57:N500');
-    const entries = rows.filter(r => r[1]); // B=datum mora biti popunjeno
+    const trackerRows = rows.map((r,i)=>({r,sheetRow:57+i})).filter(({r})=>r[1]);
+    const entries = trackerRows.map(({r})=>r);
 
     const actual = {};
     let totalSpent = 0;
@@ -1876,7 +1892,7 @@ async function loadPregled(){
     document.getElementById('cat-list').innerHTML = catLegend + (catHtml || '<div class="empty-state">Nema troškova ovaj mjesec.</div>');
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
-    allRecentEntries = entries.slice().reverse();
+    allRecentEntries = trackerRows.slice().reverse();
     recentExpanded   = false;
     renderRecentList();
 
@@ -1899,15 +1915,22 @@ let allRecentEntries = [];
 let recentExpanded   = false;
 
 function renderRecentList(){
-  const toShow = recentExpanded ? allRecentEntries : allRecentEntries.slice(0, 3);
-  const recHtml = toShow.length ? toShow.map(r =>
-    `<div class="cat-row">
-      <div class="cat-dot" style="background:${CAT_COLORS[r[8]]||'#94a3b8'}"></div>
-      <span class="cat-label">${CAT_HR[r[8]]||r[11]||'?'} <span style="font-size:11px;color:#aaa">${r[1]||''}</span></span>
-      <span class="cat-amounts">${eur(r[5])}</span>
-    </div>`
-  ).join('') : '<div class="empty-state">Nema transakcija.</div>';
-  document.getElementById('recent-list').innerHTML = recHtml;
+  const toShow=recentExpanded?allRecentEntries:allRecentEntries.slice(0,5);
+  const mName=MONTHS_HR[viewMonthIdx];
+  const recHtml=toShow.length?toShow.map(({r,sheetRow})=>{
+    const datum=r[1]||'',iznos=parseFloat(r[5])||0,kat=r[8]||'Other',bilj=r[11]||'';
+    const di=bilj.indexOf(' — ');
+    const naziv=(di>=0?bilj.slice(0,di):bilj)||(CAT_HR[kat]||kat);
+    const safeB=bilj.replace(/'/g,"\\'");
+    return `<div class="receipt-row" onclick="openEditReceipt(${sheetRow},'${mName}','${datum}',${iznos},'${kat}','${safeB}')">
+      <div class="cat-dot" style="background:${CAT_COLORS[kat]||'#94a3b8'};flex-shrink:0"></div>
+      <span class="receipt-naziv">${naziv}</span>
+      <span class="receipt-kat">${CAT_HR[kat]||kat}</span>
+      <span class="receipt-datum">${datum}</span>
+      <span class="receipt-iznos">${eur(iznos)}</span>
+    </div>`;
+  }).join(''):'<div class="empty-state">Nema transakcija.</div>';
+  document.getElementById('recent-list').innerHTML=recHtml;
 
   const btn = document.getElementById('recent-toggle-btn');
   if(btn){
@@ -2213,8 +2236,10 @@ async function loadGallery(){
       const name    = bilj || kat;
       const safeUrl = driveUrl.replace(/'/g,"\'");
       const safeId  = driveId.replace(/'/g,"\'");
+      const safeBilj=name.replace(/'/g,"\\'");
       return `<div class="g-card" ${driveUrl ? `onclick="window.open('${safeUrl}','_blank')"` : ''}>
         <button class="g-del-btn" title="Obriši račun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">🗑</button>
+        <button class="g-edit-btn" title="Uredi" onclick="event.stopPropagation();openEditReceipt(${sheetRow},'${curMonth()}','${datum}',${iznos},'${kat}','${safeBilj}')">✏️</button>
         ${imgUrl
           ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
           : ''}
@@ -2383,7 +2408,89 @@ window.renderSavingsGoals   = renderSavingsGoals;
 window.incomeGoals          = incomeGoals;
 window.fixedGoals           = fixedGoals;
 window.variableGoals        = variableGoals;
+
+function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj){
+  const di=bilj.indexOf(' — ');
+  const store=di>=0?bilj.slice(0,di):bilj;
+  const note=di>=0?bilj.slice(di+3):'';
+  const dm=datum.match(/(\d+)\.(\d+)\.(\d{4})/);
+  const iso=dm?dm[3]+'-'+dm[2].padStart(2,'0')+'-'+dm[1].padStart(2,'0'):'';
+  document.getElementById('edit-store').value=store;
+  document.getElementById('edit-amount').value=String(iznos).replace('.',',');
+  document.getElementById('edit-date').value=iso;
+  document.getElementById('edit-cat').value=kat;
+  document.getElementById('edit-note').value=note;
+  document.getElementById('edit-sheet-row').value=sheetRow;
+  document.getElementById('edit-month-name').value=monthName;
+  document.getElementById('edit-overlay').classList.add('open');
+  document.getElementById('edit-drawer').classList.add('open');
+}
+function closeEditDrawer(){
+  document.getElementById('edit-overlay').classList.remove('open');
+  document.getElementById('edit-drawer').classList.remove('open');
+}
+async function saveEditedReceipt(){
+  const store=document.getElementById('edit-store').value.trim();
+  const amount=parseFloat((document.getElementById('edit-amount').value||'').replace(',','.'))||0;
+  const kat=document.getElementById('edit-cat').value;
+  const date=document.getElementById('edit-date').value;
+  const note=document.getElementById('edit-note').value.trim();
+  const sheetRow=document.getElementById('edit-sheet-row').value;
+  const monthName=document.getElementById('edit-month-name').value;
+  if(!store){showToast('Unesi naziv.',3000,'error');return;}
+  if(!amount){showToast('Unesi iznos.',3000,'error');return;}
+  if(!date){showToast('Unesi datum.',3000,'error');return;}
+  showSaveOverlay('Sprema se...');
+  try{
+    const bilj=note?store+' — '+note:store;
+    const datumHR=fmtDateHR(date);
+    await writeRange(sheetId,monthName+'!B'+sheetRow,[[datumHR]]);
+    await writeRange(sheetId,monthName+'!F'+sheetRow,[[amount]]);
+    await writeRange(sheetId,monthName+'!I'+sheetRow,[[kat]]);
+    await writeRange(sheetId,monthName+'!L'+sheetRow,[[bilj]]);
+    hideSaveOverlay();
+    showToast('✓ Račun ažuriran!',3000,'success');
+    closeEditDrawer();
+    loadGallery();
+    loadPregled();
+  }catch(e){hideSaveOverlay();showToast('Greška: '+e.message,5000,'error');}
+}
+window.openEditReceipt=openEditReceipt;
+window.closeEditDrawer=closeEditDrawer;
+window.saveEditedReceipt=saveEditedReceipt;
 window.savingsGoals         = savingsGoals;
 </script>
+
+<div id="edit-overlay" onclick="closeEditDrawer()"></div>
+<div id="edit-drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">Uredi račun</div>
+  <div class="field"><label>Naziv</label><input type="text" id="edit-store" placeholder="Naziv dućana / usluge"></div>
+  <div class="row2">
+    <div class="field"><label>Iznos</label><div class="euro-wrap"><span>€</span><input type="text" id="edit-amount" inputmode="decimal" placeholder="0,00"></div></div>
+    <div class="field"><label>Datum</label><input type="date" id="edit-date"></div>
+  </div>
+  <div class="field"><label>Kategorija</label>
+    <select id="edit-cat">
+      <optgroup label="── Fiksni troškovi ──">
+        <option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option>
+        <option value="T-com">Internet</option><option value="Allianz">Osiguranje</option><option value="Software">Pretplate</option>
+      </optgroup>
+      <optgroup label="── Varijabilni troškovi ──">
+        <option value="Food">Hrana</option><option value="Fuel">Gorivo</option>
+        <option value="Pets">Ljubimci</option><option value="Other">Ostalo</option>
+      </optgroup>
+      <optgroup label="── Ostalo ──">
+        <option value="Savings">Štednja</option><option value="Debt">Kredit / rata</option>
+      </optgroup>
+    </select>
+  </div>
+  <div class="field"><label>Bilješka (opcionalno)</label><input type="text" id="edit-note" placeholder="Opis..."></div>
+  <input type="hidden" id="edit-sheet-row"><input type="hidden" id="edit-month-name">
+  <div style="display:flex;gap:10px;margin-top:4px">
+    <button class="btn btn-outline" style="flex:1" onclick="closeEditDrawer()">Odustani</button>
+    <button class="btn btn-primary" style="flex:2" onclick="saveEditedReceipt()">Spremi promjene</button>
+  </div>
+</div>
 </body>
 </html>
