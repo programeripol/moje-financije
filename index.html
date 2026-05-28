@@ -227,7 +227,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .g-row{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
 .g-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .g-amt{font-size:12px;font-weight:600;color:#1565c0;flex-shrink:0}
-.g-date{font-size:11px;color:#888;margin-top:1px}
+.g-kat{font-size:11px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.g-date{font-size:11px;color:#888;flex-shrink:0}
 
 /* ── PROFILE ── */
 .plan-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f2f8}
@@ -288,7 +288,7 @@ details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(18
 .receipt-iznos{font-size:13px;font-weight:600;color:#1a1a2e;white-space:nowrap;min-width:56px;text-align:right}
 .g-edit-btn{position:absolute;top:6px;left:6px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:28px;height:28px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.15)}
 #edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9990;display:none}
-#edit-drawer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 36px;z-index:9991;max-width:500px;margin:0 auto;box-shadow:0 -4px 30px rgba(21,101,192,.15);transform:translateY(100%);transition:transform .3s cubic-bezier(.25,.8,.25,1)}
+#edit-drawer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 36px;z-index:9991;max-width:500px;margin:0 auto;box-shadow:0 -4px 30px rgba(21,101,192,.15);overflow:hidden;transform:translateY(100%);transition:transform .3s cubic-bezier(.25,.8,.25,1)}
 #edit-drawer.open{transform:translateY(0);will-change:transform}
 #edit-overlay.open{display:block}
 .drawer-handle{width:40px;height:4px;background:#e0e7f0;border-radius:2px;margin:0 auto 18px}
@@ -2260,7 +2260,10 @@ async function loadGallery(){
             <span class="g-name">${name}</span>
             <span class="g-amt">${iznos.toFixed(2).replace('.',',')} €</span>
           </div>
-          <div class="g-date">${datum}</div>
+          <div class="g-row" style="margin-top:3px">
+            <span class="g-kat">${CAT_HR[kat]||kat}</span>
+            <span class="g-date">${datum}</span>
+          </div>
         </div>
       </div>`;
     }).join('');
