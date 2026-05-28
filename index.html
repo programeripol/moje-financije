@@ -1578,7 +1578,7 @@ async function loadMonthPlan(idx){
     await ensurePlanSheet();
     const rows = await getRows(sheetId,'Planovi','A2:C2000');
     const plan = {};
-    rows.forEach(r=>{ if(r[2]===key && r[0]) plan[r[0]] = parseFloat(r[1])||0; });
+    rows.forEach(r=>{ if(r[2]===key && r[0]) plan[r[0]] = (r[1]&&(r[1].startsWith('[')||r[1].startsWith('{'))) ? r[1] : (parseFloat(r[1])||0); });
     monthPlanCache[key] = Object.keys(plan).length > 0 ? plan : null;
   }catch(e){ monthPlanCache[key] = null; }
   return monthPlanCache[key];
