@@ -194,7 +194,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .cat-label{flex:1;font-size:13px;font-weight:500}
 .cat-bar-wrap{width:80px;height:6px;background:#e8edf8;border-radius:3px;overflow:hidden;flex-shrink:0}
 .cat-bar-fill{height:100%;border-radius:3px;transition:width .4s}
-.cat-amounts{font-size:12px;color:#888;text-align:right;white-space:nowrap;min-width:80px}
+.cat-legend{display:flex;justify-content:flex-end;font-size:11px;color:#aaa;margin-bottom:2px;padding-right:0}
+.cat-legend-label{min-width:110px;text-align:right}
+.cat-amounts{font-size:12px;color:#888;text-align:right;white-space:nowrap;min-width:110px}
 .cat-over{color:#dc2626}
 
 /* ── GOALS ── */
@@ -530,7 +532,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </details>
 
   <div class="card">
-    <div class="card-title">Po kategoriji — plan vs stvarno</div>
+    <div class="card-title">Pregled po kategorijama</div>
     <div id="cat-list"><div class="empty-state">Ucitavam…</div></div>
   </div>
 
@@ -1860,16 +1862,18 @@ async function loadPregled(){
       const act  = actual[cat]||0;
       const plan = effCatPlan[cat]||0;
       if(!act && !plan) return '';
-      const pct  = plan > 0 ? Math.min(100, (act/plan)*100) : 100;
+      const pct  = plan > 0 ? Math.min(100, (act/plan)*100) : (act > 0 ? 100 : 0);
       const over = plan > 0 && act > plan;
+      const amtStr = plan > 0 ? `${eur(act)} / ${eur(plan)}` : eur(act);
       return `<div class="cat-row">
         <div class="cat-dot" style="background:${CAT_COLORS[cat]}"></div>
         <span class="cat-label">${CAT_HR[cat]||cat}</span>
         <div class="cat-bar-wrap"><div class="cat-bar-fill" style="width:${pct}%;background:${over?'#ef4444':CAT_COLORS[cat]}"></div></div>
-        <span class="cat-amounts ${over?'cat-over':''}">${eur(act)}${plan?` / ${eur(plan)}`:''}</span>
+        <span class="cat-amounts ${over?'cat-over':''}">${amtStr}</span>
       </div>`;
     }).filter(Boolean).join('');
-    document.getElementById('cat-list').innerHTML = catHtml || '<div class="empty-state">Nema troskova ovaj mjesec.</div>';
+    const catLegend = catHtml ? '<div class="cat-legend"><span></span><span class="cat-legend-label">potrošeno / predviđeno</span></div>' : '';
+    document.getElementById('cat-list').innerHTML = catLegend + (catHtml || '<div class="empty-state">Nema troškova ovaj mjesec.</div>');
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
     allRecentEntries = entries.slice().reverse();
@@ -2178,7 +2182,7 @@ function noviRacun(){
 const NOTE_PLACEHOLDERS = [
   'Npr. shopping za podizanje raspoloženja',
   'Npr. kava s curama i razgovor do kasno',
-  'Npr. nova knjiga jer je valjda bila potrebna',
+  'Npr. romantična večera samo za sebe, zaslužila sam 🌹',
   'Npr. večera vani jer je bio dug tjedan',
   'Npr. najslađa haljina ikad viđena',
   'Npr. poklon sebi jer sam to zaslužila',
