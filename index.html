@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Ima se može se">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="ikonica-glavna.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
@@ -1225,7 +1226,7 @@ function goTab(tab){
     if(el) el.src = `nav-${t}-${t === tab ? 'crni' : 'bijeli'}.png`;
   });
 
-  const titles = {skener:'Skener', pregled:'Pregled — '+monthLabel(), ciljevi:'Ciljevi i Rate', profil:'Moj profil'};
+  const titles = {skener:'Skener', pregled:'Pregled', ciljevi:'Ciljevi i Rate', profil:'Moj profil'};
   document.getElementById('header-title').textContent = titles[tab];
   if(tab==='skener')  { if(sheetId) loadGallery(); }
   if(tab==='pregled') loadPregled();
@@ -1663,10 +1664,8 @@ async function fillMonthPlanForm(){
 }
 
 async function saveMonthPlanNow(){
-  const st = document.getElementById('month-plan-status');
-  if(st){ st.textContent='Spremam...'; st.className='status'; }
+  showSaveOverlay('Sprema se...');
   try{
-    const gv = id => { const el = document.getElementById(id); return el && el.value !== '' ? parseFloat(el.value)||0 : 0; };
     const incOvEl = document.getElementById('mp-income-override');
     const data = {};
     if(incOvEl && incOvEl.value !== '') data.income_override = parseFloat(incOvEl.value)||0;
@@ -1677,11 +1676,12 @@ async function saveMonthPlanNow(){
     const svEl = document.getElementById('mp-save');
     if(svEl && svEl.value !== '') data.save_plan = parseFloat(svEl.value)||0;
     await saveMonthPlan(viewMonthIdx, data);
-    if(st){ st.textContent='✓ Plan spremljen!'; st.className='status success'; }
+    hideSaveOverlay();
+    showToast('✓ Plan spremljen!');
     loadPregled();
-    setTimeout(()=>{ if(st) st.textContent=''; },3000);
   }catch(e){
-    if(st){ st.textContent='Greška: '+e.message; st.className='status error'; }
+    hideSaveOverlay();
+    showToast('Greška: '+e.message);
   }
 }
 
