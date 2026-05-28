@@ -289,7 +289,7 @@ details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(18
 .g-edit-btn{position:absolute;top:6px;left:6px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:28px;height:28px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.15)}
 #edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9990;display:none}
 #edit-drawer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 36px;z-index:9991;max-width:500px;margin:0 auto;box-shadow:0 -4px 30px rgba(21,101,192,.15);transform:translateY(100%);transition:transform .3s cubic-bezier(.25,.8,.25,1)}
-#edit-drawer.open{transform:translateY(0)}
+#edit-drawer.open{transform:translateY(0);will-change:transform}
 #edit-overlay.open{display:block}
 .drawer-handle{width:40px;height:4px;background:#e0e7f0;border-radius:2px;margin:0 auto 18px}
 .drawer-title{font-size:13px;font-weight:600;color:#1565c0;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px}
@@ -2438,9 +2438,37 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   document.getElementById('edit-drawer').classList.add('open');
 }
 function closeEditDrawer(){
-  document.getElementById('edit-overlay').classList.remove('open');
-  document.getElementById('edit-drawer').classList.remove('open');
+  document.getElementById("edit-overlay").classList.remove("open");
+  document.getElementById("edit-drawer").classList.remove("open");
+  var dr=document.getElementById("edit-drawer");
+  if(dr) dr.style.transform="";
 }
+(function(){
+  var startY=0,curY=0,dragging=false;
+  document.addEventListener("touchstart",function(e){
+    var dr=document.getElementById("edit-drawer");
+    if(!dr||!dr.classList.contains("open")) return;
+    if(!dr.contains(e.target)) return;
+    startY=e.touches[0].clientY; dragging=true; curY=0;
+    dr.style.transition="none";
+  },{passive:true});
+  document.addEventListener("touchmove",function(e){
+    if(!dragging) return;
+    var dr=document.getElementById("edit-drawer");
+    if(!dr) return;
+    curY=e.touches[0].clientY-startY;
+    if(curY>0) dr.style.transform="translateY("+curY+"px)";
+  },{passive:true});
+  document.addEventListener("touchend",function(){
+    if(!dragging) return;
+    dragging=false;
+    var dr=document.getElementById("edit-drawer");
+    if(!dr) return;
+    dr.style.transition="";
+    if(curY>90) closeEditDrawer();
+    else dr.style.transform="";
+  });
+})();
 async function saveEditedReceipt(){
   const store=document.getElementById('edit-store').value.trim();
   const amount=parseFloat((document.getElementById('edit-amount').value||'').replace(',','.'))||0;
