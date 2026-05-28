@@ -1746,7 +1746,7 @@ async function saveMonthPlanNow(){
 }
 
 async function resetMonthPlanToProfile(){
-  if(!confirm('Jesi sigurna?\n\nOvo će obrisati sve promjene plana za ovaj mjesec i vratiti ga na vrijednosti iz Profila (prihodi, fiksni i varijabilni troškovi, štednja).\n\nNastavi?')) return;
+  if(!confirm('Sigurno?\n\nOvo će obrisati sve promjene plana za ovaj mjesec i vratiti ga na vrijednosti iz Profila (prihodi, fiksni i varijabilni troškovi, štednja).\n\nNastavi?')) return;
   const key = monthKey(viewMonthIdx);
   try{
     await ensurePlanSheet();
