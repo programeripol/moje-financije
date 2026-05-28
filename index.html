@@ -247,6 +247,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .month-plan-panel > summary::-webkit-details-marker{display:none}
 .month-plan-panel > summary::after{content:'⌄';font-size:22px;font-weight:700;color:#1565c0;transition:transform .2s;display:inline-block;line-height:1;margin-top:-2px}
 .month-plan-panel[open] > summary::after{transform:rotate(180deg)}
+.collapsible-card{background:#fff;border-radius:16px;margin-bottom:16px;box-shadow:0 1px 8px rgba(21,101,192,.06);overflow:hidden}
+.collapsible-summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;list-style:none;font-size:13px;font-weight:600;color:#1565c0;letter-spacing:.05em;text-transform:uppercase}
+.collapsible-summary::-webkit-details-marker{display:none}
+.collapsible-summary::after{content:"\2304";font-size:20px;font-weight:700;color:#1565c0;transition:transform .2s;display:inline-block;line-height:1}
+details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(180deg)}
 .month-plan-body{padding:0 16px 14px}
 .month-plan-section{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px}
 .month-plan-footer{display:flex;gap:10px;margin-top:14px}
@@ -491,6 +496,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
           <option value="Food">Hrana</option>
           <option value="Fuel">Gorivo</option>
           <option value="Pets">Ljubimci</option>
+          <option value="Beauty">Kozmetika</option>
           <option value="Other">Ostalo</option>
         </optgroup>
         <optgroup label="── Ostalo ──">
@@ -549,19 +555,19 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="month-plan-body" id="month-plan-body"></div>
   </details>
 
-  <div class="card">
-    <div class="card-title">Pregled po kategorijama</div>
-    <div id="cat-list"><div class="empty-state">Ucitavam…</div></div>
-  </div>
+  <details class="card collapsible-card" id="cat-panel" open>
+    <summary class="collapsible-summary">Pregled po kategorijama</summary>
+    <div id="cat-list"><div class="empty-state">Učitavam…</div></div>
+  </details>
 
-  <div class="card">
-    <div class="card-title-row">
-      <span class="card-title">Računi ovog mjeseca</span>
+  <details class="card collapsible-card" id="receipts-panel" open>
+    <summary class="collapsible-summary">
+      <span>Računi ovog mjeseca</span>
       <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder">📁</a>
-    </div>
+    </summary>
     <div id="recent-list"><div class="empty-state">Nema podataka.</div></div>
     <button class="recent-toggle" id="recent-toggle-btn" style="display:none" onclick="toggleRecentList()">Prikaži sve ↓</button>
-  </div>
+  </details>
 
 </div>
 
@@ -715,12 +721,12 @@ if('serviceWorker' in navigator){
 }
 
 const CAT_HR = {
-  Food:'Hrana', Pets:'Ljubimci', Fuel:'Gorivo', Software:'Pretplate',
+  Food:'Hrana', Pets:'Ljubimci', Fuel:'Gorivo', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
   Allianz:'Osiguranje', Debt:'Kredit', Savings:'Štednja', Other:'Ostalo'
 };
 const CAT_COLORS = {
-  Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa',
+  Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
   Stanarina:'#1565c0', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
   Allianz:'#ec4899', Debt:'#ef4444', Savings:'#10b981', Other:'#94a3b8'
 };
@@ -914,6 +920,7 @@ const GOAL_TO_CAT = {
   'Hrana':'Food','Food':'Food','Namirnice':'Food','Supermarket':'Food',
   'Gorivo':'Fuel','Fuel':'Fuel','Benzin':'Fuel',
   'Ljubimci':'Pets','Pets':'Pets',
+  'Kozmetika':'Beauty','Beauty':'Beauty','Ljepota':'Beauty','Drogerija':'Beauty',
   'Ostalo':'Other','Other':'Other'
 };
 
@@ -2238,10 +2245,10 @@ async function loadGallery(){
       const name    = bilj || kat;
       const safeUrl = driveUrl.replace(/'/g,"\'");
       const safeId  = driveId.replace(/'/g,"\'");
-      const safeBilj=name.replace(/'/g,"\\'");
-      return `<div class="g-card" ${driveUrl ? `onclick="window.open('${safeUrl}','_blank')"` : ''}>
+      const safeBilj=(name||'').replace(/'/g,"\\'");
+      const safeDU=(driveUrl||'').replace(/'/g,"\\'");
+      return `<div class="g-card" onclick="openEditReceipt(${sheetRow},'${curMonth()}','${datum}',${iznos},'${kat}','${safeBilj}','${safeDU}')">
         <button class="g-del-btn" title="Obriši račun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">×</button>
-        <button class="g-edit-btn" title="Uredi" onclick="event.stopPropagation();openEditReceipt(${sheetRow},'${curMonth()}','${datum}',${iznos},'${kat}','${safeBilj}')">✏️</button>
         ${imgUrl
           ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
           : ''}
@@ -2411,7 +2418,10 @@ window.incomeGoals          = incomeGoals;
 window.fixedGoals           = fixedGoals;
 window.variableGoals        = variableGoals;
 
-function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj){
+function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
+  driveUrl=driveUrl||"";
+  var iw=document.getElementById("edit-img-wrap"),it=document.getElementById("edit-img-thumb");
+  if(iw&&it){if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.src=th;it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
   const di=bilj.indexOf(' — ');
   const store=di>=0?bilj.slice(0,di):bilj;
   const note=di>=0?bilj.slice(di+3):'';
@@ -2467,9 +2477,10 @@ window.savingsGoals         = savingsGoals;
 <div id="edit-drawer">
   <div class="drawer-handle"></div>
   <div class="drawer-title">Uredi račun</div>
+  <div id="edit-img-wrap" style="display:none;margin-bottom:14px;cursor:pointer;border-radius:12px;overflow:hidden"><img id="edit-img-thumb" style="width:100%;max-height:160px;object-fit:cover;display:block;border-radius:12px"></div>
   <div class="field"><label>Naziv</label><input type="text" id="edit-store" placeholder="Naziv dućana / usluge"></div>
   <div class="row2">
-    <div class="field"><label>Iznos</label><div class="euro-wrap"><span>€</span><input type="text" id="edit-amount" inputmode="decimal" placeholder="0,00"></div></div>
+    <div class="field"><label>Iznos</label><div style="display:flex;align-items:center;gap:6px"><input type="text" id="edit-amount" inputmode="decimal" placeholder="0,00" style="flex:1"><span style="color:#aaa;font-size:15px">€</span></div></div>
     <div class="field"><label>Datum</label><input type="date" id="edit-date"></div>
   </div>
   <div class="field"><label>Kategorija</label>
