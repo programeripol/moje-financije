@@ -1,6 +1,6 @@
 {
   "name": "Ima se može se",
-  "short_name": "Ima se",
+  "short_name": "Ima se može se",
   "description": "Prati prihode, planiraj troškove, štedi za ciljeve.",
   "start_url": "./",
   "display": "standalone",
