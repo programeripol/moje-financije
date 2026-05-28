@@ -208,6 +208,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 
 /* ── GALLERY ── */
 #gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.g-card{position:relative}
+.g-del-btn{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,0.55);border:none;color:#fff;font-size:14px;line-height:26px;text-align:center;cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center;padding:0}
+.g-del-btn:active{background:rgba(200,0,0,0.8)}
 .g-card{background:#fff;border:1px solid #e8edf8;border-radius:12px;overflow:hidden;cursor:pointer;transition:.15s}
 .g-card:hover{box-shadow:0 3px 14px rgba(21,101,192,.12)}
 .g-thumb{width:100%;height:88px;object-fit:cover;display:block;background:#f0f2f8}
@@ -2060,22 +2063,27 @@ async function loadGallery(){
   if(!grid || !sheetId) return;
   try{
     const rows = await getRows(sheetId, curMonth(), 'B57:N500');
-    const items = rows.filter(r => r && r[0]);
+    // Zapamti stvarni redni broj u sheetu (B57 = row 57)
+    const items = rows.map((r,i) => ({r, sheetRow: 57+i})).filter(({r}) => r && r[0]);
     if(!items.length){
       grid.innerHTML = '<div class="empty-state">Nema još unesenih računa.</div>';
       return;
     }
-    grid.innerHTML = items.map(r => {
+    grid.innerHTML = items.map(({r, sheetRow}) => {
       const datum   = r[0]  || '';
       const iznos   = parseFloat(r[4])||0;
       const kat     = r[7]  || '';
       const bilj    = r[10] || '';
       const driveUrl= r[11] || '';
+      const driveId = r[12] || '';
       const imgUrl  = driveUrl
         ? driveUrl.replace('https://drive.google.com/file/d/','https://drive.google.com/thumbnail?sz=w200&id=').replace('/view','')
         : '';
       const name    = bilj || kat;
-      return `<div class="g-card" ${driveUrl ? `onclick="window.open('${driveUrl}','_blank')"` : ''}>
+      const safeUrl = driveUrl.replace(/'/g,"\'");
+      const safeId  = driveId.replace(/'/g,"\'");
+      return `<div class="g-card" ${driveUrl ? `onclick="window.open('${safeUrl}','_blank')"` : ''}>
+        <button class="g-del-btn" title="Obriši račun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">🗑</button>
         ${imgUrl
           ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
           : ''}
@@ -2094,6 +2102,32 @@ async function loadGallery(){
   }
 }
 
+
+async function deleteReceipt(sheetRow, driveId){
+  if(!confirm('Obriši ovaj račun? (slika + podaci)')) return;
+  showSaveOverlay('Brišem...');
+  try{
+    // 1. Obriši sliku s Google Drivea (204 = ok, 404 = već nema)
+    if(driveId){
+      const dr = await fetch(`https://www.googleapis.com/drive/v3/files/${driveId}`,{
+        method:'DELETE', headers:{'Authorization':'Bearer '+token}
+      });
+      if(!dr.ok && dr.status !== 404) throw new Error('Drive: '+dr.status);
+    }
+    // 2. Obriši red iz sheeta
+    const month = curMonth();
+    await gfetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(month+'!B'+sheetRow+':N'+sheetRow)}:clear`,
+      {method:'POST'}
+    );
+    hideSaveOverlay();
+    showToast('✓ Račun obrisan.');
+    loadGallery();
+  }catch(e){
+    hideSaveOverlay();
+    showToast('Greška: '+e.message);
+  }
+}
 
 function moveGoal(arr, i, dir, renderFn){
   const j = i + dir;
@@ -2170,6 +2204,7 @@ window.showGoalForm         = showGoalForm;
 window.hideGoalForm         = hideGoalForm;
 window.saveGoal             = saveGoal;
 window.deleteGoal           = deleteGoal;
+window.deleteReceipt        = deleteReceipt;
 window.saveProfile          = saveProfile;
 window.hideInstallModal     = hideInstallModal;
 window.installAppNow        = installAppNow;
