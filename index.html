@@ -518,21 +518,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       <span class="month-plan-header-title">✏️ Uredi plan za ovaj mjesec</span>
       <span class="month-plan-arrow" id="month-plan-arrow">▼</span>
     </div>
-    <div class="month-plan-body" id="month-plan-body">
-      <div class="month-plan-section">Prihodi (mj/€)</div>
-      <div class="plan-row"><span class="plan-label">Ukupni prihodi ovaj mj</span><input type="number" class="plan-input" id="mp-income-override" step="0.01" inputmode="decimal" placeholder="iz Profila"></div>
-      <div class="month-plan-section">Fiksni troškovi (mj/€)</div>
-      <div class="plan-row"><span class="plan-label">Ukupni fiksni ovaj mj</span><input type="number" class="plan-input" id="mp-fixed-override" step="0.01" inputmode="decimal" placeholder="iz Profila"></div>
-      <div class="month-plan-section">Varijabilni troškovi (mj/€)</div>
-      <div class="plan-row"><span class="plan-label">Ukupni varijabilni ovaj mj</span><input type="number" class="plan-input" id="mp-variable-override" step="0.01" inputmode="decimal" placeholder="iz Profila"></div>
-      <div class="month-plan-section">Štednja (mj/€)</div>
-      <div class="plan-row"><span class="plan-label">Planirano</span><input type="number" class="plan-input" id="mp-save" step="0.01" inputmode="decimal"></div>
-      <div class="month-plan-footer">
-        <button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>
-        <button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button>
-      </div>
-      <div class="status" id="month-plan-status" style="margin-top:8px"></div>
-    </div>
+    <div class="month-plan-body" id="month-plan-body"></div>
   </div>
 
   <div class="card">
@@ -1599,6 +1585,28 @@ async function saveMonthPlan(idx, data){
   monthPlanCache[key] = data;
 }
 
+function effectiveIncomePlan(plan){
+  if(!plan) return totalIncome();
+  if(incomeGoals.some((_,i)=> plan['inc_'+i] != null))
+    return incomeGoals.reduce((s,g,i)=>s+(plan['inc_'+i]!=null?parseFloat(plan['inc_'+i]):(parseFloat(g.amount)||0)),0);
+  if(plan.income_override != null) return plan.income_override;
+  return totalIncome();
+}
+function effectiveFixedPlan(plan){
+  if(!plan) return totalFixed();
+  if(fixedGoals.some((_,i)=> plan['fix_'+i] != null))
+    return fixedGoals.reduce((s,g,i)=>s+(plan['fix_'+i]!=null?parseFloat(plan['fix_'+i]):(parseFloat(g.amount)||0)),0);
+  if(plan.fixed_override != null) return plan.fixed_override;
+  return totalFixed();
+}
+function effectiveVariablePlan(plan){
+  if(!plan) return totalVariable();
+  if(variableGoals.some((_,i)=> plan['var_'+i] != null))
+    return variableGoals.reduce((s,g,i)=>s+(plan['var_'+i]!=null?parseFloat(plan['var_'+i]):(parseFloat(g.amount)||0)),0);
+  if(plan.variable_override != null) return plan.variable_override;
+  return totalVariable();
+}
+
 function getEffectivePlan(monthPlan){
   if(!monthPlan) return profileData;
   return Object.assign({}, profileData, monthPlan);
@@ -1642,40 +1650,48 @@ function toggleMonthPlanEdit(){
 
 async function fillMonthPlanForm(){
   const plan = await loadMonthPlan(viewMonthIdx);
-  const eff  = getEffectivePlan(plan);
-  const setV = (id, key) => { const el = document.getElementById(id); if(el) el.value = eff[key]||''; };
-  const incEl = document.getElementById('mp-income-override');
-  if(incEl){
-    const ov = plan && plan.income_override != null ? plan.income_override : '';
-    incEl.value = ov;
-    const profTotal = totalIncome();
-    incEl.placeholder = profTotal > 0 ? profTotal.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
+  const body = document.getElementById('month-plan-body');
+  if(!body) return;
+  function itemSection(title, goals, prefix){
+    if(!goals.length) return '';
+    return '<div class="month-plan-section">'+title+'</div>' +
+      goals.map((g,i) => {
+        const sv = plan && plan[prefix+i] != null ? plan[prefix+i] : '';
+        const amt = parseFloat(g.amount)||0;
+        const ph = amt > 0 ? amt.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
+        return '<div class="plan-row"><span class="plan-label">'+(g.name||'—')+'</span>'+
+          '<input type="number" class="plan-input" id="mp-'+prefix+i+'" step="0.01" inputmode="decimal"'+
+          ' value="'+sv+'" placeholder="'+ph+'"></div>';
+      }).join('');
   }
-  const fxEl = document.getElementById('mp-fixed-override');
-  if(fxEl){
-    fxEl.value = plan && plan.fixed_override != null ? plan.fixed_override : '';
-    const profFixed = totalFixed();
-    fxEl.placeholder = profFixed > 0 ? profFixed.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
-  }
-  const vrEl = document.getElementById('mp-variable-override');
-  if(vrEl){
-    vrEl.value = plan && plan.variable_override != null ? plan.variable_override : '';
-    const profVar = totalVariable();
-    vrEl.placeholder = profVar > 0 ? profVar.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
-  }
-  setV('mp-save','save_plan');
+  const savePlanVal = plan && plan.save_plan != null ? plan.save_plan : '';
+  const saveProfAmt = savingsGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+  const savePh = saveProfAmt > 0 ? saveProfAmt.toFixed(2).replace('.',',') + ' (Profil)' : 'iz Profila';
+  body.innerHTML =
+    itemSection('Prihodi', incomeGoals, 'inc_') +
+    itemSection('Fiksni troškovi', fixedGoals, 'fix_') +
+    itemSection('Varijabilni troškovi', variableGoals, 'var_') +
+    '<div class="month-plan-section">Štednja</div>'+
+    '<div class="plan-row"><span class="plan-label">Planirano</span>'+
+    '<input type="number" class="plan-input" id="mp-save" step="0.01" inputmode="decimal"'+
+    ' value="'+savePlanVal+'" placeholder="'+savePh+'"></div>'+
+    '<div class="month-plan-footer">'+
+    '<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>'+
+    '<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button>'+
+    '</div>';
 }
 
 async function saveMonthPlanNow(){
   showSaveOverlay('Sprema se...');
   try{
-    const incOvEl = document.getElementById('mp-income-override');
     const data = {};
-    if(incOvEl && incOvEl.value !== '') data.income_override = parseFloat(incOvEl.value)||0;
-    const fxOvEl = document.getElementById('mp-fixed-override');
-    if(fxOvEl && fxOvEl.value !== '') data.fixed_override = parseFloat(fxOvEl.value)||0;
-    const vrOvEl = document.getElementById('mp-variable-override');
-    if(vrOvEl && vrOvEl.value !== '') data.variable_override = parseFloat(vrOvEl.value)||0;
+    const collect = (goals, prefix) => goals.forEach((_,i) => {
+      const el = document.getElementById('mp-'+prefix+i);
+      if(el && el.value !== '') data[prefix+i] = parseFloat(el.value)||0;
+    });
+    collect(incomeGoals, 'inc_');
+    collect(fixedGoals,  'fix_');
+    collect(variableGoals,'var_');
     const svEl = document.getElementById('mp-save');
     if(svEl && svEl.value !== '') data.save_plan = parseFloat(svEl.value)||0;
     await saveMonthPlan(viewMonthIdx, data);
@@ -1725,11 +1741,10 @@ async function loadPregled(){
 
     const monthPlan = await loadMonthPlan(viewMonthIdx);
     const effPlan   = getEffectivePlan(monthPlan);
-    const income    = (monthPlan && monthPlan.income_override != null)
-      ? monthPlan.income_override : totalIncome();
-    const savePlan  = effPlan.save_plan || totalSavingsPlan();
-    const fixedPlan = (monthPlan && monthPlan.fixed_override != null) ? monthPlan.fixed_override : totalFixed();
-    const varPlan   = (monthPlan && monthPlan.variable_override != null) ? monthPlan.variable_override : totalVariable();
+    const income    = effectiveIncomePlan(monthPlan);
+    const savePlan  = (monthPlan && monthPlan.save_plan != null) ? monthPlan.save_plan : totalSavingsPlan();
+    const fixedPlan = effectiveFixedPlan(monthPlan);
+    const varPlan   = effectiveVariablePlan(monthPlan);
     const totalPlan = fixedPlan + varPlan;
     const left = income - totalSpent;
     const savings = income - totalSpent - savePlan;
@@ -1742,18 +1757,33 @@ async function loadPregled(){
 
     // Cat list
     const cats = Object.keys(CAT_COLORS);
-    // Build plan_* from effective plan (may come from derived goals or overrides)
+    // Build plan_* from effective plan (per-item overrides > aggregate override > profile)
     const buildEffCatPlan = () => {
       const cp = {};
       Object.keys(CAT_COLORS).forEach(c => cp[c] = effPlan['plan_'+c]||0);
-      // If month has total overrides, scale proportionally from profile distribution
-      if(monthPlan && monthPlan.fixed_override != null){
+      // Per-item fixed overrides — map each goal to its category
+      if(monthPlan && fixedGoals.some((_,i)=> monthPlan['fix_'+i] != null)){
+        ['Stanarina','Rezije','T-com','Allianz','Software'].forEach(c=> cp[c]=0);
+        fixedGoals.forEach((g,i)=>{
+          const amt = monthPlan['fix_'+i]!=null ? parseFloat(monthPlan['fix_'+i]) : (parseFloat(g.amount)||0);
+          const cat = GOAL_TO_CAT[g.name];
+          if(cat) cp[cat]=(cp[cat]||0)+amt; else cp['Other']=(cp['Other']||0)+amt;
+        });
+      } else if(monthPlan && monthPlan.fixed_override != null){
         const profFixed = totalFixed() || 1;
         ['Stanarina','Rezije','T-com','Allianz','Software'].forEach(c=>{
           cp[c] = Math.round((cp[c]/profFixed)*fixedPlan*100)/100;
         });
       }
-      if(monthPlan && monthPlan.variable_override != null){
+      // Per-item variable overrides
+      if(monthPlan && variableGoals.some((_,i)=> monthPlan['var_'+i] != null)){
+        ['Food','Fuel','Pets','Other'].forEach(c=> cp[c]=0);
+        variableGoals.forEach((g,i)=>{
+          const amt = monthPlan['var_'+i]!=null ? parseFloat(monthPlan['var_'+i]) : (parseFloat(g.amount)||0);
+          const cat = GOAL_TO_CAT[g.name];
+          if(cat) cp[cat]=(cp[cat]||0)+amt; else cp['Other']=(cp['Other']||0)+amt;
+        });
+      } else if(monthPlan && monthPlan.variable_override != null){
         const profVar = totalVariable() || 1;
         ['Food','Fuel','Pets','Other'].forEach(c=>{
           cp[c] = Math.round((cp[c]/profVar)*varPlan*100)/100;
