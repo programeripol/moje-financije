@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Ima se može se</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <meta name="description" content="Prati prihode, planiraj troškove, štedi za ciljeve.">
 <meta name="theme-color" content="#1565c0">
 <meta name="mobile-web-app-capable" content="yes">
@@ -242,7 +243,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;background:#fff;border-radius:14px;padding:10px 16px;box-shadow:0 1px 6px rgba(21,101,192,.08)}
 .month-nav-btn{background:none;border:none;font-size:26px;cursor:pointer;color:#1565c0;padding:0 6px;line-height:1;font-weight:300}
 .month-nav-btn:disabled{color:#c8d6e8;cursor:default}
-.month-nav-label{font-size:15px;font-weight:600;color:#1a1a2e}
+.month-nav-label{font-size:15px;font-weight:600;color:#1565c0}
 /* ── MONTH PLAN PANEL ── */
 .month-plan-panel{background:#fff;border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 8px rgba(21,101,192,.06)}
 .month-plan-panel > summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;list-style:none;font-size:13px;font-weight:600;color:#1565c0;letter-spacing:.05em;text-transform:uppercase}
@@ -526,7 +527,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
   <hr class="divider">
   <details class="collapsible-card" id="gallery-panel">
-  <summary class="collapsible-summary">Računi ovog mjeseca</summary>
+  <summary class="collapsible-summary"><i class="ti ti-receipt-2" aria-hidden="true"></i>Računi</summary>
   <div id="gallery-grid" style="padding:0 16px 16px"><div class="empty-state">Nema još unesenih računa.</div></div>
 </details>
 
@@ -562,16 +563,16 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </div>
 
   <details class="month-plan-panel" id="month-plan-panel">
-    <summary>Uredi plan za ovaj mjesec</summary>
+    <summary class="collapsible-summary"><i class="ti ti-calendar-stats" aria-hidden="true"></i>Planirana potrošnja</summary>
     <div class="month-plan-body" id="month-plan-body"></div>
   </details>
 
-  <details class="card collapsible-card" id="cat-panel" open>
-    <summary class="collapsible-summary">Pregled po kategorijama</summary>
+  <details class="card collapsible-card" id="cat-panel">
+    <summary class="collapsible-summary"><i class="ti ti-chart-donut" aria-hidden="true"></i>Pregled po kategorijama</summary>
     <div id="cat-list"><div class="empty-state">Učitavam…</div></div>
   </details>
 
-  <details class="card collapsible-card" id="receipts-panel" open>
+  <details class="card collapsible-card" id="receipts-panel">
     <summary class="collapsible-summary">
       <span>Računi ovog mjeseca</span>
       <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder">📁</a>
