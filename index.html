@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>Ima se moÅ¾e se</title>
-<meta name="description" content="Prati prihode, planiraj troÅ¡kove, Å¡tedi za ciljeve.">
+<title>Ima se može se</title>
+<meta name="description" content="Prati prihode, planiraj troškove, štedi za ciljeve.">
 <meta name="theme-color" content="#1565c0">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Ima se moÅ¾e se">
+<meta name="apple-mobile-web-app-title" content="Ima se može se">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ikonica-glavna.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -22,7 +22,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;color:#1a1a2e;padding-bottom:calc(70px + env(safe-area-inset-bottom))}
 
-/* ââ HEADER ââ */
+/* ── HEADER ── */
 #header{background:linear-gradient(135deg,#1565c0,#1e88e5);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(21,101,192,.3)}
 #header h1{font-size:17px;font-weight:600;color:#fff;letter-spacing:.01em}
 #user-row{display:flex;align-items:center;gap:8px}
@@ -32,18 +32,18 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;color:
 #install-btn{display:none;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:#fff;padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;margin-right:6px;gap:4px;align-items:center}
 #install-btn.visible{display:flex}
 
-/* ââ BOTTOM NAV ââ */
+/* ── BOTTOM NAV ── */
 #nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e8edf8;display:none;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.06);padding-bottom:env(safe-area-inset-bottom)}
 .nav-items{display:flex;max-width:540px;margin:0 auto}
 .nav-btn{flex:1;padding:12px 0 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:none;font-family:inherit;color:#888;font-size:10px;font-weight:500;transition:.15s}
 .nav-btn.active{color:#1a1a2e}
 .nav-icon{width:24px;height:24px;display:block;object-fit:contain;transition:.15s}
 
-/* ââ SCREENS ââ */
+/* ── SCREENS ── */
 .screen{display:none;max-width:600px;margin:0 auto;padding:16px 16px 20px}
 .screen.active{display:block}
 
-/* ââ LOGIN ââ */
+/* ── LOGIN ── */
 #s-login{align-items:center;justify-content:center;min-height:90vh;max-width:none}
 #s-login.active{display:flex}
 #login-card{background:#fff;border-radius:24px;padding:36px 28px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(21,101,192,.12);text-align:center}
@@ -57,7 +57,7 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;color:
 .feat{font-size:12px;color:#666;display:flex;align-items:center;gap:8px}
 .feat-dot{width:6px;height:6px;border-radius:50%;background:#1565c0;flex-shrink:0}
 
-/* ââ ONBOARDING ââ */
+/* ── ONBOARDING ── */
 #s-onboarding{display:none;align-items:flex-start;justify-content:center;min-height:80vh;max-width:none;padding:20px 16px}
 #onboard-card{background:#fff;border-radius:20px;padding:28px 22px;width:100%;max-width:500px;margin:0 auto}
 .ob-step{display:none}
@@ -69,11 +69,11 @@ body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;color:
 .dot{width:8px;height:8px;border-radius:50%;background:#e0e7ff}
 .dot.active{background:#1565c0;width:20px}
 
-/* ââ CARDS ââ */
+/* ── CARDS ── */
 .card{background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:18px;margin-bottom:14px}
 .card-title{font-size:13px;font-weight:600;color:#1565c0;letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px}
 
-/* ââ FORMS ââ */
+/* ── FORMS ── */
 label{font-size:11px;font-weight:700;color:#7090b0;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:5px}
 input,textarea{width:100%;padding:10px 12px;border:1.5px solid #e0e7f0;border-radius:10px;font-size:14px;font-family:inherit;color:#1a1a2e;background:#fafbff;transition:.15s;-webkit-appearance:none}select{width:100%;padding:10px 36px 10px 12px;border:1.5px solid #e0e7f0;border-radius:10px;font-size:14px;font-family:inherit;color:#1a1a2e;background:#fafbff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18'%3E%3Cpath fill='none' stroke='%237090b0' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' d='M4 7l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 12px 40%;transition:.15s;-webkit-appearance:none;cursor:pointer}
 input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;background:#fff}
@@ -88,7 +88,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .amount-suffix-wrap .eur-suf{font-size:20px;font-weight:600;color:#1a1a2e;flex-shrink:0}
 .big-amount input{font-size:22px;font-weight:600;color:#1565c0;padding-left:28px}
 
-/* ââ BUTTONS ââ */
+/* ── BUTTONS ── */
 .btn{padding:12px 20px;border:none;border-radius:11px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
 .btn-primary{background:#1565c0;color:#fff;width:100%}
 .btn-primary:hover{background:#0d47a1}
@@ -98,13 +98,13 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .btn-sm{padding:7px 14px;font-size:12px;border-radius:8px}
 .btn-danger{background:#fee2e2;color:#991b1b;border:none;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:inherit}
 
-/* ââ STATUS ââ */
+/* ── STATUS ── */
 .status{display:none;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.7;margin-top:10px}
 .status.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
 .status.err{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
 .status.loading{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
 
-/* ââ SPLASH SCREEN ââ */
+/* ── SPLASH SCREEN ── */
 #splash{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;animation:splashAuto .5s 2.5s forwards}
 #splash.hide{animation:splashAuto .4s 0s forwards}
 .splash-logo{width:140px;height:140px;object-fit:contain;margin-bottom:24px;animation:splashPop .5s cubic-bezier(.175,.885,.32,1.275) both}
@@ -117,7 +117,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 @keyframes splashLoad{0%{width:0%}100%{width:100%}}
 @keyframes splashAuto{0%{opacity:1;visibility:visible}99%{opacity:0;visibility:visible}100%{opacity:0;visibility:hidden;pointer-events:none}}
 
-/* ââ INSTALL MODAL ââ */
+/* ── INSTALL MODAL ── */
 #install-modal{position:fixed;inset:0;z-index:99998;display:none;align-items:flex-end;justify-content:center}
 #install-modal.open{display:flex}
 #install-modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);animation:fadeIn .25s both}
@@ -135,11 +135,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .inst-btn{width:100%;background:#1565c0;color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:20px}
 .inst-btn:hover{background:#0d47a1}
 
-/* ââ PLAN TOTAL ROW ââ */
+/* ── PLAN TOTAL ROW ── */
 .plan-total-row{display:flex;align-items:center;justify-content:space-between;background:#eef2ff;border-radius:10px;padding:9px 12px;margin-top:8px}
 .plan-total-val{font-size:16px;font-weight:700;color:#1565c0}
 
-/* ââ SAVINGS GOALS ââ */
+/* ── SAVINGS GOALS ── */
 .save-goal-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .save-goal-row .goal-name{flex:1;min-width:0;font-size:13px}
 .save-goal-row .goal-amt{width:108px;flex-shrink:0;font-size:13px;text-align:right}
@@ -148,12 +148,12 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .add-goal-btn{width:100%;border:1.5px dashed #c0ccee;background:none;color:#1565c0;border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:.15s}
 .add-goal-btn:hover{background:#f0f4ff}
 
-/* ââ TOAST ââ */
+/* ── TOAST ── */
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1565c0;color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;text-align:center;max-width:320px;line-height:1.5}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.success{background:#16a34a}
 #toast.error{background:#dc2626}
-/* ââ SAVE OVERLAY ââ */
+/* ── SAVE OVERLAY ── */
 #save-overlay{position:fixed;inset:0;z-index:99997;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(3px)}
 #save-overlay.open{display:flex}
 #save-overlay-box{background:#fff;border-radius:20px;padding:28px 36px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.2)}
@@ -161,11 +161,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 @keyframes spin{to{transform:rotate(360deg)}}
 #save-overlay-msg{font-size:14px;font-weight:500;color:#1a1a2e}
 
-/* ââ PROGRESS BAR ââ */
+/* ── PROGRESS BAR ── */
 .prog-bar{height:3px;background:#e0e7f0;border-radius:2px;margin-top:8px;overflow:hidden;display:none}
 .prog-fill{height:100%;background:#1565c0;width:0%;transition:width .3s}
 
-/* ââ UPLOAD ââ */
+/* ── UPLOAD ── */
 #upload-zone{background:#fff;border:2px dashed #b0c4e8;border-radius:16px;padding:32px 16px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:14px}
 #upload-zone:hover,#upload-zone.drag{border-color:#1565c0;background:#f0f5ff}
 #upload-zone .uz-icon{font-size:36px;margin-bottom:8px;color:#7090b0}#upload-zone h3{color:#7090b0;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}#upload-zone p{color:#7090b0;font-size:12px;margin:0}
@@ -180,7 +180,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 #remove-file{display:none;position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;color:#fff;font-size:18px;line-height:1;cursor:pointer;z-index:5;align-items:center;justify-content:center;padding:0;font-weight:300}
 #remove-file:hover{background:rgba(0,0,0,0.7)}
 
-/* ââ BUDGET OVERVIEW ââ */
+/* ── BUDGET OVERVIEW ── */
 .budget-hero{background:linear-gradient(135deg,#1565c0,#1e88e5);border-radius:18px;padding:22px 20px;color:#fff;margin-bottom:16px}
 .bh-label{font-size:12px;opacity:.8;margin-bottom:4px}
 .bh-amount{font-size:36px;font-weight:700;letter-spacing:-.02em}
@@ -202,7 +202,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .cat-amounts{font-size:12px;color:#888;text-align:right;white-space:nowrap;min-width:110px}
 .cat-over{color:#dc2626}
 
-/* ââ GOALS ââ */
+/* ── GOALS ── */
 .goal-card{background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:16px;margin-bottom:10px}
 .goal-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .goal-name{font-size:14px;font-weight:600}
@@ -216,7 +216,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .goal-fill.loan{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
 .goal-pct{font-size:12px;color:#888}
 
-/* ââ GALLERY ââ */
+/* ── GALLERY ── */
 #gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
 .g-card{position:relative}
 .g-del-btn{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;color:#fff;font-size:16px;line-height:1;cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center;padding:0;font-weight:300}
@@ -231,23 +231,23 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .g-amt{font-size:12px;font-weight:600;color:#1565c0;flex-shrink:0}
 .g-kat{font-size:11px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.g-date{font-size:11px;color:#888;flex-shrink:0}
 
-/* ââ PROFILE ââ */
+/* ── PROFILE ── */
 .plan-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f2f8}
 .plan-row:last-child{border-bottom:none}
 .plan-label{flex:1;font-size:13px}
 .plan-input{width:90px;padding:6px 10px;font-size:13px;border:1.5px solid #e0e7f0;border-radius:8px;font-family:inherit;text-align:right}
 .plan-input:focus{outline:none;border-color:#1565c0}
 
-/* ââ MONTH NAV ââ */
+/* ── MONTH NAV ── */
 .month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;background:#fff;border-radius:14px;padding:10px 16px;box-shadow:0 1px 6px rgba(21,101,192,.08)}
 .month-nav-btn{background:none;border:none;font-size:26px;cursor:pointer;color:#1565c0;padding:0 6px;line-height:1;font-weight:300}
 .month-nav-btn:disabled{color:#c8d6e8;cursor:default}
 .month-nav-label{font-size:15px;font-weight:600;color:#1565c0}
-/* ââ MONTH PLAN PANEL ââ */
+/* ── MONTH PLAN PANEL ── */
 .month-plan-panel{background:#fff;border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:0 1px 8px rgba(21,101,192,.06)}
 .month-plan-panel > summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;list-style:none;font-size:13px;font-weight:600;color:#1565c0;letter-spacing:.05em;text-transform:uppercase}
 .month-plan-panel > summary::-webkit-details-marker{display:none}
-.month-plan-panel > summary::after{content:'â';font-size:20px;font-weight:700;color:#1565c0;transition:transform .2s;display:inline-block;line-height:1;margin-top:-2px}
+.month-plan-panel > summary::after{content:'⌄';font-size:22px;font-weight:700;color:#1565c0;transition:transform .2s;display:inline-block;line-height:1;margin-top:-2px}
 .month-plan-panel[open] > summary::after{transform:rotate(180deg)}
 .collapsible-card{background:#fff;border-radius:16px;margin-bottom:16px;box-shadow:0 1px 8px rgba(21,101,192,.06);overflow:hidden}
 .collapsible-summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;list-style:none;font-size:13px;font-weight:600;color:#1565c0;letter-spacing:.05em;text-transform:uppercase}
@@ -257,10 +257,10 @@ details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(18
 .month-plan-body{padding:0 16px 14px}
 .month-plan-section{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px}
 .month-plan-footer{display:flex;gap:10px;margin-top:14px}
-/* ââ SETUP BANNER ââ */
+/* ── SETUP BANNER ── */
 #setup-banner{background:#fff3cd;border:1px solid #ffc107;border-radius:12px;padding:12px 16px;margin:10px 16px;font-size:12px;color:#856404;line-height:1.6;display:none}
 
-/* ââ COSTS CARD ââ */
+/* ── COSTS CARD ── */
 .drag-handle{cursor:grab;color:#cbd5e1;font-size:18px;padding:0 4px 0 0;touch-action:none;user-select:none;flex-shrink:0;line-height:1}
 .drag-handle:active{cursor:grabbing;color:#94a3b8}
 .save-goal-row.dragging{opacity:.35}
@@ -274,7 +274,7 @@ details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(18
 .costs-total-row{display:flex;align-items:center;justify-content:space-between;background:#f0f4ff;border-radius:10px;padding:11px 14px;margin-top:4px}
 .costs-total-label{font-size:13px;font-weight:700;color:#1a1a2e}
 .costs-total-val{font-size:16px;font-weight:700;color:#1565c0}
-/* ââ CARD TITLE ROW ââ */
+/* ── CARD TITLE ROW ── */
 .card-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .card-title-row .card-title{margin-bottom:0;font-size:13px;font-weight:600;color:#1565c0;text-transform:uppercase;letter-spacing:.05em}
 .card-drive-link{font-size:18px;text-decoration:none;opacity:.6;transition:.15s;line-height:1}
@@ -296,7 +296,7 @@ details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(18
 .drawer-handle{width:40px;height:4px;background:#e0e7f0;border-radius:2px;margin:0 auto 18px}
 .drawer-title{font-size:13px;font-weight:600;color:#1565c0;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px}
 .recent-toggle:hover{background:#f0f4ff}
-/* ââ HELPERS ââ */
+/* ── HELPERS ── */
 .section-title{font-size:15px;font-weight:600;margin-bottom:12px;color:#1a1a2e}
 .empty-state{text-align:center;padding:28px 0;color:#aaa;font-size:13px}
 .chip{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;background:#e0e7ff;color:#3730a3;margin-right:4px}
@@ -308,7 +308,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 <!-- SPLASH SCREEN -->
 <div id="splash">
   <img src="ikonica-glavna.png" class="splash-logo" alt="">
-  <div class="splash-title">Ima se moÅ¾e se</div>
+  <div class="splash-title">Ima se može se</div>
   <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
@@ -326,16 +326,16 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 <div id="install-modal">
   <div id="install-modal-bg" onclick="hideInstallModal()"></div>
   <div id="install-modal-box">
-    <button id="install-modal-close" onclick="hideInstallModal()">â</button>
+    <button id="install-modal-close" onclick="hideInstallModal()">✕</button>
     <div id="install-modal-content"></div>
   </div>
 </div>
 
 <!-- HEADER -->
 <div id="header" style="display:none">
-  <h1 id="header-title">Ima se moÅ¾e se</h1>
+  <h1 id="header-title">Ima se može se</h1>
   <div id="user-row">
-    <button id="install-btn" title="Dodaj na poÄetni zaslon">â¬ Instaliraj</button>
+    <button id="install-btn" title="Dodaj na početni zaslon">⬇ Instaliraj</button>
     <img id="user-avatar" src="" alt="">
     <span id="user-name"></span>
     <button id="sign-out">Odjava</button>
@@ -344,7 +344,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
 <!-- SETUP BANNER -->
 <div id="setup-banner">
-  Postavi <strong>Google Cloud projekt</strong>: console.cloud.google.com â New Project â Enable: Google Sheets API + Google Drive API â Credentials â OAuth 2.0 Web Client â zamijeni <code>TVOJ_CLIENT_ID</code> u kodu.
+  Postavi <strong>Google Cloud projekt</strong>: console.cloud.google.com → New Project → Enable: Google Sheets API + Google Drive API → Credentials → OAuth 2.0 Web Client → zamijeni <code>TVOJ_CLIENT_ID</code> u kodu.
 </div>
 
 <!-- BOTTOM NAV -->
@@ -365,69 +365,69 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </div>
 </div>
 
-<!-- ââ LOGIN ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+<!-- ══ LOGIN ══════════════════════════════════════════════════════════ -->
 <div class="screen active" id="s-login">
   <div id="login-card">
-    <img src="ikonica-glavna.png" class="login-logo" alt="Ima se moÅ¾e se">
-    <h2>Ima se moÅ¾e se</h2>
-    <p>Prati prihode, planiraj troÅ¡kove, Å¡tedi za ciljeve â sve na jednom mjestu.</p>
+    <img src="ikonica-glavna.png" class="login-logo" alt="Ima se može se">
+    <h2>Ima se može se</h2>
+    <p>Prati prihode, planiraj troškove, štedi za ciljeve — sve na jednom mjestu.</p>
     <button id="google-btn" onclick="signIn()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-      Prijavi se s Google raÄunom
+      Prijavi se s Google računom
     </button>
     <div class="feats">
-      <div class="feat"><div class="feat-dot"></div>Fotografiraj raÄune â automatski u Sheets</div>
-      <div class="feat"><div class="feat-dot"></div>Plan vs stvarna potroÅ¡nja po kategoriji</div>
-      <div class="feat"><div class="feat-dot"></div>Ciljevi Å¡tednje, rate i krediti</div>
+      <div class="feat"><div class="feat-dot"></div>Fotografiraj račune — automatski u Sheets</div>
+      <div class="feat"><div class="feat-dot"></div>Plan vs stvarna potrošnja po kategoriji</div>
+      <div class="feat"><div class="feat-dot"></div>Ciljevi štednje, rate i krediti</div>
       <div class="feat"><div class="feat-dot"></div>Radi na mobu i desktopu, tvoji podaci</div>
     </div>
   </div>
 </div>
 
-<!-- ââ ONBOARDING âââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+<!-- ══ ONBOARDING ═════════════════════════════════════════════════════ -->
 <div id="s-onboarding">
   <div id="onboard-card">
 
     <!-- Korak 1: Prihodi -->
     <div class="ob-step active" id="ob1">
       <div class="ob-title">Postavi profil</div>
-      <div class="ob-sub">Ovo moÅ¾eÅ¡ uvijek promijeniti u Profilu.</div>
+      <div class="ob-sub">Ovo možeš uvijek promijeniti u Profilu.</div>
       <div class="field">
-        <label>Mjesecni prihod (neto, â¬)</label>
-        <div class="euro-wrap"><span>â¬</span><input type="number" id="ob-income" placeholder="0.00" step="0.01" inputmode="decimal"></div>
+        <label>Mjesecni prihod (neto, €)</label>
+        <div class="euro-wrap"><span>€</span><input type="number" id="ob-income" placeholder="0.00" step="0.01" inputmode="decimal"></div>
       </div>
       <div class="field">
-        <label>Stanarina / najamnina (â¬)</label>
-        <div class="euro-wrap"><span>â¬</span><input type="number" id="ob-stanarina" placeholder="0.00" step="0.01" inputmode="decimal"></div>
+        <label>Stanarina / najamnina (€)</label>
+        <div class="euro-wrap"><span>€</span><input type="number" id="ob-stanarina" placeholder="0.00" step="0.01" inputmode="decimal"></div>
       </div>
       <div class="field">
-        <label>Rezije, internet, strujaâ¦ (â¬)</label>
-        <div class="euro-wrap"><span>â¬</span><input type="number" id="ob-rezije" placeholder="0.00" step="0.01" inputmode="decimal"></div>
+        <label>Rezije, internet, struja… (€)</label>
+        <div class="euro-wrap"><span>€</span><input type="number" id="ob-rezije" placeholder="0.00" step="0.01" inputmode="decimal"></div>
       </div>
       <div class="field">
-        <label>Osiguranje, pretplate (â¬)</label>
-        <div class="euro-wrap"><span>â¬</span><input type="number" id="ob-pretplate" placeholder="0.00" step="0.01" inputmode="decimal"></div>
+        <label>Osiguranje, pretplate (€)</label>
+        <div class="euro-wrap"><span>€</span><input type="number" id="ob-pretplate" placeholder="0.00" step="0.01" inputmode="decimal"></div>
       </div>
     </div>
 
-    <!-- Korak 2: Varijabilni troÅ¡kovi -->
+    <!-- Korak 2: Varijabilni troškovi -->
     <div class="ob-step" id="ob2">
-      <div class="ob-title">Okvirni plan troÅ¡kova</div>
-      <div class="ob-sub">Koliko okvirno misliÅ¡ troÅ¡iti po kategoriji?</div>
-      <div class="field"><label>Hrana i kupovina (â¬)</label><div class="euro-wrap"><span>â¬</span><input type="number" id="ob-food" placeholder="0.00" step="0.01" inputmode="decimal"></div></div>
-      <div class="field"><label>Gorivo / prijevoz (â¬)</label><div class="euro-wrap"><span>â¬</span><input type="number" id="ob-fuel" placeholder="0.00" step="0.01" inputmode="decimal"></div></div>
-      <div class="field"><label>Kucni ljubimci (â¬)</label><div class="euro-wrap"><span>â¬</span><input type="number" id="ob-pets" placeholder="0.00" step="0.01" inputmode="decimal"></div></div>
-      <div class="field"><label>Ostalo (â¬)</label><div class="euro-wrap"><span>â¬</span><input type="number" id="ob-other" placeholder="0.00" step="0.01" inputmode="decimal"></div></div>
+      <div class="ob-title">Okvirni plan troškova</div>
+      <div class="ob-sub">Koliko okvirno misliš trošiti po kategoriji?</div>
+      <div class="field"><label>Hrana i kupovina (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="ob-food" placeholder="0.00" step="0.01" inputmode="decimal"></div></div>
+      <div class="field"><label>Gorivo / prijevoz (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="ob-fuel" placeholder="0.00" step="0.01" inputmode="decimal"></div></div>
+      <div class="field"><label>Kucni ljubimci (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="ob-pets" placeholder="0.00" step="0.01" inputmode="decimal"></div></div>
+      <div class="field"><label>Ostalo (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="ob-other" placeholder="0.00" step="0.01" inputmode="decimal"></div></div>
     </div>
 
     <!-- Korak 3: Gotovo -->
     <div class="ob-step" id="ob3">
       <div class="ob-title">Sve je postavljeno!</div>
       <div class="ob-sub">Pocni dodavati racune ili pregledaj plan.</div>
-      <div style="text-align:center;padding:10px 0 20px;font-size:40px">â</div>
+      <div style="text-align:center;padding:10px 0 20px;font-size:40px">✓</div>
       <p style="font-size:13px;color:#666;line-height:1.7;margin-bottom:20px">
-        Prihode i plan troÅ¡kova moÅ¾eÅ¡ mijenjati u <strong>Profilu</strong>.<br>
-        Ciljeve Å¡tednje i rate dodajeÅ¡ pod <strong>Ciljevi</strong>.
+        Prihode i plan troškova možeš mijenjati u <strong>Profilu</strong>.<br>
+        Ciljeve štednje i rate dodaješ pod <strong>Ciljevi</strong>.
       </p>
     </div>
 
@@ -445,7 +445,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </div>
 </div>
 
-<!-- ââ SKENER TAB âââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+<!-- ══ SKENER TAB ═════════════════════════════════════════════════════ -->
 <div class="screen" id="s-skener">
 
   <div id="upload-zone"
@@ -454,18 +454,18 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
        ondragleave="this.classList.remove('drag')"
        ondrop="handleDrop(event)">
     <div class="uz-icon">+</div>
-    <h3>DODAJ RAÄUN</h3>
-    <p>fotografiraj, odaberi iz galerije ili priloÅ¾i PDF</p>
+    <h3>DODAJ RAČUN</h3>
+    <p>fotografiraj, odaberi iz galerije ili priloži PDF</p>
     <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
   </div>
   <div id="img-preview-wrap" style="position:relative;display:none;width:100%">
     <img id="receipt-preview" onclick="document.getElementById('file-input').click()">
     <div id="pdf-preview" onclick="document.getElementById('file-input').click()">
-      <div class="pdf-icon">ð</div>
+      <div class="pdf-icon">📄</div>
       <div class="pdf-name" id="pdf-name"></div>
       <div style="font-size:12px;color:#94a3b8;margin-top:4px">Klikni za zamjenu</div>
     </div>
-    <button id="remove-file" onclick="removeSelectedFile()">Ã</button>
+    <button id="remove-file" onclick="removeSelectedFile()">×</button>
   </div>
 
   <div class="card">
@@ -481,14 +481,14 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
     <div class="field">
       <label>Iznos</label>
-      <div class="euro-suffix"><input type="text" id="meta-amount" class="field-input" placeholder="0,00" inputmode="decimal"><span>â¬</span></div>
+      <div class="euro-suffix"><input type="text" id="meta-amount" class="field-input" placeholder="0,00" inputmode="decimal"><span>€</span></div>
     </div>
     <div class="field">
       <label>Kategorija</label>
       <select id="meta-cat">
         <optgroup label="Stanovanje">
           <option value="Stanarina">Stanarina</option>
-          <option value="Rezije">ReÅ¾ije</option>
+          <option value="Rezije">Režije</option>
                               <option value="Dom">Dom</option>
         </optgroup>
         <optgroup label="Svakodnevno">
@@ -497,7 +497,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
           <option value="Pets">Ljubimci</option>
           <option value="Beauty">Kozmetika</option>
           <option value="Zdravlje">Zdravlje</option>
-          <option value="Odijelo">OdjeÄa</option>
+          <option value="Odijelo">Odjeća</option>
           <option value="Prijevoz">Prijevoz</option>
         </optgroup>
         <optgroup label="Interesi">
@@ -509,7 +509,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
         </optgroup>
         <optgroup label="Financije">
           <option value="Debt">Kredit</option>
-          <option value="Savings">Å tednja</option>
+          <option value="Savings">Štednja</option>
         </optgroup>
         <option value="Other">Ostalo</option>
       </select>
@@ -526,37 +526,37 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
   <hr class="divider">
   <details class="collapsible-card" id="gallery-panel">
-  <summary class="collapsible-summary">RaÄuni ovog mjeseca</summary>
-  <div id="gallery-grid" style="padding:0 16px 16px"><div class="empty-state">Nema joÅ¡ unesenih raÄuna.</div></div>
+  <summary class="collapsible-summary">Računi ovog mjeseca</summary>
+  <div id="gallery-grid" style="padding:0 16px 16px"><div class="empty-state">Nema još unesenih računa.</div></div>
 </details>
 
 </div>
 
-<!-- ââ PREGLED TAB ââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+<!-- ══ PREGLED TAB ════════════════════════════════════════════════════ -->
 <div class="screen" id="s-pregled">
 
   <div class="month-nav">
-    <button class="month-nav-btn" id="prev-month-btn" onclick="changeViewMonth(-1)">â¹</button>
+    <button class="month-nav-btn" id="prev-month-btn" onclick="changeViewMonth(-1)">‹</button>
     <span class="month-nav-label" id="month-nav-label">Svibanj 2026</span>
-    <button class="month-nav-btn" id="next-month-btn" onclick="changeViewMonth(1)">âº</button>
+    <button class="month-nav-btn" id="next-month-btn" onclick="changeViewMonth(1)">›</button>
   </div>
 
   <div class="budget-hero" id="budget-hero">
-    <div class="bh-label">Ukupno potroÅ¡eno ovaj mjesec:</div>
-    <div class="bh-amount" id="bh-spent">â¬ 0.00</div>
-    <div class="bh-sub" id="bh-sub">od planiranih â¬ 0.00</div>
+    <div class="bh-label">Ukupno potrošeno ovaj mjesec:</div>
+    <div class="bh-amount" id="bh-spent">€ 0.00</div>
+    <div class="bh-sub" id="bh-sub">od planiranih € 0.00</div>
     <div class="bh-row">
       <div class="bh-stat">
         <div class="bh-stat-label">Prihod</div>
-        <div class="bh-stat-val" id="bh-income">0 â¬</div>
+        <div class="bh-stat-val" id="bh-income">0 €</div>
       </div>
       <div class="bh-stat">
         <div class="bh-stat-label">Preostalo</div>
-        <div class="bh-stat-val" id="bh-left">0 â¬</div>
+        <div class="bh-stat-val" id="bh-left">0 €</div>
       </div>
       <div class="bh-stat">
         <div class="bh-stat-label">Stednja</div>
-        <div class="bh-stat-val" id="bh-savings">0 â¬</div>
+        <div class="bh-stat-val" id="bh-savings">0 €</div>
       </div>
     </div>
   </div>
@@ -568,19 +568,19 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
   <details class="card collapsible-card" id="cat-panel">
     <summary class="collapsible-summary">Pregled po kategorijama</summary>
-    <div id="cat-list"><div class="empty-state">UÄitavamâ¦</div></div>
+    <div id="cat-list"><div class="empty-state">Učitavam…</div></div>
   </details>
 
   <details class="card collapsible-card" id="receipts-panel">
-    <summary class="collapsible-summary"><span>RaÄuni ovog mjeseca</span></summary>
-      <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder">ð</a>
+    <summary class="collapsible-summary"><span>Računi ovog mjeseca</span></summary>
+      <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder">📁</a>
     <div id="recent-list"><div class="empty-state">Nema podataka.</div></div>
-    <button class="recent-toggle" id="recent-toggle-btn" style="display:none" onclick="toggleRecentList()">PrikaÅ¾i sve â</button>
+    <button class="recent-toggle" id="recent-toggle-btn" style="display:none" onclick="toggleRecentList()">Prikaži sve ↓</button>
   </details>
 
 </div>
 
-<!-- ââ CILJEVI TAB ââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+<!-- ══ CILJEVI TAB ════════════════════════════════════════════════════ -->
 <div class="screen" id="s-ciljevi">
 
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -600,23 +600,23 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="field">
       <label>Vrsta</label>
       <select id="gf-type" onchange="toggleGoalType()">
-        <option value="savings">Stednja â stediÅ¡ za neÅ¡to</option>
-        <option value="loan">Rata / kredit â otplacujes</option>
+        <option value="savings">Stednja — stediš za nešto</option>
+        <option value="loan">Rata / kredit — otplacujes</option>
       </select>
     </div>
     <div id="gf-savings-fields">
       <div class="row2">
-        <div class="field"><label>Cilj (â¬)</label><div class="euro-wrap"><span>â¬</span><input type="number" id="gf-target" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
-        <div class="field"><label>Trenutno (â¬)</label><div class="euro-wrap"><span>â¬</span><input type="number" id="gf-current" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
+        <div class="field"><label>Cilj (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-target" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
+        <div class="field"><label>Trenutno (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-current" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
       </div>
-      <div class="field"><label>Uplata (mj/â¬)</label><div class="euro-wrap"><span>â¬</span><input type="number" id="gf-monthly-save" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
+      <div class="field"><label>Uplata (mj/€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-monthly-save" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
     </div>
     <div id="gf-loan-fields" style="display:none">
       <div class="row2">
-        <div class="field"><label>Rata (mj/â¬)</label><div class="euro-wrap"><span>â¬</span><input type="number" id="gf-monthly-loan" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
+        <div class="field"><label>Rata (mj/€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-monthly-loan" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
         <div class="field"><label>Preostalo rata</label><input type="number" id="gf-remaining" placeholder="npr. 18" min="1"></div>
       </div>
-      <div class="field"><label>Ukupni dug (â¬)</label><div class="euro-wrap"><span>â¬</span><input type="number" id="gf-total-loan" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
+      <div class="field"><label>Ukupni dug (€)</label><div class="euro-wrap"><span>€</span><input type="number" id="gf-total-loan" step="0.01" placeholder="0.00" inputmode="decimal"></div></div>
     </div>
     <div class="field"><label>Opis (opcionalno)</label><input type="text" id="gf-desc" placeholder="napomena"></div>
     <div style="display:flex;gap:10px;margin-top:6px">
@@ -628,63 +628,63 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
 </div>
 
-<!-- ââ PROFIL TAB âââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+<!-- ══ PROFIL TAB ═════════════════════════════════════════════════════ -->
 <div class="screen" id="s-profil">
 
   <div class="card">
-    <div class="card-title">Prihodi (mj/â¬)</div>
+    <div class="card-title">Prihodi (mj/€)</div>
     <div id="income-list"></div>
     <button type="button" class="add-goal-btn" onclick="addIncomeGoal()">+ Dodaj prihod</button>
     <div class="plan-total-row" style="margin-top:10px">
       <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupni prihodi</span>
-      <span class="plan-total-val" id="p-income-total">â</span>
+      <span class="plan-total-val" id="p-income-total">—</span>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title" style="margin-bottom:4px">TroÅ¡kovi (mj/â¬)</div>
+    <div class="card-title" style="margin-bottom:4px">Troškovi (mj/€)</div>
 
     <div class="costs-section-title">Fiksni</div>
     <div id="fixed-list"></div>
-    <button type="button" class="add-goal-btn" onclick="addFixedGoal()">+ Dodaj fiksni troÅ¡ak</button>
+    <button type="button" class="add-goal-btn" onclick="addFixedGoal()">+ Dodaj fiksni trošak</button>
     <div class="costs-subtotal">
       <span class="costs-subtotal-label">Ukupno fiksni</span>
-      <span class="costs-subtotal-val" id="p-fixed-total">â</span>
+      <span class="costs-subtotal-val" id="p-fixed-total">—</span>
     </div>
 
 
     <div class="costs-section-title" style="margin-top:24px">Varijabilni</div>
     <div id="variable-list"></div>
-    <button type="button" class="add-goal-btn" onclick="addVariableGoal()">+ Dodaj varijabilni troÅ¡ak</button>
+    <button type="button" class="add-goal-btn" onclick="addVariableGoal()">+ Dodaj varijabilni trošak</button>
     <div class="costs-subtotal">
       <span class="costs-subtotal-label">Ukupno varijabilni</span>
-      <span class="costs-subtotal-val" id="p-variable-total">â</span>
+      <span class="costs-subtotal-val" id="p-variable-total">—</span>
     </div>
 
     <div class="costs-total-row" style="margin-top:12px">
-      <span class="costs-total-label">Ukupni troÅ¡kovi</span>
-      <span class="costs-total-val" id="p-costs-total">â</span>
+      <span class="costs-total-label">Ukupni troškovi</span>
+      <span class="costs-total-val" id="p-costs-total">—</span>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">Å tednja (mj/â¬)</div>
+    <div class="card-title">Štednja (mj/€)</div>
     <div id="save-goals-list"></div>
-    <button type="button" class="add-goal-btn" onclick="addSavingsGoal()">+ Dodaj cilj Å¡tednje</button>
+    <button type="button" class="add-goal-btn" onclick="addSavingsGoal()">+ Dodaj cilj štednje</button>
     <div class="plan-total-row" style="margin-top:10px">
-      <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupna Å¡tednja</span>
-      <span class="plan-total-val" id="p-save-total">â</span>
+      <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupna štednja</span>
+      <span class="plan-total-val" id="p-save-total">—</span>
     </div>
   </div>
 
   <button class="btn btn-primary" id="profile-save-btn" onclick="saveProfile()">Spremi profil</button>
-  <button class="btn-outline" style="width:100%;margin-top:8px;font-size:12px;color:#94a3b8;border-color:#e2e8f0" onclick="manualSheetConnect()">ð PoveÅ¾i postojeÄu tablicu</button>
+  <button class="btn-outline" style="width:100%;margin-top:8px;font-size:12px;color:#94a3b8;border-color:#e2e8f0" onclick="manualSheetConnect()">🔗 Poveži postojeću tablicu</button>
 
 </div>
 
-<!-- ââââââââââââââââââââââââââ SCRIPT ââââââââââââââââââââââââââââââââ -->
+<!-- ══════════════════════════ SCRIPT ════════════════════════════════ -->
 <script>
-// ââ CONFIG ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── CONFIG ──────────────────────────────────────────────────────────
 const CLIENT_ID  = '409386581085-b0oped5kgb2smih4jbh7ss5jge42pnq8.apps.googleusercontent.com';
 const SCOPES     = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.profile';
 const MONTHS_HR  = ['Sijecanj','Veljaca','Ozujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];
@@ -693,7 +693,7 @@ function curYear()  { return new Date().getFullYear(); }
 function curMonth() { return MONTHS_HR[new Date().getMonth()]; }
 function yearTitle(){ return `Moje Financije ${curYear()}`; }
 
-// ââ STATE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── STATE ────────────────────────────────────────────────────────────
 let token          = null;
 let tokenClient    = null;
 let deferredInstall= null;       // PWA install prompt event
@@ -711,7 +711,7 @@ let currentImgFile = null;
 let currentImgSrc  = null;
 let obCurrentStep  = 1;
 
-// ââ PWA INSTALL ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── PWA INSTALL ──────────────────────────────────────────────────────
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredInstall = e;
@@ -721,7 +721,7 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('install-btn').classList.remove('visible');
   deferredInstall = null;
   localStorage.setItem('mf_install_shown', '1');
-  showToast('Aplikacija je dodana na poÄetni zaslon! ð');
+  showToast('Aplikacija je dodana na početni zaslon! 🎉');
 });
 
 // Registriraj service worker
@@ -731,9 +731,9 @@ if('serviceWorker' in navigator){
 
 const CAT_HR = {
   Food:'Hrana', Pets:'Ljubimci', Fuel:'Auto', Software:'Pretplate', Beauty:'Kozmetika',
-  Stanarina:'Stanarina', Rezije:'ReÅ¾ije', 'T-com':'Internet',
-  Allianz:'Osiguranje', Debt:'Kredit', Zdravlje:'Zdravlje', Odijelo:'OdjeÄa', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
-  Savings:'Å tednja', Other:'Ostalo'
+  Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
+  Allianz:'Osiguranje', Debt:'Kredit', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
+  Savings:'Štednja', Other:'Ostalo'
 };
 const CAT_COLORS = {
   Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
@@ -742,8 +742,8 @@ const CAT_COLORS = {
   Savings:'#10b981', Other:'#94a3b8'
 };
 
-// ââ INIT âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// Spoji sve onclick gumbe s addEventListener â MetaMask SES ne moÅ¾e blokirati ovo
+// ── INIT ─────────────────────────────────────────────────────────────
+// Spoji sve onclick gumbe s addEventListener — MetaMask SES ne može blokirati ovo
 function wireButtons(){
   const on = (id, fn) => { const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
   on('google-btn',  () => signIn());
@@ -769,11 +769,11 @@ function _appInit(){
   wireButtons();
   // Je li Google redirectao natrag s tokenom u URL-u?
   if(checkOAuthReturn()) return;
-  // PrikaÅ¾i odgovarajuÄi UI (ne ovisi o Google librariju)
+  // Prikaži odgovarajući UI (ne ovisi o Google librariju)
   tryAutoLogin();
 }
-// Pokrenuti init odmah ako je DOM veÄ spreman (MetaMask moÅ¾e odgoditi izvrÅ¡avanje skripte),
-// inaÄe priÄekati load event
+// Pokrenuti init odmah ako je DOM već spreman (MetaMask može odgoditi izvršavanje skripte),
+// inače pričekati load event
 if(document.readyState === 'loading'){
   window.addEventListener('load', _appInit);
 } else {
@@ -786,7 +786,7 @@ function fmtDateHR(iso){
   const [y,m,d] = iso.split('-');
   return d ? d.replace(/^0/,'')+'.'+m.replace(/^0/,'')+'.'+y+'.' : iso;
 }
-function eur(n){ return parseFloat(n||0).toFixed(2).replace('.',',') + ' â¬'; }
+function eur(n){ return parseFloat(n||0).toFixed(2).replace('.',',') + ' €'; }
 
 function showToast(msg, duration=4000, type=''){
   const t = document.getElementById('toast');
@@ -808,13 +808,13 @@ function hideSaveOverlay(){
 }
 function monthLabel(){ return curMonth() + ' ' + curYear(); }
 
-// ââ AUTH â Äisti redirect flow, nema GIS popupa, radi s MetaMask ââââââââ
+// ── AUTH — čisti redirect flow, nema GIS popupa, radi s MetaMask ────────
 
 function getRedirectUri(){
   return location.origin + location.pathname.replace(/\/+$/, '') + '/';
 }
 
-// Prijava: redirect na Google â Google vraÄa token u URL hash
+// Prijava: redirect na Google → Google vraća token u URL hash
 function signIn(){
   const hint = localStorage.getItem('mf_hint') || '';
   const params = new URLSearchParams({
@@ -842,43 +842,43 @@ function checkOAuthReturn(){
   }catch(e){ return false; }
 }
 
-// AÅ¾uriraj izgled gumba za vraÄajuÄeg korisnika
+// Ažuriraj izgled gumba za vraćajućeg korisnika
 function showResumeButton(email){
   const btn = document.getElementById('google-btn');
   if(!btn) return;
-  const short = email.length > 28 ? email.slice(0,25)+'â¦' : email;
+  const short = email.length > 28 ? email.slice(0,25)+'…' : email;
   btn.disabled = false;
   btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:18px"> Nastavi kao ' + short;
-  // onclick ne postavljamo â wireButtons() addEventListener poziva signIn() koji Äita mf_hint
+  // onclick ne postavljamo — wireButtons() addEventListener poziva signIn() koji čita mf_hint
 }
 
 function resetLoginBtn(){
   const btn = document.getElementById('google-btn');
   if(!btn) return;
   btn.disabled = false;
-  btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:18px"> Prijavi se s Google raÄunom';
-  // onclick ne postavljamo â wireButtons() addEventListener poziva signIn()
+  btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:18px"> Prijavi se s Google računom';
+  // onclick ne postavljamo — wireButtons() addEventListener poziva signIn()
 }
 
-// Init: provjeri stanje i prikaÅ¾i odgovarajuÄi UI (bez GIS poziva)
+// Init: provjeri stanje i prikaži odgovarajući UI (bez GIS poziva)
 function tryAutoLogin(){
   const wasLoggedIn = localStorage.getItem('mf_autologin');
   const hint        = localStorage.getItem('mf_hint') || '';
   splashAuthComplete();
   if(wasLoggedIn && hint){
-    showResumeButton(hint); // "Nastavi kao X" â klik â signIn() â redirect
+    showResumeButton(hint); // "Nastavi kao X" — klik → signIn() → redirect
   } else {
     resetLoginBtn();        // normalni login gumb
   }
 }
 
-// ââ INCOME GOALS (dynamic) ââââââââââââââââââââââââââââââââââââââââââââ
+// ── INCOME GOALS (dynamic) ────────────────────────────────────────────
 let incomeGoals = [];
 
-// ââ FORMAT ON BLUR âââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function fmtVal(v){ const n=parseFloat(v)||0; return n>0 ? n.toFixed(2).replace('.',',') + ' â¬' : ''; }
-function fmtParse(s){ return parseFloat((s||'').replace(/\s*â¬/,'').replace(',','.')) || 0; }
-function amtFocus(el){ el.value = el.value.replace(/\s*â¬/,''); el.select && el.select(); }
+// ── FORMAT ON BLUR ─────────────────────────────────────────────────────
+function fmtVal(v){ const n=parseFloat(v)||0; return n>0 ? n.toFixed(2).replace('.',',') + ' €' : ''; }
+function fmtParse(s){ return parseFloat((s||'').replace(/\s*€/,'').replace(',','.')) || 0; }
+function amtFocus(el){ el.value = el.value.replace(/\s*€/,''); el.select && el.select(); }
 function amtBlur(el,arr,i,fn){ const v=fmtParse(el.value); arr[i].amount=v; el.value=fmtVal(v); fn(); }
 function amtInput(el,arr,i){ arr[i].amount=fmtParse(el.value); }
 
@@ -887,14 +887,14 @@ function renderIncomeList(){
   if(!container) return;
   container.innerHTML = incomeGoals.map((g, i) => `
     <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">â ¿</span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. PlaÄa" oninput="incomeGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 â¬"
+      <span class="drag-handle">⠿</span>
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="incomeGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
         value="${fmtVal(g.amount)}"
         onfocus="amtFocus(this)"
         oninput="amtInput(this,incomeGoals,${i})"
         onblur="amtBlur(this,incomeGoals,${i},recalcIncome)">
-      <button class="save-goal-del" onclick="removeIncomeGoal(${i})" title="Ukloni">Ã</button>
+      <button class="save-goal-del" onclick="removeIncomeGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
   setupDragSort(container, incomeGoals, renderIncomeList);
@@ -921,10 +921,10 @@ function recalcIncome(){
   if(el) el.textContent = fmtVal(total);
 }
 
-// ââ GOAL â CATEGORY MAPPING (za Pregled budget bars) ââââââââââââââââââ
+// ── GOAL → CATEGORY MAPPING (za Pregled budget bars) ──────────────────
 const GOAL_TO_CAT = {
   'Stanarina':'Stanarina',
-  'ReÅ¾ije':'Rezije','Komunalije':'Rezije','Struja':'Rezije',
+  'Režije':'Rezije','Komunalije':'Rezije','Struja':'Rezije',
   'Internet':'T-com','T-com':'T-com',
   'Zdravstveno osiguranje':'Allianz','Osiguranje':'Allianz','Allianz':'Allianz',
   'Pretplate':'Software','Software':'Software','Netflix':'Software','Streaming':'Software',
@@ -935,7 +935,7 @@ const GOAL_TO_CAT = {
   'Ostalo':'Other','Other':'Other'
 };
 
-// ââ FIXED GOALS ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── FIXED GOALS ────────────────────────────────────────────────────────
 let fixedGoals = [];
 
 function renderFixedList(){
@@ -943,14 +943,14 @@ function renderFixedList(){
   if(!container) return;
   container.innerHTML = fixedGoals.map((g, i) => `
     <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">â ¿</span>
+      <span class="drag-handle">⠿</span>
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Stanarina" oninput="fixedGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 â¬"
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
         value="${fmtVal(g.amount)}"
         onfocus="amtFocus(this)"
         oninput="amtInput(this,fixedGoals,${i})"
         onblur="amtBlur(this,fixedGoals,${i},recalcFixed)">
-      <button class="save-goal-del" onclick="removeFixedGoal(${i})" title="Ukloni">Ã</button>
+      <button class="save-goal-del" onclick="removeFixedGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
   setupDragSort(container, fixedGoals, renderFixedList);
@@ -990,7 +990,7 @@ function totalFixed(){
   return (profileData.plan_Stanarina||0)+(profileData.plan_Rezije||0)+(profileData['plan_T-com']||0)+(profileData.plan_Allianz||0)+(profileData.plan_Software||0);
 }
 
-// ââ VARIABLE GOALS âââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── VARIABLE GOALS ─────────────────────────────────────────────────────
 let variableGoals = [];
 
 function renderVariableList(){
@@ -998,14 +998,14 @@ function renderVariableList(){
   if(!container) return;
   container.innerHTML = variableGoals.map((g, i) => `
     <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">â ¿</span>
+      <span class="drag-handle">⠿</span>
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Hrana" oninput="variableGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 â¬"
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
         value="${fmtVal(g.amount)}"
         onfocus="amtFocus(this)"
         oninput="amtInput(this,variableGoals,${i})"
         onblur="amtBlur(this,variableGoals,${i},recalcVariable)">
-      <button class="save-goal-del" onclick="removeVariableGoal(${i})" title="Ukloni">Ã</button>
+      <button class="save-goal-del" onclick="removeVariableGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
   setupDragSort(container, variableGoals, renderVariableList);
@@ -1038,7 +1038,7 @@ function totalVariable(){
   return (profileData.plan_Food||0)+(profileData.plan_Fuel||0)+(profileData.plan_Pets||0)+(profileData.plan_Other||0);
 }
 
-// ââ SAVINGS GOALS ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── SAVINGS GOALS ──────────────────────────────────────────────────────
 let savingsGoals = [];
 
 function renderSavingsGoals(){
@@ -1046,14 +1046,14 @@ function renderSavingsGoals(){
   if(!container) return;
   container.innerHTML = savingsGoals.map((g, i) => `
     <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">â ¿</span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. GodiÅ¡nji odmor" oninput="savingsGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 â¬"
+      <span class="drag-handle">⠿</span>
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Godišnji odmor" oninput="savingsGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
         value="${fmtVal(g.amount)}"
         onfocus="amtFocus(this)"
         oninput="amtInput(this,savingsGoals,${i})"
         onblur="amtBlur(this,savingsGoals,${i},recalcSavings)">
-      <button class="save-goal-del" onclick="removeSavingsGoal(${i})" title="Ukloni">Ã</button>
+      <button class="save-goal-del" onclick="removeSavingsGoal(${i})" title="Ukloni">×</button>
     </div>
   `).join('');
   setupDragSort(container, savingsGoals, renderSavingsGoals);
@@ -1120,7 +1120,7 @@ function splashAuthComplete(){
 // Fallback: sakrij splash nakon max 4 sekunde
 setTimeout(hideSplash, 4000);
 
-// ââ INSTALL MODAL ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── INSTALL MODAL ──────────────────────────────────────────────────────
 function showInstallModal(){
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
   if(isStandalone) return;
@@ -1135,19 +1135,19 @@ function showInstallModal(){
         <h2 class="inst-title">Dodaj na Home Screen</h2>
         <p class="inst-sub">Instaliraj app na iPhone/iPad u 2 koraka</p>
       </div>
-      <div class="inst-step"><div class="inst-num">1</div><div>Klikni <strong>Dijeli</strong> gumb u Safariju â ikona kvadrata sa strelicom gore (â) na dnu ekrana</div></div>
-      <div class="inst-step"><div class="inst-num">2</div><div>Skrolaj i odaberi <strong>"Dodaj na poÄetni zaslon"</strong> (Add to Home Screen)</div></div>
-      <div class="inst-note">â ï¸ Radi samo u <strong>Safariju</strong> â ako koristiÅ¡ Chrome na iPhoneu, otvori u Safariju</div>`;
+      <div class="inst-step"><div class="inst-num">1</div><div>Klikni <strong>Dijeli</strong> gumb u Safariju — ikona kvadrata sa strelicom gore (↑) na dnu ekrana</div></div>
+      <div class="inst-step"><div class="inst-num">2</div><div>Skrolaj i odaberi <strong>"Dodaj na početni zaslon"</strong> (Add to Home Screen)</div></div>
+      <div class="inst-note">⚠️ Radi samo u <strong>Safariju</strong> — ako koristiš Chrome na iPhoneu, otvori u Safariju</div>`;
   } else if(deferredInstall){
     const isAndroidDev = /Android/.test(navigator.userAgent);
     content.innerHTML = `
       <div class="inst-header">
-        <span class="inst-icon">â¬ï¸</span>
+        <span class="inst-icon">⬇️</span>
         <h2 class="inst-title">Instaliraj aplikaciju</h2>
-        <p class="inst-sub">Dodaj "Ima se, moÅ¾e se" na ${isAndroidDev ? 'Home Screen' : 'Desktop'} â radi offline, brÅ¾e se otvara</p>
+        <p class="inst-sub">Dodaj "Ima se, može se" na ${isAndroidDev ? 'Home Screen' : 'Desktop'} — radi offline, brže se otvara</p>
       </div>
-      <button class="inst-btn" onclick="installAppNow()">â¬ Instaliraj sada</button>
-      <div class="inst-note" style="margin-top:12px">Izgleda i radi kao prava aplikacija â bez browsera</div>`;
+      <button class="inst-btn" onclick="installAppNow()">⬇ Instaliraj sada</button>
+      <div class="inst-note" style="margin-top:12px">Izgleda i radi kao prava aplikacija — bez browsera</div>`;
   } else {
     return;
   }
@@ -1182,7 +1182,7 @@ async function onToken(resp){
     const hint = localStorage.getItem('mf_hint');
     const wasLoggedIn = localStorage.getItem('mf_autologin');
     if(wasLoggedIn && hint){
-      // Token istekao â pokaÅ¾i "Nastavi kao [email]" (klik Äe redirectati na Google)
+      // Token istekao — pokaži "Nastavi kao [email]" (klik će redirectati na Google)
       showResumeButton(hint);
     } else {
       resetLoginBtn();
@@ -1192,7 +1192,7 @@ async function onToken(resp){
   localStorage.setItem('mf_autologin', '1');
   token = resp.access_token;
 
-  // Dohvati korisniÄke podatke u pozadini (avatar, ime)
+  // Dohvati korisničke podatke u pozadini (avatar, ime)
   gfetch('https://www.googleapis.com/oauth2/v3/userinfo').then(me => {
     if(me.email) localStorage.setItem('mf_hint', me.email);
     document.getElementById('user-avatar').src = me.picture || '';
@@ -1202,20 +1202,20 @@ async function onToken(resp){
   document.getElementById('header').style.display = 'flex';
   document.getElementById('s-login').classList.remove('active');
 
-  // ââ VraÄajuÄi korisnik (sheetId je u lokalnoj memoriji) ââââââââââââââ
+  // ── Vraćajući korisnik (sheetId je u lokalnoj memoriji) ──────────────
   if(sheetId){
-    splashAuthComplete(); // splash moÅ¾e nestati
+    splashAuthComplete(); // splash može nestati
     showApp(); // odmah na Skener, bez onboardinga
-    // UÄitaj resurse i profil u pozadini
+    // Učitaj resurse i profil u pozadini
     ensureResources().catch(e => console.warn('bg ensureResources:', e));
     return;
   }
 
-  // ââ Novi korisnik â pokreni onboarding ââââââââââââââââââââââââââââââ
-  splashAuthComplete(); // splash moÅ¾e nestati
+  // ── Novi korisnik — pokreni onboarding ──────────────────────────────
+  splashAuthComplete(); // splash može nestati
   document.getElementById('s-onboarding').style.display = 'flex';
   document.getElementById('ob-next').disabled = true;
-  document.getElementById('ob-next').textContent = 'UÄitavam...';
+  document.getElementById('ob-next').textContent = 'Učitavam...';
 
   try { await ensureResources(); } catch(e) { console.warn('ensureResources:', e); }
 
@@ -1231,18 +1231,18 @@ async function onToken(resp){
 }
 
 function signOut(){
-  // Opozovi token ali ZADRÅ½I sve podatke (sheetId, hint, profil)
-  // â sljedeÄi put kad se prijavi, prepozna isti raÄun i nastavlja gdje je stala
+  // Opozovi token ali ZADRŽI sve podatke (sheetId, hint, profil)
+  // — sljedeći put kad se prijavi, prepozna isti račun i nastavlja gdje je stala
   if(token) google.accounts.oauth2.revoke(token);
   if(window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
   token = null;
-  // Ne briÅ¡emo: mf_autologin, mf_hint, mf_sheetId_*, mf_rootFolderId, itd.
-  // Samo resetiramo in-memory varijable (bit Äe uÄitane iz localStorage pri sljedeÄoj prijavi)
+  // Ne brišemo: mf_autologin, mf_hint, mf_sheetId_*, mf_rootFolderId, itd.
+  // Samo resetiramo in-memory varijable (bit će učitane iz localStorage pri sljedećoj prijavi)
   document.getElementById('header').style.display = 'none';
   document.getElementById('nav').style.display = 'none';
   document.getElementById('s-onboarding').style.display = 'none';
   showScreen('s-login');
-  // PokaÅ¾i "Nastavi kao [email]" odmah â ne treba klikati Google gumb od nule
+  // Pokaži "Nastavi kao [email]" odmah — ne treba klikati Google gumb od nule
   const hint = localStorage.getItem('mf_hint');
   if(hint){ showResumeButton(hint); } else { resetLoginBtn(); }
 }
@@ -1254,7 +1254,7 @@ function showApp(){
   maybeShowInstallModal();
 }
 
-// ââ NAVIGATION âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── NAVIGATION ───────────────────────────────────────────────────────
 const NAV_TABS = ['skener','pregled','ciljevi','profil'];
 
 function goTab(tab){
@@ -1264,7 +1264,7 @@ function goTab(tab){
   document.getElementById('s-'+tab).classList.add('active');
   document.getElementById('nav-'+tab).classList.add('active');
 
-  // Zamijeni ikone: aktivna â crna, ostale â bijela
+  // Zamijeni ikone: aktivna → crna, ostale → bijela
   NAV_TABS.forEach(t => {
     const el = document.getElementById('icon-'+t);
     if(el) el.src = `nav-${t}-${t === tab ? 'crni' : 'bijeli'}.png`;
@@ -1283,7 +1283,7 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
 }
 
-// ââ GOOGLE API âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── GOOGLE API ───────────────────────────────────────────────────────
 
 async function gfetch(url, opts={}){
   if(!opts.headers) opts.headers = {};
@@ -1292,10 +1292,10 @@ async function gfetch(url, opts={}){
   if(!r.ok){
     const txt = await r.text();
     if(r.status === 401){
-      throw new Error('Sesija je istekla â klikni Odjavi se i prijavi se opet.');
+      throw new Error('Sesija je istekla — klikni Odjavi se i prijavi se opet.');
     }
     if(r.status === 403 && url.includes('spreadsheets')){
-      // NE briÅ¡emo sheetId â 403 ne znaÄi da tablica ne postoji
+      // NE brišemo sheetId — 403 ne znači da tablica ne postoji
       throw new Error('Pristup tablici odbijen (403). Provjeri je li tablica dostupna ili se odjavi i prijavi ponovo.');
     }
     throw new Error(`${r.status}: ${txt}`);
@@ -1328,8 +1328,8 @@ async function setCell(ssId, sheet, cell, value){
   return writeRange(ssId, sheet+'!'+cell, [[value]]);
 }
 
-// ââ DRIVE FOLDERS ââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// Drive struktura: RaÄuni / 2026 / Svibanj
+// ── DRIVE FOLDERS ────────────────────────────────────────────────────
+// Drive struktura: Računi / 2026 / Svibanj
 async function findOrCreateFolder(name, parentId=null){
   let q = `mimeType='application/vnd.google-apps.folder' and name='${name}' and trashed=false`;
   if(parentId) q += ` and '${parentId}' in parents`;
@@ -1345,7 +1345,7 @@ async function findOrCreateFolder(name, parentId=null){
 
 async function ensureDriveFolders(){
   if(!rootFolderId){
-    rootFolderId = await findOrCreateFolder('RaÄuni');
+    rootFolderId = await findOrCreateFolder('Računi');
     localStorage.setItem('mf_rootFolderId', rootFolderId);
   }
   if(!yearFolderId){
@@ -1360,12 +1360,12 @@ async function ensureDriveFolders(){
   monthFolderId = monthFolderIds[mKey];
 }
 
-// ââ SPREADSHEET ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── SPREADSHEET ──────────────────────────────────────────────────────
 // Jedna tablica po godini, jedan tab po mjesecu s EXPENSE TRACKER layoutom
 async function ensureResources(){
   await ensureDriveFolders();
 
-  // Uvijek pronaÄi pravu tablicu po imenu (ne oslanjamo se samo na localStorage)
+  // Uvijek pronađi pravu tablicu po imenu (ne oslanjamo se samo na localStorage)
   const foundId = await findOrCreateYearSpreadsheet();
   if(foundId && foundId !== sheetId){
     sheetId = foundId;
@@ -1379,7 +1379,7 @@ async function ensureResources(){
 
 async function findOrCreateYearSpreadsheet(){
   const title = yearTitle();
-  // TraÅ¾i postojeÄu tablicu po imenu (drive scope)
+  // Traži postojeću tablicu po imenu (drive scope)
   try {
     const q = encodeURIComponent(`mimeType='application/vnd.google-apps.spreadsheet' and name='${title}'`);
     const r = await gfetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,modifiedTime)&orderBy=modifiedTime desc`);
@@ -1416,10 +1416,10 @@ async function ensureMonthSheet(monthName){
 
   // Inicijaliziraj EXPENSE TRACKER strukturu (isti raspored kao Excel)
   // Redak 1: naslov, redak 55: oznaka sekcije, redak 56: zaglavlje stupaca
-  // Podaci od retka 57 â B=datum, F=iznos, I=kategorija, L=biljeÅ¡ka
-  await writeRange(sheetId, `${monthName}!A1`, [[`BUDGET â ${monthName} ${curYear()}`]]);
-  await writeRange(sheetId, `${monthName}!A55`, [['ââ EXPENSE TRACKER ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ']]);
-  await writeRange(sheetId, `${monthName}!B56`, [['DATUM','','','','IZNOS','','','KATEGORIJA','','','BILJEÅ KA / DUÄAN']]);
+  // Podaci od retka 57 — B=datum, F=iznos, I=kategorija, L=bilješka
+  await writeRange(sheetId, `${monthName}!A1`, [[`BUDGET — ${monthName} ${curYear()}`]]);
+  await writeRange(sheetId, `${monthName}!A55`, [['── EXPENSE TRACKER ──────────────────────────────────────────────────────────────']]);
+  await writeRange(sheetId, `${monthName}!B56`, [['DATUM','','','','IZNOS','','','KATEGORIJA','','','BILJEŠKA / DUĆAN']]);
 }
 
 async function findNextTrackerRow(monthName){
@@ -1433,7 +1433,7 @@ async function findNextTrackerRow(monthName){
   }catch(e){ return 57; }
 }
 
-// ââ PROFILE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── PROFILE ──────────────────────────────────────────────────────────
 async function loadProfile(){
   try{
     const rows = await getRows(sheetId, 'Profil', 'A2:B100');
@@ -1460,18 +1460,18 @@ function fillProfileForm(){
   try { incomeGoals = JSON.parse(profileData.income_goals_json || 'null') || []; } catch(e){ incomeGoals = []; }
   if(incomeGoals.length === 0){
     // Migracija iz starog 3-polja formata
-    if((profileData.income||0) > 0)         incomeGoals.push({name:'PlaÄa',          amount: profileData.income});
+    if((profileData.income||0) > 0)         incomeGoals.push({name:'Plaća',          amount: profileData.income});
     if((profileData.income_side||0) > 0)    incomeGoals.push({name:'Freelance',       amount: profileData.income_side});
     if((profileData.income_passive||0) > 0) incomeGoals.push({name:'Pasivni prihodi', amount: profileData.income_passive});
   }
-  if(incomeGoals.length === 0) incomeGoals.push({name:'PlaÄa', amount: 0});
+  if(incomeGoals.length === 0) incomeGoals.push({name:'Plaća', amount: 0});
   renderIncomeList();
   // Fixed goals
   try { fixedGoals = JSON.parse(profileData.fixed_goals_json || 'null') || []; } catch(e){ fixedGoals = []; }
   if(fixedGoals.length === 0){
     const fDef = [
       {name:'Stanarina',           key:'plan_Stanarina'},
-      {name:'ReÅ¾ije',              key:'plan_Rezije'},
+      {name:'Režije',              key:'plan_Rezije'},
       {name:'Internet',            key:'plan_T-com'},
       {name:'Zdravstveno osiguranje', key:'plan_Allianz'},
       {name:'Pretplate',           key:'plan_Software'}
@@ -1490,7 +1490,7 @@ function fillProfileForm(){
   renderVariableList();
   try { savingsGoals = JSON.parse(profileData.save_goals_json || 'null') || []; } catch(e){ savingsGoals = []; }
   if(savingsGoals.length === 0 && (profileData.save_plan||0) > 0){
-    savingsGoals = [{name:'Å tednja', amount: profileData.save_plan}];
+    savingsGoals = [{name:'Štednja', amount: profileData.save_plan}];
   }
   if(savingsGoals.length === 0){
     savingsGoals = [{name:'Hitni fond', amount:0}];
@@ -1524,7 +1524,7 @@ async function saveProfile(){
   if(saveBtn) saveBtn.disabled = true;
   showSaveOverlay('Sprema se...');
   const doSave = async () => {
-    if(!sheetId){ hideSaveOverlay(); showSaveOverlay('UÄitavam resurse...'); await ensureResources(); }
+    if(!sheetId){ hideSaveOverlay(); showSaveOverlay('Učitavam resurse...'); await ensureResources(); }
     await saveProfileToSheet(data);
   };
   try{
@@ -1543,20 +1543,20 @@ async function saveProfile(){
         showToast('Sve je spremljeno!', 3500, 'success');
       }catch(e2){
         hideSaveOverlay();
-        showToast('GreÅ¡ka: ' + e2.message, 6000, 'error');
+        showToast('Greška: ' + e2.message, 6000, 'error');
       }
     } else {
       hideSaveOverlay();
-      showToast('GreÅ¡ka: ' + e.message, 6000, 'error');
+      showToast('Greška: ' + e.message, 6000, 'error');
     }
   } finally {
     if(saveBtn) saveBtn.disabled = false;
   }
 }
 
-// ââ ONBOARDING âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── ONBOARDING ───────────────────────────────────────────────────────
 async function obStep(dir){
-  // Poseban sluÄaj: zavrÅ¡etak koraka 3 ("Gotovo")
+  // Poseban slučaj: završetak koraka 3 ("Gotovo")
   if(dir > 0 && obCurrentStep === 3){
     // Spremi i otvori Skener
     const btn = document.getElementById('ob-next');
@@ -1575,7 +1575,7 @@ async function obStep(dir){
       await saveProfileToSheet(data);
     }catch(e){ console.warn('Profil nije spremnjen u sheet:', e); }
     showApp(); // prikazuje nav i otvara Skener tab
-    showToast('Podaci su spremljeni! Uvijek ih moÅ¾eÅ¡ promijeniti u Profilu.');
+    showToast('Podaci su spremljeni! Uvijek ih možeš promijeniti u Profilu.');
     return;
   }
 
@@ -1597,8 +1597,8 @@ async function obStep(dir){
   document.getElementById('ob-next').textContent = obCurrentStep === 3 ? 'Gotovo' : 'Dalje';
 }
 
-// ââ PREGLED âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// ââ MONTH PLAN ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── PREGLED ───────────────────────────────────────────────────────────
+// ── MONTH PLAN ────────────────────────────────────────────────────────
 function monthKey(idx){
   return `${curYear()}_${String(idx+1).padStart(2,'0')}`;
 }
@@ -1683,7 +1683,7 @@ function renderMonthNav(){
   if(prev) prev.disabled = (viewMonthIdx === 0);
   if(next) next.disabled = (viewMonthIdx >= 11);
   const ht = document.getElementById('header-title');
-  // naslov ostaje 'Pregled' â ne gazimo ga s nazivom mjeseca (mjesec se vidi u navigatoru)
+  // naslov ostaje 'Pregled' — ne gazimo ga s nazivom mjeseca (mjesec se vidi u navigatoru)
 }
 
 function changeViewMonth(delta){
@@ -1695,7 +1695,7 @@ function changeViewMonth(delta){
   const body = document.getElementById('month-plan-body');
   if(body) body.classList.remove('open');
   const arrow = document.getElementById('month-plan-arrow');
-  if(arrow) arrow.textContent = 'â¼';
+  if(arrow) arrow.textContent = '▼';
   renderMonthNav();
   loadPregled();
 }
@@ -1706,10 +1706,10 @@ function renderMPInc(){
   const c = document.getElementById('mp-inc-list'); if(!c) return;
   c.innerHTML = mPlanIncGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">â ¿</span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. PlaÄa" oninput="mPlanIncGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 â¬" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
-      <button class="save-goal-del" onclick="removeMPInc(${i})">Ã</button>
+      <span class="drag-handle">⠿</span>
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="mPlanIncGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
+      <button class="save-goal-del" onclick="removeMPInc(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanIncGoals, renderMPInc);
 }
@@ -1720,10 +1720,10 @@ function renderMPFix(){
   const c = document.getElementById('mp-fix-list'); if(!c) return;
   c.innerHTML = mPlanFixGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">â ¿</span>
+      <span class="drag-handle">⠿</span>
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Stanarina" oninput="mPlanFixGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 â¬" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanFixGoals,${i})" onblur="amtBlur(this,mPlanFixGoals,${i},()=>{})">
-      <button class="save-goal-del" onclick="removeMPFix(${i})">Ã</button>
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanFixGoals,${i})" onblur="amtBlur(this,mPlanFixGoals,${i},()=>{})">
+      <button class="save-goal-del" onclick="removeMPFix(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanFixGoals, renderMPFix);
 }
@@ -1734,10 +1734,10 @@ function renderMPVar(){
   const c = document.getElementById('mp-var-list'); if(!c) return;
   c.innerHTML = mPlanVarGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">â ¿</span>
+      <span class="drag-handle">⠿</span>
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Hrana" oninput="mPlanVarGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 â¬" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanVarGoals,${i})" onblur="amtBlur(this,mPlanVarGoals,${i},()=>{})">
-      <button class="save-goal-del" onclick="removeMPVar(${i})">Ã</button>
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanVarGoals,${i})" onblur="amtBlur(this,mPlanVarGoals,${i},()=>{})">
+      <button class="save-goal-del" onclick="removeMPVar(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanVarGoals, renderMPVar);
 }
@@ -1748,10 +1748,10 @@ function renderMPSav(){
   const c = document.getElementById('mp-sav-list'); if(!c) return;
   c.innerHTML = mPlanSavGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">â ¿</span>
+      <span class="drag-handle">⠿</span>
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Hitni fond" oninput="mPlanSavGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 â¬" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanSavGoals,${i})" onblur="amtBlur(this,mPlanSavGoals,${i},()=>{})">
-      <button class="save-goal-del" onclick="removeMPSav(${i})">Ã</button>
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanSavGoals,${i})" onblur="amtBlur(this,mPlanSavGoals,${i},()=>{})">
+      <button class="save-goal-del" onclick="removeMPSav(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanSavGoals, renderMPSav);
 }
@@ -1770,14 +1770,14 @@ async function fillMonthPlanForm(){
   body.innerHTML =
     '<div class="month-plan-section">Prihodi</div><div id="mp-inc-list"></div>'+
     '<button class="add-goal-btn" onclick="addMPInc()">+ Dodaj prihod</button>'+
-    '<div class="month-plan-section">Fiksni troÅ¡kovi</div><div id="mp-fix-list"></div>'+
+    '<div class="month-plan-section">Fiksni troškovi</div><div id="mp-fix-list"></div>'+
     '<button class="add-goal-btn" onclick="addMPFix()">+ Dodaj fiksni</button>'+
-    '<div class="month-plan-section">Varijabilni troÅ¡kovi</div><div id="mp-var-list"></div>'+
+    '<div class="month-plan-section">Varijabilni troškovi</div><div id="mp-var-list"></div>'+
     '<button class="add-goal-btn" onclick="addMPVar()">+ Dodaj varijabilni</button>'+
-    '<div class="month-plan-section">Å tednja</div><div id="mp-sav-list"></div>'+
-    '<button class="add-goal-btn" onclick="addMPSav()">+ Dodaj Å¡tednju</button>'+
+    '<div class="month-plan-section">Štednja</div><div id="mp-sav-list"></div>'+
+    '<button class="add-goal-btn" onclick="addMPSav()">+ Dodaj štednju</button>'+
     '<div class="month-plan-footer">'+
-    '<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">âº Reset na Profil</button>'+
+    '<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>'+
     '<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button>'+
     '</div>';
   renderMPInc(); renderMPFix(); renderMPVar(); renderMPSav();
@@ -1795,16 +1795,16 @@ async function saveMonthPlanNow(){
     };
     await saveMonthPlan(viewMonthIdx, data);
     hideSaveOverlay();
-    showToast('â Plan spremljen!');
+    showToast('✓ Plan spremljen!');
     loadPregled();
   }catch(e){
     hideSaveOverlay();
-    showToast('GreÅ¡ka: '+e.message);
+    showToast('Greška: '+e.message);
   }
 }
 
 async function resetMonthPlanToProfile(){
-  if(!confirm('Sigurno?\n\nOvo Äe obrisati sve promjene plana za ovaj mjesec i vratiti ga na vrijednosti iz Profila (prihodi, fiksni i varijabilni troÅ¡kovi, Å¡tednja).\n\nNastavi?')) return;
+  if(!confirm('Sigurno?\n\nOvo će obrisati sve promjene plana za ovaj mjesec i vratiti ga na vrijednosti iz Profila (prihodi, fiksni i varijabilni troškovi, štednja).\n\nNastavi?')) return;
   const key = monthKey(viewMonthIdx);
   try{
     await ensurePlanSheet();
@@ -1823,13 +1823,13 @@ async function resetMonthPlanToProfile(){
     await fillMonthPlanForm();
     loadPregled();
     showToast('Plan resetiran na vrijednosti iz Profila.');
-  }catch(e){ showToast('GreÅ¡ka: '+e.message); }
+  }catch(e){ showToast('Greška: '+e.message); }
 }
 
 async function loadPregled(){
   renderMonthNav();
   try{
-    // Äitaj iz EXPENSE TRACKER sekcije odabranog mjeseca
+    // Čitaj iz EXPENSE TRACKER sekcije odabranog mjeseca
     const monthName = MONTHS_HR[viewMonthIdx];
     const rows = await getRows(sheetId, monthName, 'A57:N500');
     const trackerRows = rows.map((r,i)=>({r,sheetRow:57+i})).filter(({r})=>r[1]);
@@ -1860,7 +1860,7 @@ async function loadPregled(){
     document.getElementById('bh-left').textContent   = eur(left);
     document.getElementById('bh-savings').textContent= eur(Math.max(0,savings));
 
-    // Cat list â prikazuje svaki cilj iz plana kao vlastiti red
+    // Cat list — prikazuje svaki cilj iz plana kao vlastiti red
     const getGoalList = (jsonKey, fallback) => {
       if(monthPlan && monthPlan[jsonKey]){
         try{ return JSON.parse(monthPlan[jsonKey]); }catch(e){}
@@ -1904,14 +1904,14 @@ async function loadPregled(){
     const varHtml = buildItemRows(varGoals, false);
     const savHtml = buildItemRows(savGoals, true);
     let catHtml = '';
-    if(fixHtml) catHtml += secH('Fiksni troÅ¡kovi') + fixHtml;
-    if(varHtml) catHtml += secH('Varijabilni troÅ¡kovi') + varHtml;
-    if(savHtml) catHtml += secH('Å tednja') + savHtml;
+    if(fixHtml) catHtml += secH('Fiksni troškovi') + fixHtml;
+    if(varHtml) catHtml += secH('Varijabilni troškovi') + varHtml;
+    if(savHtml) catHtml += secH('Štednja') + savHtml;
 
-    const catLegend = catHtml ? '<div class="cat-legend"><span></span><span class="cat-legend-label">potroÅ¡eno / predviÄeno</span></div>' : '';
-    document.getElementById('cat-list').innerHTML = catLegend + (catHtml || '<div class="empty-state">Nema troÅ¡kova ovaj mjesec.</div>');
+    const catLegend = catHtml ? '<div class="cat-legend"><span></span><span class="cat-legend-label">potrošeno / predviđeno</span></div>' : '';
+    document.getElementById('cat-list').innerHTML = catLegend + (catHtml || '<div class="empty-state">Nema troškova ovaj mjesec.</div>');
 
-    // RaÄuni ovog mjeseca â zadnje 3 + expandabilne sve
+    // Računi ovog mjeseca — zadnje 3 + expandabilne sve
     allRecentEntries = trackerRows.slice().reverse();
     recentExpanded   = false;
     renderRecentList();
@@ -1926,11 +1926,11 @@ async function loadPregled(){
     }
 
   }catch(e){
-    document.getElementById('cat-list').innerHTML = '<div class="empty-state">GreÅ¡ka: '+e.message+'</div>';
+    document.getElementById('cat-list').innerHTML = '<div class="empty-state">Greška: '+e.message+'</div>';
   }
 }
 
-// ââ RECENT LIST âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── RECENT LIST ───────────────────────────────────────────────────────
 let allRecentEntries = [];
 let recentExpanded   = false;
 
@@ -1939,7 +1939,7 @@ function renderRecentList(){
   const mName=MONTHS_HR[viewMonthIdx];
   const recHtml=toShow.length?toShow.map(({r,sheetRow})=>{
     const datum=r[1]||'',iznos=parseFloat(r[5])||0,kat=r[8]||'Other',bilj=r[11]||'';
-    const di=bilj.indexOf(' â ');
+    const di=bilj.indexOf(' — ');
     const naziv=(di>=0?bilj.slice(0,di):bilj)||(CAT_HR[kat]||kat);
     const safeB=bilj.replace(/'/g,"\\'");
     return `<div class="receipt-row" onclick="openEditReceipt(${sheetRow},'${mName}','${datum}',${iznos},'${kat}','${safeB}')">
@@ -1956,8 +1956,8 @@ function renderRecentList(){
   if(btn){
     btn.style.display = allRecentEntries.length > 3 ? 'block' : 'none';
     btn.textContent   = recentExpanded
-      ? 'PrikaÅ¾i manje â'
-      : `PrikaÅ¾i sve (${allRecentEntries.length}) â`;
+      ? 'Prikaži manje ↑'
+      : `Prikaži sve (${allRecentEntries.length}) ↓`;
   }
 }
 
@@ -1966,7 +1966,7 @@ function toggleRecentList(){
   renderRecentList();
 }
 
-// ââ GOALS âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── GOALS ─────────────────────────────────────────────────────────────
 async function loadGoals(){
   const list = document.getElementById('goals-list');
   list.innerHTML = '<div class="empty-state">Ucitavam...</div>';
@@ -1992,9 +1992,9 @@ async function loadGoals(){
           <div>
             <div class="goal-name">${name||''}</div>
             <div class="goal-meta">
-              ${isLoan ? `${eur(mon)}/mj Â· ${rem} rata preostalo` : `${eur(cur)} / ${eur(tgt)}`}
-              ${monthsLeft && !isLoan ? ` Â· joÅ¡ ~${monthsLeft} mj` : ''}
-              ${desc ? ` Â· ${desc}` : ''}
+              ${isLoan ? `${eur(mon)}/mj · ${rem} rata preostalo` : `${eur(cur)} / ${eur(tgt)}`}
+              ${monthsLeft && !isLoan ? ` · još ~${monthsLeft} mj` : ''}
+              ${desc ? ` · ${desc}` : ''}
             </div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
@@ -2007,7 +2007,7 @@ async function loadGoals(){
       </div>`;
     }).join('');
   }catch(e){
-    list.innerHTML = '<div class="empty-state">GreÅ¡ka: '+e.message+'</div>';
+    list.innerHTML = '<div class="empty-state">Greška: '+e.message+'</div>';
   }
 }
 
@@ -2045,12 +2045,12 @@ async function saveGoal(){
     ['gf-name','gf-target','gf-current','gf-monthly-save','gf-monthly-loan','gf-remaining','gf-total-loan','gf-desc'].forEach(id=>{ document.getElementById(id).value=''; });
     loadGoals();
   }catch(e){
-    st.className='status err'; st.textContent='GreÅ¡ka: '+e.message;
+    st.className='status err'; st.textContent='Greška: '+e.message;
   }
 }
 
 async function deleteGoal(rowIndex){
-  if(!confirm('ObriÅ¡i ovaj cilj?')) return;
+  if(!confirm('Obriši ovaj cilj?')) return;
   // Clear row in sheet
   await gfetch(
     `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent('Ciljevi!A'+rowIndex+':H'+rowIndex)}:clear`,
@@ -2059,7 +2059,7 @@ async function deleteGoal(rowIndex){
   loadGoals();
 }
 
-// ââ SCANNER âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── SCANNER ───────────────────────────────────────────────────────────
 function handleDrop(e){
   e.preventDefault();
   document.getElementById('upload-zone').classList.remove('drag');
@@ -2163,16 +2163,16 @@ async function saveReceipt(){
     rowData[1]  = fmtDateHR(date);
     rowData[5]  = amount;
     rowData[8]  = cat;
-    rowData[11] = note ? `${store} â ${note}` : store;
+    rowData[11] = note ? `${store} — ${note}` : store;
     rowData[12] = driveUrl;
     rowData[13] = driveId;
     await writeRange(sheetId, `${month}!A${row}`, [rowData]);
     setProgress(100);
 
-    showToast('â Spremljeno! ' + store + ' Â· ' + eur(amount), 3000, 'success');
+    showToast('✓ Spremljeno! ' + store + ' · ' + eur(amount), 3000, 'success');
     setTimeout(()=>{ setProgress(0); loadGallery(); noviRacun(); }, 1800);
   }catch(e){
-    showScan('GreÅ¡ka: '+e.message,'err');
+    showScan('Greška: '+e.message,'err');
     setProgress(0);
   }
   btn.disabled=false;
@@ -2219,14 +2219,14 @@ function noviRacun(){
 }
 
 const NOTE_PLACEHOLDERS = [
-  'Npr. shopping za podizanje raspoloÅ¾enja',
+  'Npr. shopping za podizanje raspoloženja',
   'Npr. kava s curama i razgovor do kasno',
-  'Npr. romantiÄna veÄera samo za sebe, zasluÅ¾ila sam ð¹',
-  'Npr. veÄera vani jer je bio dug tjedan',
-  'Npr. najslaÄa haljina ikad viÄena',
-  'Npr. poklon sebi jer sam to zasluÅ¾ila',
+  'Npr. romantična večera samo za sebe, zaslužila sam 🌹',
+  'Npr. večera vani jer je bio dug tjedan',
+  'Npr. najslađa haljina ikad viđena',
+  'Npr. poklon sebi jer sam to zaslužila',
   'Npr. spontana pustolovina u gradu',
-  'Npr. neÅ¡to za duÅ¡u, nije za objasniti',
+  'Npr. nešto za dušu, nije za objasniti',
 ];
 function setNotePlaceholder(){
   const el = document.getElementById('meta-note');
@@ -2241,7 +2241,7 @@ async function loadGallery(){
     // Zapamti stvarni redni broj u sheetu (B57 = row 57)
     const items = rows.map((r,i) => ({r, sheetRow: 57+i})).filter(({r}) => r && r[0]);
     if(!items.length){
-      grid.innerHTML = '<div class="empty-state">Nema joÅ¡ unesenih raÄuna.</div>';
+      grid.innerHTML = '<div class="empty-state">Nema još unesenih računa.</div>';
       return;
     }
     grid.innerHTML = items.map(({r, sheetRow}) => {
@@ -2260,15 +2260,15 @@ async function loadGallery(){
       const safeBilj=(name||'').replace(/'/g,"\\'");
       const safeDU=(driveUrl||'').replace(/'/g,"\\'");
       return `<div class="g-card" onclick="openEditReceipt(${sheetRow},'${curMonth()}','${datum}',${iznos},'${kat}','${safeBilj}','${safeDU}')">
-        <button class="g-del-btn" title="ObriÅ¡i raÄun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">Ã</button>
+        <button class="g-del-btn" title="Obriši račun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">×</button>
         ${imgUrl
           ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
           : ''}
-        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>ð§¾</div>
+        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>🧾</div>
         <div class="g-info">
           <div class="g-row">
             <span class="g-name">${name}</span>
-            <span class="g-amt">${iznos.toFixed(2).replace('.',',')} â¬</span>
+            <span class="g-amt">${iznos.toFixed(2).replace('.',',')} €</span>
           </div>
           <div class="g-row" style="margin-top:3px">
             <span class="g-kat">${CAT_HR[kat]||kat}</span>
@@ -2278,7 +2278,7 @@ async function loadGallery(){
       </div>`;
     }).join('');
   }catch(e){
-    grid.innerHTML = '<div class="empty-state">GreÅ¡ka: '+e.message+'</div>';
+    grid.innerHTML = '<div class="empty-state">Greška: '+e.message+'</div>';
   }
 }
 
@@ -2288,36 +2288,36 @@ function manualSheetConnect(){
   if(!url) return;
   const match = url.match(/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
   const id = match ? match[1] : url.trim();
-  if(!id || id.length < 20){ alert('NevaÅ¾eÄi ID tablice.'); return; }
+  if(!id || id.length < 20){ alert('Nevažeći ID tablice.'); return; }
   localStorage.setItem('mf_sheetId_' + curYear(), id);
   sheetId = id;
-  showToast('â Tablica spojena! UÄitavam...');
-  ensureResources().catch(e => showToast('GreÅ¡ka: '+e.message));
+  showToast('✓ Tablica spojena! Učitavam...');
+  ensureResources().catch(e => showToast('Greška: '+e.message));
 }
 
 async function deleteReceipt(sheetRow, driveId){
-  if(!confirm('ObriÅ¡i ovaj raÄun? (slika + podaci)')) return;
-  showSaveOverlay('BriÅ¡em...');
+  if(!confirm('Obriši ovaj račun? (slika + podaci)')) return;
+  showSaveOverlay('Brišem...');
   try{
-    // 1. ObriÅ¡i sliku s Google Drivea (204 = ok, 404 = veÄ nema)
+    // 1. Obriši sliku s Google Drivea (204 = ok, 404 = već nema)
     if(driveId){
       const dr = await fetch(`https://www.googleapis.com/drive/v3/files/${driveId}`,{
         method:'DELETE', headers:{'Authorization':'Bearer '+token}
       });
       if(!dr.ok && dr.status !== 404) throw new Error('Drive: '+dr.status);
     }
-    // 2. ObriÅ¡i red iz sheeta
+    // 2. Obriši red iz sheeta
     const month = curMonth();
     await gfetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(month+'!B'+sheetRow+':N'+sheetRow)}:clear`,
       {method:'POST'}
     );
     hideSaveOverlay();
-    showToast('â RaÄun obrisan.');
+    showToast('✓ Račun obrisan.');
     loadGallery();
   }catch(e){
     hideSaveOverlay();
-    showToast('GreÅ¡ka: '+e.message);
+    showToast('Greška: '+e.message);
   }
 }
 
@@ -2386,7 +2386,7 @@ function setupDragSort(container, arr, renderFn){
 }
 
 
-// ââ MetaMask SES fix: expose all onclick functions on window ââââââââââ
+// ── MetaMask SES fix: expose all onclick functions on window ──────────
 window.signIn               = signIn;
 window.signOut              = signOut;
 window.goTab                = goTab;
@@ -2437,7 +2437,7 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   driveUrl=driveUrl||"";
   var iw=document.getElementById("edit-img-wrap"),it=document.getElementById("edit-img-thumb");
   if(iw&&it){if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.src=th;it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
-  const di=bilj.indexOf(' â ');
+  const di=bilj.indexOf(' — ');
   const store=di>=0?bilj.slice(0,di):bilj;
   const note=di>=0?bilj.slice(di+3):'';
   const dm=datum.match(/(\d+)\.(\d+)\.(\d{4})/);
@@ -2497,18 +2497,18 @@ async function saveEditedReceipt(){
   if(!date){showToast('Unesi datum.',3000,'error');return;}
   showSaveOverlay('Sprema se...');
   try{
-    const bilj=note?store+' â '+note:store;
+    const bilj=note?store+' — '+note:store;
     const datumHR=fmtDateHR(date);
     await writeRange(sheetId,monthName+'!B'+sheetRow,[[datumHR]]);
     await writeRange(sheetId,monthName+'!F'+sheetRow,[[amount]]);
     await writeRange(sheetId,monthName+'!I'+sheetRow,[[kat]]);
     await writeRange(sheetId,monthName+'!L'+sheetRow,[[bilj]]);
     hideSaveOverlay();
-    showToast('â RaÄun aÅ¾uriran!',3000,'success');
+    showToast('✓ Račun ažuriran!',3000,'success');
     closeEditDrawer();
     loadGallery();
     loadPregled();
-  }catch(e){hideSaveOverlay();showToast('GreÅ¡ka: '+e.message,5000,'error');}
+  }catch(e){hideSaveOverlay();showToast('Greška: '+e.message,5000,'error');}
 }
 window.openEditReceipt=openEditReceipt;
 window.closeEditDrawer=closeEditDrawer;
@@ -2519,18 +2519,18 @@ window.savingsGoals         = savingsGoals;
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
 <div id="edit-drawer">
   <div class="drawer-handle"></div>
-  <div class="drawer-title">Uredi raÄun</div>
+  <div class="drawer-title">Uredi račun</div>
   <div id="edit-img-wrap" style="display:none;margin-bottom:14px;cursor:pointer;border-radius:12px;overflow:hidden"><img id="edit-img-thumb" style="width:100%;max-height:160px;object-fit:cover;display:block;border-radius:12px"></div>
-  <div class="field"><label>Naziv</label><input type="text" id="edit-store" placeholder="Naziv duÄana / usluge"></div>
+  <div class="field"><label>Naziv</label><input type="text" id="edit-store" placeholder="Naziv dućana / usluge"></div>
   <div class="row2">
-    <div class="field"><label>Iznos</label><div style="display:flex;align-items:center;gap:6px"><input type="text" id="edit-amount" inputmode="decimal" placeholder="0,00" style="flex:1"><span style="color:#aaa;font-size:15px">â¬</span></div></div>
+    <div class="field"><label>Iznos</label><div style="display:flex;align-items:center;gap:6px"><input type="text" id="edit-amount" inputmode="decimal" placeholder="0,00" style="flex:1"><span style="color:#aaa;font-size:15px">€</span></div></div>
     <div class="field"><label>Datum</label><input type="date" id="edit-date"></div>
   </div>
   <div class="field"><label>Kategorija</label>
     <select id="edit-cat">
       <optgroup label="Stanovanje">
       <option value="Stanarina">Stanarina</option>
-      <option value="Rezije">ReÅ¾ije</option>
+      <option value="Rezije">Režije</option>
                   <option value="Dom">Dom</option>
       </optgroup>
       <optgroup label="Svakodnevno">
@@ -2539,7 +2539,7 @@ window.savingsGoals         = savingsGoals;
       <option value="Pets">Ljubimci</option>
       <option value="Beauty">Kozmetika</option>
       <option value="Zdravlje">Zdravlje</option>
-      <option value="Odijelo">OdjeÄa</option>
+      <option value="Odijelo">Odjeća</option>
         <option value="Prijevoz">Prijevoz</option>
       </optgroup>
       <optgroup label="Interesi">
@@ -2551,12 +2551,12 @@ window.savingsGoals         = savingsGoals;
       </optgroup>
       <optgroup label="Financije">
       <option value="Debt">Kredit</option>
-      <option value="Savings">Å tednja</option>
+      <option value="Savings">Štednja</option>
       </optgroup>
       <option value="Other">Ostalo</option>
     </select>
   </div>
-  <div class="field"><label>BiljeÅ¡ka (opcionalno)</label><input type="text" id="edit-note" placeholder="Opis..."></div>
+  <div class="field"><label>Bilješka (opcionalno)</label><input type="text" id="edit-note" placeholder="Opis..."></div>
   <input type="hidden" id="edit-sheet-row"><input type="hidden" id="edit-month-name">
   <div style="display:flex;gap:10px;margin-top:4px">
     <button class="btn btn-outline" style="flex:1" onclick="closeEditDrawer()">Odustani</button>
