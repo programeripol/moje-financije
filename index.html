@@ -458,7 +458,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <p>klikni, povuci ili fotografiraj</p>
     <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
   </div>
-  <div style="position:relative;display:inline-block;width:100%">
+  <div id="img-preview-wrap" style="position:relative;display:none;width:100%">
     <img id="receipt-preview" onclick="document.getElementById('file-input').click()">
     <div id="pdf-preview" onclick="document.getElementById('file-input').click()">
       <div class="pdf-icon">📄</div>
