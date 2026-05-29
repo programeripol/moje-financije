@@ -789,7 +789,7 @@ function fmtDateHR(iso){
   const [y,m,d] = iso.split('-');
   return d ? d.replace(/^0/,'')+'.'+m.replace(/^0/,'')+'.'+y+'.' : iso;
 }
-function eur(n){ return parseFloat(n||0).toFixed(2).replace('.',',') + ' €'; }
+function eur(n){ const p=parseFloat(n||0).toFixed(2).split('.'); return p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+p[1]+' €'; }
 
 function showToast(msg, duration=4000, type=''){
   const t = document.getElementById('toast');
@@ -879,7 +879,7 @@ function tryAutoLogin(){
 let incomeGoals = [];
 
 // ── FORMAT ON BLUR ─────────────────────────────────────────────────────
-function fmtVal(v){ const n=parseFloat(v)||0; return n>0 ? n.toFixed(2).replace('.',',') + ' €' : ''; }
+function fmtVal(v){ const n=parseFloat(v)||0; if(!n) return ''; const p=n.toFixed(2).split('.'); return p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+p[1]+' €'; }
 function fmtParse(s){ return parseFloat((s||'').replace(/\s*€/,'').replace(',','.')) || 0; }
 function amtFocus(el){ el.value = el.value.replace(/\s*€/,''); el.select && el.select(); }
 function amtBlur(el,arr,i,fn){ const v=fmtParse(el.value); arr[i].amount=v; el.value=fmtVal(v); fn(); }
@@ -2271,7 +2271,7 @@ async function loadGallery(){
         <div class="g-info">
           <div class="g-row">
             <span class="g-name">${name}</span>
-            <span class="g-amt">${iznos.toFixed(2).replace('.',',')} €</span>
+            <span class="g-amt">${eur(iznos)}</span>
           </div>
           <div class="g-row" style="margin-top:3px">
             <span class="g-kat">${CAT_HR[kat]||kat}</span>
