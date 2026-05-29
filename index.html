@@ -168,7 +168,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 /* ── UPLOAD ── */
 #upload-zone{background:#fff;border:2px dashed #b0c4e8;border-radius:16px;padding:32px 16px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:14px}
 #upload-zone:hover,#upload-zone.drag{border-color:#1565c0;background:#f0f5ff}
-#upload-zone .uz-icon{font-size:36px;margin-bottom:8px}
+#upload-zone .uz-icon{font-size:36px;margin-bottom:8px;color:#7090b0}#upload-zone h3{color:#7090b0;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}#upload-zone p{color:#7090b0;font-size:12px;margin:0}
 #upload-zone h3{font-size:15px;font-weight:500;margin-bottom:3px}
 #upload-zone p{font-size:12px;color:#888}
 #upload-zone input{display:none}
@@ -454,8 +454,8 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
        ondragleave="this.classList.remove('drag')"
        ondrop="handleDrop(event)">
     <div class="uz-icon">+</div>
-    <h3>Dodaj sliku računa</h3>
-    <p>klikni, povuci ili fotografiraj</p>
+    <h3>DODAJ RAČUN</h3>
+    <p>fotografiraj, odaberi iz galerije ili priloži PDF</p>
     <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
   </div>
   <div id="img-preview-wrap" style="position:relative;display:none;width:100%">
