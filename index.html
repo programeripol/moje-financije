@@ -1683,7 +1683,7 @@ function renderMonthNav(){
   const prev = document.getElementById('prev-month-btn');
   const next = document.getElementById('next-month-btn');
   if(prev) prev.disabled = (viewMonthIdx === 0);
-  if(next) next.disabled = (viewMonthIdx >= curIdx);
+  if(next) next.disabled = (viewMonthIdx >= 11);
   const ht = document.getElementById('header-title');
   // naslov ostaje 'Pregled' — ne gazimo ga s nazivom mjeseca (mjesec se vidi u navigatoru)
 }
@@ -1691,7 +1691,7 @@ function renderMonthNav(){
 function changeViewMonth(delta){
   const curIdx = new Date().getMonth();
   const newIdx = viewMonthIdx + delta;
-  if(newIdx < 0 || newIdx > curIdx) return;
+  if(newIdx < 0 || newIdx > 11) return;
   viewMonthIdx = newIdx;
   // Zatvori plan panel ako je otvoren
   const body = document.getElementById('month-plan-body');
