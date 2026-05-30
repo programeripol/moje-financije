@@ -83,7 +83,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .euro-wrap{position:relative}
 .euro-wrap span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#aaa;font-size:15px;pointer-events:none}
-.euro-wrap input{padding-left:26px}#meta-date.date-empty{color:#bbb}.req{color:#7090b0;font-size:11px;vertical-align:super}.euro-suffix{display:flex;align-items:center;border:1.5px solid #e0e7f0;border-radius:10px;background:#fafbff;transition:.15s}.euro-suffix:focus-within{border-color:#1565c0;background:#fff}.euro-suffix input{flex:1;border:none;background:transparent;padding:10px 4px 10px 12px;width:100%;outline:none;font-size:14px;font-family:inherit;color:#1a1a2e}.euro-suffix input.has-val{color:transparent;caret-color:#1a1a2e}.euro-suffix span{color:#aaa;font-size:14px;pointer-events:none;flex-shrink:0;padding-right:12px}
+.euro-wrap input{padding-left:26px}#meta-date.date-empty{color:#bbb}.req{color:#7090b0;font-size:11px;vertical-align:super}@keyframes spin{to{transform:rotate(360deg)}}.spin-dot{width:24px;height:24px;border:3px solid #e0e7f0;border-top-color:#1565c0;border-radius:50%;animation:spin .8s linear infinite;display:inline-block}.euro-suffix{display:flex;align-items:center;border:1.5px solid #e0e7f0;border-radius:10px;background:#fafbff;transition:.15s}.euro-suffix:focus-within{border-color:#1565c0;background:#fff}.euro-suffix input{flex:1;border:none;background:transparent;padding:10px 4px 10px 12px;width:100%;outline:none;font-size:14px;font-family:inherit;color:#1a1a2e}.euro-suffix input.has-val{color:transparent;caret-color:#1a1a2e}.euro-suffix span{color:#aaa;font-size:14px;pointer-events:none;flex-shrink:0;padding-right:12px}
 .amount-suffix-wrap{display:flex;align-items:center;gap:10px}
 .amount-suffix-wrap .eur-suf{font-size:20px;font-weight:600;color:#1a1a2e;flex-shrink:0}
 .big-amount input{font-size:22px;font-weight:600;color:#1565c0;padding-left:28px}
@@ -2442,7 +2442,7 @@ window.variableGoals        = variableGoals;
 function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   driveUrl=driveUrl||"";
   var iw=document.getElementById("edit-img-wrap"),it=document.getElementById("edit-img-thumb");
-  if(iw&&it){it.src="";iw.style.display="none";if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.style.opacity="0.3";it.src=th;it.onload=function(){it.style.opacity="1";};it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
+  if(iw&&it){it.src="";iw.style.display="none";if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.style.opacity="0";var sp=document.getElementById('edit-img-spinner');if(sp)sp.style.display='flex';it.src=th;it.onload=function(){it.style.opacity="1";if(sp)sp.style.display='none';};it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
   const di=bilj.indexOf(' — ');
   const store=di>=0?bilj.slice(0,di):bilj;
   const note=di>=0?bilj.slice(di+3):'';
@@ -2526,12 +2526,12 @@ window.savingsGoals         = savingsGoals;
 <div id="edit-drawer">
   <div class="drawer-handle"></div>
   <div class="drawer-title">Uredi račun</div>
-  <div id="edit-img-wrap" style="display:none;margin-bottom:14px;cursor:pointer;border-radius:12px;overflow:hidden"><img id="edit-img-thumb" style="width:100%;max-height:160px;object-fit:cover;display:block;border-radius:12px"></div>
-  <div class="field"><label>Naziv</label><input type="text" id="edit-store" placeholder="Naziv dućana / usluge"></div>
+  <div id="edit-img-wrap" style="display:none;margin-bottom:14px;cursor:pointer;border-radius:12px;overflow:hidden;position:relative"><div id="edit-img-spinner" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f0f4ff;border-radius:12px"><span class="spin-dot"></span></div><img id="edit-img-thumb" style="width:100%;max-height:160px;object-fit:cover;display:block;border-radius:12px;opacity:0;transition:opacity .3s"></div>
   <div class="row2">
-    <div class="field"><label>Iznos</label><div style="display:flex;align-items:center;gap:6px"><input type="text" id="edit-amount" inputmode="decimal" placeholder="0,00" style="flex:1"><span style="color:#aaa;font-size:15px">€</span></div></div>
+    <div class="field"><label>Naziv</label><input type="text" id="edit-store" placeholder="Lidl, frizerka, Netflix…"></div>
     <div class="field"><label>Datum</label><input type="date" id="edit-date"></div>
   </div>
+  <div class="field"><label>Iznos</label><div class="euro-suffix"><input type="text" id="edit-amount" class="field-input" inputmode="decimal" placeholder="0,00 €" onblur="fmtAmtBlur(this)" onfocus="fmtAmtFocus(this)"></div></div>
   <div class="field"><label>Kategorija</label>
     <select id="edit-cat">
       <optgroup label="Stanovanje">
