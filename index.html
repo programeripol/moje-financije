@@ -720,7 +720,7 @@ let profileData    = {};
 let currentTab     = 'skener';
 let viewMonthIdx   = new Date().getMonth(); // 0-11, koji mjesec gledamo u Pregledu
 let monthPlanCache = {};                    // cache { "2026_05": {...} ili null }
-let mPlanIncGoals = [], mPlanFixGoals = [], mPlanVarGoals = [], mPlanSavGoals = [];
+let mPlanIncGoals = [], mPlanFixGoals = [], mPlanVarGoals = [], mPlanSavGoals = [], mPlanExpGoals = [];
 let currentImgFile = null;
 let currentImgSrc  = null;
 let obCurrentStep  = 1;
@@ -1716,9 +1716,7 @@ function changeViewMonth(delta){
   loadPregled();
 }
 
-function toggleMonthPlanEdit(){} // handled by <details> native toggle
-
-function renderMPInc(){
+function toggleMonthPlanEdit(){} // handled by <detafunction renderMPInc(){
   const c = document.getElementById('mp-inc-list'); if(!c) return;
   c.innerHTML = mPlanIncGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
@@ -1732,40 +1730,31 @@ function renderMPInc(){
 function addMPInc(){ mPlanIncGoals.push({name:'',amount:0}); renderMPInc(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-inc-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
 function removeMPInc(i){ mPlanIncGoals.splice(i,1); renderMPInc(); }
 
-function renderMPFix(){
-  const c = document.getElementById('mp-fix-list'); if(!c) return;
-  c.innerHTML = mPlanFixGoals.map((g,i)=>`
-    <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">⠿</span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Stanarina" oninput="mPlanFixGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanFixGoals,${i})" onblur="amtBlur(this,mPlanFixGoals,${i},()=>{})">
-      <button class="save-goal-del" onclick="removeMPFix(${i})">×</button>
-    </div>`).join('');
-  setupDragSort(c, mPlanFixGoals, renderMPFix);
-}
-function addMPFix(){ mPlanFixGoals.push({name:'',amount:0}); renderMPFix(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-fix-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
-function removeMPFix(i){ mPlanFixGoals.splice(i,1); renderMPFix(); }
+const MP_CAT_OPTS = `<option value="">Kategorija</option><option value="Food">Hrana</option><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="T-com">Internet</option><option value="Fuel">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Software">Pretplate</option><option value="Beauty">Kozmetika</option><option value="Odijelo">Odjeća</option><option value="Zdravlje">Zdravlje</option><option value="Hobi">Hobi</option><option value="Zabava">Zabava</option><option value="Putovanje">Putovanje</option><option value="Edukacija">Edukacija</option><option value="Dom">Dom</option><option value="Pets">Ljubimci</option><option value="Allianz">Osiguranje</option><option value="Debt">Kredit</option><option value="Other">Ostalo</option>`;
 
-function renderMPVar(){
-  const c = document.getElementById('mp-var-list'); if(!c) return;
-  c.innerHTML = mPlanVarGoals.map((g,i)=>`
-    <div class="save-goal-row" data-idx="${i}">
+function renderMPExp(){
+  const c = document.getElementById('mp-exp-list'); if(!c) return;
+  c.innerHTML = mPlanExpGoals.map((g,i)=>{
+    const selOpts = MP_CAT_OPTS.replace(`value="${g.cat||''}"`,`value="${g.cat||''}" selected`);
+    return `<div class="save-goal-row" data-idx="${i}" style="flex-wrap:wrap;gap:6px">
       <span class="drag-handle">⠿</span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Hrana" oninput="mPlanVarGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanVarGoals,${i})" onblur="amtBlur(this,mPlanVarGoals,${i},()=>{})">
-      <button class="save-goal-del" onclick="removeMPVar(${i})">×</button>
-    </div>`).join('');
-  setupDragSort(c, mPlanVarGoals, renderMPVar);
+      <input type="text" class="goal-name" style="min-width:80px" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Naziv" oninput="mPlanExpGoals[${i}].name=this.value">
+      <select style="flex:1;min-width:90px;background:#fff;border:1px solid #e8edf8;border-radius:8px;padding:6px 8px;font-size:13px;color:#1a1a2e" onchange="mPlanExpGoals[${i}].cat=this.value">${selOpts}</select>
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanExpGoals,${i})" onblur="amtBlur(this,mPlanExpGoals,${i},()=>{})">
+      <button class="save-goal-del" onclick="removeMPExp(${i})">×</button>
+    </div>`;
+  }).join('');
+  setupDragSort(c, mPlanExpGoals, renderMPExp);
 }
-function addMPVar(){ mPlanVarGoals.push({name:'',amount:0}); renderMPVar(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-var-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
-function removeMPVar(i){ mPlanVarGoals.splice(i,1); renderMPVar(); }
+function addMPExp(){ mPlanExpGoals.push({name:'',cat:'',amount:0}); renderMPExp(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-exp-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
+function removeMPExp(i){ mPlanExpGoals.splice(i,1); renderMPExp(); }
 
 function renderMPSav(){
   const c = document.getElementById('mp-sav-list'); if(!c) return;
   c.innerHTML = mPlanSavGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
       <span class="drag-handle">⠿</span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Hitni fond" oninput="mPlanSavGoals[${i}].name=this.value">
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Fond hitnih slučajeva" oninput="mPlanSavGoals[${i}].name=this.value">
       <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanSavGoals,${i})" onblur="amtBlur(this,mPlanSavGoals,${i},()=>{})">
       <button class="save-goal-del" onclick="removeMPSav(${i})">×</button>
     </div>`).join('');
@@ -1778,25 +1767,31 @@ async function fillMonthPlanForm(){
   const plan = await loadMonthPlan(viewMonthIdx);
   const cp = arr => JSON.parse(JSON.stringify(arr));
   try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || cp(incomeGoals); } catch(e){ mPlanIncGoals = cp(incomeGoals); }
-  try { mPlanFixGoals = JSON.parse(plan && plan.fix_json || 'null') || cp(fixedGoals); } catch(e){ mPlanFixGoals = cp(fixedGoals); }
-  try { mPlanVarGoals = JSON.parse(plan && plan.var_json || 'null') || cp(variableGoals); } catch(e){ mPlanVarGoals = cp(variableGoals); }
   try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || cp(savingsGoals); } catch(e){ mPlanSavGoals = cp(savingsGoals); }
+  // Load unified expense list: exp_json first, else merge fix+var
+  try {
+    if(plan && plan.exp_json){
+      mPlanExpGoals = JSON.parse(plan.exp_json) || [];
+    } else {
+      const fix = JSON.parse(plan && plan.fix_json || 'null') || cp(fixedGoals);
+      const varG = JSON.parse(plan && plan.var_json || 'null') || cp(variableGoals);
+      mPlanExpGoals = [...fix, ...varG].map(g=>({name:g.name||'',cat:g.cat||'',amount:g.amount||0}));
+    }
+  } catch(e){ mPlanExpGoals = [...cp(fixedGoals),...cp(variableGoals)].map(g=>({name:g.name||'',cat:'',amount:g.amount||0})); }
   const body = document.getElementById('month-plan-body');
   if(!body) return;
+  const secStyle = (bg,color) => `style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:8px 0 6px;margin-top:10px;color:${color}"`;
   body.innerHTML =
-    '<div class="month-plan-section">Prihodi</div><div id="mp-inc-list"></div>'+
-    '<button class="add-goal-btn" onclick="addMPInc()">+ Dodaj prihod</button>'+
-    '<div class="month-plan-section">Fiksni troškovi</div><div id="mp-fix-list"></div>'+
-    '<button class="add-goal-btn" onclick="addMPFix()">+ Dodaj fiksni</button>'+
-    '<div class="month-plan-section">Varijabilni troškovi</div><div id="mp-var-list"></div>'+
-    '<button class="add-goal-btn" onclick="addMPVar()">+ Dodaj varijabilni</button>'+
-    '<div class="month-plan-section">Štednja</div><div id="mp-sav-list"></div>'+
-    '<button class="add-goal-btn" onclick="addMPSav()">+ Dodaj štednju</button>'+
-    '<div class="month-plan-footer">'+
-    '<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>'+
-    '<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button>'+
-    '</div>';
-  renderMPInc(); renderMPFix(); renderMPVar(); renderMPSav();
+    `<div ${secStyle('#dcfce7','#16a34a')}>Prihodi</div><div id="mp-inc-list"></div>` +
+    `<button class="add-goal-btn" onclick="addMPInc()" style="color:#16a34a;border-color:#bbf7d0">+ Dodaj prihod</button>` +
+    `<div ${secStyle('#fff7ed','#ea580c')} style="margin-top:16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#ea580c">Troškovi</div><div id="mp-exp-list"></div>` +
+    `<button class="add-goal-btn" onclick="addMPExp()" style="color:#ea580c;border-color:#fed7aa">+ Dodaj trošak</button>` +
+    `<div style="margin-top:16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7c3aed">Štednja</div><div id="mp-sav-list"></div>` +
+    `<button class="add-goal-btn" onclick="addMPSav()" style="color:#7c3aed;border-color:#ddd6fe">+ Dodaj štednju</button>` +
+    `<div class="month-plan-footer">` +
+    `<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>` +
+    `<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button></div>`;
+  renderMPInc(); renderMPExp(); renderMPSav();
 }
 
 async function saveMonthPlanNow(){
@@ -1804,8 +1799,7 @@ async function saveMonthPlanNow(){
   try{
     const data = {
       inc_json: JSON.stringify(mPlanIncGoals),
-      fix_json: JSON.stringify(mPlanFixGoals),
-      var_json: JSON.stringify(mPlanVarGoals),
+      exp_json: JSON.stringify(mPlanExpGoals),
       sav_json: JSON.stringify(mPlanSavGoals),
       save_plan: mPlanSavGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0)
     };
@@ -1842,8 +1836,19 @@ async function resetMonthPlanToProfile(){
   }catch(e){ showToast('Greška: '+e.message); }
 }
 
+function clearPregledLoading(){
+  const catListEl = document.getElementById('cat-list');
+  if(catListEl){ catListEl.style.filter=''; catListEl.style.opacity=''; catListEl.style.pointerEvents=''; }
+  const heroEl = document.getElementById('budget-hero');
+  if(heroEl){ heroEl.style.filter=''; heroEl.style.opacity=''; }
+}
 async function loadPregled(){
   renderMonthNav();
+  // Show loading state
+  const catListEl = document.getElementById('cat-list');
+  if(catListEl){ catListEl.style.filter='blur(4px)'; catListEl.style.opacity='.4'; catListEl.style.pointerEvents='none'; }
+  const heroEl = document.getElementById('budget-hero');
+  if(heroEl){ heroEl.style.filter='blur(4px)'; heroEl.style.opacity='.4'; }
   try{
     // Čitaj iz EXPENSE TRACKER sekcije odabranog mjeseca
     const monthName = MONTHS_HR[viewMonthIdx];
@@ -1913,14 +1918,23 @@ async function loadPregled(){
       }).join('');
     };
 
-    // Build plan-by-category map from goal arrays
+    // Build plan-by-category map: exp_json (new) + fix/var (legacy)
     const CAT_HR_LOWER = {};
     Object.entries(CAT_HR).forEach(([k,v]) => CAT_HR_LOWER[v.toLowerCase()] = k);
     const planByCategory = {};
-    [...(fixGoals||[]), ...(varGoals||[])].forEach(g => {
-      const key = CAT_HR_LOWER[(g.name||'').toLowerCase()];
-      if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
-    });
+    let expGoalsForPlan = [];
+    try { expGoalsForPlan = JSON.parse(monthPlan && monthPlan.exp_json || 'null') || []; } catch(e){}
+    if(expGoalsForPlan.length > 0){
+      expGoalsForPlan.forEach(g => {
+        const key = g.cat || CAT_HR_LOWER[(g.name||'').toLowerCase()];
+        if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
+      });
+    } else {
+      [...(fixGoals||[]), ...(varGoals||[])].forEach(g => {
+        const key = CAT_HR_LOWER[(g.name||'').toLowerCase()];
+        if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
+      });
+    }
 
     // Build entries-by-category for expand
     window._catEntries = {};
@@ -1998,6 +2012,7 @@ async function loadPregled(){
         <div style="display:none;padding:0 14px 10px">${entriesHtml}</div>
       </div>`;
     }).join('');
+    clearPregledLoading();
     document.getElementById('cat-list').innerHTML = sortedCats.length > 0 ? donutHtml + catCards : '<div class="empty-state">Nema troškova ovaj mjesec.</div>';
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
@@ -2016,6 +2031,7 @@ async function loadPregled(){
 
   }catch(e){
     // Reset all display values when month has no data
+    clearPregledLoading();
     const zero = eur(0);
     ['bh-plan','bh-spent'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=zero; });
     allRecentEntries = [];
