@@ -142,7 +142,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 /* ── SAVINGS GOALS ── */
 .save-goal-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .save-goal-row .goal-name{flex:1;min-width:0;font-size:13px}
-.save-goal-row .goal-amt{width:108px;flex-shrink:0;font-size:13px;text-align:right}
+.goal-cat-sel{width:100px;flex-shrink:0;background:#fff;border:1px solid #e8edf8;border-radius:8px;padding:5px 4px;font-size:12px;color:#1a1a2e}
+.save-goal-row .goal-amt{width:84px;flex-shrink:0;font-size:13px;text-align:right}
 .save-goal-del{background:none;border:none;color:#ccc;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;transition:.15s}
 .save-goal-del:hover{color:#ef4444}
 .add-goal-btn{width:100%;border:1.5px dashed #c0ccee;background:none;color:#1565c0;border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:.15s}
@@ -252,7 +253,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .month-nav-btn:disabled{color:#c8d6e8;cursor:default}
 .month-nav-label{font-size:22px;font-weight:700;color:#1565c0;letter-spacing:-.3px}
 /* ── MONTH PLAN PANEL ── */
-.month-plan-panel{background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:18px;margin-bottom:14px;overflow:hidden;box-shadow:0 1px 8px rgba(21,101,192,.06)}
+.month-plan-panel{background:#fff;border:none;border-radius:0;padding:4px 0;margin-bottom:14px;overflow:hidden}
 .month-plan-panel > summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;list-style:none;font-size:13px;font-weight:600;color:#1565c0;letter-spacing:.05em;text-transform:uppercase}
 .month-plan-panel > summary::-webkit-details-marker{display:none}
 .month-plan-panel > summary::after{content:'⌄';font-size:20px;font-weight:700;color:#1565c0;transition:transform .2s;display:inline-block;line-height:1;margin-top:-2px}
@@ -262,7 +263,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .collapsible-summary::-webkit-details-marker{display:none}
 .collapsible-summary::after{content:"\2304";font-size:20px;font-weight:700;color:#1565c0;transition:transform .2s;display:inline-block;line-height:1}
 details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(180deg)}
-.month-plan-body{padding:0 16px 14px}
+.month-plan-body{padding:0 4px 8px}
 .month-plan-section{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px}
 .month-plan-footer{display:flex;gap:10px;margin-top:14px}
 /* ── SETUP BANNER ── */
@@ -1732,17 +1733,17 @@ function renderMPInc(){
 function addMPInc(){ mPlanIncGoals.push({name:'',amount:0}); renderMPInc(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-inc-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
 function removeMPInc(i){ mPlanIncGoals.splice(i,1); renderMPInc(); }
 
-const MP_CAT_OPTS = `<option value="">Kategorija</option><option value="Food">Hrana</option><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="T-com">Internet</option><option value="Fuel">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Software">Pretplate</option><option value="Beauty">Kozmetika</option><option value="Odijelo">Odjeća</option><option value="Zdravlje">Zdravlje</option><option value="Hobi">Hobi</option><option value="Zabava">Zabava</option><option value="Putovanje">Putovanje</option><option value="Edukacija">Edukacija</option><option value="Dom">Dom</option><option value="Pets">Ljubimci</option><option value="Allianz">Osiguranje</option><option value="Debt">Kredit</option><option value="Other">Ostalo</option>`;
+const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option><option value="T-com">Internet</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Fuel">Auto</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Prijevoz">Prijevoz</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Allianz">Osiguranje</option><option value="Debt">Kredit</option><option value="Savings">Štednja</option></optgroup><option value="Other">Ostalo</option>`;
 
 function renderMPExp(){
   const c = document.getElementById('mp-exp-list'); if(!c) return;
   c.innerHTML = mPlanExpGoals.map((g,i)=>{
     const selOpts = MP_CAT_OPTS.replace(`value="${g.cat||''}"`,`value="${g.cat||''}" selected`);
-    return `<div class="save-goal-row" data-idx="${i}" style="flex-wrap:wrap;gap:6px">
+    return `<div class="save-goal-row" data-idx="${i}">
       <span class="drag-handle">⠿</span>
-      <input type="text" class="goal-name" style="min-width:80px" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Naziv" oninput="mPlanExpGoals[${i}].name=this.value">
-      <select style="flex:1;min-width:90px;background:#fff;border:1px solid #e8edf8;border-radius:8px;padding:6px 8px;font-size:13px;color:#1a1a2e" onchange="mPlanExpGoals[${i}].cat=this.value">${selOpts}</select>
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanExpGoals,${i})" onblur="amtBlur(this,mPlanExpGoals,${i},()=>{})">
+      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Naziv" oninput="mPlanExpGoals[${i}].name=this.value">
+      <select class="goal-cat-sel" onchange="mPlanExpGoals[${i}].cat=this.value">${selOpts}</select>
+      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanExpGoals,${i})" onblur="amtBlur(this,mPlanExpGoals,${i},()=>{})">
       <button class="save-goal-del" onclick="removeMPExp(${i})">×</button>
     </div>`;
   }).join('');
