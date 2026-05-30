@@ -481,7 +481,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
     <div class="field">
       <label>Iznos</label>
-      <div class="euro-suffix"><input type="text" id="meta-amount" class="field-input" placeholder="0,00 €" inputmode="decimal"></div>
+      <div class="euro-suffix"><input type="text" id="meta-amount" class="field-input" placeholder="0,00 €" inputmode="decimal" onblur="fmtAmtBlur(this)" onfocus="fmtAmtFocus(this)"></div>
     </div>
     <div class="field">
       <label>Kategorija</label>
@@ -787,6 +787,8 @@ function fmtDateHR(iso){
   return d ? d.replace(/^0/,'')+'.'+m.replace(/^0/,'')+'.'+y+'.' : iso;
 }
 function eur(n){ const x=parseFloat(n||0); const parts=x.toFixed(2).split('.'); parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return parts.join(',') + ' €'; }
+function fmtAmtBlur(inp){const raw=inp.value.replace(/[^0-9,]/g,'').replace(',','.');const n=parseFloat(raw)||0;inp.value=n?eur(n):'';}
+function fmtAmtFocus(inp){inp.value=inp.value.replace(/\s*€/,'').replace(/\./g,'');}
 
 function showToast(msg, duration=4000, type=''){
   const t = document.getElementById('toast');
@@ -2135,7 +2137,7 @@ async function uploadToDrive(file, filename){
 async function saveReceipt(){
   const store  = document.getElementById('meta-store').value.trim();
   const date   = document.getElementById('meta-date').value;
-  const amount = parseFloat((document.getElementById('meta-amount').value||'').replace(',','.'))||0;
+  const amount = parseFloat((document.getElementById('meta-amount').value||'').replace(/[^0-9,]/g,'').replace(',','.'))||0;
   const cat    = document.getElementById('meta-cat').value;
   const note   = document.getElementById('meta-note').value.trim();
 
