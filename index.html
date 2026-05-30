@@ -317,10 +317,10 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 <!-- DELETE CONFIRM -->
 <div id="delete-confirm-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:center;justify-content:center;padding:24px">
   <div class="del-sheet" style="background:#fff;border-radius:20px;padding:28px 24px 24px;width:100%;max-width:340px;transform:scale(.92);opacity:0;transition:transform .22s cubic-bezier(.4,0,.2,1),opacity .22s">
-    <div style="font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:8px">Obriši račun?</div>
+    <div style="font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:8px">Ukloniti ovaj trošak?</div>
     <div style="font-size:14px;color:#6b7280;margin-bottom:24px">Podaci i slika bit će trajno obrisani. Ovo se ne može poništiti.</div>
     <button id="del-confirm-ok" style="width:100%;padding:14px;background:#ef4444;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px">Obriši</button>
-    <button id="del-confirm-cancel" style="width:100%;padding:14px;background:#f0f4ff;color:#1565c0;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer">Odustani</button>
+    <button id="del-confirm-cancel" style="width:100%;padding:14px;background:#f0f4ff;color:#6b7280;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer">Odustani</button>
   </div>
 </div>
 
@@ -1704,11 +1704,11 @@ function changeViewMonth(delta){
   const newIdx = viewMonthIdx + delta;
   if(newIdx < 0 || newIdx > 11) return;
   viewMonthIdx = newIdx;
-  // Zatvori plan panel ako je otvoren
+  // Zatvori plan panel i resetiraj sadržaj
+  const mpPanel = document.getElementById('month-plan-panel');
+  if(mpPanel) mpPanel.removeAttribute('open');
   const body = document.getElementById('month-plan-body');
-  if(body) body.classList.remove('open');
-  const arrow = document.getElementById('month-plan-arrow');
-  if(arrow) arrow.textContent = '▼';
+  if(body) body.innerHTML = '';
   renderMonthNav();
   loadPregled();
 }
@@ -2484,7 +2484,7 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   const dm=datum.match(/(\d+)\.(\d+)\.(\d{4})/);
   const iso=dm?dm[3]+'-'+dm[2].padStart(2,'0')+'-'+dm[1].padStart(2,'0'):'';
   document.getElementById('edit-store').value=store;
-  document.getElementById('edit-amount').value=String(iznos).replace('.',',');
+  document.getElementById('edit-amount').value=iznos ? eur(iznos) : '';
   document.getElementById('edit-date').value=iso;
   document.getElementById('edit-cat').value=kat;
   document.getElementById('edit-note').value=note;
