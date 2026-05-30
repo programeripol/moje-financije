@@ -315,9 +315,8 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 <div id="toast"></div>
 
 <!-- DELETE CONFIRM -->
-<div id="delete-confirm-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:flex-end;justify-content:center">
-  <div class="del-sheet" style="background:#fff;border-radius:20px 20px 0 0;padding:28px 24px 36px;width:100%;max-width:480px;transform:translateY(100%);transition:transform .28s cubic-bezier(.4,0,.2,1)">
-    <div style="width:36px;height:4px;background:#e0e7f0;border-radius:2px;margin:0 auto 20px"></div>
+<div id="delete-confirm-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:center;justify-content:center;padding:24px">
+  <div class="del-sheet" style="background:#fff;border-radius:20px;padding:28px 24px 24px;width:100%;max-width:340px;transform:scale(.92);opacity:0;transition:transform .22s cubic-bezier(.4,0,.2,1),opacity .22s">
     <div style="font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:8px">Obriši račun?</div>
     <div style="font-size:14px;color:#6b7280;margin-bottom:24px">Podaci i slika bit će trajno obrisani. Ovo se ne može poništiti.</div>
     <button id="del-confirm-ok" style="width:100%;padding:14px;background:#ef4444;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px">Obriši</button>
@@ -2327,10 +2326,10 @@ function showDeleteConfirm(){
     const el = document.getElementById('delete-confirm-overlay');
     if(!el) return resolve(false);
     el.style.display = 'flex';
-    requestAnimationFrame(()=>{ el.querySelector('.del-sheet').style.transform='translateY(0)'; });
+    requestAnimationFrame(()=>{ const s=el.querySelector('.del-sheet'); s.style.transform='scale(1)'; s.style.opacity='1'; });
     const ok = el.querySelector('#del-confirm-ok');
     const cancel = el.querySelector('#del-confirm-cancel');
-    const close = ()=>{ el.querySelector('.del-sheet').style.transform='translateY(100%)'; setTimeout(()=>{ el.style.display='none'; }, 280); };
+    const close = ()=>{ const s=el.querySelector('.del-sheet'); s.style.transform='scale(.92)'; s.style.opacity='0'; setTimeout(()=>{ el.style.display='none'; }, 240); };
     ok.onclick = ()=>{ close(); resolve(true); };
     cancel.onclick = ()=>{ close(); resolve(false); };
     el.onclick = (e)=>{ if(e.target===el){ close(); resolve(false); } };
