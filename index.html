@@ -1716,7 +1716,9 @@ function changeViewMonth(delta){
   loadPregled();
 }
 
-function toggleMonthPlanEdit(){} // handled by <detafunction renderMPInc(){
+function toggleMonthPlanEdit(){} // handled by <details> native toggle
+
+function renderMPInc(){
   const c = document.getElementById('mp-inc-list'); if(!c) return;
   c.innerHTML = mPlanIncGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
