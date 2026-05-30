@@ -242,7 +242,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:4px 4px}
 .month-nav-btn{background:none;border:none;font-size:26px;cursor:pointer;color:#1565c0;padding:0 6px;line-height:1;font-weight:300}
 .month-nav-btn:disabled{color:#c8d6e8;cursor:default}
-.month-nav-label{font-size:22px;font-weight:700;color:#1a237e;letter-spacing:-.3px}
+.month-nav-label{font-size:22px;font-weight:700;color:#1565c0;letter-spacing:-.3px}
 /* ── MONTH PLAN PANEL ── */
 .month-plan-panel{background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:18px;margin-bottom:14px;overflow:hidden;box-shadow:0 1px 8px rgba(21,101,192,.06)}
 .month-plan-panel > summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;list-style:none;font-size:13px;font-weight:600;color:#1565c0;letter-spacing:.05em;text-transform:uppercase}
@@ -687,7 +687,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 // ── CONFIG ──────────────────────────────────────────────────────────
 const CLIENT_ID  = '409386581085-b0oped5kgb2smih4jbh7ss5jge42pnq8.apps.googleusercontent.com';
 const SCOPES     = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.profile';
-const MONTHS_HR  = ['Sijecanj','Veljaca','Ozujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];
+const MONTHS_HR  = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];
 
 function curYear()  { return new Date().getFullYear(); }
 function curMonth() { return MONTHS_HR[new Date().getMonth()]; }
