@@ -562,11 +562,11 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </div>
 
   <details class="month-plan-panel" id="income-panel" ontoggle="if(this.open)initIncomePanel()">
-    <summary class="month-plan-summary"><span style="color:#16a34a">Prihodi ovog mjeseca</span><span class="plan-edit-hint">uredi</span></summary>
+    <summary class="month-plan-summary"><span style="color:#1565c0">Prihodi</span></summary>
     <div class="month-plan-body">
       <div id="mp-inc-list"></div>
-      <button class="add-goal-btn" style="color:#16a34a;border-color:#16a34a;margin-top:4px" onclick="addMPInc()">+ Dodaj prihod</button>
-      <div class="month-plan-footer"><button class="btn-primary" onclick="saveIncomePlan()" style="background:#16a34a">Spremi prihode</button></div>
+      <button class="add-goal-btn" style="color:#1565c0;border-color:#1565c0;margin-top:4px" onclick="addMPInc()">+ Dodaj prihod</button>
+      <div class="month-plan-footer"><button class="btn-outline btn-sm" onclick="saveIncomePlan()" style="color:#1565c0;border-color:#1565c0;margin-top:4px">Spremi prihode</button></div>
     </div>
   </details>
 
@@ -590,7 +590,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="month-plan-body" id="month-plan-body"></div>
   </details>
   <details class="month-plan-panel" id="savings-panel" ontoggle="if(this.open)initSavingsPanel()">
-    <summary class="month-plan-summary"><span style="color:#7c3aed">Štednja ovog mjeseca</span><span class="plan-edit-hint">uredi</span></summary>
+    <summary class="month-plan-summary"><span style="color:#7c3aed">Štednja</span></summary>
     <div class="month-plan-body">
       <div id="mp-sav-list"></div>
       <button class="add-goal-btn" style="color:#7c3aed;border-color:#7c3aed;margin-top:4px" onclick="addMPSav()">+ Dodaj štednju</button>
@@ -1745,8 +1745,8 @@ function renderMPInc(){
   c.innerHTML = mPlanIncGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
       <span class="drag-handle">⠿</span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="mPlanIncGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
+      <input type="text" class="goal-name" style="max-width:110px" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="mPlanIncGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" style="width:90px;flex-shrink:0" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
       <button class="save-goal-del" onclick="removeMPInc(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanIncGoals, renderMPInc);
@@ -1778,8 +1778,8 @@ function renderMPSav(){
   c.innerHTML = mPlanSavGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
       <span class="drag-handle">⠿</span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Fond hitnih slučajeva" oninput="mPlanSavGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanSavGoals,${i})" onblur="amtBlur(this,mPlanSavGoals,${i},()=>{})">
+      <input type="text" class="goal-name" style="max-width:110px" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Fond hitnih slučajeva" oninput="mPlanSavGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" style="width:90px;flex-shrink:0" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanSavGoals,${i})" onblur="amtBlur(this,mPlanSavGoals,${i},()=>{})">
       <button class="save-goal-del" onclick="removeMPSav(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanSavGoals, renderMPSav);
@@ -1842,16 +1842,11 @@ async function fillMonthPlanForm(){
   if(!body) return;
   const secStyle = (bg,color) => `style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:8px 0 6px;margin-top:10px;color:${color}"`;
   body.innerHTML =
-    `<div ${secStyle('#dcfce7','#16a34a')}>Prihodi</div><div id="mp-inc-list"></div>` +
-    `<button class="add-goal-btn" onclick="addMPInc()" style="color:#16a34a;border-color:#bbf7d0">+ Dodaj prihod</button>` +
     `<div ${secStyle('#fff7ed','#ea580c')} style="margin-top:16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#ea580c">Troškovi</div><div id="mp-exp-list"></div>` +
     `<button class="add-goal-btn" onclick="addMPExp()" style="color:#ea580c;border-color:#fed7aa">+ Dodaj trošak</button>` +
-    `<div style="margin-top:16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7c3aed">Štednja</div><div id="mp-sav-list"></div>` +
-    `<button class="add-goal-btn" onclick="addMPSav()" style="color:#7c3aed;border-color:#ddd6fe">+ Dodaj štednju</button>` +
     `<div class="month-plan-footer">` +
     `<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>` +
-    `<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button></div>`;
-  renderMPInc(); renderMPExp(); renderMPSav();
+    `<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button></div>`; renderMPExp(); renderMPSav();
 }
 
 async function saveMonthPlanNow(){
