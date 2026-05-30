@@ -558,14 +558,15 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
   <div class="summary-cards" id="budget-hero">
     <div class="sum-card">
+      <div class="sum-label">Planirano</div>
+      <div class="sum-val" id="bh-plan">0,00 €</div>
+    </div>
+    <div class="sum-card">
       <div class="sum-label">Potrošeno</div>
       <div class="sum-val" id="bh-spent">0,00 €</div>
     </div>
-    <div class="sum-card">
-      <div class="sum-label">Preostalo</div>
-      <div class="sum-val" id="bh-left">0,00 €</div>
-    </div>
     <span id="bh-sub" style="display:none"></span>
+    <span id="bh-left" style="display:none"></span>
     <span id="bh-income" style="display:none"></span>
     <span id="bh-savings" style="display:none"></span>
   </div>
@@ -1865,8 +1866,9 @@ async function loadPregled(){
     const left = income - totalSpent;
     const savings = income - totalSpent - savePlan;
 
+    const planEl = document.getElementById('bh-plan');
+    if(planEl) planEl.textContent = eur(totalPlan);
     document.getElementById('bh-spent').textContent = eur(totalSpent);
-    document.getElementById('bh-left').textContent  = eur(left);
 
     // Cat list — prikazuje svaki cilj iz plana kao vlastiti red
     const getGoalList = (jsonKey, fallback) => {
@@ -1976,7 +1978,7 @@ async function loadPregled(){
   }catch(e){
     // Reset all display values when month has no data
     const zero = eur(0);
-    ['bh-spent','bh-left'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=zero; });
+    ['bh-plan','bh-spent'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=zero; });
     allRecentEntries = [];
     renderRecentList();
     const monthName = MONTHS_HR[viewMonthIdx];
