@@ -521,7 +521,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
   </div>
 
-  <button class="btn btn-primary" id="save-btn" disabled>Spremi</button>
+  <button class="btn btn-primary" id="save-btn">Spremi</button>
   <div class="status" id="scan-status"></div>
   <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
 
@@ -2218,7 +2218,7 @@ function noviRacun(){
   syncAmtDisplay(document.getElementById('meta-amount'));
   document.getElementById('meta-note').value   = '';
   document.getElementById('meta-date').value   = today();
-  document.getElementById('save-btn').disabled = true;
+  document.getElementById('save-btn').disabled = false;
   showScan('', '');
   setProgress(0);
 }
