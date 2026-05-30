@@ -1934,7 +1934,7 @@ async function loadPregled(){
             <span style="flex:1;color:var(--color-text-primary,#1a1a2e);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${CAT_HR[cat]||cat}</span>
             <span style="color:#7090b0;flex-shrink:0">${totalSpent>0?Math.round(amt/totalSpent*100):0}%</span>
           </div>`).join('')}
-        ${sortedCats.length>5?`<div style="font-size:11px;color:#7090b0">+ još ${sortedCats.length-5} kategorija</div>':\''}
+        ${sortedCats.length>5?'<div style="font-size:11px;color:#7090b0">+ još '+(sortedCats.length-5)+' kategorija</div>':''}
       </div>
     </div>` : '';
     const catCards = sortedCats.map(([cat, act]) => {
