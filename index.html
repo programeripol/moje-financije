@@ -586,7 +586,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </div>
 
   <details class="month-plan-panel" id="month-plan-panel">
-    <summary class="collapsible-summary">Planirana potrošnja</summary>
+    <summary class="collapsible-summary">Troškovi</summary>
     <div class="month-plan-body" id="month-plan-body"></div>
   </details>
   <details class="month-plan-panel" id="savings-panel" ontoggle="if(this.open)initSavingsPanel()">
@@ -1762,6 +1762,7 @@ function renderMPExp(){
     const selOpts = MP_CAT_OPTS.replace(`value="${g.cat||''}"`,`value="${g.cat||''}" selected`);
     return `<div class="save-goal-row" data-idx="${i}">
       <span class="drag-handle">⠿</span>
+      <span style="width:10px;height:10px;border-radius:50%;background:${CAT_COLORS[g.cat]||'#e8edf8'};flex-shrink:0;margin-right:4px;display:inline-block"></span>
       <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Naziv" oninput="mPlanExpGoals[${i}].name=this.value">
       <select class="goal-cat-sel" onchange="mPlanExpGoals[${i}].cat=this.value">${selOpts}</select>
       <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanExpGoals,${i})" onblur="amtBlur(this,mPlanExpGoals,${i},()=>{})">
@@ -1842,7 +1843,7 @@ async function fillMonthPlanForm(){
   if(!body) return;
   const secStyle = (bg,color) => `style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:8px 0 6px;margin-top:10px;color:${color}"`;
   body.innerHTML =
-    `<div ${secStyle('#fff7ed','#ea580c')} style="margin-top:16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#ea580c">Troškovi</div><div id="mp-exp-list"></div>` +
+    `<div id="mp-exp-list"></div>` +
     `<button class="add-goal-btn" onclick="addMPExp()" style="color:#ea580c;border-color:#fed7aa">+ Dodaj trošak</button>` +
     `<div class="month-plan-footer">` +
     `<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>` +
