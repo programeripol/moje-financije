@@ -243,7 +243,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .summary-cards{display:flex;gap:10px;margin-bottom:14px}
 .sum-card{flex:1;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px}
 .sum-label{font-size:11px;font-weight:500;color:#7090b0;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-.sum-val{font-size:20px;font-weight:700;color:#1565c0}
+.sum-val{font-size:20px;font-weight:700;color:#7090b0}
+.sum-val-main{font-size:20px;font-weight:700;color:#1565c0}
 .month-nav-btn{background:none;border:none;font-size:26px;cursor:pointer;color:#1565c0;padding:0 6px;line-height:1;font-weight:300}
 .month-nav-btn:disabled{color:#c8d6e8;cursor:default}
 .month-nav-label{font-size:22px;font-weight:700;color:#1565c0;letter-spacing:-.3px}
@@ -563,7 +564,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
     <div class="sum-card">
       <div class="sum-label">Potrošeno</div>
-      <div class="sum-val" id="bh-spent">0,00 €</div>
+      <div class="sum-val-main" id="bh-spent">0,00 €</div>
     </div>
     <span id="bh-sub" style="display:none"></span>
     <span id="bh-left" style="display:none"></span>
@@ -1924,17 +1925,21 @@ async function loadPregled(){
       <svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">
         <circle cx="45" cy="45" r="36" fill="none" stroke="#f0f4ff" stroke-width="11"/>
         ${donutSlices}
-        <text x="45" y="41" text-anchor="middle" font-size="9" fill="#7090b0" font-family="sans-serif">Ukupno</text>
+        <text x="45" y="41" text-anchor="middle" font-size="9" fill="#7090b0" font-family="sans-serif">Potrošeno</text>
         <text x="45" y="55" text-anchor="middle" font-size="10" fill="#1a1a2e" font-weight="500" font-family="sans-serif">${eur(totalSpent)}</text>
       </svg>
       <div style="flex:1;display:flex;flex-direction:column;gap:6px">
-        ${sortedCats.slice(0,5).map(([cat,amt])=>`
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+        ${sortedCats.map(([cat,amt],i)=>{
+          const katN=sortedCats.length-5;
+          const katWord=katN===1?'kategorija':katN>=2&&katN<=4?'kategorije':'kategorija';
+          const hidden=i>=5;
+          return `<div class="leg-item${hidden?' leg-hidden':''}" style="display:${hidden?'none':'flex'};align-items:center;gap:8px;font-size:12px">
             <div style="width:9px;height:9px;border-radius:50%;background:${CAT_COLORS[cat]||'#94a3b8'};flex-shrink:0"></div>
             <span style="flex:1;color:var(--color-text-primary,#1a1a2e);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${CAT_HR[cat]||cat}</span>
             <span style="color:#7090b0;flex-shrink:0">${totalSpent>0?Math.round(amt/totalSpent*100):0}%</span>
-          </div>`).join('')}
-        ${sortedCats.length>5?'<div style="font-size:11px;color:#7090b0">+ još '+(sortedCats.length-5)+' kategorija</div>':''}
+          </div>`;
+        }).join('')}
+        ${sortedCats.length>5?'<div id="leg-more-btn" onclick="document.querySelectorAll(\'.leg-hidden\').forEach(e=>e.style.display=\'flex\');this.style.display=\'none\';" style="font-size:11px;color:#1565c0;cursor:pointer;margin-top:2px">+ još '+(sortedCats.length-5)+(sortedCats.length-5===1?' kategorija':sortedCats.length-5<=4?' kategorije':' kategorija')+'</div>':''}
       </div>
     </div>` : '';
     const catCards = sortedCats.map(([cat, act]) => {
