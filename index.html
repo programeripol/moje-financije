@@ -1929,7 +1929,16 @@ async function loadPregled(){
     }
 
   }catch(e){
-    document.getElementById('cat-list').innerHTML = '<div class="empty-state">Greška: '+e.message+'</div>';
+    // Reset all display values when month has no data
+    const zero = eur(0);
+    const els = ['bh-spent','bh-income','bh-left','bh-savings'];
+    els.forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=zero; });
+    const sub = document.getElementById('bh-sub');
+    if(sub) sub.textContent = 'od planiranih ' + zero;
+    allRecentEntries = [];
+    renderRecentList();
+    const monthName = MONTHS_HR[viewMonthIdx];
+    document.getElementById('cat-list').innerHTML = '<div class="empty-state">Nema podataka za '+monthName+'</div>';
   }
 }
 
