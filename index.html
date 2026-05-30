@@ -240,6 +240,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 
 /* ── MONTH NAV ── */
 .month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:4px 4px}
+.summary-cards{display:flex;gap:10px;margin-bottom:14px}
+.sum-card{flex:1;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px}
+.sum-label{font-size:11px;font-weight:500;color:#7090b0;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.sum-val{font-size:20px;font-weight:700;color:#1565c0}
 .month-nav-btn{background:none;border:none;font-size:26px;cursor:pointer;color:#1565c0;padding:0 6px;line-height:1;font-weight:300}
 .month-nav-btn:disabled{color:#c8d6e8;cursor:default}
 .month-nav-label{font-size:22px;font-weight:700;color:#1565c0;letter-spacing:-.3px}
@@ -552,24 +556,18 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <button class="month-nav-btn" id="next-month-btn" onclick="changeViewMonth(1)">›</button>
   </div>
 
-  <div class="budget-hero" id="budget-hero">
-    <div class="bh-label">Ukupno potrošeno ovaj mjesec:</div>
-    <div class="bh-amount" id="bh-spent">€ 0.00</div>
-    <div class="bh-sub" id="bh-sub">od planiranih € 0.00</div>
-    <div class="bh-row">
-      <div class="bh-stat">
-        <div class="bh-stat-label">Prihod</div>
-        <div class="bh-stat-val" id="bh-income">0 €</div>
-      </div>
-      <div class="bh-stat">
-        <div class="bh-stat-label">Preostalo</div>
-        <div class="bh-stat-val" id="bh-left">0 €</div>
-      </div>
-      <div class="bh-stat">
-        <div class="bh-stat-label">Stednja</div>
-        <div class="bh-stat-val" id="bh-savings">0 €</div>
-      </div>
+  <div class="summary-cards" id="budget-hero">
+    <div class="sum-card">
+      <div class="sum-label">Potrošeno</div>
+      <div class="sum-val" id="bh-spent">0,00 €</div>
     </div>
+    <div class="sum-card">
+      <div class="sum-label">Preostalo</div>
+      <div class="sum-val" id="bh-left">0,00 €</div>
+    </div>
+    <span id="bh-sub" style="display:none"></span>
+    <span id="bh-income" style="display:none"></span>
+    <span id="bh-savings" style="display:none"></span>
   </div>
 
   <details class="month-plan-panel" id="month-plan-panel">
@@ -1867,11 +1865,8 @@ async function loadPregled(){
     const left = income - totalSpent;
     const savings = income - totalSpent - savePlan;
 
-    document.getElementById('bh-spent').textContent  = eur(totalSpent);
-    document.getElementById('bh-sub').textContent    = `od planiranih ${eur(totalPlan)}`;
-    document.getElementById('bh-income').textContent = eur(income);
-    document.getElementById('bh-left').textContent   = eur(left);
-    document.getElementById('bh-savings').textContent= eur(Math.max(0,savings));
+    document.getElementById('bh-spent').textContent = eur(totalSpent);
+    document.getElementById('bh-left').textContent  = eur(left);
 
     // Cat list — prikazuje svaki cilj iz plana kao vlastiti red
     const getGoalList = (jsonKey, fallback) => {
@@ -1912,17 +1907,57 @@ async function loadPregled(){
       }).join('');
     };
 
-    const secH = label => `<div class="cat-section-header">${label}</div>`;
-    const fixHtml = buildItemRows(fixGoals, false);
-    const varHtml = buildItemRows(varGoals, false);
-    const savHtml = buildItemRows(savGoals, true);
-    let catHtml = '';
-    if(fixHtml) catHtml += secH('Fiksni troškovi') + fixHtml;
-    if(varHtml) catHtml += secH('Varijabilni troškovi') + varHtml;
-    if(savHtml) catHtml += secH('Štednja') + savHtml;
-
-    const catLegend = catHtml ? '<div class="cat-legend"><span></span><span class="cat-legend-label">potrošeno / predviđeno</span></div>' : '';
-    document.getElementById('cat-list').innerHTML = catLegend + (catHtml || '<div class="empty-state">Nema troškova ovaj mjesec.</div>');
+    // Donut + category cards rendering
+    const circumference = 2 * Math.PI * 36;
+    const sortedCats = Object.entries(actual).sort((a,b)=>b[1]-a[1]);
+    let dashOffset = 0;
+    const donutSlices = sortedCats.map(([cat, amt]) => {
+      const pct = totalSpent > 0 ? amt / totalSpent : 0;
+      const dash = pct * circumference;
+      const slice = `<circle cx="45" cy="45" r="36" fill="none" stroke="${CAT_COLORS[cat]||'#94a3b8'}" stroke-width="11" stroke-dasharray="${dash} ${circumference}" stroke-dashoffset="${-dashOffset}" stroke-linecap="butt" transform="rotate(-90 45 45)"/>`;
+      dashOffset += dash;
+      return slice;
+    }).join('');
+    const donutHtml = sortedCats.length > 0 ? `<div style="background:var(--color-background-primary,#fff);border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:16px">
+      <svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">
+        <circle cx="45" cy="45" r="36" fill="none" stroke="#f0f4ff" stroke-width="11"/>
+        ${donutSlices}
+        <text x="45" y="41" text-anchor="middle" font-size="9" fill="#7090b0" font-family="sans-serif">Ukupno</text>
+        <text x="45" y="55" text-anchor="middle" font-size="10" fill="#1a1a2e" font-weight="500" font-family="sans-serif">${eur(totalSpent)}</text>
+      </svg>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+        ${sortedCats.slice(0,5).map(([cat,amt])=>`
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+            <div style="width:9px;height:9px;border-radius:50%;background:${CAT_COLORS[cat]||'#94a3b8'};flex-shrink:0"></div>
+            <span style="flex:1;color:var(--color-text-primary,#1a1a2e);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${CAT_HR[cat]||cat}</span>
+            <span style="color:#7090b0;flex-shrink:0">${totalSpent>0?Math.round(amt/totalSpent*100):0}%</span>
+          </div>`).join('')}
+        ${sortedCats.length>5?`<div style="font-size:11px;color:#7090b0">+ još ${sortedCats.length-5} kategorija</div>':\''}
+      </div>
+    </div>` : '';
+    const catCards = sortedCats.map(([cat, act]) => {
+      const planAmt = (effPlan[cat]||0);
+      const pct = planAmt > 0 ? Math.min(100,(act/planAmt)*100) : 100;
+      const over = planAmt > 0 && act > planAmt;
+      const color = CAT_COLORS[cat]||'#94a3b8';
+      const name = (CAT_HR[cat]||cat).replace(/</g,'&lt;');
+      const subText = over ? '+'+eur(act-planAmt)+' iznad plana' : planAmt>0 ? 'od plana '+eur(planAmt) : 'bez plana';
+      return `<div style="background:var(--color-background-primary,#fff);border:1px solid #e8edf8;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <div style="width:40px;height:40px;border-radius:50%;background:${color}22;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <div style="width:14px;height:14px;border-radius:50%;background:${color}"></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;color:var(--color-text-primary,#1a1a2e)">${name}</div>
+          <div style="height:3px;background:#e8edf8;border-radius:2px;margin:5px 0 3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${over?'#ef4444':color};border-radius:2px;max-width:100%"></div></div>
+          <div style="font-size:11px;color:${over?'#ef4444':'#7090b0'}">${subText}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:14px;font-weight:700;color:${over?'#ef4444':'var(--color-text-primary,#1a1a2e)'}">${eur(act)}</div>
+          <div style="font-size:11px;color:#7090b0">${planAmt>0?Math.round(pct)+'%':''}</div>
+        </div>
+      </div>`;
+    }).join('');
+    document.getElementById('cat-list').innerHTML = sortedCats.length > 0 ? donutHtml + catCards : '<div class="empty-state">Nema troškova ovaj mjesec.</div>';
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
     allRecentEntries = trackerRows.slice().reverse();
@@ -1941,10 +1976,7 @@ async function loadPregled(){
   }catch(e){
     // Reset all display values when month has no data
     const zero = eur(0);
-    const els = ['bh-spent','bh-income','bh-left','bh-savings'];
-    els.forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=zero; });
-    const sub = document.getElementById('bh-sub');
-    if(sub) sub.textContent = 'od planiranih ' + zero;
+    ['bh-spent','bh-left'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=zero; });
     allRecentEntries = [];
     renderRecentList();
     const monthName = MONTHS_HR[viewMonthIdx];
