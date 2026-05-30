@@ -561,6 +561,15 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <button class="month-nav-btn" id="next-month-btn" onclick="changeViewMonth(1)">›</button>
   </div>
 
+  <details class="month-plan-panel" id="income-panel" ontoggle="if(this.open)initIncomePanel()">
+    <summary class="month-plan-summary"><span style="color:#16a34a">Prihodi ovog mjeseca</span><span class="plan-edit-hint">uredi</span></summary>
+    <div class="month-plan-body">
+      <div id="mp-inc-list"></div>
+      <button class="add-goal-btn" style="color:#16a34a;border-color:#16a34a;margin-top:4px" onclick="addMPInc()">+ Dodaj prihod</button>
+      <div class="month-plan-footer"><button class="btn-primary" onclick="saveIncomePlan()" style="background:#16a34a">Spremi prihode</button></div>
+    </div>
+  </details>
+
   <div class="summary-cards" id="budget-hero">
     <div class="sum-card-inv">
       <div class="sum-label-inv">Planirano</div>
@@ -580,6 +589,16 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <summary class="collapsible-summary">Planirana potrošnja</summary>
     <div class="month-plan-body" id="month-plan-body"></div>
   </details>
+  <details class="month-plan-panel" id="savings-panel" ontoggle="if(this.open)initSavingsPanel()">
+    <summary class="month-plan-summary"><span style="color:#7c3aed">Štednja ovog mjeseca</span><span class="plan-edit-hint">uredi</span></summary>
+    <div class="month-plan-body">
+      <div id="mp-sav-list"></div>
+      <button class="add-goal-btn" style="color:#7c3aed;border-color:#7c3aed;margin-top:4px" onclick="addMPSav()">+ Dodaj štednju</button>
+      <div class="month-plan-footer"><button class="btn-primary" onclick="saveSavingsPlan()" style="background:#7c3aed">Spremi štednju</button></div>
+    </div>
+  </details>
+
+
 
   <details class="card collapsible-card" id="cat-panel">
     <summary class="collapsible-summary">Pregled po kategorijama</summary>
@@ -721,7 +740,7 @@ let profileData    = {};
 let currentTab     = 'skener';
 let viewMonthIdx   = new Date().getMonth(); // 0-11, koji mjesec gledamo u Pregledu
 let monthPlanCache = {};                    // cache { "2026_05": {...} ili null }
-let mPlanIncGoals = [], mPlanFixGoals = [], mPlanVarGoals = [], mPlanSavGoals = [], mPlanExpGoals = [];
+let mPlanIncGoals = [], mPlanFixGoals = [], mPlanVarGoals = [], mPlanSavGoals = [], mPlanExpGoals = []; mPlanIncGoals = []; mPlanSavGoals = [];
 let currentImgFile = null;
 let currentImgSrc  = null;
 let obCurrentStep  = 1;
@@ -1711,6 +1730,8 @@ function changeViewMonth(delta){
   // Zatvori plan panel i resetiraj sadržaj
   const mpPanel = document.getElementById('month-plan-panel');
   if(mpPanel) mpPanel.removeAttribute('open');
+  const ipanel=document.getElementById('income-panel'); if(ipanel) ipanel.removeAttribute('open');
+  const spanel=document.getElementById('savings-panel'); if(spanel) spanel.removeAttribute('open');
   const body = document.getElementById('month-plan-body');
   if(body) body.innerHTML = '';
   renderMonthNav();
@@ -1765,6 +1786,42 @@ function renderMPSav(){
 }
 function addMPSav(){ mPlanSavGoals.push({name:'',amount:0}); renderMPSav(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-sav-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
 function removeMPSav(i){ mPlanSavGoals.splice(i,1); renderMPSav(); }
+
+
+async function initIncomePanel(){
+  if(!mPlanIncGoals.length){
+    const plan = await loadMonthPlan(viewMonthIdx);
+    const cp = arr => JSON.parse(JSON.stringify(arr));
+    try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || cp(incomeGoals); } catch(e){ mPlanIncGoals = cp(incomeGoals); }
+  }
+  renderMPInc();
+}
+async function initSavingsPanel(){
+  if(!mPlanSavGoals.length){
+    const plan = await loadMonthPlan(viewMonthIdx);
+    const cp = arr => JSON.parse(JSON.stringify(arr));
+    try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || cp(savingsGoals); } catch(e){ mPlanSavGoals = cp(savingsGoals); }
+  }
+  renderMPSav();
+}
+async function saveIncomePlan(){
+  showSaveOverlay('Spremam prihode...');
+  try {
+    const existing = await loadMonthPlan(viewMonthIdx) || {};
+    await saveMonthPlan(viewMonthIdx, {...existing, inc_json: JSON.stringify(mPlanIncGoals)});
+    showToast('Prihodi spremljeni');
+  } catch(e){ showToast('Greška: ' + e.message); }
+  hideSaveOverlay();
+}
+async function saveSavingsPlan(){
+  showSaveOverlay('Spremam štednju...');
+  try {
+    const existing = await loadMonthPlan(viewMonthIdx) || {};
+    await saveMonthPlan(viewMonthIdx, {...existing, sav_json: JSON.stringify(mPlanSavGoals), save_plan: mPlanSavGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0)});
+    showToast('Štednja spremljena');
+  } catch(e){ showToast('Greška: ' + e.message); }
+  hideSaveOverlay();
+}
 
 async function fillMonthPlanForm(){
   const plan = await loadMonthPlan(viewMonthIdx);
