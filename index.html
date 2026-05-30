@@ -566,7 +566,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="month-plan-body">
       <div id="mp-inc-list"></div>
       <button class="add-goal-btn" style="color:#1565c0;border-color:#1565c0;margin-top:4px" onclick="addMPInc()">+ Dodaj prihod</button>
-      <div class="month-plan-footer"><button class="btn-outline btn-sm" onclick="saveIncomePlan()" style="color:#1565c0;border-color:#1565c0;margin-top:4px">Spremi prihode</button></div>
+      <div class="month-plan-footer"><button onclick="saveIncomePlan()" style="width:100%;padding:13px;background:#1565c0;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px">Spremi prihode</button></div>
     </div>
   </details>
 
@@ -1745,8 +1745,8 @@ function renderMPInc(){
   c.innerHTML = mPlanIncGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
       <span class="drag-handle">⠿</span>
-      <input type="text" class="goal-name" style="max-width:110px" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="mPlanIncGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" style="width:90px;flex-shrink:0" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
+      <input type="text" class="goal-name" style="flex:2;min-width:0" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="mPlanIncGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" style="width:75px;flex-shrink:0" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
       <button class="save-goal-del" onclick="removeMPInc(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanIncGoals, renderMPInc);
@@ -1778,8 +1778,8 @@ function renderMPSav(){
   c.innerHTML = mPlanSavGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
       <span class="drag-handle">⠿</span>
-      <input type="text" class="goal-name" style="max-width:110px" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Fond hitnih slučajeva" oninput="mPlanSavGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" style="width:90px;flex-shrink:0" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanSavGoals,${i})" onblur="amtBlur(this,mPlanSavGoals,${i},()=>{})">
+      <input type="text" class="goal-name" style="flex:2;min-width:0" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Fond hitnih slučajeva" oninput="mPlanSavGoals[${i}].name=this.value">
+      <input type="text" class="goal-amt" style="width:75px;flex-shrink:0" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanSavGoals,${i})" onblur="amtBlur(this,mPlanSavGoals,${i},()=>{})">
       <button class="save-goal-del" onclick="removeMPSav(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanSavGoals, renderMPSav);
