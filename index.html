@@ -2478,8 +2478,8 @@ function closeEditDrawer(){
     var dr=document.getElementById("edit-drawer");
     if(!dr) return;
     curY=e.touches[0].clientY-startY;
-    if(curY>0) dr.style.transform="translateY("+curY+"px)";
-  },{passive:true});
+    if(curY>0){ e.preventDefault(); dr.style.transform="translateY("+curY+"px)"; }
+  },{passive:false});
   document.addEventListener("touchend",function(){
     if(!dragging) return;
     dragging=false;
