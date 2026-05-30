@@ -83,7 +83,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .euro-wrap{position:relative}
 .euro-wrap span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#aaa;font-size:15px;pointer-events:none}
-.euro-wrap input{padding-left:26px}#meta-date.date-empty{color:#bbb}.euro-suffix{display:flex;align-items:center;border:1.5px solid #e0e7f0;border-radius:10px;background:#fafbff;transition:.15s}.euro-suffix:focus-within{border-color:#1565c0;background:#fff}.euro-suffix input{flex:1;border:none;background:transparent;padding:10px 4px 10px 12px;width:100%;outline:none;font-size:14px;font-family:inherit;color:#1a1a2e}.euro-suffix input.has-val{color:transparent;caret-color:#1a1a2e}.euro-suffix span{color:#aaa;font-size:14px;pointer-events:none;flex-shrink:0;padding-right:12px}
+.euro-wrap input{padding-left:26px}#meta-date.date-empty{color:#bbb}.req{color:#e53935;font-size:11px;vertical-align:super}.euro-suffix{display:flex;align-items:center;border:1.5px solid #e0e7f0;border-radius:10px;background:#fafbff;transition:.15s}.euro-suffix:focus-within{border-color:#1565c0;background:#fff}.euro-suffix input{flex:1;border:none;background:transparent;padding:10px 4px 10px 12px;width:100%;outline:none;font-size:14px;font-family:inherit;color:#1a1a2e}.euro-suffix input.has-val{color:transparent;caret-color:#1a1a2e}.euro-suffix span{color:#aaa;font-size:14px;pointer-events:none;flex-shrink:0;padding-right:12px}
 .amount-suffix-wrap{display:flex;align-items:center;gap:10px}
 .amount-suffix-wrap .eur-suf{font-size:20px;font-weight:600;color:#1a1a2e;flex-shrink:0}
 .big-amount input{font-size:22px;font-weight:600;color:#1565c0;padding-left:28px}
@@ -471,20 +471,20 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   <div class="card">
     <div class="row2">
       <div class="field">
-        <label>Naziv</label>
-        <input type="text" id="meta-store" placeholder="Lidl, Netflix, HNK" autocomplete="off">
+        <label>Naziv <span class="req">*</span></label>
+        <input type="text" id="meta-store" placeholder="Lidl, frizerka, Netflix…" autocomplete="off">
       </div>
       <div class="field">
-        <label>Datum</label>
+        <label>Datum <span class="req">*</span></label>
         <input type="date" id="meta-date" class="date-empty" onchange="this.classList.toggle('date-empty',!this.value)">
       </div>
     </div>
     <div class="field">
-      <label>Iznos</label>
+      <label>Iznos <span class="req">*</span></label>
       <div class="euro-suffix"><input type="text" id="meta-amount" class="field-input" placeholder="0,00 €" inputmode="decimal" onblur="fmtAmtBlur(this)" onfocus="fmtAmtFocus(this)"></div>
     </div>
     <div class="field">
-      <label>Kategorija</label>
+      <label>Kategorija <span class="req">*</span></label>
       <select id="meta-cat">
         <option value="" disabled selected>Odaberi kategoriju</option>
         <optgroup label="Stanovanje">
@@ -2142,9 +2142,10 @@ async function saveReceipt(){
   const cat    = document.getElementById('meta-cat').value;
   const note   = document.getElementById('meta-note').value.trim();
 
-  if(!store)  { showScan('Unesi naziv ducana!','err'); return; }
-  if(!date)   { showScan('Unesi datum!','err'); return; }
-  if(!amount) { showScan('Unesi iznos!','err'); return; }
+  if(!store)  { showScan('Upiši naziv','err'); return; }
+  if(!date)   { showScan('Odaberi datum','err'); return; }
+  if(!amount) { showScan('Upiši iznos','err'); return; }
+  if(!cat)    { showScan('Odaberi kategoriju','err'); return; }
   if(!token)  { signIn(); return; }
 
   const btn = document.getElementById('save-btn');
@@ -2441,7 +2442,7 @@ window.variableGoals        = variableGoals;
 function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   driveUrl=driveUrl||"";
   var iw=document.getElementById("edit-img-wrap"),it=document.getElementById("edit-img-thumb");
-  if(iw&&it){it.src="";iw.style.display="none";if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.src=th;it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
+  if(iw&&it){it.src="";iw.style.display="none";if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.style.opacity="0.3";it.src=th;it.onload=function(){it.style.opacity="1";};it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
   const di=bilj.indexOf(' — ');
   const store=di>=0?bilj.slice(0,di):bilj;
   const note=di>=0?bilj.slice(di+3):'';
