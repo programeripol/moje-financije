@@ -2084,6 +2084,7 @@ function handleFile(file){
   document.getElementById('img-preview-wrap').style.display = 'block';
   
   document.getElementById('remove-file').style.display = 'flex';
+  setTimeout(()=>{ document.getElementById('meta-store').scrollIntoView({behavior:'smooth',block:'start'}); }, 300);
   document.getElementById('meta-date').value = today();
   document.getElementById('save-btn').disabled = false;
   if(isPdf){
