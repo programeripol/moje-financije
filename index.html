@@ -253,7 +253,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .month-nav-btn:disabled{color:#c8d6e8;cursor:default}
 .month-nav-label{font-size:22px;font-weight:700;color:#1565c0;letter-spacing:-.3px}
 /* ── MONTH PLAN PANEL ── */
-.month-plan-panel{background:#fff;border:none;border-radius:0;padding:4px 0;margin-bottom:14px;overflow:hidden}
+.month-plan-panel{background:#fff;border:none;border-radius:0;padding:4px 0;margin:0 -16px 14px;overflow:hidden}
 .month-plan-panel > summary{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;list-style:none;font-size:13px;font-weight:600;color:#1565c0;letter-spacing:.05em;text-transform:uppercase}
 .month-plan-panel > summary::-webkit-details-marker{display:none}
 .month-plan-panel > summary::after{content:'⌄';font-size:20px;font-weight:700;color:#1565c0;transition:transform .2s;display:inline-block;line-height:1;margin-top:-2px}
@@ -263,7 +263,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .collapsible-summary::-webkit-details-marker{display:none}
 .collapsible-summary::after{content:"\2304";font-size:20px;font-weight:700;color:#1565c0;transition:transform .2s;display:inline-block;line-height:1}
 details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(180deg)}
-.month-plan-body{padding:0 4px 8px}
+.month-plan-body{padding:0 20px 8px}
 .month-plan-section{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px}
 .month-plan-footer{display:flex;gap:10px;margin-top:14px}
 /* ── SETUP BANNER ── */
@@ -513,7 +513,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
         </optgroup>
         <optgroup label="Svakodnevno">
           <option value="Food">Hrana</option>
-          <option value="Fuel">Auto</option>
+          
           <option value="Pets">Ljubimci</option>
           <option value="Beauty">Kozmetika</option>
           <option value="Zdravlje">Zdravlje</option>
@@ -528,7 +528,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
           <option value="Putovanje">Putovanje</option>
         </optgroup>
         <optgroup label="Financije">
-          <option value="Debt">Kredit</option>
+          <option value="Debt">Rate</option>
           <option value="Savings">Štednja</option>
         </optgroup>
         <option value="Other">Ostalo</option>
@@ -764,9 +764,9 @@ if('serviceWorker' in navigator){
 }
 
 const CAT_HR = {
-  Food:'Hrana', Pets:'Ljubimci', Fuel:'Auto', Software:'Pretplate', Beauty:'Kozmetika',
+  Food:'Hrana', Pets:'Ljubimci', Fuel:'Prijevoz', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
-  Allianz:'Osiguranje', Debt:'Kredit', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
+  Allianz:'Osiguranje', Debt:'Rate', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
   Savings:'Štednja', Other:'Ostalo'
 };
 const CAT_COLORS = {
@@ -1754,7 +1754,7 @@ function renderMPInc(){
 function addMPInc(){ mPlanIncGoals.push({name:'',amount:0}); renderMPInc(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-inc-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
 function removeMPInc(i){ mPlanIncGoals.splice(i,1); renderMPInc(); }
 
-const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option><option value="T-com">Internet</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Fuel">Auto</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Prijevoz">Prijevoz</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Allianz">Osiguranje</option><option value="Debt">Kredit</option><option value="Savings">Štednja</option></optgroup><option value="Other">Ostalo</option>`;
+const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Prijevoz">Prijevoz</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="Other">Ostalo</option>`;
 
 function renderMPExp(){
   const c = document.getElementById('mp-exp-list'); if(!c) return;
@@ -2003,7 +2003,7 @@ async function loadPregled(){
       if(!window._catEntries[cat]) window._catEntries[cat] = [];
       const di = (r[11]||'').indexOf(' — ');
       const naziv = di>=0 ? r[11].slice(0,di) : (r[11]||'');
-      window._catEntries[cat].push({datum:r[1]||'', naziv, iznos:parseFloat(r[5])||0, sheetRow});
+      window._catEntries[cat].push({datum:r[1]||'', naziv, iznos:parseFloat(r[5])||0, sheetRow, kat:cat, driveUrl:r[12]||''});
     });
 
     // Donut SVG
@@ -2048,7 +2048,7 @@ async function loadPregled(){
       const name = (CAT_HR[cat]||cat).replace(/</g,'&lt;');
       const subText = over ? '+'+eur(act-planAmt)+' iznad plana' : planAmt>0 ? 'od plana '+eur(planAmt) : 'bez plana';
       const entries = window._catEntries[cat] || [];
-      const entriesHtml = entries.map(e => `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-top:1px solid #f0f4ff;font-size:12px">
+      const entriesHtml = entries.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).map(e => `<div onclick="openReceiptView(${e.sheetRow})" style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;cursor:pointer;border-top:1px solid #f0f4ff;font-size:12px">
           <span style="color:#7090b0;flex-shrink:0;margin-right:8px">${e.datum}</span>
           <span style="flex:1;color:#1a1a2e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.naziv||name}</span>
           <span style="font-weight:600;color:#1565c0;flex-shrink:0;margin-left:8px">${eur(e.iznos)}</span>
@@ -2704,6 +2704,59 @@ window.openEditReceipt=openEditReceipt;
 window.closeEditDrawer=closeEditDrawer;
 window.saveEditedReceipt=saveEditedReceipt;
 window.savingsGoals         = savingsGoals;
+
+function openReceiptView(sheetRow){
+  // Find entry in _catEntries
+  let entry = null;
+  for(const cat in window._catEntries){
+    const e = window._catEntries[cat].find(x=>x.sheetRow===sheetRow);
+    if(e){ entry=e; break; }
+  }
+  if(!entry) return;
+  
+  const ov = document.getElementById('receipt-view-overlay');
+  const sheet = document.getElementById('receipt-view-sheet');
+  document.getElementById('rv-naziv').textContent = entry.naziv || '';
+  document.getElementById('rv-iznos').textContent = eur(entry.iznos);
+  document.getElementById('rv-datum').textContent = entry.datum || '';
+  document.getElementById('rv-kat').textContent = CAT_HR[entry.kat] || entry.kat || '';
+  document.getElementById('rv-kat').style.background = (CAT_COLORS[entry.kat]||'#e8edf8')+'22';
+  document.getElementById('rv-kat').style.color = CAT_COLORS[entry.kat]||'#1565c0';
+  
+  // Parse bilj from naziv (format: "store — note")
+  const dashIdx = (entry.naziv||'').indexOf(' — ');
+  const biljRow = document.getElementById('rv-bilj-row');
+  if(dashIdx>=0){
+    const bilj = entry.naziv.slice(dashIdx+3);
+    document.getElementById('rv-bilj').textContent = bilj;
+    biljRow.style.display='flex';
+  } else { biljRow.style.display='none'; }
+  
+  // Photo
+  const imgWrap = document.getElementById('rv-img-wrap');
+  const img = document.getElementById('rv-img');
+  if(entry.driveUrl){
+    img.src = entry.driveUrl;
+    imgWrap.style.display='block';
+  } else {
+    imgWrap.style.display='none';
+    img.src='';
+  }
+  
+  ov.style.display='flex';
+  requestAnimationFrame(()=>{ sheet.style.transform='translateY(0)'; });
+}
+function closeReceiptView(){
+  const ov=document.getElementById('receipt-view-overlay');
+  const sheet=document.getElementById('receipt-view-sheet');
+  sheet.style.transform='translateY(100%)';
+  setTimeout(()=>{ ov.style.display='none'; }, 300);
+}
+// Close on backdrop click
+document.addEventListener('click', e=>{
+  if(e.target.id==='receipt-view-overlay') closeReceiptView();
+});
+
 </script>
 
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
@@ -2725,7 +2778,7 @@ window.savingsGoals         = savingsGoals;
       </optgroup>
       <optgroup label="Svakodnevno">
       <option value="Food">Hrana</option>
-      <option value="Fuel">Auto</option>
+      
       <option value="Pets">Ljubimci</option>
       <option value="Beauty">Kozmetika</option>
       <option value="Zdravlje">Zdravlje</option>
@@ -2740,7 +2793,7 @@ window.savingsGoals         = savingsGoals;
         <option value="Putovanje">Putovanje</option>
       </optgroup>
       <optgroup label="Financije">
-      <option value="Debt">Kredit</option>
+      <option value="Debt">Rate</option>
       <option value="Savings">Štednja</option>
       </optgroup>
       <option value="Other">Ostalo</option>
@@ -2751,6 +2804,28 @@ window.savingsGoals         = savingsGoals;
   <div style="display:flex;gap:10px;margin-top:4px">
     <button class="btn btn-outline" style="flex:1" onclick="closeEditDrawer()">Odustani</button>
     <button class="btn btn-primary" style="flex:2" onclick="saveEditedReceipt()">Spremi promjene</button>
+  </div>
+</div>
+
+<div id="receipt-view-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1200;align-items:flex-end;justify-content:center;padding:0">
+  <div id="receipt-view-sheet" style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:24px 20px 32px;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <span id="rv-kat" style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:#f0f4ff;color:#1565c0"></span>
+      <button onclick="closeReceiptView()" style="background:none;border:none;font-size:22px;color:#6b7280;cursor:pointer;line-height:1">×</button>
+    </div>
+    <div id="rv-img-wrap" style="margin-bottom:16px;text-align:center;display:none">
+      <img id="rv-img" src="" style="max-width:100%;max-height:240px;border-radius:12px;object-fit:contain">
+    </div>
+    <div style="font-size:22px;font-weight:700;color:#1a1a2e;margin-bottom:4px" id="rv-naziv"></div>
+    <div style="font-size:28px;font-weight:800;color:#1565c0;margin-bottom:16px" id="rv-iznos"></div>
+    <div style="display:flex;gap:12px;margin-bottom:8px">
+      <span style="font-size:13px;color:#6b7280">📅</span>
+      <span style="font-size:13px;color:#1a1a2e" id="rv-datum"></span>
+    </div>
+    <div id="rv-bilj-row" style="display:flex;gap:12px;margin-bottom:8px;display:none">
+      <span style="font-size:13px;color:#6b7280">📝</span>
+      <span style="font-size:13px;color:#1a1a2e" id="rv-bilj"></span>
+    </div>
   </div>
 </div>
 </body>
