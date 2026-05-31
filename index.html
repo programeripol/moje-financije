@@ -1806,12 +1806,14 @@ async function updateIncTotal(){
 }
 async function initIncomePanel(){
   updateIncTotal();
-  if(!mPlanIncGoals.length){
+  if(mPlanIncGoals.length) renderMPInc();
+  try{
     const plan = await loadMonthPlan(viewMonthIdx);
     const cp = arr => JSON.parse(JSON.stringify(arr));
     try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || cp(incomeGoals); } catch(e){ mPlanIncGoals = cp(incomeGoals); }
-  }
+  }catch(e){ if(!mPlanIncGoals.length) mPlanIncGoals=(incomeGoals||[]).map(g=>Object.assign({},g)); }
   renderMPInc();
+  updateIncTotal();
 }
 async function updateSavTotal(){
   const total = (mPlanSavGoals||[]).reduce((sum,g)=>sum+(parseFloat(g.amount)||0),0);
@@ -2814,9 +2816,7 @@ function openIncModal(){
   document.body.style.overflow='hidden';
   requestAnimationFrame(()=>{ overlay.style.opacity='1'; modal.style.transform='translateY(0)'; });
   mPlanIncGoals=[];
-  mPlanIncGoals=[];
-  const _ib=document.getElementById('mp-inc-list');
-  if(_ib) _ib.innerHTML='<div style="text-align:center;padding:32px 0"><div class="save-spinner" style="margin:0 auto"></div></div>';
+  if(!mPlanIncGoals.length){const _ib=document.getElementById('mp-inc-list');if(_ib) _ib.innerHTML='<div style="text-align:center;padding:32px 0"><div class="save-spinner" style="margin:0 auto"></div></div>';}
   initIncomePanel();
 }
 function closeIncModal(){
