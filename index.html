@@ -1753,7 +1753,7 @@ function renderMPInc(){
     <div class="save-goal-row" data-idx="${i}">
       <span class="drag-handle">⠿</span>
       <input type="text" class="goal-name" style="flex:1;min-width:0" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="mPlanIncGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" style="width:55px;flex:0 0 55px" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
+      <input type="text" class="goal-amt" style="width:92px;flex:0 0 92px" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
       <button class="save-goal-del" onclick="removeMPInc(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanIncGoals, renderMPInc);
@@ -2949,7 +2949,7 @@ function incDragEnd(e){if(!_incDragging)return;_incDragging=false;if(_incDragY>8
   <!-- Prihodi bottom sheet -->
   <div id="inc-modal-overlay" onclick="closeIncModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
   <div id="inc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
-        <div style="padding:16px 0 8px;cursor:grab;text-align:center" id="inc-modal-drag" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)">
+        <div style="padding:16px 0 8px;cursor:grab;text-align:center" id="inc-modal-drag" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)">
       <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
     </div>
     <div style="padding:2px 20px 14px">
