@@ -1821,13 +1821,15 @@ async function updateSavTotal(){
   if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
 }
 async function initSavingsPanel(){
+  const _savFb=()=>{ try{ const r=JSON.parse((profileData&&profileData.save_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (savingsGoals&&savingsGoals.length)?savingsGoals.map(g=>Object.assign({},g)):[]; };
   updateSavTotal();
-  if(!mPlanSavGoals.length){
+  if(mPlanSavGoals.length) renderMPSav();
+  try{
     const plan = await loadMonthPlan(viewMonthIdx);
-    const cp = arr => JSON.parse(JSON.stringify(arr));
-    try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || cp(savingsGoals); } catch(e){ mPlanSavGoals = cp(savingsGoals); }
-  }
+    try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || _savFb(); } catch(e){ mPlanSavGoals = _savFb(); }
+  }catch(e){ if(!mPlanSavGoals.length) mPlanSavGoals=_savFb(); }
   renderMPSav();
+  updateSavTotal();
 }
 async function saveIncomePlan(){
   showSaveOverlay('Spremam prihode...');
@@ -1851,18 +1853,22 @@ async function saveSavingsPlan(){
 async function fillMonthPlanForm(){
   const plan = await loadMonthPlan(viewMonthIdx);
   const cp = arr => JSON.parse(JSON.stringify(arr));
-  try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || cp(incomeGoals); } catch(e){ mPlanIncGoals = cp(incomeGoals); }
-  try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || cp(savingsGoals); } catch(e){ mPlanSavGoals = cp(savingsGoals); }
+  const _incFb2=()=>{ try{ const r=JSON.parse((profileData&&profileData.income_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (incomeGoals&&incomeGoals.length)?cp(incomeGoals):[]; };
+  const _savFb2=()=>{ try{ const r=JSON.parse((profileData&&profileData.save_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (savingsGoals&&savingsGoals.length)?cp(savingsGoals):[]; };
+  const _fixFb=()=>{ try{ return JSON.parse((profileData&&profileData.fixed_goals_json)||'null')||[]; }catch(e){ return (fixedGoals&&fixedGoals.length)?cp(fixedGoals):[]; } };
+  const _varFb=()=>{ try{ return JSON.parse((profileData&&profileData.var_goals_json)||'null')||[]; }catch(e){ return (variableGoals&&variableGoals.length)?cp(variableGoals):[]; } };
+  try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb2(); } catch(e){ mPlanIncGoals = _incFb2(); }
+  try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || _savFb2(); } catch(e){ mPlanSavGoals = _savFb2(); }
   // Load unified expense list: exp_json first, else merge fix+var
   try {
     if(plan && plan.exp_json){
       mPlanExpGoals = JSON.parse(plan.exp_json) || [];
     } else {
-      const fix = JSON.parse(plan && plan.fix_json || 'null') || cp(fixedGoals);
-      const varG = JSON.parse(plan && plan.var_json || 'null') || cp(variableGoals);
+      const fix = JSON.parse(plan && plan.fix_json || 'null') || _fixFb();
+      const varG = JSON.parse(plan && plan.var_json || 'null') || _varFb();
       mPlanExpGoals = [...fix, ...varG].map(g=>({name:g.name||'',cat:g.cat||'',amount:g.amount||0}));
     }
-  } catch(e){ mPlanExpGoals = [...cp(fixedGoals),...cp(variableGoals)].map(g=>({name:g.name||'',cat:'',amount:g.amount||0})); }
+  } catch(e){ mPlanExpGoals = [..._fixFb(),..._varFb()].map(g=>({name:g.name||'',cat:'',amount:g.amount||0})); }
   const body = document.getElementById('month-plan-body');
   if(!body) return;
   const secStyle = (bg,color) => `style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:8px 0 6px;margin-top:10px;color:${color}"`;
