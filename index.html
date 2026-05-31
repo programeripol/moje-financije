@@ -1248,7 +1248,7 @@ async function onToken(resp){
     splashAuthComplete(); // splash može nestati
     showApp(); // odmah na Skener, bez onboardinga
     // Učitaj resurse i profil u pozadini
-    ensureResources().catch(e => console.warn('bg ensureResources:', e));
+    ensureResources().then(()=>{ loadPregled(); }).catch(e => console.warn('bg ensureResources:', e));
     return;
   }
 
