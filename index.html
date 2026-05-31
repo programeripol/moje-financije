@@ -1806,7 +1806,7 @@ async function updateIncTotal(){
   const el = document.getElementById('inc-total-display');
   if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
 }
-function initIncomePanel(){
+async function initIncomePanel(){
   updateIncTotal();
   if(!mPlanIncGoals.length){
     const plan = await loadMonthPlan(viewMonthIdx);
@@ -1820,7 +1820,7 @@ async function updateSavTotal(){
   const el = document.getElementById('sav-total-display');
   if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
 }
-function initSavingsPanel(){
+async function initSavingsPanel(){
   updateSavTotal();
   if(!mPlanSavGoals.length){
     const plan = await loadMonthPlan(viewMonthIdx);
