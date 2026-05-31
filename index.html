@@ -17,7 +17,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;
   document.getElementById('img-preview-wrap').style.display = 'none';
   document.getElementById('img-preview-wrap').style.display = 'none';400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://accounts.google.com/gsi/client" async>
+function openExpModal(){
+  const overlay = document.getElementById('exp-modal-overlay');
+  const modal = document.getElementById('exp-modal');
+  if(!overlay||!modal) return;
+  overlay.style.display='block';
+  modal.style.display='flex';
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>{
+    overlay.style.opacity='1';
+    modal.style.transform='translateY(0)';
+  });
+  fillMonthPlanForm();
+}
+function closeExpModal(){
+  const overlay = document.getElementById('exp-modal-overlay');
+  const modal = document.getElementById('exp-modal');
+  if(!overlay||!modal) return;
+  overlay.style.opacity='0';
+  modal.style.transform='translateY(100%)';
+  setTimeout(()=>{
+    overlay.style.display='none';
+    modal.style.display='none';
+    document.body.style.overflow='';
+  },280);
+}
+function saveMonthPlanFromModal(){
+  saveMonthPlanNow();
+  closeExpModal();
+}
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;color:#1a1a2e;padding-bottom:calc(70px + env(safe-area-inset-bottom))}
@@ -2846,6 +2876,22 @@ document.addEventListener('click', e=>{
     </div>
   </div>
 </div>
+
+  <!-- Troškovi bottom sheet -->
+  <div id="exp-modal-overlay" onclick="closeExpModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
+  <div id="exp-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateY(100%)">
+    <div style="display:flex;align-items:center;justify-content:center;padding:12px 0 4px;cursor:grab" id="exp-modal-drag">
+      <div style="width:40px;height:4px;border-radius:2px;background:#e0e8f8"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 20px 12px">
+      <span style="font-size:18px;font-weight:700;color:#1a2340">Troškovi</span>
+      <button onclick="closeExpModal()" style="background:none;border:none;font-size:22px;color:#8898b8;cursor:pointer;padding:0 4px;line-height:1">&#x2715;</button>
+    </div>
+    <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="month-plan-body"></div>
+    <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
+      <button onclick="saveMonthPlanFromModal()" style="width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi plan</button>
+    </div>
+  </div>
 </body>
 </htmlfunction syncAmtDisplay(inp){
   const v = inp.value;
