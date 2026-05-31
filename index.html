@@ -143,7 +143,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .save-goal-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .save-goal-row .goal-name{flex:1;min-width:0;font-size:13px}
 .goal-cat-sel{width:100px;flex-shrink:0;background:#fff;border:1px solid #e8edf8;border-radius:8px;padding:5px 4px;font-size:12px;color:#1a1a2e}
-.save-goal-row .goal-amt{width:52px;flex-shrink:0;font-size:13px;text-align:right}
+.save-goal-row .goal-amt{width:28px;flex-shrink:0;font-size:13px;text-align:right}
 .save-goal-del{background:none;border:none;color:#ccc;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;transition:.15s}
 .save-goal-del:hover{color:#ef4444}
 .add-goal-btn{width:100%;border:1.5px dashed #c0ccee;background:none;color:#1565c0;border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:.15s}
@@ -567,14 +567,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <button class="month-nav-btn" id="next-month-btn" onclick="changeViewMonth(1)">›</button>
   </div>
 
-  <details class="month-plan-panel" id="income-panel" ontoggle="if(this.open)initIncomePanel()">
-    <summary class="month-plan-summary" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px"><span class="sum-label" style="color:#1565c0;margin:0">Prihodi</span><span id="inc-total-display" style="color:#1565c0;font-weight:700;font-size:17px">—</span></summary>
-    <div class="month-plan-body">
-      <div id="mp-inc-list"></div>
-      <button class="add-goal-btn" style="color:#1565c0;border-color:#1565c0;margin-top:4px" onclick="addMPInc()">+ Dodaj prihod</button>
-      <div class="month-plan-footer"><button onclick="saveIncomePlan()" style="width:100%;padding:13px;background:#1565c0;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px">Spremi prihode</button></div>
-    </div>
-  </details>
+  
 
   <div class="summary-cards" id="budget-hero">
     <div class="sum-card-inv" onclick="openExpModal()" style="cursor:pointer">
@@ -586,6 +579,10 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       <div class="card-spinner" id="hero-spin-spent"><div class="card-spinner-ring-dark"></div></div>
       <div class="sum-label">Potrošeno</div>
       <div class="sum-val-main" id="bh-spent">0,00 €</div>
+    <div class="sum-card" onclick="openIncModal()" style="cursor:pointer;flex-basis:100%;margin-top:8px">
+      <div class="sum-label" style="color:#1565c0">Prihodi</div>
+      <div id="inc-total-display" class="sum-val-main">—</div>
+    </div>
     </div>
     <span id="bh-sub" style="display:none"></span>
     <span id="bh-left" style="display:none"></span>
@@ -2802,6 +2799,31 @@ function saveMonthPlanFromModal(){
   saveMonthPlanNow();
   closeExpModal();
 }
+
+function openIncModal(){
+  const overlay=document.getElementById('inc-modal-overlay');
+  const modal=document.getElementById('inc-modal');
+  if(!overlay||!modal) return;
+  overlay.style.display='block'; modal.style.display='flex';
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>{ overlay.style.opacity='1'; modal.style.transform='translateY(0)'; });
+  // Load inc list into modal body
+  const body=document.getElementById('inc-modal-body');
+  const src=document.getElementById('mp-inc-list');
+  if(body&&src) body.innerHTML=src.parentElement.innerHTML;
+  initIncomePanel();
+}
+function closeIncModal(){
+  const overlay=document.getElementById('inc-modal-overlay');
+  const modal=document.getElementById('inc-modal');
+  if(!overlay||!modal) return;
+  overlay.style.opacity='0'; modal.style.transform='translateY(100%)';
+  setTimeout(()=>{ overlay.style.display='none'; modal.style.display='none'; document.body.style.overflow=''; },280);
+}
+function saveIncomeFromModal(){
+  saveIncomePlan();
+  closeIncModal();
+}
 </script>
 
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
@@ -2887,6 +2909,22 @@ function saveMonthPlanFromModal(){
     <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="month-plan-body"></div>
     <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
       <button onclick="saveMonthPlanFromModal()" style="width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi plan</button>
+    </div>
+  </div>
+
+  <!-- Prihodi bottom sheet -->
+  <div id="inc-modal-overlay" onclick="closeIncModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
+  <div id="inc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+    <div style="display:flex;align-items:center;justify-content:center;padding:12px 0 4px;cursor:grab">
+      <div style="width:40px;height:4px;border-radius:2px;background:#e0e8f8"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 20px 12px">
+      <span style="font-size:18px;font-weight:700;color:#1a2340">Prihodi</span>
+      <button onclick="closeIncModal()" style="background:none;border:none;font-size:22px;color:#8898b8;cursor:pointer;padding:0 4px;line-height:1">&#x2715;</button>
+    </div>
+    <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="inc-modal-body"></div>
+    <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
+      <button onclick="saveIncomeFromModal()" style="width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi prihode</button>
     </div>
   </div>
 </body>
