@@ -580,7 +580,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       <div class="sum-label-inv">Planirano</div>
       <div class="sum-val-inv" id="bh-plan">0,00 €</div>
     </div>
-    <div class="sum-card">
+    <div class="sum-card" onclick="openPotrosModal()" style="cursor:pointer">
       <div class="card-spinner" id="hero-spin-spent"><div class="card-spinner-ring-dark"></div></div>
       <div class="sum-label">Potrošeno</div>
       <div class="sum-val-main" id="bh-spent">0,00 €</div>
@@ -603,7 +603,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
 
 
-  <details class="card collapsible-card" id="cat-panel">
+  <details class="card collapsible-card" id="cat-panel" style="display:none">
     <summary class="collapsible-summary">Pregled po kategorijama</summary>
     <div id="cat-list"><div class="empty-state">Učitavam…</div></div>
   </details>
@@ -2825,6 +2825,28 @@ function saveIncomeFromModal(){
   saveIncomePlan();
   closeIncModal();
 }
+
+function openPotrosModal(){
+  const overlay=document.getElementById('potros-modal-overlay');
+  const modal=document.getElementById('potros-modal');
+  if(!overlay||!modal) return;
+  overlay.style.display='block'; modal.style.display='flex';
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>{ overlay.style.opacity='1'; modal.style.transform='translateY(0)'; });
+  loadPregled();
+  setTimeout(()=>{
+    const src=document.getElementById('cat-list');
+    const body=document.getElementById('potros-modal-body');
+    if(src&&body) body.innerHTML=src.innerHTML;
+  },400);
+}
+function closePotrosModal(){
+  const overlay=document.getElementById('potros-modal-overlay');
+  const modal=document.getElementById('potros-modal');
+  if(!overlay||!modal) return;
+  overlay.style.opacity='0'; modal.style.transform='translateY(100%)';
+  setTimeout(()=>{ overlay.style.display='none'; modal.style.display='none'; document.body.style.overflow=''; },280);
+}
 </script>
 
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
@@ -2927,6 +2949,19 @@ function saveIncomeFromModal(){
     <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
       <button onclick="saveIncomeFromModal()" style="width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi prihode</button>
     </div>
+  </div>
+
+  <!-- Potrošeno / Pregled bottom sheet -->
+  <div id="potros-modal-overlay" onclick="closePotrosModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
+  <div id="potros-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#f4f7ff;border-radius:24px 24px 0 0;max-height:92vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+    <div style="display:flex;align-items:center;justify-content:center;padding:12px 0 4px;cursor:grab">
+      <div style="width:40px;height:4px;border-radius:2px;background:#c8d8f0"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 20px 12px;background:#f4f7ff">
+      <span style="font-size:18px;font-weight:700;color:#1a2340">Pregled po kategorijama</span>
+      <button onclick="closePotrosModal()" style="background:none;border:none;font-size:22px;color:#8898b8;cursor:pointer;padding:0 4px;line-height:1">&#x2715;</button>
+    </div>
+    <div style="overflow-y:auto;flex:1;padding:0 16px 28px" id="potros-modal-body"></div>
   </div>
 </body>
 </htmlfunction syncAmtDisplay(inp){
