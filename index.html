@@ -1921,6 +1921,7 @@ function clearPregledLoading(){
 }
 async function loadPregled(){
   renderMonthNav();
+  reloadMonthTotals();
   // Show loading state
   const catListEl = document.getElementById('cat-list');
   if(catListEl){ catListEl.style.filter='blur(4px)'; catListEl.style.opacity='.4'; catListEl.style.pointerEvents='none'; }
