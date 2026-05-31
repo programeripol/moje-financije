@@ -795,8 +795,7 @@ function wireButtons(){
   // Nav gumbi
   ['skener','pregled','ciljevi','profil'].forEach(t => on('nav-'+t, () => goTab(t)));
   const mpDetails = document.getElementById('month-plan-panel');
-  if(mpDetails) mpDetails.addEventListener('toggle', () => { if(mpDetails.open) const _etl=document.getElementById('exp-modal-title');if(_etl){const _mn=['siječnju','veljači','ožujku','travnju','svibnju','lipnju','srpnju','kolovozu','rujnu','listopadu','studenom','prosincu'];_etl.textContent='Planirani troškovi u '+(_mn[viewMonthIdx]||'');}
-  fillMonthPlanForm(); });
+  if(mpDetails) mpDetails.addEventListener('toggle', () => { if(mpDetails.open) fillMonthPlanForm(); });
   // Ostali gumbi
   on('goal-add-btn',    () => showGoalForm());
   on('goal-cancel-btn', () => hideGoalForm());
@@ -2787,6 +2786,7 @@ function openExpModal(){
     modal.style.transform='translateY(0)';
   });
   fillMonthPlanForm();
+  const _etl=document.getElementById('exp-modal-title');if(_etl){const _mn=['siječnju','veljači','ožujku','travnju','svibnju','lipnju','srpnju','kolovozu','rujnu','listopadu','studenom','prosincu'];_etl.textContent='Planirani troškovi u '+(_mn[viewMonthIdx]||'');}
 }
 function closeExpModal(){
   const overlay = document.getElementById('exp-modal-overlay');
