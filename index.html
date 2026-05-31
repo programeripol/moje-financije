@@ -17,37 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;
   document.getElementById('img-preview-wrap').style.display = 'none';
   document.getElementById('img-preview-wrap').style.display = 'none';400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async>
-function openExpModal(){
-  const overlay = document.getElementById('exp-modal-overlay');
-  const modal = document.getElementById('exp-modal');
-  if(!overlay||!modal) return;
-  overlay.style.display='block';
-  modal.style.display='flex';
-  document.body.style.overflow='hidden';
-  requestAnimationFrame(()=>{
-    overlay.style.opacity='1';
-    modal.style.transform='translateY(0)';
-  });
-  fillMonthPlanForm();
-}
-function closeExpModal(){
-  const overlay = document.getElementById('exp-modal-overlay');
-  const modal = document.getElementById('exp-modal');
-  if(!overlay||!modal) return;
-  overlay.style.opacity='0';
-  modal.style.transform='translateY(100%)';
-  setTimeout(()=>{
-    overlay.style.display='none';
-    modal.style.display='none';
-    document.body.style.overflow='';
-  },280);
-}
-function saveMonthPlanFromModal(){
-  saveMonthPlanNow();
-  closeExpModal();
-}
-</script>
+<script src="https://accounts.google.com/gsi/client" async></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;color:#1a1a2e;padding-bottom:calc(70px + env(safe-area-inset-bottom))}
@@ -2802,6 +2772,36 @@ document.addEventListener('click', e=>{
   if(e.target.id==='receipt-view-overlay') closeReceiptView();
 });
 
+
+function openExpModal(){
+  const overlay = document.getElementById('exp-modal-overlay');
+  const modal = document.getElementById('exp-modal');
+  if(!overlay||!modal) return;
+  overlay.style.display='block';
+  modal.style.display='flex';
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>{
+    overlay.style.opacity='1';
+    modal.style.transform='translateY(0)';
+  });
+  fillMonthPlanForm();
+}
+function closeExpModal(){
+  const overlay = document.getElementById('exp-modal-overlay');
+  const modal = document.getElementById('exp-modal');
+  if(!overlay||!modal) return;
+  overlay.style.opacity='0';
+  modal.style.transform='translateY(100%)';
+  setTimeout(()=>{
+    overlay.style.display='none';
+    modal.style.display='none';
+    document.body.style.overflow='';
+  },280);
+}
+function saveMonthPlanFromModal(){
+  saveMonthPlanNow();
+  closeExpModal();
+}
 </script>
 
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
