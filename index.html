@@ -143,7 +143,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .save-goal-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .save-goal-row .goal-name{flex:1;min-width:0;font-size:13px}
 .goal-cat-sel{width:100px;flex-shrink:0;background:#fff;border:1px solid #e8edf8;border-radius:8px;padding:5px 4px;font-size:12px;color:#1a1a2e}
-.save-goal-row .goal-amt{width:70px;flex:0 0 70px;font-size:13px;text-align:right}
+.save-goal-row .goal-amt{width:47px;flex:0 0 47px;font-size:13px;text-align:right}
 .save-goal-del{background:none;border:none;color:#ccc;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;transition:.15s}
 .save-goal-del:hover{color:#ef4444}
 .add-goal-btn{width:100%;border:1.5px dashed #c0ccee;background:none;color:#1565c0;border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:.15s}
@@ -575,7 +575,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       <div class="sum-label" style="color:#1565c0;margin:0 0 4px">Prihodi</div>
       <div id="inc-total-display" class="sum-val-main">—</div>
     </div>
-    <span style="font-size:13px;color:#8898b8">›</span>
+    
   </div>
   <div class="summary-cards" id="budget-hero">
     <div class="sum-card-inv" onclick="openExpModal()" style="cursor:pointer">
@@ -600,7 +600,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div style="color:#1565c0;font-size:14px;font-weight:600;margin:0 0 4px">Štednja</div>
     <div id="sav-total" class="sum-val-main">—</div>
   </div>
-  <span style="font-size:13px;color:#8898b8">›</span>
+  
 </div>
 
 
@@ -1866,7 +1866,7 @@ async function fillMonthPlanForm(){
   const secStyle = (bg,color) => `style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:8px 0 6px;margin-top:10px;color:${color}"`;
   body.innerHTML =
     `<div id="mp-exp-list"></div>` +
-    `<button class="add-goal-btn" onclick="addMPExp()" style="color:#1565c0;border-color:#c0ccee">+ Dodaj trošak</button><br><button class="save-goal-btn" style="width:100%;margin-top:6px;background:#fff;color:#64748b;border:1px solid #dde3f0;font-size:13px" onclick="closeExpModal()">Vrati na postavke</button>` +
+    `<button class="add-goal-btn" onclick="addMPExp()" style="color:#1565c0;border-color:#c0ccee">+ Dodaj trošak</button><br><button class="save-goal-btn" style="width:100%;margin-top:6px;background:#f1f5f9;color:#475569;border:1px solid #dde3f0;font-size:14px;border-radius:14px;padding:11px" onclick="closeExpModal()">&#8635; Vrati na postavke profila</button>` +
     `<div class="month-plan-footer">` +
     `<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>` +
     `<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button></div>`; renderMPExp(); renderMPSav();
@@ -2814,6 +2814,8 @@ function openIncModal(){
   requestAnimationFrame(()=>{ overlay.style.opacity='1'; modal.style.transform='translateY(0)'; });
   mPlanIncGoals=[];
   mPlanIncGoals=[];
+  const _ib=document.getElementById('inc-modal-body');
+  if(_ib) _ib.innerHTML='<div style="text-align:center;padding:40px 0"><div class="save-spinner" style="margin:0 auto"></div></div>';
   initIncomePanel();
 }
 function closeIncModal(){
