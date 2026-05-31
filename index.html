@@ -1732,6 +1732,7 @@ function changeViewMonth(delta){
   const newIdx = viewMonthIdx + delta;
   if(newIdx < 0 || newIdx > 11) return;
   viewMonthIdx = newIdx;
+  reloadMonthTotals();
   // Zatvori plan panel i resetiraj sadržaj
   const mpPanel = document.getElementById('month-plan-panel');
   if(mpPanel) mpPanel.removeAttribute('open');
@@ -2900,6 +2901,21 @@ let _accDragY=0,_accDragStartY=0,_accDragging=false;
 function accDragStart(e){_accDragStartY=e.touches[0].clientY;_accDragging=true;_accDragY=0;}
 function accDragMove(e){if(!_accDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_accDragStartY;if(dy>0){_accDragY=dy;document.getElementById('acc-modal').style.transform='translateY('+dy+'px)';}}
 function accDragEnd(e){if(!_accDragging)return;_accDragging=false;if(_accDragY>80){closeAccModal();}else{document.getElementById('acc-modal').style.transform='translateY(0)';}}
+
+async function reloadMonthTotals(){
+  mPlanIncGoals=[]; mPlanSavGoals=[];
+  const ei=document.getElementById('inc-total-display');
+  const es=document.getElementById('sav-total');
+  if(ei) ei.textContent='—';
+  if(es) es.textContent='—';
+  try{
+    const plan = await loadMonthPlan(viewMonthIdx);
+    if(plan && plan.inc_json){ try{ mPlanIncGoals=JSON.parse(plan.inc_json)||[]; }catch(e){} }
+    if(plan && plan.sav_json){ try{ mPlanSavGoals=JSON.parse(plan.sav_json)||[]; }catch(e){} }
+  }catch(e){}
+  updateIncTotal();
+  updateSavTotal();
+}
 </script>
 
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
