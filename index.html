@@ -552,10 +552,10 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
 
   <hr class="divider">
-  <details class="collapsible-card" id="gallery-panel">
-  <summary class="collapsible-summary">Računi ovog mjeseca</summary>
-  <div id="gallery-grid" style="padding:0 16px 16px"><div class="empty-state">Nema još unesenih računa.</div></div>
-</details>
+  <div onclick="openAccModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+  <div style="color:#1565c0;font-size:14px;font-weight:600">Računi ovog mjeseca</div>
+  <span style="font-size:13px;color:#8898b8">›</span>
+</div>
 
 </div>
 
@@ -595,14 +595,13 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </div>
 
   
-  <details class="month-plan-panel" id="savings-panel" ontoggle="if(this.open)initSavingsPanel()">
-    <summary class="month-plan-summary" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px"><span style="color:#1565c0;font-weight:600;font-size:15px">Štednja</span><span id="sav-total-display" class="sum-val-main">—</span></summary>
-    <div class="month-plan-body">
-      <div id="mp-sav-list"></div>
-      <button class="add-goal-btn" style="color:#1565c0;border-color:#1565c0;margin-top:4px" onclick="addMPSav()">+ Dodaj štednju</button>
-      <div class="month-plan-footer"><button onclick="saveSavingsPlan()" style="width:100%;padding:13px;background:#1565c0;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px">Spremi štednju</button></div>
-    </div>
-  </details>
+  <div onclick="openSavModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
+  <div>
+    <div style="color:#1565c0;font-size:14px;font-weight:600;margin:0 0 4px">Štednja</div>
+    <div id="sav-total" class="sum-val-main">—</div>
+  </div>
+  <span style="font-size:13px;color:#8898b8">›</span>
+</div>
 
 
 
@@ -1738,7 +1737,7 @@ function changeViewMonth(delta){
   if(mpPanel) mpPanel.removeAttribute('open');
   const ipanel=document.getElementById('income-panel'); if(ipanel) ipanel.removeAttribute('open');
   const spanel=document.getElementById('savings-panel'); if(spanel) spanel.removeAttribute('open');
-  const body = document.getElementById('month-plan-body');
+  const body = document.getElementById('sav-modal-body');
   if(body) body.innerHTML = '';
   renderMonthNav();
   loadPregled();
@@ -2853,14 +2852,54 @@ function closePotrosModal(){
 // Exp modal drag-to-close
 let _expDragY=0,_expDragStartY=0,_expDragging=false;
 function expDragStart(e){_expDragStartY=e.touches[0].clientY;_expDragging=true;_expDragY=0;}
-function expDragMove(e){if(!_expDragging)return;const dy=e.touches[0].clientY-_expDragStartY;if(dy>0){_expDragY=dy;document.getElementById('exp-modal').style.transform='translateY('+dy+'px)';}}
+function expDragMove(e){if(!_expDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_expDragStartY;if(dy>0){_expDragY=dy;document.getElementById('exp-modal').style.transform='translateY('+dy+'px)';}}
 function expDragEnd(e){if(!_expDragging)return;_expDragging=false;if(_expDragY>80){closeExpModal();}else{document.getElementById('exp-modal').style.transform='translateY(0)';}}
 
 // Inc modal drag-to-close
 let _incDragY=0,_incDragStartY=0,_incDragging=false;
 function incDragStart(e){_incDragStartY=e.touches[0].clientY;_incDragging=true;_incDragY=0;}
-function incDragMove(e){if(!_incDragging)return;const dy=e.touches[0].clientY-_incDragStartY;if(dy>0){_incDragY=dy;document.getElementById('inc-modal').style.transform='translateY('+dy+'px)';}}
+function incDragMove(e){if(!_incDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_incDragStartY;if(dy>0){_incDragY=dy;document.getElementById('inc-modal').style.transform='translateY('+dy+'px)';}}
 function incDragEnd(e){if(!_incDragging)return;_incDragging=false;if(_incDragY>80){closeIncModal();}else{document.getElementById('inc-modal').style.transform='translateY(0)';}}
+
+// Sav modal
+function openSavModal(){
+  const overlay=document.getElementById('sav-modal-overlay'),modal=document.getElementById('sav-modal');
+  if(!overlay||!modal)return;
+  mPlanSavGoals=[];
+  overlay.style.display='block';modal.style.display='flex';
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>{overlay.style.opacity='1';modal.style.transform='translateY(0)';});
+  initSavingsPanel();
+}
+function closeSavModal(){
+  const overlay=document.getElementById('sav-modal-overlay'),modal=document.getElementById('sav-modal');
+  if(!overlay||!modal)return;
+  overlay.style.opacity='0';modal.style.transform='translateY(100%)';
+  setTimeout(()=>{overlay.style.display='none';modal.style.display='none';document.body.style.overflow='';},300);
+}
+function saveSavingsFromModal(){saveSavingsPlan();closeSavModal();}
+let _savDragY=0,_savDragStartY=0,_savDragging=false;
+function savDragStart(e){_savDragStartY=e.touches[0].clientY;_savDragging=true;_savDragY=0;}
+function savDragMove(e){if(!_savDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_savDragStartY;if(dy>0){_savDragY=dy;document.getElementById('sav-modal').style.transform='translateY('+dy+'px)';}}
+function savDragEnd(e){if(!_savDragging)return;_savDragging=false;if(_savDragY>80){closeSavModal();}else{document.getElementById('sav-modal').style.transform='translateY(0)';}}
+// Acc modal
+function openAccModal(){
+  const overlay=document.getElementById('acc-modal-overlay'),modal=document.getElementById('acc-modal');
+  if(!overlay||!modal)return;
+  overlay.style.display='block';modal.style.display='flex';
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>{overlay.style.opacity='1';modal.style.transform='translateY(0)';});
+}
+function closeAccModal(){
+  const overlay=document.getElementById('acc-modal-overlay'),modal=document.getElementById('acc-modal');
+  if(!overlay||!modal)return;
+  overlay.style.opacity='0';modal.style.transform='translateY(100%)';
+  setTimeout(()=>{overlay.style.display='none';modal.style.display='none';document.body.style.overflow='';},300);
+}
+let _accDragY=0,_accDragStartY=0,_accDragging=false;
+function accDragStart(e){_accDragStartY=e.touches[0].clientY;_accDragging=true;_accDragY=0;}
+function accDragMove(e){if(!_accDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_accDragStartY;if(dy>0){_accDragY=dy;document.getElementById('acc-modal').style.transform='translateY('+dy+'px)';}}
+function accDragEnd(e){if(!_accDragging)return;_accDragging=false;if(_accDragY>80){closeAccModal();}else{document.getElementById('acc-modal').style.transform='translateY(0)';}}
 </script>
 
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
@@ -2936,7 +2975,7 @@ function incDragEnd(e){if(!_incDragging)return;_incDragging=false;if(_incDragY>8
   <!-- Troškovi bottom sheet -->
   <div id="exp-modal-overlay" onclick="closeExpModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
   <div id="exp-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateY(100%)">
-        <div style="padding:16px 0 8px;cursor:grab;text-align:center" id="exp-modal-drag" ontouchstart="expDragStart(event)" ontouchmove="expDragMove(event)" ontouchend="expDragEnd(event)">
+        <div style="padding:16px 0 8px;cursor:grab;text-align:center" id="exp-modal-drag" style="touch-action:none" ontouchstart="expDragStart(event)" ontouchmove="expDragMove(event)" ontouchend="expDragEnd(event)">
       <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
     </div>
     <div style="padding:2px 20px 14px">
@@ -2951,7 +2990,7 @@ function incDragEnd(e){if(!_incDragging)return;_incDragging=false;if(_incDragY>8
   <!-- Prihodi bottom sheet -->
   <div id="inc-modal-overlay" onclick="closeIncModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
   <div id="inc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
-        <div style="padding:16px 0 8px;cursor:grab;text-align:center" id="inc-modal-drag" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)">
+        <div style="padding:16px 0 8px;cursor:grab;text-align:center" id="inc-modal-drag" style="touch-action:none" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)">
       <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
     </div>
     <div style="padding:2px 20px 14px">
@@ -2978,6 +3017,32 @@ function incDragEnd(e){if(!_incDragging)return;_incDragging=false;if(_incDragY>8
     </div>
     <div style="overflow-y:auto;flex:1;padding:0 16px 28px" id="potros-modal-body"></div>
   </div>
+
+<div id="sav-modal-overlay" onclick="closeSavModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
+<div id="sav-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+  <div style="padding:16px 0 8px;cursor:grab;text-align:center;touch-action:none" id="sav-modal-drag" ontouchstart="savDragStart(event)" ontouchmove="savDragMove(event)" ontouchend="savDragEnd(event)">
+    <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
+  </div>
+  <div style="padding:2px 20px 14px">
+    <div style="font-size:18px;font-weight:700;color:#1565c0">Štednja</div>
+  </div>
+  <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="sav-modal-body"></div>
+  <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
+    <button onclick="saveSavingsFromModal()" style="width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi štednju</button>
+  </div>
+</div>
+<div id="acc-modal-overlay" onclick="closeAccModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
+<div id="acc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+  <div style="padding:16px 0 8px;cursor:grab;text-align:center;touch-action:none" id="acc-modal-drag" ontouchstart="accDragStart(event)" ontouchmove="accDragMove(event)" ontouchend="accDragEnd(event)">
+    <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
+  </div>
+  <div style="padding:2px 20px 14px">
+    <div style="font-size:18px;font-weight:700;color:#1565c0">Računi ovog mjeseca</div>
+  </div>
+  <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="acc-modal-body">
+    <div id="gallery-grid"></div>
+  </div>
+</div>
 </body>
 </htmlfunction syncAmtDisplay(inp){
   const v = inp.value;
