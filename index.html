@@ -568,7 +568,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   </div>
 
   <details class="month-plan-panel" id="income-panel" ontoggle="if(this.open)initIncomePanel()">
-    <summary class="month-plan-summary"><span style="color:#1565c0">Prihodi</span></summary>
+    <summary class="month-plan-summary" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px"><span style="color:#1565c0;font-weight:600;font-size:15px">Prihodi</span><span id="inc-total-display" style="color:#1565c0;font-weight:700;font-size:17px">—</span></summary>
     <div class="month-plan-body">
       <div id="mp-inc-list"></div>
       <button class="add-goal-btn" style="color:#1565c0;border-color:#1565c0;margin-top:4px" onclick="addMPInc()">+ Dodaj prihod</button>
@@ -598,7 +598,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <div class="month-plan-body" id="month-plan-body"></div>
   </details>
   <details class="month-plan-panel" id="savings-panel" ontoggle="if(this.open)initSavingsPanel()">
-    <summary class="month-plan-summary"><span style="color:#1565c0">Štednja</span></summary>
+    <summary class="month-plan-summary" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px"><span style="color:#1565c0;font-weight:600;font-size:15px">Štednja</span><span id="sav-total-display" style="color:#1565c0;font-weight:700;font-size:17px">—</span></summary>
     <div class="month-plan-body">
       <div id="mp-sav-list"></div>
       <button class="add-goal-btn" style="color:#1565c0;border-color:#1565c0;margin-top:4px" onclick="addMPSav()">+ Dodaj štednju</button>
@@ -1749,6 +1749,7 @@ function changeViewMonth(delta){
 function toggleMonthPlanEdit(){} // handled by <details> native toggle
 
 function renderMPInc(){
+  updateIncTotal();
   const c = document.getElementById('mp-inc-list'); if(!c) return;
   c.innerHTML = mPlanIncGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
@@ -1767,14 +1768,16 @@ const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanov
 function renderMPExp(){
   const c = document.getElementById('mp-exp-list'); if(!c) return;
   c.innerHTML = mPlanExpGoals.map((g,i)=>{
-    const selOpts = MP_CAT_OPTS.replace(`value="${g.cat||''}"`,`value="${g.cat||''}" selected`);
-    return `<div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">⠿</span>
-      <span style="width:10px;height:10px;border-radius:50%;background:${CAT_COLORS[g.cat]||'#e8edf8'};flex-shrink:0;margin-right:4px;display:inline-block"></span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Naziv" oninput="mPlanExpGoals[${i}].name=this.value">
-      <select class="goal-cat-sel" onchange="mPlanExpGoals[${i}].cat=this.value">${selOpts}</select>
+    const selOpts = MP_CAT_OPTS.replace('value="'+(g.cat||'')+'"','value="'+(g.cat||'')+'" selected');
+    const catColor = CAT_COLORS[g.cat]||'#94a3b8';
+    const safeName = (g.name||'').replace(/"/g,'&quot;');
+    return `<div class="exp-plan-card" data-idx="${i}" style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #f0f4ff;position:relative">
+      <span class="drag-handle" style="cursor:grab;color:#b0b8cc;font-size:16px;flex-shrink:0">⠿</span>
+      <span id="exp-dot-${i}" title="Promijeni kategoriju" style="width:11px;height:11px;border-radius:50%;background:${catColor};flex-shrink:0;cursor:pointer;border:2px solid ${catColor}44" onclick="document.getElementById('exp-cat-sel-${i}').style.display='block';document.getElementById('exp-cat-sel-${i}').focus()"></span>
+      <input type="text" class="goal-name" style="flex:3;min-width:0" value="${safeName}" placeholder="Naziv" oninput="mPlanExpGoals[${i}].name=this.value">
       <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanExpGoals,${i})" onblur="amtBlur(this,mPlanExpGoals,${i},()=>{})">
       <button class="save-goal-del" onclick="removeMPExp(${i})">×</button>
+      <select id="exp-cat-sel-${i}" style="position:absolute;left:18px;top:100%;z-index:99;display:none;background:#fff;border:1px solid #dde3f0;border-radius:8px;padding:4px;font-size:13px" onchange="mPlanExpGoals[${i}].cat=this.value;renderMPExp()" onblur="this.style.display='none'">${selOpts}</select>
     </div>`;
   }).join('');
   setupDragSort(c, mPlanExpGoals, renderMPExp);
@@ -1783,6 +1786,7 @@ function addMPExp(){ mPlanExpGoals.push({name:'',cat:'',amount:0}); renderMPExp(
 function removeMPExp(i){ mPlanExpGoals.splice(i,1); renderMPExp(); }
 
 function renderMPSav(){
+  updateSavTotal();
   const c = document.getElementById('mp-sav-list'); if(!c) return;
   c.innerHTML = mPlanSavGoals.map((g,i)=>`
     <div class="save-goal-row" data-idx="${i}">
@@ -1797,7 +1801,13 @@ function addMPSav(){ mPlanSavGoals.push({name:'',amount:0}); renderMPSav(); setT
 function removeMPSav(i){ mPlanSavGoals.splice(i,1); renderMPSav(); }
 
 
-async function initIncomePanel(){
+async function updateIncTotal(){
+  const total = (mPlanIncGoals||[]).reduce((sum,g)=>sum+(parseFloat(g.amount)||0),0);
+  const el = document.getElementById('inc-total-display');
+  if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
+}
+function initIncomePanel(){
+  updateIncTotal();
   if(!mPlanIncGoals.length){
     const plan = await loadMonthPlan(viewMonthIdx);
     const cp = arr => JSON.parse(JSON.stringify(arr));
@@ -1805,7 +1815,13 @@ async function initIncomePanel(){
   }
   renderMPInc();
 }
-async function initSavingsPanel(){
+async function updateSavTotal(){
+  const total = (mPlanSavGoals||[]).reduce((sum,g)=>sum+(parseFloat(g.amount)||0),0);
+  const el = document.getElementById('sav-total-display');
+  if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
+}
+function initSavingsPanel(){
+  updateSavTotal();
   if(!mPlanSavGoals.length){
     const plan = await loadMonthPlan(viewMonthIdx);
     const cp = arr => JSON.parse(JSON.stringify(arr));
