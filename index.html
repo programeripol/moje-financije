@@ -570,9 +570,12 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
   
 
-  <div onclick="openIncModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-    <div class="sum-label" style="color:#1565c0;margin:0">Prihodi</div>
-    <div id="inc-total-display" class="sum-val-main">—</div>
+  <div onclick="openIncModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
+    <div>
+      <div class="sum-label" style="color:#1565c0;margin:0 0 4px">Prihodi</div>
+      <div id="inc-total-display" class="sum-val-main">—</div>
+    </div>
+    <span style="font-size:13px;color:#8898b8">›</span>
   </div>
   <div class="summary-cards" id="budget-hero">
     <div class="sum-card-inv" onclick="openExpModal()" style="cursor:pointer">
@@ -2808,10 +2811,6 @@ function openIncModal(){
   overlay.style.display='block'; modal.style.display='flex';
   document.body.style.overflow='hidden';
   requestAnimationFrame(()=>{ overlay.style.opacity='1'; modal.style.transform='translateY(0)'; });
-  // Load inc list into modal body
-  const body=document.getElementById('inc-modal-body');
-  const src=document.getElementById('mp-inc-list');
-  if(body&&src) body.innerHTML=src.parentElement.innerHTML;
   initIncomePanel();
 }
 function closeIncModal(){
@@ -2945,7 +2944,10 @@ function closePotrosModal(){
       <span style="font-size:18px;font-weight:700;color:#1a2340">Prihodi</span>
       <button onclick="closeIncModal()" style="background:none;border:none;font-size:22px;color:#8898b8;cursor:pointer;padding:0 4px;line-height:1">&#x2715;</button>
     </div>
-    <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="inc-modal-body"></div>
+    <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="inc-modal-body">
+    <div id="mp-inc-list"></div>
+    <button class="add-goal-btn" style="color:#1565c0;border-color:#1565c0;margin-top:8px" onclick="addMPInc()">+ Dodaj prihod</button>
+  </div>
     <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
       <button onclick="saveIncomeFromModal()" style="width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi prihode</button>
     </div>
