@@ -2814,8 +2814,8 @@ function openIncModal(){
   requestAnimationFrame(()=>{ overlay.style.opacity='1'; modal.style.transform='translateY(0)'; });
   mPlanIncGoals=[];
   mPlanIncGoals=[];
-  const _ib=document.getElementById('inc-modal-body');
-  if(_ib) _ib.innerHTML='<div style="text-align:center;padding:40px 0"><div class="save-spinner" style="margin:0 auto"></div></div>';
+  const _ib=document.getElementById('mp-inc-list');
+  if(_ib) _ib.innerHTML='<div style="text-align:center;padding:32px 0"><div class="save-spinner" style="margin:0 auto"></div></div>';
   initIncomePanel();
 }
 function closeIncModal(){
