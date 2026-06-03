@@ -1246,7 +1246,7 @@ async function onToken(resp){
   // ── Vraćajući korisnik (sheetId je u lokalnoj memoriji) ──────────────
   if(sheetId){
     splashAuthComplete(); // splash može nestati
-    try{const _c=localStorage.getItem('mf_pd');if(_c&&profileData&&!Object.keys(profileData).length){profileData=JSON.parse(_c);}}catch(e){}
+    try{const _c=localStorage.getItem('mf_pd'),_cv=localStorage.getItem('mf_pd_v');if(_c&&_cv==='2'&&profileData&&!Object.keys(profileData).length){profileData=JSON.parse(_c);}}catch(e){}
     showApp(); // odmah na Skener, bez onboardinga
     // Učitaj resurse i profil u pozadini
     ensureResources().then(()=>{ loadPregled(); if(typeof fillProfileForm==='function')fillProfileForm(); }).catch(e => console.warn('bg ensureResources:', e));
@@ -1317,7 +1317,7 @@ function goTab(tab){
   if(tab==='skener')  { setNotePlaceholder(); if(sheetId) loadGallery(); }
   if(tab==='pregled') loadPregled();
   if(tab==='ciljevi') loadGoals();
-  if(tab==='profil')  fillProfileForm();
+  if(tab==='profil') loadProfile().then(()=>fillProfileForm()).catch(()=>fillProfileForm());
 }
 
 function showScreen(id){
@@ -1417,7 +1417,7 @@ async function ensureResources(){
   await ensureMonthSheet(curMonth());
   await ensurePlanSheet();
   await loadProfile();
-  try{if(profileData&&Object.keys(profileData).length>3)localStorage.setItem('mf_pd',JSON.stringify(profileData));}catch(e){}
+  try{if(profileData&&Object.keys(profileData).length>3){localStorage.setItem('mf_pd',JSON.stringify(profileData));localStorage.setItem('mf_pd_v','2');}}catch(e){}
 }
 
 async function findOrCreateYearSpreadsheet(){
