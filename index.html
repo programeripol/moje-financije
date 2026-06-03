@@ -1249,7 +1249,7 @@ async function onToken(resp){
     try{const _c=localStorage.getItem('mf_pd');if(_c&&profileData&&!Object.keys(profileData).length){profileData=JSON.parse(_c);}}catch(e){}
     showApp(); // odmah na Skener, bez onboardinga
     // Učitaj resurse i profil u pozadini
-    ensureResources().then(()=>{ loadPregled(); }).catch(e => console.warn('bg ensureResources:', e));
+    ensureResources().then(()=>{ loadPregled(); if(typeof fillProfileForm==='function')fillProfileForm(); }).catch(e => console.warn('bg ensureResources:', e));
     return;
   }
 
@@ -1417,7 +1417,7 @@ async function ensureResources(){
   await ensureMonthSheet(curMonth());
   await ensurePlanSheet();
   await loadProfile();
-  try{localStorage.setItem('mf_pd',JSON.stringify(profileData));}catch(e){}
+  try{if(profileData&&Object.keys(profileData).length>3)localStorage.setItem('mf_pd',JSON.stringify(profileData));}catch(e){}
 }
 
 async function findOrCreateYearSpreadsheet(){
