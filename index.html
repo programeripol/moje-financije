@@ -1806,14 +1806,14 @@ async function updateIncTotal(){
   const el = document.getElementById('inc-total-display');
   if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
 }
-async function initIncomePanel(){
+async async function initIncomePanel(){
+  const _incFb=()=>{ try{ const r=JSON.parse((profileData&&profileData.income_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (incomeGoals&&incomeGoals.length)?incomeGoals.map(g=>Object.assign({},g)):[]; };
   updateIncTotal();
   if(mPlanIncGoals.length) renderMPInc();
   try{
     const plan = await loadMonthPlan(viewMonthIdx);
-    const cp = arr => JSON.parse(JSON.stringify(arr));
-    try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || cp(incomeGoals); } catch(e){ mPlanIncGoals = cp(incomeGoals); }
-  }catch(e){ if(!mPlanIncGoals.length) mPlanIncGoals=(incomeGoals||[]).map(g=>Object.assign({},g)); }
+    try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb(); } catch(e){ mPlanIncGoals = _incFb(); }
+  }catch(e){ if(!mPlanIncGoals.length) mPlanIncGoals=_incFb(); }
   renderMPInc();
   updateIncTotal();
 }
@@ -1822,7 +1822,7 @@ async function updateSavTotal(){
   const el = document.getElementById('sav-total');
   if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
 }
-async function initSavingsPanel(){
+async async function initSavingsPanel(){
   const _savFb=()=>{ try{ const r=JSON.parse((profileData&&profileData.save_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (savingsGoals&&savingsGoals.length)?savingsGoals.map(g=>Object.assign({},g)):[]; };
   updateSavTotal();
   if(mPlanSavGoals.length) renderMPSav();
