@@ -1806,23 +1806,26 @@ async function updateIncTotal(){
   const el = document.getElementById('inc-total-display');
   if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
 }
-async async function initIncomePanel(){
+function initIncomePanel(){
   const _incFb=()=>{ try{ const r=JSON.parse((profileData&&profileData.income_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (incomeGoals&&incomeGoals.length)?incomeGoals.map(g=>Object.assign({},g)):[]; };
-  updateIncTotal();
-  if(mPlanIncGoals.length) renderMPInc();
-  try{
-    const plan = await loadMonthPlan(viewMonthIdx);
-    try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb(); } catch(e){ mPlanIncGoals = _incFb(); }
-  }catch(e){ if(!mPlanIncGoals.length) mPlanIncGoals=_incFb(); }
-  renderMPInc();
-  updateIncTotal();
+  (async ()=>{
+    updateIncTotal();
+    if(mPlanIncGoals.length) renderMPInc();
+    try{
+      const plan = await loadMonthPlan(viewMonthIdx);
+      try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb(); } catch(e){ mPlanIncGoals = _incFb(); }
+    }catch(e){ if(!mPlanIncGoals.length) mPlanIncGoals=_incFb(); }
+    renderMPInc();
+    updateIncTotal();
+  })();
 }
 async function updateSavTotal(){
   const total = (mPlanSavGoals||[]).reduce((sum,g)=>sum+(parseFloat(g.amount)||0),0);
   const el = document.getElementById('sav-total');
   if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
 }
-async async function initSavingsPanel(){
+function initSavingsPanel(){
+  (async ()=>{
   const _savFb=()=>{ try{ const r=JSON.parse((profileData&&profileData.save_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (savingsGoals&&savingsGoals.length)?savingsGoals.map(g=>Object.assign({},g)):[]; };
   updateSavTotal();
   if(mPlanSavGoals.length) renderMPSav();
@@ -1832,6 +1835,7 @@ async async function initSavingsPanel(){
   }catch(e){ if(!mPlanSavGoals.length) mPlanSavGoals=_savFb(); }
   renderMPSav();
   updateSavTotal();
+  })();
 }
 async function saveIncomePlan(){
   showSaveOverlay('Spremam prihode...');
