@@ -143,7 +143,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .save-goal-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .save-goal-row .goal-name{flex:1;min-width:0;font-size:13px}
 .goal-cat-sel{width:100px;flex-shrink:0;background:#fff;border:1px solid #e8edf8;border-radius:8px;padding:5px 4px;font-size:12px;color:#1a1a2e}
-.save-goal-row .goal-amt,.exp-plan-card .goal-amt{width:60px;flex:0 0 60px;font-size:13px;text-align:right}
+.save-goal-row .goal-amt,.exp-plan-card .goal-amt{width:80px;flex:0 0 80px;font-size:13px;text-align:right}
 .exp-plan-card{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid #f0f2f8;}
 .exp-plan-card .goal-name{flex:1;min-width:0;font-size:13px;}
 .save-goal-del{background:none;border:none;color:#ccc;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;transition:.15s}
@@ -2764,26 +2764,6 @@ function closeEditDrawer(){
     if(curY>90) closeEditDrawer();
     else dr.style.transform="";
   });
-(function(){
-  var sY=0,cY=0,dg=false;
-  document.addEventListener('touchstart',function(e){
-    var m=document.getElementById('acc-modal');
-    if(!m||m.style.display==='none'||m.style.display==='')return;
-    sY=e.touches[0].clientY;dg=true;
-  },{passive:true});
-  document.addEventListener('touchmove',function(e){
-    if(!dg)return;
-    var m=document.getElementById('acc-modal');if(!m)return;
-    cY=e.touches[0].clientY-sY;
-    if(cY>0){e.preventDefault();m.style.transform='translateY('+cY+'px)';}
-  },{passive:false});
-  document.addEventListener('touchend',function(){
-    if(!dg)return;dg=false;
-    var m=document.getElementById('acc-modal');if(!m)return;
-    if(cY>80){closeAccModal();}else{m.style.transform='';}
-    cY=0;
-  });
-})();
 })();
 async function saveEditedReceipt(){
   const store=document.getElementById('edit-store').value.trim();
@@ -2993,9 +2973,9 @@ function closeAccModal(){
   setTimeout(()=>{overlay.style.display='none';modal.style.display='none';document.body.style.overflow='';},300);
 }
 let _accDragY=0,_accDragStartY=0,_accDragging=false;
-function accDragStart(e){_accDragStartY=e.touches[0].clientY;_accDragging=true;_accDragY=0;}
+function accDragStart(e){_accDragStartY=e.touches[0].clientY;_accDragging=true;_accDragY=0;document.getElementById('acc-modal').style.transition='none';}
 function accDragMove(e){if(!_accDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_accDragStartY;if(dy>0){_accDragY=dy;document.getElementById('acc-modal').style.transform='translateY('+dy+'px)';}}
-function accDragEnd(e){if(!_accDragging)return;_accDragging=false;if(_accDragY>80){closeAccModal();}else{document.getElementById('acc-modal').style.transform='translateY(0)';}}
+function accDragEnd(e){if(!_accDragging)return;_accDragging=false;var _m=document.getElementById('acc-modal');_m.style.transition='';if(_accDragY>80){closeAccModal();}else{_m.style.transform='translateY(0)';}}
 
 async function reloadMonthTotals(){
   mPlanIncGoals=[]; mPlanSavGoals=[];
