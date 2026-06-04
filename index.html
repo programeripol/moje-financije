@@ -317,6 +317,18 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 .card-spinner-ring{width:28px;height:28px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 .card-spinner-ring-dark{width:28px;height:28px;border:3px solid rgba(21,101,192,.2);border-top-color:#1565c0;border-radius:50%;animation:spin .7s linear infinite}
 #month-plan-body .month-plan-footer{display:none!important}
+
+/* Custom select dropdown */
+.csel{position:relative;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;cursor:pointer;background:#fff;display:flex;justify-content:space-between;align-items:center;user-select:none;font-size:14px;color:#1e293b;min-height:42px;}
+.csel-arr{font-size:11px;color:#94a3b8;transition:transform .2s;margin-left:8px;flex-shrink:0;}
+.csel.open .csel-arr{transform:rotate(180deg);}
+.csel-opts{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:9999;background:#fff;border:1px solid #e2e8f0;border-radius:12px;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.13);padding:4px 0;list-style:none;margin:0;}
+.csel.open .csel-opts{display:block;}
+.csel-grp{padding:8px 14px 3px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;pointer-events:none;}
+.csel-opts li:not(.csel-grp){padding:9px 14px;cursor:pointer;font-size:14px;color:#1e293b;}
+.csel-opts li:not(.csel-grp):hover{background:#f1f5f9;}
+.csel-opts li.csel-sel{color:#6366f1;font-weight:600;}
+#csel-cat-val{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -502,7 +514,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       </div>
       <div class="field">
         <label>Datum <span class="req">*</span></label>
-        <input type="date" id="meta-date" class="date-empty" onchange="this.classList.toggle('date-empty',!this.value)">
+        <input type="date" id="meta-date" class="date-empty" onclick="try{this.showPicker()}catch(e){}" onchange="this.classList.toggle('date-empty',!this.value)">
       </div>
     </div>
     <div class="field">
@@ -511,16 +523,15 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
     <div class="field">
       <label>Kategorija <span class="req">*</span></label>
-      <select id="meta-cat">
+      <select id="meta-cat" style="display:none">
         <option value="" disabled selected>Odaberi kategoriju</option>
         <optgroup label="Stanovanje">
           <option value="Stanarina">Stanarina</option>
           <option value="Rezije">Režije</option>
-                              <option value="Dom">Dom</option>
+          <option value="Dom">Dom</option>
         </optgroup>
         <optgroup label="Svakodnevno">
           <option value="Food">Hrana</option>
-          
           <option value="Pets">Ljubimci</option>
           <option value="Beauty">Kozmetika</option>
           <option value="Zdravlje">Zdravlje</option>
@@ -537,9 +548,35 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
         <optgroup label="Financije">
           <option value="Debt">Rate</option>
           <option value="Savings">Štednja</option>
+          <option value="Other">Ostalo</option>
         </optgroup>
-        <option value="Other">Ostalo</option>
       </select>
+      <div class="csel" id="csel-cat" onclick="cselToggle(this)">
+        <span id="csel-cat-val">Odaberi kategoriju</span><span class="csel-arr">&#9662;</span>
+        <ul class="csel-opts" onclick="event.stopPropagation()">
+          <li class="csel-grp">Stanovanje</li>
+          <li data-v="Stanarina" onclick="cselPick(this,'Stanarina','Stanarina')">Stanarina</li>
+          <li data-v="Rezije" onclick="cselPick(this,'Rezije','Re&#382;ije')">Re&#382;ije</li>
+          <li data-v="Dom" onclick="cselPick(this,'Dom','Dom')">Dom</li>
+          <li class="csel-grp">Svakodnevno</li>
+          <li data-v="Food" onclick="cselPick(this,'Food','Hrana')">Hrana</li>
+          <li data-v="Pets" onclick="cselPick(this,'Pets','Ljubimci')">Ljubimci</li>
+          <li data-v="Beauty" onclick="cselPick(this,'Beauty','Kozmetika')">Kozmetika</li>
+          <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li>
+          <li data-v="Odijelo" onclick="cselPick(this,'Odijelo','Odje&#263;a')">Odje&#263;a</li>
+          <li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li>
+          <li class="csel-grp">Interesi</li>
+          <li data-v="Zabava" onclick="cselPick(this,'Zabava','Zabava')">Zabava</li>
+          <li data-v="Edukacija" onclick="cselPick(this,'Edukacija','Edukacija')">Edukacija</li>
+          <li data-v="Software" onclick="cselPick(this,'Software','Pretplate')">Pretplate</li>
+          <li data-v="Hobi" onclick="cselPick(this,'Hobi','Hobi')">Hobi</li>
+          <li data-v="Putovanje" onclick="cselPick(this,'Putovanje','Putovanje')">Putovanje</li>
+          <li class="csel-grp">Financije</li>
+          <li data-v="Debt" onclick="cselPick(this,'Debt','Rate')">Rate</li>
+          <li data-v="Savings" onclick="cselPick(this,'Savings','&#352;tednja')">&#352;tednja</li>
+          <li data-v="Other" onclick="cselPick(this,'Other','Ostalo')">Ostalo</li>
+        </ul>
+      </div>
     </div>
     <div class="field">
       <label>Opis</label>
@@ -783,6 +820,23 @@ const CAT_COLORS = {
 
 // ── INIT ─────────────────────────────────────────────────────────────
 // Spoji sve onclick gumbe s addEventListener — MetaMask SES ne može blokirati ovo
+
+function cselToggle(el){
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.csel.open').forEach(e=>e.classList.remove('open'));
+  if(!isOpen) el.classList.add('open');
+}
+function cselPick(li, val, text){
+  const wrap = li.closest('.csel');
+  wrap.querySelector('[id$="-val"]').textContent = text;
+  wrap.classList.remove('open');
+  const hiddenId = wrap.id.replace('csel-','');
+  const sel = document.getElementById(hiddenId);
+  if(sel) sel.value = val;
+  wrap.querySelectorAll('li[data-v]').forEach(l=>l.classList.toggle('csel-sel', l.dataset.v===val));
+}
+document.addEventListener('click', function(e){ if(!e.target.closest('.csel')) document.querySelectorAll('.csel.open').forEach(el=>el.classList.remove('open')); });
+
 function wireButtons(){
   const on = (id, fn) => { const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
   on('google-btn',  () => signIn());
@@ -2356,12 +2410,14 @@ async function saveReceipt(){
   try{
     await ensureResources();
     let driveUrl='', driveId='';
+    const month = (date && /^\d{4}-\d{2}/.test(date)) ? (MONTHS_HR[parseInt(date.split('-')[1])-1] || curMonth()) : curMonth();
+    if(!monthFolderIds[month]){ monthFolderIds[month] = await findOrCreateFolder(month, yearFolderId); }
+    monthFolderId = monthFolderIds[month];
     if(currentImgFile){
       const d = await uploadToDrive(currentImgFile, buildFilename());
       driveUrl = d.url; driveId = d.id;
     }
     setProgress(90);
-    const month = curMonth();
     const row   = await findNextTrackerRow(month);
     const rowData = Array(14).fill('');
     rowData[1]  = fmtDateHR(date);
@@ -2418,6 +2474,7 @@ function noviRacun(){
   syncAmtDisplay(document.getElementById('meta-amount'));
   document.getElementById('meta-note').value   = '';
   document.getElementById('meta-date').value   = today();
+  const cselV=document.getElementById('csel-cat-val'); if(cselV){cselV.textContent='Odaberi kategoriju';} document.getElementById('meta-cat').value=''; document.querySelectorAll('#csel-cat li[data-v]').forEach(l=>l.classList.remove('csel-sel'));
   document.getElementById('save-btn').disabled = false;
   showScan('', '');
   setProgress(0);
