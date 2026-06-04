@@ -143,7 +143,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 .save-goal-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .save-goal-row .goal-name{flex:1;min-width:0;font-size:13px}
 .goal-cat-sel{width:100px;flex-shrink:0;background:#fff;border:1px solid #e8edf8;border-radius:8px;padding:5px 4px;font-size:12px;color:#1a1a2e}
-.save-goal-row .goal-amt{width:60px;flex:0 0 60px;font-size:13px;text-align:right}
+.save-goal-row .goal-amt,.exp-plan-card .goal-amt{width:60px;flex:0 0 60px;font-size:13px;text-align:right}
 .exp-plan-card{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid #f0f2f8;}
 .exp-plan-card .goal-name{flex:1;min-width:0;font-size:13px;}
 .save-goal-del{background:none;border:none;color:#ccc;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;transition:.15s}
@@ -329,7 +329,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 .csel-grp{padding:8px 14px 3px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;pointer-events:none;}
 .csel-opts li:not(.csel-grp){padding:9px 14px;cursor:pointer;font-size:14px;color:#1e293b;}
 .csel-opts li:not(.csel-grp):hover{background:#f1f5f9;}
-.csel-opts li.csel-sel{background:#1565c0;color:#fff;border-radius:6px;}
+.csel-opts li.csel-sel{color:#6366f1;font-weight:600;}
 #csel-cat-val{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 </style>
 </head>
@@ -832,7 +832,7 @@ function cselPick(li, val, text){
   const wrap = li.closest('.csel');
   wrap.querySelector('[id$="-val"]').textContent = text;
   wrap.classList.remove('open');
-  const hiddenId = 'meta-' + wrap.id.replace('csel-','');
+  const hiddenId = wrap.id.replace('csel-','');
   const sel = document.getElementById(hiddenId);
   if(sel) sel.value = val;
   wrap.querySelectorAll('li[data-v]').forEach(l=>l.classList.toggle('csel-sel', l.dataset.v===val));
