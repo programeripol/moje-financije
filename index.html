@@ -322,7 +322,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
 
 /* Custom select dropdown */
 .csel{position:relative;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;cursor:pointer;background:#fff;display:flex;justify-content:space-between;align-items:center;user-select:none;font-size:14px;color:#1e293b;min-height:42px;}
-.csel-arr{font-size:11px;color:#94a3b8;transition:transform .2s;margin-left:8px;flex-shrink:0;}
+.csel-arr{font-size:11px;color:#94a3b8;transition:transform .2s;margin-left:8px;flex-shrink:0;margin-top:3px;}
 .csel.open .csel-arr{transform:rotate(180deg);}
 .csel-opts{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:9999;background:#fff;border:1px solid #e2e8f0;border-radius:12px;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.13);padding:4px 0;list-style:none;margin:0;}
 .csel.open .csel-opts{display:block;}
@@ -553,7 +553,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
           <option value="Other">Ostalo</option>
         </optgroup>
       </select>
-      <div class="csel" id="csel-cat" onclick="cselToggle(this)">
+      <div class="csel" id="csel-cat" data-sel="meta-cat" onclick="cselToggle(this)">
         <span id="csel-cat-val">Odaberi kategoriju</span><span class="csel-arr"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         <ul class="csel-opts" onclick="event.stopPropagation()">
           <li class="csel-grp">Stanovanje</li>
@@ -593,7 +593,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
   <hr class="divider">
   <div onclick="openAccModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
   <div style="color:#1565c0;font-size:14px;font-weight:600">Računi ovog mjeseca</div>
-  <span style="font-size:13px;color:#8898b8">›</span>
+  <span style="display:inline-flex;align-items:center;"><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
 </div>
 
 </div>
@@ -832,7 +832,7 @@ function cselPick(li, val, text){
   const wrap = li.closest('.csel');
   wrap.querySelector('[id$="-val"]').textContent = text;
   wrap.classList.remove('open');
-  const hiddenId = wrap.id.replace('csel-','');
+  const hiddenId = wrap.dataset.sel || wrap.id.replace('csel-','');
   const sel = document.getElementById(hiddenId);
   if(sel) sel.value = val;
   wrap.querySelectorAll('li[data-v]').forEach(l=>l.classList.toggle('csel-sel', l.dataset.v===val));
@@ -2477,6 +2477,7 @@ function noviRacun(){
   document.getElementById('meta-note').value   = '';
   document.getElementById('meta-date').value   = today();
   const cselV=document.getElementById('csel-cat-val'); if(cselV){cselV.textContent='Odaberi kategoriju';} document.getElementById('meta-cat').value=''; document.querySelectorAll('#csel-cat li[data-v]').forEach(l=>l.classList.remove('csel-sel'));
+  document.getElementById('meta-note').value='';
   document.getElementById('save-btn').disabled = false;
   showScan('', '');
   setProgress(0);
@@ -2725,7 +2726,7 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   document.getElementById('edit-store').value=store;
   document.getElementById('edit-amount').value=iznos ? eur(iznos) : '';
   document.getElementById('edit-date').value=iso;
-  document.getElementById('edit-cat').value=kat;
+  document.getElementById('edit-cat').value=kat; const _cEV=document.getElementById('csel-edit-cat-val');if(_cEV){_cEV.textContent=kat?(CAT_HR[kat]||kat):'Odaberi kategoriju';} document.querySelectorAll('#csel-edit-cat li[data-v]').forEach(l=>l.classList.toggle('csel-sel',l.dataset.v===kat));
   document.getElementById('edit-note').value=note;
   document.getElementById('edit-sheet-row').value=sheetRow;
   document.getElementById('edit-month-name').value=monthName;
@@ -2763,6 +2764,26 @@ function closeEditDrawer(){
     if(curY>90) closeEditDrawer();
     else dr.style.transform="";
   });
+(function(){
+  var sY=0,cY=0,dg=false;
+  document.addEventListener('touchstart',function(e){
+    var m=document.getElementById('acc-modal');
+    if(!m||m.style.display==='none'||m.style.display==='')return;
+    sY=e.touches[0].clientY;dg=true;
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(!dg)return;
+    var m=document.getElementById('acc-modal');if(!m)return;
+    cY=e.touches[0].clientY-sY;
+    if(cY>0){e.preventDefault();m.style.transform='translateY('+cY+'px)';}
+  },{passive:false});
+  document.addEventListener('touchend',function(){
+    if(!dg)return;dg=false;
+    var m=document.getElementById('acc-modal');if(!m)return;
+    if(cY>80){closeAccModal();}else{m.style.transform='';}
+    cY=0;
+  });
+})();
 })();
 async function saveEditedReceipt(){
   const store=document.getElementById('edit-store').value.trim();
@@ -3006,7 +3027,7 @@ async function reloadMonthTotals(){
   </div>
   <div class="field"><label>Iznos</label><div class="euro-suffix"><input type="text" id="edit-amount" class="field-input" inputmode="decimal" placeholder="0,00 €" onblur="fmtAmtBlur(this)" onfocus="fmtAmtFocus(this)"></div></div>
   <div class="field"><label>Kategorija</label>
-    <select id="edit-cat">
+    <select id="edit-cat" style="display:none">
       <optgroup label="Stanovanje">
       <option value="Stanarina">Stanarina</option>
       <option value="Rezije">Režije</option>
@@ -3034,6 +3055,32 @@ async function reloadMonthTotals(){
       </optgroup>
       <option value="Other">Ostalo</option>
     </select>
+      <div class="csel" id="csel-edit-cat" data-sel="edit-cat" onclick="cselToggle(this)">
+        <span id="csel-edit-cat-val">Odaberi kategoriju</span><span class="csel-arr"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <ul class="csel-opts">
+          <li class="csel-grp">Stanovanje</li>
+          <li data-v="Stanarina" onclick="cselPick(this,'Stanarina','Stanarina')">Stanarina</li>
+          <li data-v="Rezije" onclick="cselPick(this,'Rezije','Režije')">Režije</li>
+          <li data-v="Dom" onclick="cselPick(this,'Dom','Dom')">Dom</li>
+          <li class="csel-grp">Svakodnevno</li>
+          <li data-v="Food" onclick="cselPick(this,'Food','Hrana')">Hrana</li>
+          <li data-v="Pets" onclick="cselPick(this,'Pets','Ljubimci')">Ljubimci</li>
+          <li data-v="Beauty" onclick="cselPick(this,'Beauty','Kozmetika')">Kozmetika</li>
+          <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li>
+          <li data-v="Odijelo" onclick="cselPick(this,'Odijelo','Odjeća')">Odjeća</li>
+          <li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li>
+          <li class="csel-grp">Interesi</li>
+          <li data-v="Zabava" onclick="cselPick(this,'Zabava','Zabava')">Zabava</li>
+          <li data-v="Edukacija" onclick="cselPick(this,'Edukacija','Edukacija')">Edukacija</li>
+          <li data-v="Software" onclick="cselPick(this,'Software','Pretplate')">Pretplate</li>
+          <li data-v="Hobi" onclick="cselPick(this,'Hobi','Hobi')">Hobi</li>
+          <li data-v="Putovanje" onclick="cselPick(this,'Putovanje','Putovanje')">Putovanje</li>
+          <li class="csel-grp">Financije</li>
+          <li data-v="Debt" onclick="cselPick(this,'Debt','Rate')">Rate</li>
+          <li data-v="Savings" onclick="cselPick(this,'Savings','Štednja')">Štednja</li>
+          <li data-v="Other" onclick="cselPick(this,'Other','Ostalo')">Ostalo</li>
+        </ul>
+      </div>
   </div>
   <div class="field"><label>Bilješka (opcionalno)</label><input type="text" id="edit-note" placeholder="Opis..."></div>
   <input type="hidden" id="edit-sheet-row"><input type="hidden" id="edit-month-name">
