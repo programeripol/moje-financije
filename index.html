@@ -587,6 +587,22 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
   </div>
 
+  <div class="field" style="margin:0 0 12px">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:500">
+      <input type="checkbox" id="rate-toggle" onchange="toggleRateFields()" style="width:18px;height:18px;accent-color:var(--primary,#1565c0)"> Na rate
+    </label>
+    <div id="rate-fields" style="display:none;margin-top:10px;gap:8px;flex-wrap:wrap">
+      <div style="flex:1;min-width:120px">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px">Kartica</label>
+        <input type="text" id="rate-card" class="form-input" placeholder="npr. Visa, Mastercard">
+      </div>
+      <div style="flex:1;min-width:80px">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px">Broj rata</label>
+        <input type="number" id="rate-count" class="form-input" min="2" max="36" value="12">
+      </div>
+    </div>
+  </div>
+
   <button class="btn btn-primary" id="save-btn">Spremi</button>
   <div class="status" id="scan-status"></div>
   <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
@@ -633,7 +649,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <span id="bh-income" style="display:none"></span>
     <span id="bh-savings" style="display:none"></span>
   </div>
-  <div class="sum-card" style="cursor:default;margin-top:2px">
+  <div class="sum-card" style="cursor:default">
     <div class="sum-label">Preostalo</div>
     <div class="sum-val-main" id="bh-remaining">—</div>
   </div>
@@ -2039,8 +2055,8 @@ async function loadPregled(){
       }
       return fallback;
     };
-    const fixGoals = getGoalList('fix_json', fixedGoals);
-    const varGoals = getGoalList('var_json', variableGoals);
+    const fixGoals = getGoalList('fix_json', _fixFb());
+    const varGoals = getGoalList('var_json', _varFb());
     const savGoals = getGoalList('sav_json', savingsGoals);
 
     const buildItemRows = (goals, forSavings) => {
@@ -2396,6 +2412,12 @@ async function uploadToDrive(file, filename){
   return { id: d.id, url: `https://drive.google.com/file/d/${d.id}/view` };
 }
 
+function toggleRateFields(){
+  var f=document.getElementById('rate-fields');
+  var t=document.getElementById('rate-toggle');
+  if(!f||!t)return;
+  f.style.display=t.checked?'flex':'none';
+}
 async function saveReceipt(){
   const store  = document.getElementById('meta-store').value.trim();
   const date   = document.getElementById('meta-date').value;
@@ -2428,12 +2450,34 @@ async function saveReceipt(){
     const row   = await findNextTrackerRow(month);
     const rowData = Array(14).fill('');
     rowData[1]  = fmtDateHR(date);
-    rowData[5]  = amount;
+    const _rateTog=document.getElementById('rate-toggle');
+    const _isRate=_rateTog&&_rateTog.checked;
+    const _rateN=_isRate?Math.max(2,Math.min(36,parseInt((document.getElementById('rate-count')||{}).value)||12)):1;
+    const _rateCard=_isRate?((document.getElementById('rate-card')||{}).value||'').trim():'';
+    const _rataAmt=_isRate?Math.round(amount/_rateN*100)/100:amount;
+    rowData[5]  = _rataAmt;
     rowData[8]  = cat;
-    rowData[11] = note ? `${store} — ${note}` : store;
+    var _rateLabel1=_isRate?' (rata 1/'+_rateN+(_rateCard?' · '+_rateCard:'')+')':'';
+    rowData[11] = (note ? `${store} — ${note}` : store) + _rateLabel1;
     rowData[12] = driveUrl;
     rowData[13] = driveId;
     await writeRange(sheetId, `${month}!A${row}`, [rowData]);
+    // Rate - buduće rate
+    if(_isRate&&_rateN>1){
+      var _MHR=['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];
+      var _curIdx=_MHR.indexOf(month);
+      for(var _ri=2;_ri<=_rateN;_ri++){
+        var _fm=_MHR[(_curIdx+(_ri-1))%12];
+        try{
+          await ensureMonthSheet(_fm);
+          var _fr=await findNextTrackerRow(_fm);
+          var _fd=Array(14).fill('');
+          _fd[1]=fmtDateHR(date);_fd[5]=_rataAmt;_fd[8]=cat;
+          _fd[11]=(note?store+' — '+note:store)+' (rata '+_ri+'/'+_rateN+(_rateCard?' · '+_rateCard:'')+')' ;
+          await writeRange(sheetId,_fm+'!A'+_fr,[_fd]);
+        }catch(_re){console.warn('rata '+_ri+' fail',_re);}
+      }
+    }
     setProgress(100);
 
     showToast('✓ Spremljeno! ' + store + ' · ' + eur(amount), 3000, 'success');
@@ -2480,6 +2524,7 @@ function noviRacun(){
   document.getElementById('meta-amount').value = '';
   syncAmtDisplay(document.getElementById('meta-amount'));
   document.getElementById('meta-note').value   = '';
+  var _rt=document.getElementById('rate-toggle');if(_rt){_rt.checked=false;toggleRateFields();}
   document.getElementById('meta-date').value   = today();
   const cselV=document.getElementById('csel-cat-val'); if(cselV){cselV.textContent='Odaberi kategoriju';} document.getElementById('meta-cat').value=''; document.querySelectorAll('#csel-cat li[data-v]').forEach(l=>l.classList.remove('csel-sel'));
   document.getElementById('meta-note').value='';
@@ -3150,8 +3195,7 @@ function syncAmtDisplay(inp){
   <!-- Potrošeno / Pregled bottom sheet -->
   <div id="potros-modal-overlay" onclick="closePotrosModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
   <div id="potros-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#f4f7ff;border-radius:24px 24px 0 0;max-height:92vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
-<div id="potros-modal-drag" ontouchstart="potrosDragStart(event)" ontouchmove="potrosDragMove(event)" ontouchend="potrosDragEnd(event)" style="padding:16px 0 8px;cursor:grab;text-align:center;touch-action:none"><div class="drawer-handle"></div></div>
-    <div style="display:flex;align-items:center;justify-content:center;padding:12px 0 4px;cursor:grab">
+    <div style="display:flex;align-items:center;justify-content:center;padding:12px 0 4px;cursor:grab;touch-action:none" ontouchstart="potrosDragStart(event)" ontouchmove="potrosDragMove(event)" ontouchend="potrosDragEnd(event)">
       <div style="width:40px;height:4px;border-radius:2px;background:#c8d8f0"></div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 20px 12px;background:#f4f7ff">
