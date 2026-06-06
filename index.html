@@ -90,6 +90,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#1565c0;backgr
 
 /* ── BUTTONS ── */
 .btn{padding:12px 20px;border:none;border-radius:11px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+#save-btn.saving{opacity:.65;cursor:not-allowed}
 .btn-primary{background:#1565c0;color:#fff;width:100%}
 .btn-primary:hover{background:#0d47a1}
 .btn-primary:disabled{background:#90afd4;cursor:default}
@@ -631,6 +632,10 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     <span id="bh-left" style="display:none"></span>
     <span id="bh-income" style="display:none"></span>
     <span id="bh-savings" style="display:none"></span>
+  </div>
+  <div class="sum-card" style="cursor:default;margin-top:2px">
+    <div class="sum-label">Preostalo</div>
+    <div class="sum-val-main" id="bh-remaining">—</div>
   </div>
 
   
@@ -1918,7 +1923,7 @@ async function fillMonthPlanForm(){
   const _incFb2=()=>{ try{ const r=JSON.parse((profileData&&profileData.income_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (incomeGoals&&incomeGoals.length)?cp(incomeGoals):[]; };
   const _savFb2=()=>{ try{ const r=JSON.parse((profileData&&profileData.save_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (savingsGoals&&savingsGoals.length)?cp(savingsGoals):[]; };
   const _fixFb=()=>{ try{ return JSON.parse((profileData&&profileData.fixed_goals_json)||'null')||[]; }catch(e){ return (fixedGoals&&fixedGoals.length)?cp(fixedGoals):[]; } };
-  const _varFb=()=>{ try{ return JSON.parse((profileData&&profileData.var_goals_json)||'null')||[]; }catch(e){ return (variableGoals&&variableGoals.length)?cp(variableGoals):[]; } };
+  const _varFb=()=>{ try{ return JSON.parse((profileData&&profileData.variable_goals_json)||'null')||[]; }catch(e){ return (variableGoals&&variableGoals.length)?cp(variableGoals):[]; } };
   try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb2(); } catch(e){ mPlanIncGoals = _incFb2(); }
   try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || _savFb2(); } catch(e){ mPlanSavGoals = _savFb2(); }
   // Load unified expense list: exp_json first, else merge fix+var
@@ -2025,6 +2030,7 @@ async function loadPregled(){
     const planEl = document.getElementById('bh-plan');
     if(planEl) planEl.textContent = eur(totalPlan);
     document.getElementById('bh-spent').textContent = eur(totalSpent);
+        const remEl=document.getElementById('bh-remaining');if(remEl)remEl.textContent=eur(income-totalSpent);
 
     // Cat list — prikazuje svaki cilj iz plana kao vlastiti red
     const getGoalList = (jsonKey, fallback) => {
@@ -2404,8 +2410,7 @@ async function saveReceipt(){
   if(!token)  { signIn(); return; }
 
   const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  btn.textContent = 'Snimam...';
+  btn.disabled = true; btn.classList.add('saving');
   showScan('Spremam...','loading');
   setProgress(5);
 
@@ -2439,7 +2444,7 @@ async function saveReceipt(){
     setProgress(0);
   }
   btn.disabled=false;
-  btn.textContent='Spremi u Sheets';
+  btn.textContent='Spremi'; btn.classList.remove('saving');
 }
 
 function showScan(html, cls){
@@ -2952,10 +2957,14 @@ function closeSavModal(){
   setTimeout(()=>{overlay.style.display='none';modal.style.display='none';document.body.style.overflow='';},300);
 }
 function saveSavingsFromModal(){saveSavingsPlan();closeSavModal();}
+var _pdDragStartY=0,_pdDragging=false,_pdDragY=0;
+function potrosDragStart(e){_pdDragStartY=e.touches[0].clientY;_pdDragging=true;_pdDragY=0;document.getElementById('potros-modal').style.transition='none';}
+function potrosDragMove(e){if(!_pdDragging)return;e.preventDefault();var dy=Math.max(0,e.touches[0].clientY-_pdDragStartY);_pdDragY=dy;document.getElementById('potros-modal').style.transform='translateY('+dy+'px)';}
+function potrosDragEnd(e){if(!_pdDragging)return;_pdDragging=false;var _m=document.getElementById('potros-modal');_m.style.transition='';if(_pdDragY>80){closePotrosModal();}else{_m.style.transform='translateY(0)';}}
 let _savDragY=0,_savDragStartY=0,_savDragging=false;
-function savDragStart(e){_savDragStartY=e.touches[0].clientY;_savDragging=true;_savDragY=0;}
+function savDragStart(e){_savDragStartY=e.touches[0].clientY;_savDragging=true;_savDragY=0;document.getElementById('sav-modal').style.transition='none';}
 function savDragMove(e){if(!_savDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_savDragStartY;if(dy>0){_savDragY=dy;document.getElementById('sav-modal').style.transform='translateY('+dy+'px)';}}
-function savDragEnd(e){if(!_savDragging)return;_savDragging=false;if(_savDragY>80){closeSavModal();}else{document.getElementById('sav-modal').style.transform='translateY(0)';}}
+function savDragEnd(e){if(!_savDragging)return;_savDragging=false;var _m=document.getElementById('sav-modal');_m.style.transition='';if(_savDragY>80){closeSavModal();}else{_m.style.transform='translateY(0)';}}
 // Acc modal
 function openAccModal(){
   const overlay=document.getElementById('acc-modal-overlay'),modal=document.getElementById('acc-modal');
@@ -3141,6 +3150,7 @@ function syncAmtDisplay(inp){
   <!-- Potrošeno / Pregled bottom sheet -->
   <div id="potros-modal-overlay" onclick="closePotrosModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
   <div id="potros-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#f4f7ff;border-radius:24px 24px 0 0;max-height:92vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+<div id="potros-modal-drag" ontouchstart="potrosDragStart(event)" ontouchmove="potrosDragMove(event)" ontouchend="potrosDragEnd(event)" style="padding:16px 0 8px;cursor:grab;text-align:center;touch-action:none"><div class="drawer-handle"></div></div>
     <div style="display:flex;align-items:center;justify-content:center;padding:12px 0 4px;cursor:grab">
       <div style="width:40px;height:4px;border-radius:2px;background:#c8d8f0"></div>
     </div>
