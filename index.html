@@ -2992,6 +2992,21 @@ async function reloadMonthTotals(){
   updateIncTotal();
   updateSavTotal();
 }
+
+function syncAmtDisplay(inp){
+  const v = inp.value;
+  const num = document.getElementById('amt-num');
+  const overlay = document.getElementById('amt-overlay');
+  if(!num || !overlay) return;
+  if(v){
+    num.textContent = v;
+    overlay.style.display = 'flex';
+    inp.classList.add('has-val');
+  } else {
+    overlay.style.display = 'none';
+    inp.classList.remove('has-val');
+  }
+}
 </script>
 
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
@@ -3162,18 +3177,4 @@ async function reloadMonthTotals(){
   </div>
 </div>
 </body>
-</htmlfunction syncAmtDisplay(inp){
-  const v = inp.value;
-  const num = document.getElementById('amt-num');
-  const overlay = document.getElementById('amt-overlay');
-  if(!num || !overlay) return;
-  if(v){
-    num.textContent = v;
-    overlay.style.display = 'flex';
-    inp.classList.add('has-val');
-  } else {
-    overlay.style.display = 'none';
-    inp.classList.remove('has-val');
-  }
-}
->
+</html>
