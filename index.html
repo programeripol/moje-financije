@@ -524,6 +524,27 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
       <label>Iznos <span class="req">*</span></label>
       <div class="euro-suffix"><input type="text" id="meta-amount" class="field-input" placeholder="0,00 €" inputmode="decimal" onblur="fmtAmtBlur(this)" onfocus="fmtAmtFocus(this)"></div>
     </div>
+<div class="field" style="margin:8px 0 12px">
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none">
+    <span style="font-weight:500;font-size:15px">Na rate</span>
+    <span style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0">
+      <input type="checkbox" id="rate-toggle" onchange="toggleRateFields()" style="opacity:0;width:0;height:0;position:absolute">
+      <span id="rate-tog-vis" style="position:absolute;inset:0;background:#ccc;border-radius:12px;transition:background .2s;cursor:pointer"></span>
+      <span id="rate-tog-thumb" style="position:absolute;left:2px;top:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);pointer-events:none"></span>
+    </span>
+  </label>
+  <div id="rate-fields" style="display:none;margin-top:10px;gap:8px;flex-wrap:wrap">
+    <div style="flex:1;min-width:120px">
+      <label style="font-size:13px;color:#555;display:block;margin-bottom:4px">Kartica</label>
+      <input type="text" id="rate-card" class="form-input" placeholder="npr. Visa, Mastercard">
+    </div>
+    <div style="flex:1;min-width:80px">
+      <label style="font-size:13px;color:#555;display:block;margin-bottom:4px">Broj rata</label>
+      <input type="number" id="rate-count" class="form-input" min="2" max="36" value="12">
+    </div>
+  </div>
+</div>
+
     <div class="field">
       <label>Kategorija <span class="req">*</span></label>
       <select id="meta-cat" style="display:none">
@@ -587,21 +608,7 @@ hr.divider{border:none;border-top:1px solid #f0f2f8;margin:14px 0}
     </div>
   </div>
 
-  <div class="field" style="margin:0 0 12px">
-    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:500">
-      <input type="checkbox" id="rate-toggle" onchange="toggleRateFields()" style="width:18px;height:18px;accent-color:var(--primary,#1565c0)"> Na rate
-    </label>
-    <div id="rate-fields" style="display:none;margin-top:10px;gap:8px;flex-wrap:wrap">
-      <div style="flex:1;min-width:120px">
-        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px">Kartica</label>
-        <input type="text" id="rate-card" class="form-input" placeholder="npr. Visa, Mastercard">
-      </div>
-      <div style="flex:1;min-width:80px">
-        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px">Broj rata</label>
-        <input type="number" id="rate-count" class="form-input" min="2" max="36" value="12">
-      </div>
-    </div>
-  </div>
+  
 
   <button class="btn btn-primary" id="save-btn">Spremi</button>
   <div class="status" id="scan-status"></div>
@@ -2415,8 +2422,13 @@ async function uploadToDrive(file, filename){
 function toggleRateFields(){
   var f=document.getElementById('rate-fields');
   var t=document.getElementById('rate-toggle');
+  var vis=document.getElementById('rate-tog-vis');
+  var thumb=document.getElementById('rate-tog-thumb');
   if(!f||!t)return;
-  f.style.display=t.checked?'flex':'none';
+  var on=t.checked;
+  f.style.display=on?'flex':'none';
+  if(vis)vis.style.background=on?'#1565c0':'#ccc';
+  if(thumb)thumb.style.left=on?'22px':'2px';
 }
 async function saveReceipt(){
   const store  = document.getElementById('meta-store').value.trim();
