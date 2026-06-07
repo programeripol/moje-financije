@@ -2226,7 +2226,9 @@ async function loadPregled(){
     </div>` : '';
 
     // Category cards with expandable entries
-    const catCards = sortedCats.map(([cat, act]) => {
+    const _allCatKeys = new Set([...Object.keys(actual), ...Object.keys(planByCategory)]);
+    const _allSortedCats = Array.from(_allCatKeys).map(c=>[c,actual[c]||0]).sort((a,b)=>b[1]!==a[1]?b[1]-a[1]:(planByCategory[b[0]]||0)-(planByCategory[a[0]]||0));
+    const catCards = _allSortedCats.map(([cat, act]) => {
       const planAmt = planByCategory[cat] || 0;
       const pct = planAmt > 0 ? Math.min(100,(act/planAmt)*100) : 100;
       const over = planAmt > 0 && act > planAmt;
@@ -2259,7 +2261,7 @@ async function loadPregled(){
       </div>`;
     }).join('');
     clearPregledLoading();
-    document.getElementById('cat-list').innerHTML = sortedCats.length > 0 ? donutHtml + catCards : '<div class="empty-state">Nema troškova ovaj mjesec.</div>';
+    document.getElementById('cat-list').innerHTML = _allSortedCats.length > 0 ? donutHtml + catCards : '<div class="empty-state">Nema troškova ovaj mjesec.</div>';
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
     allRecentEntries = trackerRows.slice().reverse();
