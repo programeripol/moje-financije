@@ -2830,6 +2830,22 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   document.getElementById('edit-date').value=iso;
   document.getElementById('edit-cat').value=kat; const _cEV=document.getElementById('csel-edit-cat-val');if(_cEV){_cEV.textContent=kat?(CAT_HR[kat]||kat):'Odaberi kategoriju';} document.querySelectorAll('#csel-edit-cat li[data-v]').forEach(l=>l.classList.toggle('csel-sel',l.dataset.v===kat));
   document.getElementById('edit-note').value=note;
+  // pre-fill rate fields if note contains rata label
+  (function(){
+    var _noteEl=document.getElementById('edit-note');
+    var _noteVal=_noteEl?_noteEl.value:'';
+    var _rateMatch=_noteVal.match(/\(rata 1\/(\d+)(?:\s·\s([^)]+))?\)/);
+    if(_rateMatch){
+      var _tog=document.getElementById('edit-rate-toggle');
+      var _cnt=document.getElementById('edit-rate-count');
+      var _crd=document.getElementById('edit-rate-card');
+      if(_tog)_tog.checked=true;
+      if(_cnt)_cnt.value=_rateMatch[1];
+      if(_crd)_crd.value=(_rateMatch[2]||'').trim();
+      if(_noteEl)_noteEl.value=_noteVal.replace(/\s*\(rata 1\/\d+[^)]*\)/,'');
+      toggleEditRateFields();
+    }
+  })();
   document.getElementById('edit-sheet-row').value=sheetRow;
   document.getElementById('edit-month-name').value=monthName;
   document.getElementById('edit-overlay').classList.add('open');
