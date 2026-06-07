@@ -1839,11 +1839,8 @@ async function saveMonthPlan(idx, data){
 }
 
 function effectiveIncomePlan(plan){
-  if(!plan) return totalIncome();
-  if(plan.inc_json){ try{ return JSON.parse(plan.inc_json).reduce((s,g)=>s+(parseFloat(g.amount)||0),0); }catch(e){} }
-  if(incomeGoals.some((_,i)=> plan['inc_'+i] != null))
-    return incomeGoals.reduce((s,g,i)=>s+(plan['inc_'+i]!=null?parseFloat(plan['inc_'+i]):(parseFloat(g.amount)||0)),0);
-  if(plan.income_override != null) return plan.income_override;
+  // Always use current profile income — month plan inc_json is stale if profile changed
+  if(plan && plan.income_override != null) return parseFloat(plan.income_override);
   return totalIncome();
 }
 function effectiveFixedPlan(plan){
@@ -2177,7 +2174,7 @@ async function loadPregled(){
       });
     } else {
       [...(fixGoals||[]), ...(varGoals||[])].forEach(g => {
-        const key = CAT_HR_LOWER[(g.name||'').toLowerCase()];
+        const key = GOAL_TO_CAT[g.name] || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name;
         if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
       });
     }
