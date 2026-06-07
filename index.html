@@ -1852,11 +1852,7 @@ function effectiveFixedPlan(plan){
   return totalFixed();
 }
 function effectiveVariablePlan(plan){
-  if(!plan) return totalVariable();
-  if(plan.var_json){ try{ return JSON.parse(plan.var_json).reduce((s,g)=>s+(parseFloat(g.amount)||0),0); }catch(e){} }
-  if(variableGoals.some((_,i)=> plan['var_'+i] != null))
-    return variableGoals.reduce((s,g,i)=>s+(plan['var_'+i]!=null?parseFloat(plan['var_'+i]):(parseFloat(g.amount)||0)),0);
-  if(plan.variable_override != null) return plan.variable_override;
+  if(plan && plan.variable_override != null) return parseFloat(plan.variable_override);
   return totalVariable();
 }
 
@@ -2130,7 +2126,7 @@ async function loadPregled(){
     const _fixFb=()=>{ try{ return JSON.parse((profileData&&profileData.fixed_goals_json)||'null')||[]; }catch(e){ return []; } };
     const _varFb=()=>{ try{ return JSON.parse((profileData&&profileData.variable_goals_json)||'null')||[]; }catch(e){ return []; } };
     const fixGoals = getGoalList('fix_json', _fixFb());
-    const varGoals = getGoalList('var_json', _varFb());
+    const varGoals = _varFb();
     const savGoals = getGoalList('sav_json', savingsGoals);
 
     const buildItemRows = (goals, forSavings) => {
