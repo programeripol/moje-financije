@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Ima se može se</title>
 <meta name="description" content="Prati prihode, planiraj troškove, štedi za ciljeve.">
-<meta name="theme-color" content="#1565c0">
+<meta name="theme-color" content="var(--th1)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Ima se može se">
@@ -19,9 +19,9 @@
   document.getElementById('img-preview-wrap').style.display = 'none';400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>:root{--th1:#1565c0;--th1r:21,101,192;--th2:#1e88e5;--th-bg:#f0f2f8;--th-text:#1a1a2e;--th-card:#fff;--th-surface:#f8faff}
-[data-theme="blue"]{--th1:#0277bd;--th1r:2,119,189;--th2:#29b6f6;--th-bg:#e3f2fd}
-[data-theme="olive"]{--th1:#4a7c2f;--th1r:74,124,47;--th2:#6fa832;--th-bg:#f0f4e8}
-[data-theme="lila"]{--th1:#6a1b9a;--th1r:106,27,154;--th2:#9c27b0;--th-bg:#f3e5f5}
+[data-theme="blue"]{--th1:#00bfff;--th1r:0,191,255;--th2:#00bfff;--th-bg:#e8f8ff}
+[data-theme="olive"]{--th1:#6b8046;--th1r:107,128,70;--th2:#6b8046;--th-bg:#f0f4e8}
+[data-theme="lila"]{--th1:#b792d2;--th1r:183,146,210;--th2:#b792d2;--th-bg:#f5eefa}
 [data-theme="black"]{--th1:#2a2a2a;--th1r:42,42,42;--th2:#444;--th-bg:#111;--th-text:#e0e0e0;--th-card:#1e1e1e;--th-surface:#252525}
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -338,6 +338,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 .csel-opts li.csel-sel{background:var(--th1);color:#fff;border-radius:6px;}
 #csel-cat-val{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
+[data-theme="blue"] #header,[data-theme="olive"] #header,[data-theme="lila"] #header{background:var(--th1)!important}
 /* dark theme card overrides */
 [data-theme="black"] .sum-card,[data-theme="black"] .section,[data-theme="black"] .modal-sheet,[data-theme="black"] #sav-modal,[data-theme="black"] #potros-modal,[data-theme="black"] #settings-modal .settings-sheet{background:var(--th-card)!important;color:var(--th-text)!important}
 [data-theme="black"] .form-input{background:var(--th-surface)!important;color:var(--th-text)!important;border-color:#444!important}
@@ -627,7 +628,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
   <hr class="divider">
   <div onclick="openAccModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-  <div style="color:#1565c0;font-size:14px;font-weight:600">Računi ovog mjeseca</div>
+  <div style="color:var(--th1);font-size:14px;font-weight:600">Računi ovog mjeseca</div>
   <span style="display:inline-flex;align-items:center;"><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
 </div>
 
@@ -646,7 +647,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
   <div onclick="openIncModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
     <div>
-      <div class="sum-label" style="color:#1565c0;margin:0 0 4px">Prihodi</div>
+      <div class="sum-label" style="color:var(--th1);margin:0 0 4px">Prihodi</div>
       <div id="inc-total-display" class="sum-val-main">—</div>
     </div>
     
@@ -675,7 +676,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   
   <div onclick="openSavModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
   <div>
-    <div style="color:#1565c0;font-size:14px;font-weight:600;margin:0 0 4px">Štednja</div>
+    <div style="color:var(--th1);font-size:14px;font-weight:600;margin:0 0 4px">Štednja</div>
     <div id="sav-total" class="sum-val-main">—</div>
   </div>
   
@@ -795,7 +796,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   </div>
 
   <button class="btn btn-primary" id="profile-save-btn" onclick="saveProfile()">Spremi profil</button>
-  <button class="btn-outline" style="width:100%;margin-top:8px;font-size:12px;color:#94a3b8;border-color:#e2e8f0" onclick="manualSheetConnect()">🔗 Poveži postojeću tablicu</button>
+  
 
 </div>
 
@@ -874,7 +875,7 @@ const CAT_HR = {
 };
 const CAT_COLORS = {
   Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
-  Stanarina:'#1565c0', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
+  Stanarina:'var(--th1)', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
   Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Prijevoz:'#38bdf8', Hobi:'#f97316', Putovanje:'#818cf8', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
   Savings:'#10b981', Other:'#94a3b8'
 };
@@ -1995,7 +1996,7 @@ async function fillMonthPlanForm(){
   const secStyle = (bg,color) => `style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:8px 0 6px;margin-top:10px;color:${color}"`;
   body.innerHTML =
     `<div id="mp-exp-list"></div>` +
-    `<button class="add-goal-btn" onclick="addMPExp()" style="color:#1565c0;border-color:#c0ccee">+ Dodaj trošak</button><br><button class="save-goal-btn" style="width:100%;margin-top:6px;background:#f1f5f9;color:#475569;border:1px solid #dde3f0;font-size:14px;border-radius:14px;padding:11px" onclick="closeExpModal()">&#8635; Vrati na postavke profila</button>` +
+    `<button class="add-goal-btn" onclick="addMPExp()" style="color:var(--th1);border-color:#c0ccee">+ Dodaj trošak</button><br><button class="save-goal-btn" style="width:100%;margin-top:6px;background:#f1f5f9;color:#475569;border:1px solid #dde3f0;font-size:14px;border-radius:14px;padding:11px" onclick="closeExpModal()">&#8635; Vrati na postavke profila</button>` +
     `<div class="month-plan-footer">` +
     `<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>` +
     `<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button></div>`; renderMPExp(); renderMPSav();
@@ -2182,7 +2183,7 @@ async function loadPregled(){
             <span style="color:#7090b0;flex-shrink:0">${totalSpent>0?Math.round(amt/totalSpent*100):0}%</span>
           </div>`;
         }).join('')}
-        ${sortedCats.length>5?`<div id="leg-more-btn" onclick="document.querySelectorAll('.leg-hidden').forEach(e=>e.style.display='flex');this.style.display='none';" style="font-size:11px;color:#1565c0;cursor:pointer;margin-top:2px">+ još ${extraCount} ${extraWord}</div>`:''}
+        ${sortedCats.length>5?`<div id="leg-more-btn" onclick="document.querySelectorAll('.leg-hidden').forEach(e=>e.style.display='flex');this.style.display='none';" style="font-size:11px;color:var(--th1);cursor:pointer;margin-top:2px">+ još ${extraCount} ${extraWord}</div>`:''}
       </div>
     </div>` : '';
 
@@ -2198,7 +2199,7 @@ async function loadPregled(){
       const entriesHtml = entries.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).map(e => `<div onclick="openReceiptView(${e.sheetRow})" style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;cursor:pointer;border-top:1px solid #f0f4ff;font-size:12px">
           <span style="color:#7090b0;flex-shrink:0;margin-right:8px">${e.datum}</span>
           <span style="flex:1;color:#1a1a2e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.naziv||name}</span>
-          <span style="font-weight:600;color:#1565c0;flex-shrink:0;margin-left:8px">${eur(e.iznos)}</span>
+          <span style="font-weight:600;color:var(--th1);flex-shrink:0;margin-left:8px">${eur(e.iznos)}</span>
         </div>`).join('');
       return `<div style="background:var(--color-background-primary,#fff);border:1px solid #e8edf8;border-radius:14px;margin-bottom:8px;overflow:hidden">
         <div onclick="(function(el){el.nextElementSibling.style.display=el.nextElementSibling.style.display==='none'?'block':'none';el.querySelector('.cat-chev').style.transform=el.nextElementSibling.style.display==='none'?'rotate(0deg)':'rotate(180deg)';})(this)" style="padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer">
@@ -2458,7 +2459,7 @@ function toggleRateFields(){
   if(!f||!t)return;
   var on=t.checked;
   f.style.display=on?'flex':'none';
-  if(vis)vis.style.background=on?'#1565c0':'#ccc';
+  if(vis)vis.style.background=on?'var(--th1)':'#ccc';
   if(thumb)thumb.style.left=on?'22px':'2px';
 }
 function toggleEditRateFields(){
@@ -2933,7 +2934,7 @@ function openReceiptView(sheetRow){
   document.getElementById('rv-datum').textContent = entry.datum || '';
   document.getElementById('rv-kat').textContent = CAT_HR[entry.kat] || entry.kat || '';
   document.getElementById('rv-kat').style.background = (CAT_COLORS[entry.kat]||'#e8edf8')+'22';
-  document.getElementById('rv-kat').style.color = CAT_COLORS[entry.kat]||'#1565c0';
+  document.getElementById('rv-kat').style.color = CAT_COLORS[entry.kat]||'var(--th1)';
   
   // Parse bilj from naziv (format: "store — note")
   const dashIdx = (entry.naziv||'').indexOf(' — ');
@@ -3228,14 +3229,14 @@ function syncAmtDisplay(inp){
 <div id="receipt-view-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1200;align-items:flex-end;justify-content:center;padding:0">
   <div id="receipt-view-sheet" style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:24px 20px 32px;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <span id="rv-kat" style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:#f0f4ff;color:#1565c0"></span>
+      <span id="rv-kat" style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:#f0f4ff;color:var(--th1)"></span>
       <button onclick="closeReceiptView()" style="background:none;border:none;font-size:22px;color:#6b7280;cursor:pointer;line-height:1">×</button>
     </div>
     <div id="rv-img-wrap" style="margin-bottom:16px;text-align:center;display:none">
       <img id="rv-img" src="" style="max-width:100%;max-height:240px;border-radius:12px;object-fit:contain">
     </div>
     <div style="font-size:22px;font-weight:700;color:#1a1a2e;margin-bottom:4px" id="rv-naziv"></div>
-    <div style="font-size:28px;font-weight:800;color:#1565c0;margin-bottom:16px" id="rv-iznos"></div>
+    <div style="font-size:28px;font-weight:800;color:var(--th1);margin-bottom:16px" id="rv-iznos"></div>
     <div style="display:flex;gap:12px;margin-bottom:8px">
       <span style="font-size:13px;color:#6b7280">📅</span>
       <span style="font-size:13px;color:#1a1a2e" id="rv-datum"></span>
@@ -3249,40 +3250,40 @@ function syncAmtDisplay(inp){
 
   <!-- Troškovi bottom sheet -->
   <div id="exp-modal-overlay" onclick="closeExpModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
-  <div id="exp-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateY(100%)">
+  <div id="exp-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;transform:translateY(100%)">
         <div style="padding:16px 0 8px;cursor:grab;text-align:center" id="exp-modal-drag" style="touch-action:none" ontouchstart="expDragStart(event)" ontouchmove="expDragMove(event)" ontouchend="expDragEnd(event)">
       <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
     </div>
     <div style="padding:2px 20px 14px">
-      <div id="exp-modal-title" style="font-size:18px;font-weight:700;color:#1565c0">Planirani troškovi</div>
+      <div id="exp-modal-title" style="font-size:18px;font-weight:700;color:var(--th1)">Planirani troškovi</div>
     </div>
     <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="month-plan-body"></div>
     <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
-      <button onclick="saveMonthPlanFromModal()" style="width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi plan</button>
+      <button onclick="saveMonthPlanFromModal()" style="width:100%;padding:14px;background:var(--th1);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi plan</button>
     </div>
   </div>
 
   <!-- Prihodi bottom sheet -->
   <div id="inc-modal-overlay" onclick="closeIncModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
-  <div id="inc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+  <div id="inc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
         <div style="padding:16px 0 8px;cursor:grab;text-align:center" id="inc-modal-drag" style="touch-action:none" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)">
       <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
     </div>
     <div style="padding:2px 20px 14px">
-      <div style="font-size:18px;font-weight:700;color:#1565c0">Prihodi</div>
+      <div style="font-size:18px;font-weight:700;color:var(--th1)">Prihodi</div>
     </div>
     <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="inc-modal-body">
     <div id="mp-inc-list"></div>
-    <button class="add-goal-btn" style="color:#1565c0;border-color:#1565c0;margin-top:8px" onclick="addMPInc()">+ Dodaj prihod</button>
+    <button class="add-goal-btn" style="color:var(--th1);border-color:var(--th1);margin-top:8px" onclick="addMPInc()">+ Dodaj prihod</button>
   </div>
     <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
-      <button onclick="saveIncomeFromModal()" style="width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi prihode</button>
+      <button onclick="saveIncomeFromModal()" style="width:100%;padding:14px;background:var(--th1);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi prihode</button>
     </div>
   </div>
 
   <!-- Potrošeno / Pregled bottom sheet -->
   <div id="potros-modal-overlay" onclick="closePotrosModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
-  <div id="potros-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#f4f7ff;border-radius:24px 24px 0 0;max-height:92vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+  <div id="potros-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#f4f7ff;border-radius:24px 24px 0 0;max-height:92vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
     <div style="display:flex;align-items:center;justify-content:center;padding:12px 0 4px;cursor:grab;touch-action:none" ontouchstart="potrosDragStart(event)" ontouchmove="potrosDragMove(event)" ontouchend="potrosDragEnd(event)">
       <div style="width:40px;height:4px;border-radius:2px;background:#c8d8f0"></div>
     </div>
@@ -3294,25 +3295,25 @@ function syncAmtDisplay(inp){
   </div>
 
 <div id="sav-modal-overlay" onclick="closeSavModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
-<div id="sav-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+<div id="sav-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
   <div style="padding:16px 0 8px;cursor:grab;text-align:center;touch-action:none" id="sav-modal-drag" ontouchstart="savDragStart(event)" ontouchmove="savDragMove(event)" ontouchend="savDragEnd(event)">
     <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
   </div>
   <div style="padding:2px 20px 14px">
-    <div style="font-size:18px;font-weight:700;color:#1565c0">Štednja</div>
+    <div style="font-size:18px;font-weight:700;color:var(--th1)">Štednja</div>
   </div>
   <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="sav-modal-body"></div>
   <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
-    <button onclick="saveSavingsFromModal()" style="width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi štednju</button>
+    <button onclick="saveSavingsFromModal()" style="width:100%;padding:14px;background:var(--th1);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi štednju</button>
   </div>
 </div>
 <div id="acc-modal-overlay" onclick="closeAccModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
-<div id="acc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(21,101,192,.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+<div id="acc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
   <div style="padding:16px 0 8px;cursor:grab;text-align:center;touch-action:none" id="acc-modal-drag" ontouchstart="accDragStart(event)" ontouchmove="accDragMove(event)" ontouchend="accDragEnd(event)">
     <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
   </div>
   <div style="padding:2px 20px 14px">
-    <div style="font-size:18px;font-weight:700;color:#1565c0">Računi ovog mjeseca</div>
+    <div style="font-size:18px;font-weight:700;color:var(--th1)">Računi ovog mjeseca</div>
   </div>
   <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="acc-modal-body">
     <div id="gallery-grid"></div>
@@ -3326,19 +3327,19 @@ function syncAmtDisplay(inp){
     <div style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Teme</div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
       <button onclick="setTheme('default')" class="theme-btn" data-t="default" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
-        <span style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1565c0,#1e88e5);display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
+        <span style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--th1),#1e88e5);display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
         <span style="font-size:11px;color:var(--th-text)">Default</span>
       </button>
       <button onclick="setTheme('blue')" class="theme-btn" data-t="blue" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
-        <span style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0277bd,#29b6f6);display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
+        <span style="width:44px;height:44px;border-radius:50%;background:#00bfff;display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
         <span style="font-size:11px;color:var(--th-text)">Plava</span>
       </button>
       <button onclick="setTheme('olive')" class="theme-btn" data-t="olive" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
-        <span style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#4a7c2f,#6fa832);display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
+        <span style="width:44px;height:44px;border-radius:50%;background:#6b8046;display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
         <span style="font-size:11px;color:var(--th-text)">Maslinasta</span>
       </button>
       <button onclick="setTheme('lila')" class="theme-btn" data-t="lila" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
-        <span style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6a1b9a,#9c27b0);display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
+        <span style="width:44px;height:44px;border-radius:50%;background:#b792d2;display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
         <span style="font-size:11px;color:var(--th-text)">Lila</span>
       </button>
       <button onclick="setTheme('black')" class="theme-btn" data-t="black" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
