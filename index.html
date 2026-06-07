@@ -551,7 +551,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
     <div style="flex:1;min-width:80px">
       <label>Broj rata</label>
-      <input type="number" id="rate-count" class="form-input" min="2" max="36" value="12">
+      <input type="number" id="rate-count" class="form-input" min="2" max="36" placeholder="6">
     </div>
   </div>
 </div>
@@ -2506,7 +2506,7 @@ async function saveReceipt(){
     rowData[1]  = fmtDateHR(date);
     const _rateTog=document.getElementById('rate-toggle');
     const _isRate=_rateTog&&_rateTog.checked;
-    const _rateN=_isRate?Math.max(2,Math.min(36,parseInt((document.getElementById('rate-count')||{}).value)||12)):1;
+    const _rateN=_isRate?Math.max(2,Math.min(36,parseInt((document.getElementById('rate-count')||{}).value)||6)):1;
     const _rateCard=_isRate?((document.getElementById('rate-card')||{}).value||'').trim():'';
     const _rataAmt=_isRate?Math.round(amount/_rateN*100)/100:amount;
     rowData[5]  = _rataAmt;
@@ -2884,7 +2884,7 @@ async function saveEditedReceipt(){
     const bilj=note?store+' — '+note:store;
     const datumHR=fmtDateHR(date);
     await writeRange(sheetId,monthName+'!B'+sheetRow,[[datumHR]]);
-    await writeRange(sheetId,monthName+'!F'+sheetRow,(function(){var _eRateTog=document.getElementById('edit-rate-toggle');var _eIsRate=!!(_eRateTog&&_eRateTog.checked);var _eRateN=_eIsRate?Math.max(2,Math.min(36,parseInt((document.getElementById('edit-rate-count')||{}).value)||12)):1;var _eRateCard=_eIsRate?((document.getElementById('edit-rate-card')||{}).value||'').trim():'';var _eRataAmt=_eIsRate?Math.round(amount/_eRateN*100)/100:amount;window._editRate={on:_eIsRate,n:_eRateN,card:_eRateCard,amt:_eRataAmt,bilj:bilj,kat:kat,datumHR:datumHR};return[[_eRataAmt]];}()));
+    await writeRange(sheetId,monthName+'!F'+sheetRow,(function(){var _eRateTog=document.getElementById('edit-rate-toggle');var _eIsRate=!!(_eRateTog&&_eRateTog.checked);var _eRateN=_eIsRate?Math.max(2,Math.min(36,parseInt((document.getElementById('edit-rate-count')||{}).value)||6)):1;var _eRateCard=_eIsRate?((document.getElementById('edit-rate-card')||{}).value||'').trim():'';var _eRataAmt=_eIsRate?Math.round(amount/_eRateN*100)/100:amount;window._editRate={on:_eIsRate,n:_eRateN,card:_eRateCard,amt:_eRataAmt,bilj:bilj,kat:kat,datumHR:datumHR};return[[_eRataAmt]];}()));
     await writeRange(sheetId,monthName+'!I'+sheetRow,[[kat]]);
     await writeRange(sheetId,monthName+'!L'+sheetRow,[[(window._editRate&&window._editRate.on?bilj+' (rata 1/'+window._editRate.n+(window._editRate.card?' · '+window._editRate.card:'')+')':bilj)]]);
     if(window._editRate&&window._editRate.on&&window._editRate.n>1){var _MHR=['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];var _curIdx=_MHR.indexOf(monthName);for(var _ri=2;_ri<=window._editRate.n;_ri++){var _fm=_MHR[(_curIdx+(_ri-1))%12];try{await ensureMonthSheet(_fm);var _fr=await findNextTrackerRow(_fm);var _fd=Array(14).fill('');_fd[1]=window._editRate.datumHR;_fd[5]=window._editRate.amt;_fd[8]=window._editRate.kat;_fd[11]=window._editRate.bilj+' (rata '+_ri+'/'+window._editRate.n+(window._editRate.card?' · '+window._editRate.card:'')+')';await writeRange(sheetId,_fm+'!A'+_fr,[_fd]);}catch(_re){console.warn('edit rata '+_ri,_re);}}}
@@ -3141,7 +3141,7 @@ function syncAmtDisplay(inp){
   </label>
   <div id="edit-rate-fields" style="display:none;margin-top:10px;gap:8px;flex-wrap:wrap">
     <div style="flex:1;min-width:120px"><label>Kartica</label><input type="text" id="edit-rate-card" class="form-input" placeholder="Visa, Diners, Revolut"></div>
-    <div style="flex:1;min-width:80px"><label>Broj rata</label><input type="number" id="edit-rate-count" class="form-input" min="2" max="36" value="12"></div>
+    <div style="flex:1;min-width:80px"><label>Broj rata</label><input type="number" id="edit-rate-count" class="form-input" min="2" max="36" placeholder="6"></div>
   </div>
 </div>
 
