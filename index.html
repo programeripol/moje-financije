@@ -2130,6 +2130,8 @@ async function loadPregled(){
       }
       return fallback;
     };
+    const _fixFb=()=>{ try{ return JSON.parse((profileData&&profileData.fixed_goals_json)||'null')||[]; }catch(e){ return []; } };
+    const _varFb=()=>{ try{ return JSON.parse((profileData&&profileData.variable_goals_json)||'null')||[]; }catch(e){ return []; } };
     const fixGoals = getGoalList('fix_json', _fixFb());
     const varGoals = getGoalList('var_json', _varFb());
     const savGoals = getGoalList('sav_json', savingsGoals);
