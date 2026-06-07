@@ -3149,7 +3149,6 @@ async function reloadMonthTotals(){
   if(es) es.innerHTML=sp;
   try{
     const plan = await loadMonthPlan(viewMonthIdx);
-    if(plan && plan.inc_json){ try{ mPlanIncGoals=JSON.parse(plan.inc_json)||[]; }catch(e){} }
     if(plan && plan.sav_json){ try{ mPlanSavGoals=JSON.parse(plan.sav_json)||[]; }catch(e){} }
   }catch(e){}
   if(!mPlanIncGoals.length){ try{ mPlanIncGoals=JSON.parse((profileData&&profileData.income_goals_json)||'null')||[]; }catch(e){} if(!mPlanIncGoals.length && typeof incomeGoals!=='undefined') mPlanIncGoals=incomeGoals.map(g=>Object.assign({},g)); }
