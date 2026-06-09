@@ -1030,12 +1030,39 @@ function checkOAuthReturn(){
     const tok = p.get('access_token');
     if(!tok) return false;
     history.replaceState(null, '', location.pathname);
+    // Ako smo u iframeu (tihi refresh) — pošalji token roditelju
+    if(window.parent !== window){
+      window.parent.postMessage({type:'mf_token_refresh', token: tok}, location.origin);
+      return true;
+    }
     onToken({ access_token: tok });
     return true;
   }catch(e){ return false; }
 }
 
 // Ažuriraj izgled gumba za vraćajućeg korisnika
+function scheduleTokenRefresh(){
+  // Tihi refresh tokena u iframeu 55 min nakon prijave (Google token traje 60 min)
+  setTimeout(()=>{
+    if(!token) return;
+    const hint = localStorage.getItem('mf_hint') || '';
+    const params = new URLSearchParams({
+      client_id: CLIENT_ID, redirect_uri: getRedirectUri(),
+      response_type: 'token', scope: SCOPES,
+      include_granted_scopes: 'true', prompt: 'none', login_hint: hint
+    });
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'display:none;position:fixed;width:0;height:0';
+    iframe.src = 'https://accounts.google.com/o/oauth2/v2/auth?' + params;
+    document.body.appendChild(iframe);
+    setTimeout(()=>{ if(iframe.parentNode) iframe.remove(); }, 15000);
+  }, 55 * 60 * 1000);
+}
+window.addEventListener('message', e => {
+  if(e.origin === location.origin && e.data && e.data.type === 'mf_token_refresh' && e.data.token){
+    onToken({ access_token: e.data.token });
+  }
+});
 function showResumeButton(email){
   const btn = document.getElementById('google-btn');
   if(!btn) return;
@@ -1395,6 +1422,7 @@ async function onToken(resp){
   localStorage.setItem('mf_token', resp.access_token);
   localStorage.setItem('mf_token_expiry', String(Date.now() + 2592000000)); // 30 days
   token = resp.access_token;
+  scheduleTokenRefresh();
 
   // Dohvati korisničke podatke u pozadini (avatar, ime)
   gfetch('https://www.googleapis.com/oauth2/v3/userinfo').then(me => {
