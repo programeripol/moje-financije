@@ -1726,7 +1726,7 @@ async function saveProfile(){
     await doSave();
     profileData = data;
     hideSaveOverlay();
-    showToast('Sve je spremljeno!', 3500, 'success');
+    showToast('Spremljeno! Primijenjeno na buduće mjesece.', 3500, 'success');
   }catch(e){
     if(e.message === 'ERR_403_SHEET'){
       showSaveOverlay('Resetiram tablicu...');
@@ -1735,7 +1735,7 @@ async function saveProfile(){
         await saveProfileToSheet(data);
         profileData = data;
         hideSaveOverlay();
-        showToast('Sve je spremljeno!', 3500, 'success');
+        showToast('Spremljeno! Primijenjeno na buduće mjesece.', 3500, 'success');
       }catch(e2){
         hideSaveOverlay();
         showToast('Greška: ' + e2.message, 6000, 'error');
@@ -1839,8 +1839,10 @@ async function saveMonthPlan(idx, data){
 }
 
 function effectiveIncomePlan(plan){
-  // Always use current profile income — month plan inc_json is stale if profile changed
   if(plan && plan.income_override != null) return parseFloat(plan.income_override);
+  const curMi = new Date().getMonth();
+  if(viewMonthIdx > curMi) return totalIncome();
+  if(plan && plan.inc_json){ try{ return JSON.parse(plan.inc_json).reduce((s,g)=>s+(parseFloat(g.amount)||0),0); }catch(e){} }
   return totalIncome();
 }
 function effectiveFixedPlan(plan){
@@ -1893,6 +1895,11 @@ function changeViewMonth(delta){
 
 function toggleMonthPlanEdit(){} // handled by <details> native toggle
 
+function resetIncToProfile(){
+  try{ mPlanIncGoals=JSON.parse((profileData&&profileData.income_goals_json)||'null')||[]; }catch(e){ mPlanIncGoals=[]; }
+  if(!mPlanIncGoals.length && typeof incomeGoals!=='undefined') mPlanIncGoals=incomeGoals.map(g=>Object.assign({},g));
+  renderMPInc(); updateIncTotal();
+}
 function renderMPInc(){
   updateIncTotal();
   const c = document.getElementById('mp-inc-list'); if(!c) return;
@@ -1958,7 +1965,11 @@ function initIncomePanel(){
     if(mPlanIncGoals.length) renderMPInc();
     try{
       const plan = await loadMonthPlan(viewMonthIdx);
-      try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb(); } catch(e){ mPlanIncGoals = _incFb(); }
+      if(viewMonthIdx > new Date().getMonth()){
+        mPlanIncGoals = _incFb();
+      } else {
+        try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb(); } catch(e){ mPlanIncGoals = _incFb(); }
+      }
     }catch(e){ if(!mPlanIncGoals.length) mPlanIncGoals=_incFb(); }
     renderMPInc();
     updateIncTotal();
@@ -3146,6 +3157,8 @@ async function reloadMonthTotals(){
   try{
     const plan = await loadMonthPlan(viewMonthIdx);
     if(plan && plan.sav_json){ try{ mPlanSavGoals=JSON.parse(plan.sav_json)||[]; }catch(e){} }
+    const curMi2 = new Date().getMonth();
+    if(viewMonthIdx <= curMi2 && plan && plan.inc_json){ try{ mPlanIncGoals=JSON.parse(plan.inc_json)||[]; }catch(e){} }
   }catch(e){}
   if(!mPlanIncGoals.length){ try{ mPlanIncGoals=JSON.parse((profileData&&profileData.income_goals_json)||'null')||[]; }catch(e){} if(!mPlanIncGoals.length && typeof incomeGoals!=='undefined') mPlanIncGoals=incomeGoals.map(g=>Object.assign({},g)); }
   if(!mPlanSavGoals.length){ try{ mPlanSavGoals=JSON.parse((profileData&&profileData.save_goals_json)||'null')||[]; }catch(e){} if(!mPlanSavGoals.length && typeof savingsGoals!=='undefined') mPlanSavGoals=savingsGoals.map(g=>Object.assign({},g)); }
@@ -3309,7 +3322,8 @@ function syncAmtDisplay(inp){
     <button class="add-goal-btn" style="color:var(--th1);border-color:var(--th1);margin-top:8px" onclick="addMPInc()">+ Dodaj prihod</button>
   </div>
     <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
-      <button onclick="saveIncomeFromModal()" style="width:100%;padding:14px;background:var(--th1);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi prihode</button>
+      <button onclick="resetIncToProfile()" style="width:100%;padding:10px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px">Vrati na postavke profila</button>
+<button onclick="saveIncomeFromModal()" style="width:100%;padding:14px;background:var(--th1);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi prihode</button>
     </div>
   </div>
 
