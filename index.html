@@ -1059,22 +1059,14 @@ function tryAutoLogin(){
   const hint        = localStorage.getItem('mf_hint') || '';
   if(wasLoggedIn && hint){
     const storedTok = localStorage.getItem('mf_token');
-    const storedExp = parseInt(localStorage.getItem('mf_token_expiry') || '0');
-    if(storedTok && Date.now() < storedExp){
+    if(storedTok){
+      // Probaj sačuvani token odmah — ne redirectamo van PWA-a
       onToken({ access_token: storedTok });
       return;
     }
-    const params = new URLSearchParams({
-      client_id:              CLIENT_ID,
-      redirect_uri:           getRedirectUri(),
-      response_type:          'token',
-      scope:                  SCOPES,
-      include_granted_scopes: 'true',
-      prompt:                 'none',
-      login_hint:             hint
-    });
-    sessionStorage.setItem('mf_silent', '1');
-    location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params;
+    // Nema tokena → "Nastavi kao X" gumb
+    splashAuthComplete();
+    showResumeButton(hint);
     return;
   }
   splashAuthComplete();
@@ -1401,7 +1393,7 @@ async function onToken(resp){
   }
   localStorage.setItem('mf_autologin', '1');
   localStorage.setItem('mf_token', resp.access_token);
-  localStorage.setItem('mf_token_expiry', String(Date.now() + 3500000));
+  localStorage.setItem('mf_token_expiry', String(Date.now() + 2592000000)); // 30 days
   token = resp.access_token;
 
   // Dohvati korisničke podatke u pozadini (avatar, ime)
@@ -1507,7 +1499,14 @@ async function gfetch(url, opts={}){
   if(!r.ok){
     const txt = await r.text();
     if(r.status === 401){
-      throw new Error('Sesija je istekla — klikni Odjavi se i prijavi se opet.');
+      // Token istekao — očisti i pokaži login ekran bez greške
+      localStorage.removeItem('mf_token'); localStorage.removeItem('mf_token_expiry');
+      token = null;
+      splashAuthComplete();
+      const hint = localStorage.getItem('mf_hint');
+      if(hint){ showResumeButton(hint); } else { resetLoginBtn(); }
+      showScreen('s-login');
+      throw new Error('ERR_401');
     }
     if(r.status === 403 && url.includes('spreadsheets')){
       // NE brišemo sheetId — 403 ne znači da tablica ne postoji
