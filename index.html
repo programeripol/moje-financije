@@ -1946,6 +1946,12 @@ function changeViewMonth(delta){
 
 function toggleMonthPlanEdit(){} // handled by <details> native toggle
 
+function resetExpToProfile(){
+  const _fixFb=()=>{ try{ return JSON.parse((profileData&&profileData.fixed_goals_json)||'null')||[]; }catch(e){ return []; } };
+  const _varFb=()=>{ try{ return JSON.parse((profileData&&profileData.variable_goals_json)||'null')||[]; }catch(e){ return []; } };
+  mPlanExpGoals = [..._fixFb(), ..._varFb()].map(g=>({name:g.name||'',cat:g.cat||GOAL_TO_CAT[g.name]||'',amount:g.amount||0}));
+  renderMPExp();
+}
 function resetIncToProfile(){
   try{ mPlanIncGoals=JSON.parse((profileData&&profileData.income_goals_json)||'null')||[]; }catch(e){ mPlanIncGoals=[]; }
   if(!mPlanIncGoals.length && typeof incomeGoals!=='undefined') mPlanIncGoals=incomeGoals.map(g=>Object.assign({},g));
@@ -2097,9 +2103,8 @@ async function fillMonthPlanForm(){
   const secStyle = (bg,color) => `style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:8px 0 6px;margin-top:10px;color:${color}"`;
   body.innerHTML =
     `<div id="mp-exp-list"></div>` +
-    `<button class="add-goal-btn" onclick="addMPExp()" style="color:var(--th1);border-color:#c0ccee">+ Dodaj trošak</button><br><button class="save-goal-btn" style="width:100%;margin-top:6px;background:#f1f5f9;color:#475569;border:1px solid #dde3f0;font-size:14px;border-radius:14px;padding:11px" onclick="closeExpModal()">&#8635; Vrati na postavke profila</button>` +
+    `<button class="add-goal-btn" onclick="addMPExp()" style="color:var(--th1);border-color:#c0ccee">+ Dodaj trošak</button><br><button style="width:100%;margin-top:6px;padding:10px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px" onclick="resetExpToProfile()">Vrati na postavke profila</button>` +
     `<div class="month-plan-footer">` +
-    `<button class="btn-outline btn-sm" onclick="resetMonthPlanToProfile()">↺ Reset na Profil</button>` +
     `<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button></div>`; renderMPExp(); renderMPSav();
 }
 
