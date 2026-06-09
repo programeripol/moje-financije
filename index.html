@@ -1057,12 +1057,28 @@ function resetLoginBtn(){
 function tryAutoLogin(){
   const wasLoggedIn = localStorage.getItem('mf_autologin');
   const hint        = localStorage.getItem('mf_hint') || '';
-  splashAuthComplete();
   if(wasLoggedIn && hint){
-    showResumeButton(hint); // "Nastavi kao X" — klik → signIn() → redirect
-  } else {
-    resetLoginBtn();        // normalni login gumb
+    const storedTok = localStorage.getItem('mf_token');
+    const storedExp = parseInt(localStorage.getItem('mf_token_expiry') || '0');
+    if(storedTok && Date.now() < storedExp){
+      onToken({ access_token: storedTok });
+      return;
+    }
+    const params = new URLSearchParams({
+      client_id:              CLIENT_ID,
+      redirect_uri:           getRedirectUri(),
+      response_type:          'token',
+      scope:                  SCOPES,
+      include_granted_scopes: 'true',
+      prompt:                 'none',
+      login_hint:             hint
+    });
+    sessionStorage.setItem('mf_silent', '1');
+    location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params;
+    return;
   }
+  splashAuthComplete();
+  resetLoginBtn();
 }
 
 // ── INCOME GOALS (dynamic) ────────────────────────────────────────────
@@ -1371,6 +1387,7 @@ function maybeShowInstallModal(){
 async function onToken(resp){
   if(resp.error){
     console.warn('Auth:', resp.error);
+    sessionStorage.removeItem('mf_silent');
     splashAuthComplete();
     const hint = localStorage.getItem('mf_hint');
     const wasLoggedIn = localStorage.getItem('mf_autologin');
@@ -1383,6 +1400,8 @@ async function onToken(resp){
     return;
   }
   localStorage.setItem('mf_autologin', '1');
+  localStorage.setItem('mf_token', resp.access_token);
+  localStorage.setItem('mf_token_expiry', String(Date.now() + 3500000));
   token = resp.access_token;
 
   // Dohvati korisničke podatke u pozadini (avatar, ime)
@@ -1431,6 +1450,7 @@ function signOut(){
   if(token) google.accounts.oauth2.revoke(token);
   if(window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
   token = null;
+  localStorage.removeItem('mf_token'); localStorage.removeItem('mf_token_expiry');
   // Ne brišemo: mf_autologin, mf_hint, mf_sheetId_*, mf_rootFolderId, itd.
   // Samo resetiramo in-memory varijable (bit će učitane iz localStorage pri sljedećoj prijavi)
   document.getElementById('header').style.display = 'none';
