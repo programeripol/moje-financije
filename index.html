@@ -663,6 +663,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   <div onclick="openIncModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
     <div>
       <div class="sum-label" style="color:var(--th1);margin:0 0 4px">Prihodi</div>
+      <div class="card-spinner" id="hero-spin-inc"><div class="card-spinner-ring"></div></div>
       <div id="inc-total-display" class="sum-val-main">—</div>
     </div>
     
@@ -1957,6 +1958,8 @@ function removeMPSav(i){ mPlanSavGoals.splice(i,1); renderMPSav(); }
 
 
 async function updateIncTotal(){
+  const sp = document.getElementById('hero-spin-inc');
+  if(sp && sp.classList.contains('active')) return;
   const total = (mPlanIncGoals||[]).reduce((sum,g)=>sum+(parseFloat(g.amount)||0),0);
   const el = document.getElementById('inc-total-display');
   if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
@@ -2090,7 +2093,8 @@ async function resetMonthPlanToProfile(){
 function clearPregledLoading(){
   const catListEl = document.getElementById('cat-list');
   if(catListEl){ catListEl.style.filter=''; catListEl.style.opacity=''; catListEl.style.pointerEvents=''; }
-  ['hero-spin-plan','hero-spin-spent'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  ['hero-spin-plan','hero-spin-spent','hero-spin-inc'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  updateIncTotal();
 }
 async function loadPregled(){
   renderMonthNav();
@@ -2098,7 +2102,7 @@ async function loadPregled(){
   // Show loading state
   const catListEl = document.getElementById('cat-list');
   if(catListEl){ catListEl.style.filter='blur(4px)'; catListEl.style.opacity='.4'; catListEl.style.pointerEvents='none'; }
-  ['hero-spin-plan','hero-spin-spent'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('active');});
+  ['hero-spin-plan','hero-spin-spent','hero-spin-inc'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('active');});
   try{
     // Čitaj iz EXPENSE TRACKER sekcije odabranog mjeseca
     const monthName = MONTHS_HR[viewMonthIdx];
