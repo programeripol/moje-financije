@@ -2074,14 +2074,22 @@ async function fillMonthPlanForm(){
   const _varFb=()=>{ try{ return JSON.parse((profileData&&profileData.variable_goals_json)||'null')||[]; }catch(e){ return (variableGoals&&variableGoals.length)?cp(variableGoals):[]; } };
   try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb2(); } catch(e){ mPlanIncGoals = _incFb2(); }
   try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || _savFb2(); } catch(e){ mPlanSavGoals = _savFb2(); }
-  // Load unified expense list: exp_json first, else merge fix+var
+  // Load unified expense list
+  // Budući i trenutni mjesec → uvijek svježe iz profila (fix + var)
+  // Prošli → exp_json ako postoji, ali uvijek dodaj var iz profila koji nedostaju
   try {
-    if(plan && plan.exp_json){
-      mPlanExpGoals = JSON.parse(plan.exp_json) || [];
+    const _curMiFMPF = new Date().getMonth();
+    const _profFix = _fixFb().map(g=>({name:g.name||'',cat:g.cat||GOAL_TO_CAT[g.name]||'',amount:g.amount||0}));
+    const _profVar = _varFb().map(g=>({name:g.name||'',cat:g.cat||GOAL_TO_CAT[g.name]||'',amount:g.amount||0}));
+    if(viewMonthIdx >= _curMiFMPF || !plan || !plan.exp_json){
+      // Budući/trenutni ili nema saved plana → uvijek profil
+      mPlanExpGoals = [..._profFix, ..._profVar];
     } else {
-      const fix = JSON.parse(plan && plan.fix_json || 'null') || _fixFb();
-      const varG = JSON.parse(plan && plan.var_json || 'null') || _varFb();
-      mPlanExpGoals = [...fix, ...varG].map(g=>({name:g.name||'',cat:g.cat||'',amount:g.amount||0}));
+      // Prošli s exp_json → spoji: exp_json + var iz profila koji nedostaju
+      const saved = JSON.parse(plan.exp_json) || [];
+      const savedNames = new Set(saved.map(g=>(g.name||'').toLowerCase()));
+      const missingVar = _profVar.filter(g => !savedNames.has((g.name||'').toLowerCase()));
+      mPlanExpGoals = [...saved, ...missingVar];
     }
   } catch(e){ mPlanExpGoals = [..._fixFb(),..._varFb()].map(g=>({name:g.name||'',cat:'',amount:g.amount||0})); }
   const body = document.getElementById('month-plan-body');
