@@ -1855,6 +1855,9 @@ function effectiveFixedPlan(plan){
 }
 function effectiveVariablePlan(plan){
   if(plan && plan.variable_override != null) return parseFloat(plan.variable_override);
+  const curMi = new Date().getMonth();
+  if(viewMonthIdx > curMi) return totalVariable();
+  if(plan && plan.var_json){ try{ return JSON.parse(plan.var_json).reduce((s,g)=>s+(parseFloat(g.amount)||0),0); }catch(e){} }
   return totalVariable();
 }
 
@@ -2172,12 +2175,18 @@ async function loadPregled(){
     const CAT_HR_LOWER = {};
     Object.entries(CAT_HR).forEach(([k,v]) => CAT_HR_LOWER[v.toLowerCase()] = k);
     const planByCategory = {};
+    const _curMiLP = new Date().getMonth();
     let expGoalsForPlan = [];
-    try { expGoalsForPlan = JSON.parse(monthPlan && monthPlan.exp_json || 'null') || []; } catch(e){}
+    if(viewMonthIdx <= _curMiLP){ try { expGoalsForPlan = JSON.parse(monthPlan && monthPlan.exp_json || 'null') || []; } catch(e){} }
     if(expGoalsForPlan.length > 0){
       expGoalsForPlan.forEach(g => {
         const key = g.cat || CAT_HR_LOWER[(g.name||'').toLowerCase()];
         if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
+      });
+      // Always supplement with varGoals so variable costs always show
+      (varGoals||[]).forEach(g => {
+        const key = GOAL_TO_CAT[g.name] || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name;
+        if(key && !planByCategory[key]) planByCategory[key] = (parseFloat(g.amount)||0);
       });
     } else {
       [...(fixGoals||[]), ...(varGoals||[])].forEach(g => {
