@@ -3932,5 +3932,34 @@ function syncAmtDisplay(inp){
     </div>
   </div>
 </div>
+
+// ── Swipe između tabova ─────────────────────────────────────────────
+(function(){
+  var SWIPE_TABS=['pregled','skener','ciljevi','profil'];
+  var sx,sy,sTime;
+  document.addEventListener('touchstart',function(e){
+    if(document.body.style.overflow==='hidden')return;
+    var t=e.target;
+    if(t.closest('input,textarea,select,button,.modal,[id$="-modal"],[id$="-overlay"],#acc-modal,#prenos-modal,#edit-drawer,[id="wp-grid"]'))return;
+    sx=e.touches[0].clientX;
+    sy=e.touches[0].clientY;
+    sTime=Date.now();
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(sx===undefined)return;
+    var dx=e.changedTouches[0].clientX-sx;
+    var dy=e.changedTouches[0].clientY-sy;
+    var dt=Date.now()-sTime;
+    sx=undefined;
+    if(dt>400)return;
+    if(Math.abs(dx)<60)return;
+    if(Math.abs(dy)>Math.abs(dx)*0.65)return;
+    var idx=SWIPE_TABS.indexOf(currentTab);
+    if(idx===-1)return;
+    if(dx<0&&idx<SWIPE_TABS.length-1)goTab(SWIPE_TABS[idx+1]);
+    if(dx>0&&idx>0)goTab(SWIPE_TABS[idx-1]);
+  },{passive:true});
+})();
+
 </body>
 </html>
