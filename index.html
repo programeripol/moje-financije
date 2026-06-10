@@ -3468,6 +3468,15 @@ function loadSavingsAccumulated(preostalo){
   finally{ if(sp) sp.classList.remove('active'); }
 }
 
+function ciljanPadez(n){
+  var abs=Math.abs(Math.round(n));
+  var last2=abs%100;
+  var last1=abs%10;
+  if(last2>=11&&last2<=19)return'ciljanih';
+  if(last1===1)return'ciljanog';
+  if(last1>=2&&last1<=4)return'ciljane';
+  return'ciljanih';
+}
 async function openSavOvModal(){
   const overlay=document.getElementById('sav-ov-overlay'),modal=document.getElementById('sav-ov-modal');
   if(!overlay||!modal)return;
@@ -3506,8 +3515,8 @@ async function openSavOvModal(){
       </svg>
       <div style="flex:1">
         <div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj</div>
-        <div style="font-size:18px;font-weight:700;color:var(--th1)">${eur(totalGoal)}<span style="font-size:11px;font-weight:400;color:#94a3b8">/mj</span></div>
-        <div style="margin-top:10px;font-size:11px;color:#94a3b8;margin-bottom:2px">Ušteđeno ovaj mj.</div>
+        <div style="font-size:18px;font-weight:700;color:var(--th1)">${eur(totalGoal)}</div>
+        <div style="margin-top:10px;font-size:11px;color:#94a3b8;margin-bottom:2px">Ušteđeno</div>
         <div style="font-size:16px;font-weight:600;color:#10b981">${eur(pre)}</div>
       </div>
     </div>`;
@@ -3520,8 +3529,8 @@ async function openSavOvModal(){
         <div style="background:${s.color};height:100%;width:${s.pct}%;border-radius:6px;transition:width .4s"></div>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8">
-        <span>${s.pct}% od ciljane ${eur(s.goal)}/mj</span>
-        ${s.pct>=100?'<span style="color:#10b981;font-weight:600">✓ Pokriven</span>':s.goal>0?`<span>još ${eur(s.goal-s.perFund)}/mj</span>`:'<span>Bez cilja</span>'}
+        <span>${s.pct}% od ${ciljanPadez(s.goal)} ${eur(s.goal)}</span>
+        ${s.pct>=100?'<span style="color:#10b981;font-weight:600">✓ Pokriven</span>':s.goal>0?`<span>još ${eur(s.goal-s.perFund)}</span>`:'<span>Bez cilja</span>'}
       </div>
     </div>`).join('');
     body.innerHTML=donut+cards+`<button onclick="closeSavOvModal();openSavModal();" style="width:100%;padding:12px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px">Uredi plan štednje</button>`;
