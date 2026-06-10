@@ -3474,10 +3474,10 @@ function openPreostaloModal(){
     +'<input id="prenos-input" type="text" inputmode="decimal" value="'+(isNaN(rawPre)?'':rawPre.toFixed(2))+'" placeholder="0,00" style="flex:1;border:1.5px solid #e0e7f0;border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
     +'<button onclick="savePrenosFromModal()" style="padding:9px 16px;background:var(--th1);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Spremi</button>'
     +'</div>'
-    +'<div style="margin-top:6px;font-size:11px;color:#94a3b8">Ostavi prazno za automatski izračun iz '+prevMonthName+'</div>'
+    
     +'</div>'
     +'<div style="border-top:1px solid #f0f4ff;padding-top:10px;display:flex;justify-content:space-between;align-items:center">'
-    +'<span style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em">Ukupno raspoloživo</span>'
+    +'<span style="font-size:11px;font-weight:600;color:var(--th1);text-transform:uppercase;letter-spacing:.05em">Ukupno raspoloživo</span>'
     +'<span style="font-size:17px;font-weight:700;color:var(--th1)">'+totV+'</span></div></div>';
   showSimpleModal('Preostalo', html);
 }
