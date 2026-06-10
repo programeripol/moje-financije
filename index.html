@@ -2063,7 +2063,7 @@ function renderMonthNav(){
   const label  = MONTHS_HR[viewMonthIdx] + ' ' + curYear();
   const el = document.getElementById('month-nav-label');
   if(el) el.textContent = label;
-  const _accMnG=['siječanj','veljaču','ožujak','travanj','svibanj','lipanj','srpanj','kolovoz','rujan','listopad','studeni','prosinac'];
+  const _accMnG=MONTHS_GEN;
   const _accCl=document.getElementById('acc-card-label');
   if(_accCl) _accCl.textContent='Računi za '+(_accMnG[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
 
@@ -2512,8 +2512,7 @@ async function loadPregled(){
     document.getElementById('cat-list').innerHTML = _allSortedCats.length > 0 ? donutHtml + catCards : '<div class="empty-state">Nema troškova ovaj mjesec.</div>';
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
-    allRecentEntries = trackerRows.slice().reverse();
-    recentExpanded   = false;
+    allRecentEntries = trackerRows.slice();
     renderRecentList();
     loadSavingsAccumulated(_lastPreostalo);
 
@@ -2540,12 +2539,11 @@ async function loadPregled(){
 
 // ── RECENT LIST ───────────────────────────────────────────────────────
 let allRecentEntries = [];
-let recentExpanded   = false;
+let _accView = 'list';
 
 function renderRecentList(){
-  const toShow=recentExpanded?allRecentEntries:allRecentEntries.slice(0,5);
   const mName=MONTHS_HR[viewMonthIdx];
-  const recHtml=toShow.length?toShow.map(({r,sheetRow})=>{
+  const recHtml=allRecentEntries.length?allRecentEntries.map(({r,sheetRow})=>{
     const datum=r[1]||'',iznos=parseFloat(r[5])||0,kat=r[8]||'Other',bilj=r[11]||'';
     const di=bilj.indexOf(' — ');
     const naziv=(di>=0?bilj.slice(0,di):bilj)||(CAT_HR[kat]||kat);
@@ -2558,20 +2556,28 @@ function renderRecentList(){
       <span class="receipt-iznos">${eur(iznos)}</span>
     </div>`;
   }).join(''):'<div class="empty-state">Nema transakcija.</div>';
-  document.getElementById('recent-list').innerHTML=recHtml;
-
-  const btn = document.getElementById('recent-toggle-btn');
-  if(btn){
-    btn.style.display = allRecentEntries.length > 3 ? 'block' : 'none';
-    btn.textContent   = recentExpanded
-      ? 'Prikaži manje ↑'
-      : `Prikaži sve (${allRecentEntries.length}) ↓`;
-  }
+  const el=document.getElementById('recent-list');
+  if(el) el.innerHTML=recHtml;
 }
 
-function toggleRecentList(){
-  recentExpanded = !recentExpanded;
-  renderRecentList();
+function setAccView(view){
+  _accView=view;
+  var listEl=document.getElementById('recent-list');
+  var gridEl=document.getElementById('gallery-grid');
+  var btnL=document.getElementById('acc-view-list');
+  var btnG=document.getElementById('acc-view-grid');
+  var on='var(--th1)',off='transparent',onC='#fff',offC='#94a3b8';
+  if(view==='list'){
+    if(listEl)listEl.style.display='';
+    if(gridEl)gridEl.style.display='none';
+    if(btnL){btnL.style.background=on;btnL.style.color=onC;}
+    if(btnG){btnG.style.background=off;btnG.style.color=offC;}
+  } else {
+    if(listEl)listEl.style.display='none';
+    if(gridEl){gridEl.style.display='';if(!gridEl.children.length||gridEl.querySelector('.empty-state'))loadGallery();}
+    if(btnL){btnL.style.background=off;btnL.style.color=offC;}
+    if(btnG){btnG.style.background=on;btnG.style.color=onC;}
+  }
 }
 
 // ── GOALS ─────────────────────────────────────────────────────────────
@@ -3094,7 +3100,7 @@ window.mPlanIncGoals = mPlanIncGoals; window.mPlanFixGoals = mPlanFixGoals;
 window.mPlanVarGoals = mPlanVarGoals; window.mPlanSavGoals = mPlanSavGoals;
 window.saveMonthPlanNow     = saveMonthPlanNow;
 window.resetMonthPlanToProfile = resetMonthPlanToProfile;
-window.toggleRecentList     = toggleRecentList;
+window.setAccView           = setAccView;
 window.amtFocus             = amtFocus;
 window.amtBlur              = amtBlur;
 window.amtInput             = amtInput;
@@ -3572,9 +3578,9 @@ function openAccModal(){
   if(!overlay||!modal)return;
   overlay.style.display='block';modal.style.display='flex';
   document.body.style.overflow='hidden';
-  const _accMn=['siječanj','veljaču','ožujak','travanj','svibanj','lipanj','srpanj','kolovoz','rujan','listopad','studeni','prosinac'];
   const _accTl=document.getElementById('acc-modal-title');
-  if(_accTl) _accTl.textContent='Računi za '+(_accMn[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
+  if(_accTl) _accTl.textContent='Računi za '+(MONTHS_GEN[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
+  setAccView('list');
   requestAnimationFrame(()=>{overlay.style.opacity='1';modal.style.transform='translateY(0)';});
 }
 function closeAccModal(){
@@ -3795,17 +3801,22 @@ function syncAmtDisplay(inp){
 </div>
 <div id="acc-modal-overlay" onclick="closeAccModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
 <div id="acc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
-  <div style="padding:16px 0 8px;cursor:grab;text-align:center;touch-action:none" id="acc-modal-drag" ontouchstart="accDragStart(event)" ontouchmove="accDragMove(event)" ontouchend="accDragEnd(event)">
+  <div style="padding:16px 0 12px;cursor:grab;text-align:center;touch-action:none" id="acc-modal-drag" ontouchstart="accDragStart(event)" ontouchmove="accDragMove(event)" ontouchend="accDragEnd(event)">
     <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
   </div>
-  <div style="padding:2px 20px 14px;display:flex;justify-content:space-between;align-items:center">
-    <div id="acc-modal-title" style="font-size:18px;font-weight:700;color:var(--th1)">Računi za lipanj</div>
-    <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder">📁</a>
+  <div style="padding:4px 20px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f4ff">
+    <div id="acc-modal-title" style="font-size:18px;font-weight:700;color:var(--th1)">Računi za lipnja</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder">📁</a>
+      <div style="display:flex;gap:2px;background:#f0f4ff;border-radius:8px;padding:2px">
+        <button id="acc-view-list" onclick="setAccView('list')" style="width:32px;height:28px;border:none;background:var(--th1);color:#fff;border-radius:6px;cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center" title="Lista">&#9776;</button>
+        <button id="acc-view-grid" onclick="setAccView('grid')" style="width:32px;height:28px;border:none;background:transparent;color:#94a3b8;border-radius:6px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center" title="Galerija">&#8942;&#8942;</button>
+      </div>
+    </div>
   </div>
-  <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="acc-modal-body">
-    <div id="recent-list"><div class="empty-state">Nema podataka.</div></div>
-    <button class="recent-toggle" id="recent-toggle-btn" style="display:none" onclick="toggleRecentList()">Prikaži sve ↓</button>
-    <div id="gallery-grid" style="margin-top:12px"></div>
+  <div style="overflow-y:auto;flex:1;padding:0 20px 16px" id="acc-modal-body">
+    <div id="recent-list"></div>
+    <div id="gallery-grid" style="display:none;margin-top:12px"></div>
   </div>
 </div>
 
