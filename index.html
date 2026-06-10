@@ -153,6 +153,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--th1);bac
 .exp-plan-card{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--th-bg);}
 .exp-plan-card .goal-name{flex:1;min-width:0;font-size:13px;}
 .save-goal-del{background:none;border:none;color:#ccc;font-size:20px;line-height:1;cursor:pointer;padding:0 2px;flex-shrink:0;transition:.15s}
+.fund-info-btn{background:none;border:none;color:#94a3b8;font-size:13px;cursor:pointer;padding:0 2px;flex-shrink:0;line-height:1;font-style:normal}
+.fund-info-panel{font-size:11px;color:#7090b0;background:#f0f4ff;border-radius:8px;padding:7px 10px;margin:0 0 6px;line-height:1.5;display:none}
+.fund-info-panel.open{display:block}
 .save-goal-del:hover{color:#ef4444}
 .add-goal-btn{width:100%;border:1.5px dashed #c0ccee;background:none;color:var(--th1);border-radius:10px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:.15s}
 .add-goal-btn:hover{background:#f0f4ff}
@@ -1263,21 +1266,47 @@ function totalVariable(){
 // ── SAVINGS GOALS ──────────────────────────────────────────────────────
 let savingsGoals = [];
 
+const FUND_INFO = {
+  'fond sigurnosti': {tip:'3–6 mjesečnih plaća. Netaknuto — samo za pravu krizu (otkaz, bolest, hitni popravak).', pct:'15–20% dok ne napuniš, zatim 0%'},
+  'zdravlje':        {tip:'Zubar, liječnik, ljekarna, naočale. Dolazi uvijek, samo ne znaš kad.', pct:'3–5% prihoda (~30–60 €/mj)'},
+  'auto':            {tip:'Servis, gume, registracija, sitni kvarovi. Planirati = ne paničariti.', pct:'5–10% vrijednosti auta/god (~100–200 €/mj)'},
+  'odjeća':          {tip:'Sezonska obnova i neplanirane kupovine. Bolje odvajati malo svaki mj nego ugasiti budžet jednom.', pct:'3–5% prihoda (~30–60 €/mj)'},
+  'odmor':           {tip:'Godišnji odmor, vikend izleti, putovanja. Puno lakše kad ne moraš sve platiti odjednom.', pct:'5–10% prihoda (~50–120 €/mj)'},
+  'pokloni':         {tip:'Božić, rođendani, vjenčanja. Predvidivi troškovi koje većina ne planira.', pct:'2–4% prihoda (~20–50 €/mj)'},
+  'elektronika':     {tip:'Zamjena mobitela, laptopa, kućanskih aparata. Trajnost je neizvjesna.', pct:'2–3% prihoda (~20–40 €/mj)'},
+  'dom':             {tip:'Popravci, nova oprema, renovacija. Vrijedi i za najam (premještanje, depozit).', pct:'1–2% vrijednosti stana/god ili ~50–100 €/mj'},
+  'mirovina':        {tip:'3. stup = porezna olakšica + državno sufinanciranje do 750 €/god. Što ranije, to bolje.', pct:'10–15% prihoda (~100–180 €/mj)'},
+  'ljubimci':        {tip:'Hrana, veterinar, osiguranje, oprema. Veterinarski hitni slučajevi mogu biti skupi.', pct:'100–250 €/mj ovisno o ljubimcu'},
+  'školovanje':      {tip:'Tečajevi, certifikati, fakultet, edukacija. Investicija u sebe s najboljim ROI-em.', pct:'3–5% prihoda (~30–60 €/mj)'},
+};
+function getFundInfo(name){
+  const k=(name||'').toLowerCase().replace(/^[^a-zšđčćž]+/i,'').trim();
+  return FUND_INFO[k]||null;
+}
+function toggleFundInfo(i){
+  const p=document.getElementById('fip-'+i);
+  if(p) p.classList.toggle('open');
+}
 function renderSavingsGoals(){
   const container = document.getElementById('save-goals-list');
   if(!container) return;
-  container.innerHTML = savingsGoals.map((g, i) => `
-    <div class="save-goal-row" data-idx="${i}">
-      <span class="drag-handle">⠿</span>
-      <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Godišnji odmor" oninput="savingsGoals[${i}].name=this.value">
-      <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
-        value="${fmtVal(g.amount)}"
-        onfocus="amtFocus(this)"
-        oninput="amtInput(this,savingsGoals,${i})"
-        onblur="amtBlur(this,savingsGoals,${i},recalcSavings)">
-      <button class="save-goal-del" onclick="removeSavingsGoal(${i})" title="Ukloni">×</button>
-    </div>
-  `).join('');
+  container.innerHTML = savingsGoals.map((g, i) => {
+    const info = getFundInfo(g.name);
+    return `<div data-idx="${i}">
+      <div class="save-goal-row">
+        <span class="drag-handle">⠿</span>
+        <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Godišnji odmor" oninput="savingsGoals[${i}].name=this.value">
+        ${info?`<button class="fund-info-btn" onclick="toggleFundInfo(${i})" title="Savjet">ℹ</button>`:''}
+        <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
+          value="${fmtVal(g.amount)}"
+          onfocus="amtFocus(this)"
+          oninput="amtInput(this,savingsGoals,${i})"
+          onblur="amtBlur(this,savingsGoals,${i},recalcSavings)">
+        <button class="save-goal-del" onclick="removeSavingsGoal(${i})" title="Ukloni">×</button>
+      </div>
+      ${info?`<div class="fund-info-panel" id="fip-${i}"><strong>${info.pct}</strong> — ${info.tip}</div>`:''}
+    </div>`;
+  }).join('');
   setupDragSort(container, savingsGoals, renderSavingsGoals);
   recalcSavings();
 }
@@ -1730,7 +1759,7 @@ function fillProfileForm(){
     savingsGoals = [{name:'Štednja', amount: profileData.save_plan}];
   }
   if(savingsGoals.length === 0){
-    ['Fond sigurnosti','Zdravlje','Auto','Odjeća','Odmor','Pokloni','Elektronika','Dom','Mirovina']
+    ['🛟 Fond sigurnosti','🏥 Zdravlje','🚗 Auto','👗 Odjeća','✈️ Odmor','🎁 Pokloni','💻 Elektronika','🏠 Dom','🐾 Ljubimci','📚 Školovanje','🏦 Mirovina']
       .forEach(name => savingsGoals.push({name, amount:0}));
   }
   renderSavingsGoals();
