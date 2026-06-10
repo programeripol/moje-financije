@@ -2940,7 +2940,7 @@ async function loadGallery(){
             <span class="g-amt">${iznos.toFixed(2).replace('.',',')} €</span>
           </div>
           <div class="g-row" style="margin-top:3px">
-            <span class="g-kat">${CAT_HR[kat]||kat}</span>
+            <span class="g-kat" style="color:${CAT_COLORS[kat]||'#94a3b8'}">${CAT_HR[kat]||kat}</span>
             <span class="g-date">${datum}</span>
           </div>
         </div>
@@ -3837,7 +3837,7 @@ function syncAmtDisplay(inp){
   </div>
 </div>
 <div id="acc-modal-overlay" onclick="closeAccModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
-<div id="acc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+<div id="acc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
   <div style="padding:16px 0 12px;cursor:grab;text-align:center;touch-action:none" id="acc-modal-drag" ontouchstart="accDragStart(event)" ontouchmove="accDragMove(event)" ontouchend="accDragEnd(event)">
     <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
   </div>
