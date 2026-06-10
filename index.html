@@ -1192,6 +1192,7 @@ let incomeGoals = [];
 // ── FORMAT ON BLUR ─────────────────────────────────────────────────────
 function fmtVal(v){ const n=parseFloat(v)||0; if(!n) return ''; const parts=n.toFixed(2).split('.'); parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return parts.join(',') + ' €'; }
 function fmtParse(s){ return parseFloat((s||'').replace(/\s*€/,'').replace(',','.')) || 0; }
+function parseDateHR(s){var m=(s||'').match(/(\d+)\.(\d+)\.(\d+)/);return m?parseInt(m[3])*10000+parseInt(m[2])*100+parseInt(m[1]):0;}
 function amtFocus(el){ el.value = el.value.replace(/\s*€/,''); el.select && el.select(); }
 function amtBlur(el,arr,i,fn){ const v=fmtParse(el.value); arr[i].amount=v; el.value=fmtVal(v); fn(); }
 function amtInput(el,arr,i){ arr[i].amount=fmtParse(el.value); }
@@ -2514,7 +2515,7 @@ async function loadPregled(){
     document.getElementById('cat-list').innerHTML = _allSortedCats.length > 0 ? donutHtml + catCards : '<div class="empty-state">Nema troškova ovaj mjesec.</div>';
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
-    allRecentEntries = trackerRows.slice();
+    allRecentEntries = trackerRows.slice().sort(function(a,b){return parseDateHR(a.r[1])-parseDateHR(b.r[1]);});
     renderRecentList();
     loadSavingsAccumulated(_lastPreostalo);
 
@@ -2908,7 +2909,7 @@ async function loadGallery(){
   try{
     const rows = await getRows(sheetId, curMonth(), 'B57:N500');
     // Zapamti stvarni redni broj u sheetu (B57 = row 57)
-    const items = rows.map((r,i) => ({r, sheetRow: 57+i})).filter(({r}) => r && r[0]);
+    const items = rows.map((r,i) => ({r, sheetRow: 57+i})).filter(({r}) => r && r[0]).sort((a,b)=>parseDateHR(a.r[0])-parseDateHR(b.r[0]));
     if(!items.length){
       grid.innerHTML = '<div class="empty-state">Nema još unesenih računa.</div>';
       return;
