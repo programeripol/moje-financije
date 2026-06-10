@@ -1138,8 +1138,7 @@ function addIncomeGoal(name='', amount=0){
 
 function removeIncomeGoal(i){
   const name=incomeGoals[i]?.name||'ovaj prihod';
-  if(!confirm('Obriši "'+name+'"?
-Ova akcija se ne može poništiti.')) return;
+  if(!confirm('Obriši "'+name+'"?')) return;
   incomeGoals.splice(i,1);
   renderIncomeList();
 }
@@ -1197,8 +1196,7 @@ function addFixedGoal(name='', amount=0){
 
 function removeFixedGoal(i){
   const name=fixedGoals[i]?.name||'ovaj trošak';
-  if(!confirm('Obriši "'+name+'"?
-Ova akcija se ne može poništiti.')) return;
+  if(!confirm('Obriši "'+name+'"?')) return;
   fixedGoals.splice(i,1); renderFixedList();
 }
 
@@ -1257,8 +1255,7 @@ function addVariableGoal(name='', amount=0){
 
 function removeVariableGoal(i){
   const name=variableGoals[i]?.name||'ovaj trošak';
-  if(!confirm('Obriši "'+name+'"?
-Ova akcija se ne može poništiti.')) return;
+  if(!confirm('Obriši "'+name+'"?')) return;
   variableGoals.splice(i,1); renderVariableList();
 }
 
@@ -1336,8 +1333,7 @@ function addSavingsGoal(name='', amount=0){
 
 function removeSavingsGoal(i){
   const name=savingsGoals[i]?.name||'ovaj fond';
-  if(!confirm('Obriši "'+name+'"?
-Ova akcija se ne može poništiti.')) return;
+  if(!confirm('Obriši "'+name+'"?')) return;
   savingsGoals.splice(i,1);
   renderSavingsGoals();
 }
