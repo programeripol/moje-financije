@@ -3471,7 +3471,7 @@ function openPreostaloModal(){
     +'<div style="margin-bottom:12px">'
     +'<div style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Prijenos iz '+prevMonthName+'</div>'
     +'<div style="display:flex;align-items:center;gap:8px">'
-    +'<input id="prenos-input" type="text" inputmode="decimal" value="'+(isNaN(rawPre)?'':rawPre.toFixed(2))+'" placeholder="0,00" style="flex:1;border:1.5px solid #e0e7f0;border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
+    +'<input id="prenos-input" type="text" inputmode="decimal" value="'+(isNaN(rawPre)?'':fmtVal(rawPre))+'" placeholder="0,00" style="flex:1;border:1.5px solid #e0e7f0;border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
     +'<button onclick="savePrenosFromModal()" style="padding:9px 16px;background:var(--th1);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Spremi</button>'
     +'</div>'
     
