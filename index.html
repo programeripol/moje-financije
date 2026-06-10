@@ -946,6 +946,7 @@ const CLIENT_ID  = '409386581085-b0oped5kgb2smih4jbh7ss5jge42pnq8.apps.googleuse
 const SCOPES     = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.profile';
 const MONTHS_HR  = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];
 const MONTHS_GEN = ['siječnja','veljače','ožujka','travnja','svibnja','lipnja','srpnja','kolovoza','rujna','listopada','studenog','prosinca'];
+const MONTHS_ACC = ['siječanj','veljaču','ožujak','travanj','svibanj','lipanj','srpanj','kolovoz','rujan','listopad','studeni','prosinac'];
 
 function curYear()  { return new Date().getFullYear(); }
 function curMonth() { return MONTHS_HR[new Date().getMonth()]; }
@@ -2063,7 +2064,7 @@ function renderMonthNav(){
   const label  = MONTHS_HR[viewMonthIdx] + ' ' + curYear();
   const el = document.getElementById('month-nav-label');
   if(el) el.textContent = label;
-  const _accMnG=MONTHS_GEN;
+  const _accMnG=MONTHS_ACC;
   const _accCl=document.getElementById('acc-card-label');
   if(_accCl) _accCl.textContent='Računi za '+(_accMnG[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
 
@@ -2540,6 +2541,7 @@ async function loadPregled(){
 // ── RECENT LIST ───────────────────────────────────────────────────────
 let allRecentEntries = [];
 let _accView = 'list';
+let _editFromAccModal = false;
 
 function renderRecentList(){
   const mName=MONTHS_HR[viewMonthIdx];
@@ -3144,6 +3146,24 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   })();
   document.getElementById('edit-sheet-row').value=sheetRow;
   document.getElementById('edit-month-name').value=monthName;
+  // Option A: close acc-modal if open, show back btn
+  var _accOv=document.getElementById('acc-modal-overlay');
+  var _accM=document.getElementById('acc-modal');
+  _editFromAccModal=(_accM&&_accM.style.display!=='none'&&_accM.style.transform!=='translateY(100%)');
+  if(_editFromAccModal){
+    _accOv.style.opacity='0';_accM.style.transform='translateY(100%)';
+    setTimeout(function(){_accOv.style.display='none';_accM.style.display='none';document.body.style.overflow='';},300);
+  }
+  var _backBtn=document.getElementById('edit-back-btn');
+  if(_backBtn){
+    if(_editFromAccModal){
+      var _accTitle=document.getElementById('acc-modal-title');
+      _backBtn.textContent='\u2190 '+(_accTitle?_accTitle.textContent:'Računi');
+      _backBtn.style.display='inline-block';
+    } else {
+      _backBtn.style.display='none';
+    }
+  }
   document.getElementById('edit-overlay').classList.add('open');
   document.getElementById('edit-drawer').classList.add('open');
 }
@@ -3153,6 +3173,17 @@ function closeEditDrawer(){
   document.getElementById("edit-drawer").classList.remove("open");
   var dr=document.getElementById("edit-drawer");
   if(dr) dr.style.transform="";
+}
+function editGoBack(){
+  closeEditDrawer();
+  if(_editFromAccModal){
+    setTimeout(function(){
+      var ov=document.getElementById('acc-modal-overlay'),m=document.getElementById('acc-modal');
+      if(!ov||!m)return;
+      ov.style.display='block';m.style.display='flex';document.body.style.overflow='hidden';
+      requestAnimationFrame(function(){ov.style.opacity='1';m.style.transform='translateY(0)';});
+    },320);
+  }
 }
 (function(){
   var startY=0,curY=0,dragging=false;
@@ -3191,6 +3222,7 @@ async function saveEditedReceipt(){
   if(!store){showToast('Unesi naziv.',3000,'error');return;}
   if(!amount){showToast('Unesi iznos.',3000,'error');return;}
   if(!date){showToast('Unesi datum.',3000,'error');return;}
+  if(!kat){showToast('Odaberi kategoriju.',3000,'error');return;}
   showSaveOverlay('Sprema se...');
   try{
     const bilj=note?store+' — '+note:store;
@@ -3209,6 +3241,7 @@ async function saveEditedReceipt(){
   }catch(e){hideSaveOverlay();showToast('Greška: '+e.message,5000,'error');}
 }
 window.openEditReceipt=openEditReceipt;
+window.editGoBack=editGoBack;
 window.closeEditDrawer=closeEditDrawer;
 window.saveEditedReceipt=saveEditedReceipt;
 window.savingsGoals         = savingsGoals;
@@ -3579,7 +3612,7 @@ function openAccModal(){
   overlay.style.display='block';modal.style.display='flex';
   document.body.style.overflow='hidden';
   const _accTl=document.getElementById('acc-modal-title');
-  if(_accTl) _accTl.textContent='Računi za '+(MONTHS_GEN[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
+  if(_accTl) _accTl.textContent='Računi za '+(MONTHS_ACC[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
   setAccView('list');
   requestAnimationFrame(()=>{overlay.style.opacity='1';modal.style.transform='translateY(0)';});
 }
@@ -3632,13 +3665,16 @@ function syncAmtDisplay(inp){
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
 <div id="edit-drawer">
   <div class="drawer-handle"></div>
-  <div class="drawer-title">Uredi račun</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+    <button id="edit-back-btn" onclick="editGoBack()" style="display:none;border:none;background:none;color:var(--th1);font-size:13px;font-weight:600;cursor:pointer;padding:0;flex-shrink:0"></button>
+    <div style="font-size:13px;font-weight:600;color:var(--th1);text-transform:uppercase;letter-spacing:.05em">Uredi račun</div>
+  </div>
   <div id="edit-img-wrap" style="display:none;margin-bottom:14px;cursor:pointer;border-radius:12px;overflow:hidden;position:relative"><div id="edit-img-spinner" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f0f4ff;border-radius:12px"><span class="spin-dot"></span></div><img id="edit-img-thumb" style="width:100%;max-height:160px;object-fit:cover;display:block;border-radius:12px;opacity:0;transition:opacity .3s"></div>
   <div class="row2">
-    <div class="field"><label>Naziv</label><input type="text" id="edit-store" placeholder="Lidl, frizerka, Netflix…"></div>
-    <div class="field"><label>Datum</label><input type="date" id="edit-date"></div>
+    <div class="field"><label>Naziv <span class="req">*</span></label><input type="text" id="edit-store" placeholder="Lidl, frizerka, Netflix…"></div>
+    <div class="field"><label>Datum <span class="req">*</span></label><input type="date" id="edit-date"></div>
   </div>
-  <div class="field"><label>Iznos</label><div class="euro-suffix"><input type="text" id="edit-amount" class="field-input" inputmode="decimal" placeholder="0,00 €" onblur="fmtAmtBlur(this)" onfocus="fmtAmtFocus(this)"></div></div>
+  <div class="field"><label>Iznos <span class="req">*</span></label><div class="euro-suffix"><input type="text" id="edit-amount" class="field-input" inputmode="decimal" placeholder="0,00 €" onblur="fmtAmtBlur(this)" onfocus="fmtAmtFocus(this)"></div></div>
 <div class="field" style="margin:8px 0 12px">
   <label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none">
     <span>Na rate</span>
@@ -3654,7 +3690,7 @@ function syncAmtDisplay(inp){
   </div>
 </div>
 
-  <div class="field"><label>Kategorija</label>
+  <div class="field"><label>Kategorija <span class="req">*</span></label>
     <select id="edit-cat" style="display:none">
       <optgroup label="Stanovanje">
       <option value="Stanarina">Stanarina</option>
@@ -3710,7 +3746,7 @@ function syncAmtDisplay(inp){
         </ul>
       </div>
   </div>
-  <div class="field"><label>Bilješka (opcionalno)</label><input type="text" id="edit-note" placeholder="Opis..."></div>
+  <div class="field"><label>Opis</label><input type="text" id="edit-note" placeholder=""></div>
   <input type="hidden" id="edit-sheet-row"><input type="hidden" id="edit-month-name">
   <div style="display:flex;gap:10px;margin-top:4px">
     <button class="btn btn-outline" style="flex:1" onclick="closeEditDrawer()">Odustani</button>
