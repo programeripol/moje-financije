@@ -3472,17 +3472,19 @@ async function openSavOvModal(){
       const pct=goal>0?Math.min(100,Math.round(perFund/goal*100)):0;
       return{sl,color,name:displayName,fullName:g.name||'',perFund,goal,pct};
     });
+    const totalGoal=goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
     const donut=`<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:16px">
       <svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">
         <circle cx="45" cy="45" r="36" fill="none" stroke="#f0f4ff" stroke-width="11"/>
         ${slices.map(s=>s.sl).join('')}
-        <text x="45" y="41" text-anchor="middle" font-size="9" fill="#7090b0" font-family="sans-serif">Preostalo</text>
+        <text x="45" y="41" text-anchor="middle" font-size="9" fill="#7090b0" font-family="sans-serif">Ušteđeno</text>
         <text x="45" y="55" text-anchor="middle" font-size="10" fill="#1a1a2e" font-weight="500" font-family="sans-serif">${eur(pre)}</text>
       </svg>
       <div style="flex:1">
-        <div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Jednaka raspodjela</div>
-        <div style="font-size:18px;font-weight:700;color:var(--th1)">${eur(perFund)}</div>
-        <div style="font-size:11px;color:#94a3b8">po fondu · ${n} fondova</div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj</div>
+        <div style="font-size:18px;font-weight:700;color:var(--th1)">${eur(totalGoal)}<span style="font-size:11px;font-weight:400;color:#94a3b8">/mj</span></div>
+        <div style="margin-top:10px;font-size:11px;color:#94a3b8;margin-bottom:2px">Ušteđeno ovaj mj.</div>
+        <div style="font-size:16px;font-weight:600;color:#10b981">${eur(pre)}</div>
       </div>
     </div>`;
     const cards=slices.map(s=>`<div style="background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px">
