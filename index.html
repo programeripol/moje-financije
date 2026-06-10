@@ -2958,7 +2958,7 @@ async function loadGallery(){
             <span class="g-amt">${iznos.toFixed(2).replace('.',',')} €</span>
           </div>
           <div class="g-row" style="margin-top:3px">
-            <span class="g-kat" style="color:${CAT_COLORS[kat]||'#94a3b8'}">${CAT_HR[kat]||kat}</span>
+            <span class="g-kat">${CAT_HR[kat]||kat}</span>
             <span class="g-date">${datum}</span>
           </div>
         </div>
@@ -3262,6 +3262,7 @@ async function saveEditedReceipt(){
 window.openEditReceipt=openEditReceipt;
 window.editGoBack=editGoBack;
 window.signOutFromProfil=signOutFromProfil;
+window.addReceiptFromModal=addReceiptFromModal;
 window.closeEditDrawer=closeEditDrawer;
 window.saveEditedReceipt=saveEditedReceipt;
 window.savingsGoals         = savingsGoals;
@@ -3636,6 +3637,13 @@ function openAccModal(){
   setAccView('list');
   requestAnimationFrame(()=>{overlay.style.opacity='1';modal.style.transform='translateY(0)';});
 }
+function addReceiptFromModal(){
+  closeAccModal();
+  setTimeout(function(){
+    goTab('skener');
+    setTimeout(function(){ var fi=document.getElementById('file-input');if(fi)fi.click(); },300);
+  },320);
+}
 function closeAccModal(){
   const overlay=document.getElementById('acc-modal-overlay'),modal=document.getElementById('acc-modal');
   if(!overlay||!modal)return;
@@ -3813,7 +3821,7 @@ function syncAmtDisplay(inp){
 
   <!-- Prihodi bottom sheet -->
   <div id="inc-modal-overlay" onclick="closeIncModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
-  <div id="inc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
+  <div id="inc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;max-height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%);position:relative">
         <div style="padding:16px 0 8px;cursor:grab;text-align:center" id="inc-modal-drag" style="touch-action:none" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)" ontouchstart="incDragStart(event)" ontouchmove="incDragMove(event)" ontouchend="incDragEnd(event)">
       <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
     </div>
@@ -3874,6 +3882,7 @@ function syncAmtDisplay(inp){
     <div id="recent-list"></div>
     <div id="gallery-grid" style="display:none"></div>
   </div>
+  <button onclick="addReceiptFromModal()" style="position:absolute;bottom:28px;right:20px;width:54px;height:54px;border-radius:50%;background:var(--th1);border:none;color:#fff;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 4px 18px rgba(var(--th1r),.38);display:flex;align-items:center;justify-content:center;z-index:10" title="Dodaj račun">+</button>
 </div>
 
 <div id="sav-ov-overlay" onclick="closeSavOvModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
