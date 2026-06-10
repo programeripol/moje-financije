@@ -1322,6 +1322,9 @@ function addSavingsGoal(name='', amount=0){
 }
 
 function removeSavingsGoal(i){
+  const name=savingsGoals[i]?.name||'ovaj fond';
+  if(!confirm('Obriši "'+name+'"?
+Ova akcija se ne može poništiti.')) return;
   savingsGoals.splice(i,1);
   renderSavingsGoals();
 }
