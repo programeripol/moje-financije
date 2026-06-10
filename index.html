@@ -945,6 +945,7 @@ function renderWallpaperGrid(){
 const CLIENT_ID  = '409386581085-b0oped5kgb2smih4jbh7ss5jge42pnq8.apps.googleusercontent.com';
 const SCOPES     = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.profile';
 const MONTHS_HR  = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];
+const MONTHS_GEN = ['siječnja','veljače','ožujka','travnja','svibnja','lipnja','srpnja','kolovoza','rujna','listopada','studenog','prosinca'];
 
 function curYear()  { return new Date().getFullYear(); }
 function curMonth() { return MONTHS_HR[new Date().getMonth()]; }
@@ -3458,7 +3459,7 @@ function openPreostaloModal(){
   var remV=rem?rem.textContent:'—';
   var totV=tot?tot.textContent:'—';
   var curMonthName=MONTHS_HR[viewMonthIdx];
-  var prevMonthName=viewMonthIdx>0?MONTHS_HR[viewMonthIdx-1]:'—';
+  var prevMonthName=viewMonthIdx>0?MONTHS_GEN[viewMonthIdx-1]:'—';
   // get raw prenos number for input
   var manualKey='mf_prenos_manual_'+viewMonthIdx;
   var rawPre=parseFloat(localStorage.getItem(manualKey));
