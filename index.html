@@ -1137,6 +1137,9 @@ function addIncomeGoal(name='', amount=0){
 }
 
 function removeIncomeGoal(i){
+  const name=incomeGoals[i]?.name||'ovaj prihod';
+  if(!confirm('Obriši "'+name+'"?
+Ova akcija se ne može poništiti.')) return;
   incomeGoals.splice(i,1);
   renderIncomeList();
 }
@@ -1192,7 +1195,12 @@ function addFixedGoal(name='', amount=0){
   }, 50);
 }
 
-function removeFixedGoal(i){ fixedGoals.splice(i,1); renderFixedList(); }
+function removeFixedGoal(i){
+  const name=fixedGoals[i]?.name||'ovaj trošak';
+  if(!confirm('Obriši "'+name+'"?
+Ova akcija se ne može poništiti.')) return;
+  fixedGoals.splice(i,1); renderFixedList();
+}
 
 function recalcFixed(){
   const total = fixedGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
@@ -1247,7 +1255,12 @@ function addVariableGoal(name='', amount=0){
   }, 50);
 }
 
-function removeVariableGoal(i){ variableGoals.splice(i,1); renderVariableList(); }
+function removeVariableGoal(i){
+  const name=variableGoals[i]?.name||'ovaj trošak';
+  if(!confirm('Obriši "'+name+'"?
+Ova akcija se ne može poništiti.')) return;
+  variableGoals.splice(i,1); renderVariableList();
+}
 
 function recalcVariable(){
   const total = variableGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
