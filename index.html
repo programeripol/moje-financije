@@ -691,37 +691,46 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <span id="bh-income" style="display:none"></span>
     <span id="bh-savings" style="display:none"></span>
   </div>
-  <div class="sum-card" style="cursor:default;margin-bottom:8px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div>
-        <div class="sum-label">Preostalo ovaj mj</div>
-        <div class="sum-val-main" id="bh-remaining">—</div>
-      </div>
-      <div style="text-align:right">
-        <div class="sum-label" style="font-size:11px">Prenos iz ranijih mj</div>
-        <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end">
-          <span id="bh-prenos-val" style="font-size:14px;font-weight:600;color:var(--th1)">0,00 €</span>
-          <button onclick="editPrenosModal()" style="background:none;border:none;cursor:pointer;padding:2px;color:#94a3b8;font-size:13px">✎</button>
-        </div>
+  <div class="sum-card" style="cursor:pointer;margin-bottom:8px" onclick="toggleCard('preostalo-body',this)">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="sum-label" style="margin:0">Preostalo</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="sum-val-main" id="bh-remaining" style="margin:0">—</div>
+        <span class="card-chevron" id="preostalo-chev" style="font-size:12px;color:#94a3b8;transition:transform .2s">▼</span>
       </div>
     </div>
-    <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f0f4ff;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:11px;color:#94a3b8">Ukupno raspoloživo</span>
-      <span id="bh-total-avail" style="font-size:15px;font-weight:700;color:var(--th1)">—</span>
+    <div id="preostalo-body" style="display:none;margin-top:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:12px;color:#94a3b8">Prenos iz ranijih mj</span>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span id="bh-prenos-val" style="font-size:13px;font-weight:600;color:var(--th1)">0,00 €</span>
+          <button onclick="event.stopPropagation();editPrenosModal()" style="background:none;border:none;cursor:pointer;padding:2px;color:#94a3b8;font-size:13px">✎</button>
+        </div>
+      </div>
+      <div style="padding-top:8px;border-top:1px solid #f0f4ff;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:11px;color:#94a3b8">Ukupno raspoloživo</span>
+        <span id="bh-total-avail" style="font-size:15px;font-weight:700;color:var(--th1)">—</span>
+      </div>
     </div>
   </div>
 
   
-  <div onclick="openSavOvModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;position:relative">
+  <div style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;position:relative" onclick="toggleCard('stednja-body',this)">
     <div class="card-spinner" id="hero-spin-sav"><div class="card-spinner-ring-dark"></div></div>
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-      <div>
-        <div class="sum-label" style="margin:0 0 4px">Štednja</div>
-        <div id="sav-acc-total" class="sum-val-main">—</div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="sum-label" style="margin:0">Štednja</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div id="sav-acc-total" class="sum-val-main" style="margin:0">—</div>
+        <span class="card-chevron" id="stednja-chev" style="font-size:12px;color:#94a3b8;transition:transform .2s">▼</span>
       </div>
-      <div id="sav-per-fund" style="font-size:11px;color:#94a3b8;text-align:right;margin-top:4px"></div>
     </div>
-    <div id="sav-bars"></div>
+    <div id="stednja-body" style="display:none;margin-top:10px">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:6px">
+        <div id="sav-per-fund" style="font-size:11px;color:#94a3b8;text-align:right"></div>
+      </div>
+      <div id="sav-bars"></div>
+      <button onclick="event.stopPropagation();openSavOvModal();" style="width:100%;margin-top:10px;padding:9px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">Detalji →</button>
+    </div>
     <div id="sav-total" style="display:none"></div>
   </div>
 
@@ -3424,6 +3433,16 @@ function sovDragStart(e){_sovDragStartY=e.touches[0].clientY;_sovDragging=true;_
 function sovDragMove(e){if(!_sovDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_sovDragStartY;if(dy>0){_sovDragY=dy;document.getElementById('sav-ov-modal').style.transform='translateY('+dy+'px)';}}
 function sovDragEnd(e){if(!_sovDragging)return;_sovDragging=false;const m=document.getElementById('sav-ov-modal');m.style.transition='';if(_sovDragY>80){closeSavOvModal();}else{m.style.transform='translateY(0)';}}
 
+function toggleCard(bodyId, card){
+  var body=document.getElementById(bodyId);
+  if(!body)return;
+  var open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  // rotate chevron
+  var chevId=bodyId==='preostalo-body'?'preostalo-chev':'stednja-chev';
+  var chev=document.getElementById(chevId);
+  if(chev)chev.style.transform=open?'rotate(180deg)':'rotate(0deg)';
+}
 function editPrenosModal(){
   var cur=parseFloat(localStorage.getItem('mf_prenos'))||0;
   var val=prompt('Prenos iz ranijih mjeseci (€):', cur.toFixed(2));
