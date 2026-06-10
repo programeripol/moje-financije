@@ -1864,7 +1864,6 @@ function fillProfileForm(){
 }
 
 async function saveProfile(){
-  if(!confirm('Spremi promjene u profilu?')) return;
   const g = id => parseFloat(document.getElementById(id)?.value)||0;
   const saveTotalAmt   = savingsGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
   const incomeTotalAmt = incomeGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
@@ -2095,12 +2094,14 @@ function changeViewMonth(delta){
 function toggleMonthPlanEdit(){} // handled by <details> native toggle
 
 function resetExpToProfile(){
+  if(!confirm('Vrati troškove na postavke iz profila?')) return;
   const _fixFb=()=>{ try{ return JSON.parse((profileData&&profileData.fixed_goals_json)||'null')||[]; }catch(e){ return []; } };
   const _varFb=()=>{ try{ return JSON.parse((profileData&&profileData.variable_goals_json)||'null')||[]; }catch(e){ return []; } };
   mPlanExpGoals = [..._fixFb(), ..._varFb()].map(g=>({name:g.name||'',cat:g.cat||GOAL_TO_CAT[g.name]||'',amount:g.amount||0}));
   renderMPExp();
 }
 function resetIncToProfile(){
+  if(!confirm('Vrati prihode na postavke iz profila?')) return;
   try{ mPlanIncGoals=JSON.parse((profileData&&profileData.income_goals_json)||'null')||[]; }catch(e){ mPlanIncGoals=[]; }
   if(!mPlanIncGoals.length && typeof incomeGoals!=='undefined') mPlanIncGoals=incomeGoals.map(g=>Object.assign({},g));
   renderMPInc(); updateIncTotal();
