@@ -194,6 +194,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--th1);bac
 .fl-field:last-child{border-bottom:none}
 .fl-field>input{display:block;width:100%;padding:24px 14px 8px;font-size:15px;font-family:inherit;color:var(--th-text);background:transparent;border:none;outline:none;-webkit-appearance:none;box-sizing:border-box}
 .fl-lbl{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:#94a3b8;pointer-events:none;transition:all .18s cubic-bezier(.4,0,.2,1);z-index:1}
+.fl-field>input::placeholder{color:transparent;transition:color .15s}.fl-field>input:focus::placeholder{color:#b0b8cc}
 .fl-field>input:focus~.fl-lbl,.fl-field>input:not(:placeholder-shown)~.fl-lbl,.fl-field:focus-within .fl-lbl,.fl-field.fl-has-val .fl-lbl{top:9px;transform:none;font-size:10px;font-weight:600;color:var(--th1);letter-spacing:.06em;text-transform:uppercase}
 .fl-row{display:flex}
 .fl-row>.fl-field{flex:1}
@@ -559,7 +560,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
   <div class="fl-group">
     <div class="fl-field">
-      <input type="text" id="meta-store" placeholder=" " autocomplete="off">
+      <input type="text" id="meta-store" placeholder="Lidl, frizerka, Netflix…" autocomplete="off">
       <label class="fl-lbl" for="meta-store">Naziv <span class="req">*</span></label>
     </div>
     <div class="fl-row">
