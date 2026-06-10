@@ -183,11 +183,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--th1);bac
 .prog-fill{height:100%;background:var(--th1);width:0%;transition:width .3s}
 
 /* ── UPLOAD ── */
-#upload-zone{background:#fff;border:2px dashed #b0c4e8;border-radius:16px;padding:32px 16px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:14px}
-#upload-zone:hover,#upload-zone.drag{border-color:var(--th1);background:#f0f5ff}
-#upload-zone .uz-icon{font-size:36px;margin-bottom:8px;color:#7090b0}#upload-zone h3{color:#7090b0;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}#upload-zone p{color:#7090b0;font-size:12px;margin:0}
-#upload-zone h3{font-size:15px;font-weight:500;margin-bottom:3px}
-#upload-zone p{font-size:12px;color:#888}
+#upload-zone{background:#fff;border:1px solid #e8edf8;border-radius:20px;padding:38px 16px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:14px}
+#upload-zone:hover,#upload-zone.drag{border-color:var(--th1);background:#f5f8ff}
+#upload-zone .uz-icon{margin-bottom:14px;color:#94a3b8;display:flex;justify-content:center}
+#upload-zone h3{color:var(--th-text);font-size:16px;font-weight:500;letter-spacing:0;text-transform:none;margin:0 0 5px}
+#upload-zone p{font-size:13px;color:#94a3b8;margin:0}
 #upload-zone input{display:none}
 #receipt-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px}
 #pdf-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px;background:#f1f5f9;padding:20px 16px;text-align:center;cursor:pointer}
@@ -529,9 +529,9 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
        ondragover="event.preventDefault();this.classList.add('drag')"
        ondragleave="this.classList.remove('drag')"
        ondrop="handleDrop(event)">
-    <div class="uz-icon">+</div>
-    <h3>DODAJ RAČUN</h3>
-    <p>fotografiraj, odaberi iz galerije ili priloži PDF</p>
+    <div class="uz-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+    <h3>Dodaj račun</h3>
+    <p>fotografiraj, galerija ili PDF</p>
     <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
   </div>
   <div id="img-preview-wrap" style="position:relative;display:none;width:100%">
