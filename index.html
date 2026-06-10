@@ -697,13 +697,17 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   </div>
 
   
-  <div onclick="openSavOvModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end;position:relative">
+  <div onclick="openSavOvModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;position:relative">
     <div class="card-spinner" id="hero-spin-sav"><div class="card-spinner-ring-dark"></div></div>
-    <div>
-      <div class="sum-label" style="margin:0 0 4px">Štednja</div>
-      <div id="sav-acc-total" class="sum-val-main">—</div>
-      <div id="sav-total" style="display:none"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div>
+        <div class="sum-label" style="margin:0 0 4px">Štednja</div>
+        <div id="sav-acc-total" class="sum-val-main">—</div>
+      </div>
+      <div id="sav-per-fund" style="font-size:11px;color:#94a3b8;text-align:right;margin-top:4px"></div>
     </div>
+    <div id="sav-bars"></div>
+    <div id="sav-total" style="display:none"></div>
   </div>
 
 
@@ -2292,6 +2296,7 @@ async function loadPregled(){
     if(planEl) planEl.textContent = eur(totalPlan);
     document.getElementById('bh-spent').textContent = eur(totalSpent);
         const remEl=document.getElementById('bh-remaining');if(remEl)remEl.textContent=eur(income-totalSpent);
+        _lastPreostalo=income-totalSpent;
 
     // Cat list — prikazuje svaki cilj iz plana kao vlastiti red
     const getGoalList = (jsonKey, fallback) => {
@@ -2443,7 +2448,7 @@ async function loadPregled(){
     allRecentEntries = trackerRows.slice().reverse();
     recentExpanded   = false;
     renderRecentList();
-    loadSavingsAccumulated();
+    loadSavingsAccumulated(_lastPreostalo);
 
     // Drive folder link
     const driveLink = document.getElementById('recent-drive-link');
@@ -3279,15 +3284,37 @@ function incDragEnd(e){if(!_incDragging)return;_incDragging=false;if(_incDragY>8
 // Sav modal
 const SAV_COLORS=['#6366f1','#8b5cf6','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899','#3b82f6','#14b8a6','#84cc16','#f97316'];
 let _savGoalsCache=null;
+let _lastPreostalo=0;
 
-function loadSavingsAccumulated(){
+function loadSavingsAccumulated(preostalo){
+  if(preostalo!==undefined) _lastPreostalo=preostalo;
   const sp=document.getElementById('hero-spin-sav');
   const el=document.getElementById('sav-acc-total');
+  const barsEl=document.getElementById('sav-bars');
+  const perFundEl=document.getElementById('sav-per-fund');
   if(sp) sp.classList.add('active');
   try{
     _savGoalsCache=savingsGoals.filter(g=>g.name);
-    const total=_savGoalsCache.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
-    if(el) el.textContent=total>0?eur(total)+'/mj':'—';
+    const n=_savGoalsCache.length;
+    const pre=_lastPreostalo;
+    if(el) el.textContent=pre!==0?eur(pre):'—';
+    if(!n||!barsEl){if(sp)sp.classList.remove('active');return;}
+    const perFund=pre/n;
+    if(perFundEl) perFundEl.innerHTML=n>0?`<span style="font-weight:600;color:var(--th1)">${eur(perFund)}</span><br><span>po fondu</span>`:'';
+    barsEl.innerHTML=_savGoalsCache.map((g,i)=>{
+      const goal=parseFloat(g.amount)||0;
+      const pct=goal>0?Math.min(100,Math.round(perFund/goal*100)):0;
+      const color=SAV_COLORS[i%SAV_COLORS.length];
+      const name=(g.name||'').replace(/^[^\w\u0100-\u017f]+/,'').trim();
+      return`<div style="margin-bottom:5px">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#94a3b8;margin-bottom:2px">
+          <span>${name}</span><span style="color:${color};font-weight:600">${pct}%</span>
+        </div>
+        <div style="background:#f0f4ff;border-radius:4px;height:4px;overflow:hidden">
+          <div style="background:${color};height:100%;width:${pct}%;border-radius:4px;transition:width .4s"></div>
+        </div>
+      </div>`;
+    }).join('');
   }catch(e){ if(el) el.textContent='—'; }
   finally{ if(sp) sp.classList.remove('active'); }
 }
@@ -3303,44 +3330,48 @@ async function openSavOvModal(){
   try{
     const goals=savingsGoals.filter(g=>g.name);
     if(!goals.length){body.innerHTML='<div class="empty-state">Nema fondova štednje. Dodaj ih u Profil.</div>';return;}
-    const totalAmt=goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
-    const circ=2*Math.PI*36;let dashOff=0;
+    const n=goals.length;
+    const pre=_lastPreostalo;
+    const perFund=pre/n;
+    // donut — raspodjela je jednaka pa sve iste veličine, ali bojama razlikujemo
+    const circ=2*Math.PI*36;
+    const dash=circ/n;let dashOff=0;
     const slices=goals.map((g,i)=>{
-      const amt=parseFloat(g.amount)||0,color=SAV_COLORS[i%SAV_COLORS.length];
-      const pct=totalAmt>0?amt/totalAmt:0,dash=pct*circ;
+      const color=SAV_COLORS[i%SAV_COLORS.length];
       const sl=`<circle cx="45" cy="45" r="36" fill="none" stroke="${color}" stroke-width="11" stroke-dasharray="${dash} ${circ}" stroke-dashoffset="${-dashOff}" stroke-linecap="butt" transform="rotate(-90 45 45)"/>`;
       dashOff+=dash;
       const displayName=(g.name||'').replace(/^[^\w\u0100-\u017f]+/,'').trim();
-      return{sl,color,name:displayName,fullName:g.name||'',amt};
+      const goal=parseFloat(g.amount)||0;
+      const pct=goal>0?Math.min(100,Math.round(perFund/goal*100)):0;
+      return{sl,color,name:displayName,fullName:g.name||'',perFund,goal,pct};
     });
-    const maxLeg=5;
     const donut=`<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:16px">
       <svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">
         <circle cx="45" cy="45" r="36" fill="none" stroke="#f0f4ff" stroke-width="11"/>
         ${slices.map(s=>s.sl).join('')}
-        <text x="45" y="41" text-anchor="middle" font-size="9" fill="#7090b0" font-family="sans-serif">Ukupno</text>
-        <text x="45" y="55" text-anchor="middle" font-size="10" fill="#1a1a2e" font-weight="500" font-family="sans-serif">${eur(totalAmt)}</text>
+        <text x="45" y="41" text-anchor="middle" font-size="9" fill="#7090b0" font-family="sans-serif">Preostalo</text>
+        <text x="45" y="55" text-anchor="middle" font-size="10" fill="#1a1a2e" font-weight="500" font-family="sans-serif">${eur(pre)}</text>
       </svg>
-      <div style="flex:1;display:flex;flex-direction:column;gap:5px">
-        ${slices.map((s,i)=>`<div style="display:${i<maxLeg?'flex':'none'};align-items:center;gap:8px;font-size:12px">
-          <div style="width:9px;height:9px;border-radius:50%;background:${s.color};flex-shrink:0"></div>
-          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1a2e">${s.fullName}</span>
-          <span style="color:#7090b0;flex-shrink:0">${totalAmt>0?Math.round(s.amt/totalAmt*100):0}%</span>
-        </div>`).join('')}
-        ${slices.length>maxLeg?`<div onclick="this.parentElement.querySelectorAll('[data-extra]').forEach(e=>e.style.display='flex');this.style.display='none';" style="font-size:11px;color:var(--th1);cursor:pointer">+ još ${slices.length-maxLeg}</div>`:''}
+      <div style="flex:1">
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Jednaka raspodjela</div>
+        <div style="font-size:18px;font-weight:700;color:var(--th1)">${eur(perFund)}</div>
+        <div style="font-size:11px;color:#94a3b8">po fondu · ${n} fondova</div>
       </div>
     </div>`;
-    const cards=slices.map(s=>{
-      const info=getFundInfo(s.fullName);
-      return`<div style="background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${info?'6':'0'}px">
-          <span style="font-size:13px;font-weight:600;color:#1a1a2e">${s.fullName}</span>
-          <span style="font-size:13px;font-weight:700;color:${s.color}">${s.amt>0?eur(s.amt)+'/mj':'—'}</span>
-        </div>
-        ${info?`<div style="font-size:11px;color:#7090b0;line-height:1.5">${info.pct}</div>`:''}
-      </div>`;
-    }).join('');
-    body.innerHTML=donut+`<div style="font-size:11px;color:#94a3b8;margin-bottom:12px;text-align:center">Raspodjela mjesečne štednje po fondovima</div>`+cards+`<button onclick="closeSavOvModal();openSavModal();" style="width:100%;padding:12px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px">Uredi plan štednje</button>`;
+    const cards=slices.map(s=>`<div style="background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:13px;font-weight:600;color:#1a1a2e">${s.fullName}</span>
+        <span style="font-size:13px;font-weight:700;color:${s.color}">${eur(s.perFund)}</span>
+      </div>
+      <div style="background:#f0f4ff;border-radius:6px;height:6px;overflow:hidden;margin-bottom:5px">
+        <div style="background:${s.color};height:100%;width:${s.pct}%;border-radius:6px;transition:width .4s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8">
+        <span>${s.pct}% od ciljane ${eur(s.goal)}/mj</span>
+        ${s.pct>=100?'<span style="color:#10b981;font-weight:600">✓ Pokriven</span>':s.goal>0?`<span>još ${eur(s.goal-s.perFund)}/mj</span>`:'<span>Bez cilja</span>'}
+      </div>
+    </div>`).join('');
+    body.innerHTML=donut+cards+`<button onclick="closeSavOvModal();openSavModal();" style="width:100%;padding:12px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px">Uredi plan štednje</button>`;
   }catch(e){body.innerHTML='<div class="empty-state">Greška: '+e.message+'</div>';}
 }
 function closeSavOvModal(){
