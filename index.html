@@ -3210,15 +3210,14 @@ function incDragEnd(e){if(!_incDragging)return;_incDragging=false;if(_incDragY>8
 const SAV_COLORS=['#6366f1','#8b5cf6','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899','#3b82f6','#14b8a6','#84cc16','#f97316'];
 let _savGoalsCache=null;
 
-async function loadSavingsAccumulated(){
+function loadSavingsAccumulated(){
   const sp=document.getElementById('hero-spin-sav');
   const el=document.getElementById('sav-acc-total');
   if(sp) sp.classList.add('active');
   try{
-    const rows=await getRows(sheetId,'Ciljevi','A2:H200');
-    _savGoalsCache=rows.filter(r=>r[1]!=='loan');
-    const total=_savGoalsCache.reduce((s,r)=>s+(parseFloat(r[3])||0),0);
-    if(el) el.textContent=eur(total);
+    _savGoalsCache=savingsGoals.filter(g=>g.name);
+    const total=_savGoalsCache.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+    if(el) el.textContent=total>0?eur(total)+'/mj':'—';
   }catch(e){ if(el) el.textContent='—'; }
   finally{ if(sp) sp.classList.remove('active'); }
 }
@@ -3232,17 +3231,17 @@ async function openSavOvModal(){
   const body=document.getElementById('sav-ov-body');
   body.innerHTML='<div class="empty-state">Učitavam...</div>';
   try{
-    if(!_savGoalsCache) await loadSavingsAccumulated();
-    const goals=_savGoalsCache||[];
-    if(!goals.length){body.innerHTML='<div class="empty-state">Nema ciljeva štednje. Dodaj ih u Ciljevi tab.</div>';return;}
-    const totalAcc=goals.reduce((s,r)=>s+(parseFloat(r[3])||0),0);
+    const goals=savingsGoals.filter(g=>g.name);
+    if(!goals.length){body.innerHTML='<div class="empty-state">Nema fondova štednje. Dodaj ih u Profil.</div>';return;}
+    const totalAmt=goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
     const circ=2*Math.PI*36;let dashOff=0;
-    const slices=goals.map((r,i)=>{
-      const cur=parseFloat(r[3])||0,color=SAV_COLORS[i%SAV_COLORS.length];
-      const pct=totalAcc>0?cur/totalAcc:0,dash=pct*circ;
+    const slices=goals.map((g,i)=>{
+      const amt=parseFloat(g.amount)||0,color=SAV_COLORS[i%SAV_COLORS.length];
+      const pct=totalAmt>0?amt/totalAmt:0,dash=pct*circ;
       const sl=`<circle cx="45" cy="45" r="36" fill="none" stroke="${color}" stroke-width="11" stroke-dasharray="${dash} ${circ}" stroke-dashoffset="${-dashOff}" stroke-linecap="butt" transform="rotate(-90 45 45)"/>`;
       dashOff+=dash;
-      return{sl,color,name:(r[0]||'').replace(/^[^\w\u0100-\u017f]+/,'').trim(),cur,tgt:parseFloat(r[2])||0};
+      const displayName=(g.name||'').replace(/^[^\w\u0100-\u017f]+/,'').trim();
+      return{sl,color,name:displayName,fullName:g.name||'',amt};
     });
     const maxLeg=5;
     const donut=`<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:16px">
@@ -3250,35 +3249,28 @@ async function openSavOvModal(){
         <circle cx="45" cy="45" r="36" fill="none" stroke="#f0f4ff" stroke-width="11"/>
         ${slices.map(s=>s.sl).join('')}
         <text x="45" y="41" text-anchor="middle" font-size="9" fill="#7090b0" font-family="sans-serif">Ukupno</text>
-        <text x="45" y="55" text-anchor="middle" font-size="10" fill="#1a1a2e" font-weight="500" font-family="sans-serif">${eur(totalAcc)}</text>
+        <text x="45" y="55" text-anchor="middle" font-size="10" fill="#1a1a2e" font-weight="500" font-family="sans-serif">${eur(totalAmt)}</text>
       </svg>
       <div style="flex:1;display:flex;flex-direction:column;gap:5px">
         ${slices.map((s,i)=>`<div style="display:${i<maxLeg?'flex':'none'};align-items:center;gap:8px;font-size:12px">
           <div style="width:9px;height:9px;border-radius:50%;background:${s.color};flex-shrink:0"></div>
-          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1a2e">${s.name}</span>
-          <span style="color:#7090b0;flex-shrink:0">${totalAcc>0?Math.round(s.cur/totalAcc*100):0}%</span>
+          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1a2e">${s.fullName}</span>
+          <span style="color:#7090b0;flex-shrink:0">${totalAmt>0?Math.round(s.amt/totalAmt*100):0}%</span>
         </div>`).join('')}
-        ${slices.length>maxLeg?`<div onclick="this.previousElementSibling&&this.parentElement.querySelectorAll('div[style*=display\'none\']').forEach(e=>e.style.display='flex');this.style.display='none';" style="font-size:11px;color:var(--th1);cursor:pointer">+ još ${slices.length-maxLeg}</div>`:''}
+        ${slices.length>maxLeg?`<div onclick="this.parentElement.querySelectorAll('[data-extra]').forEach(e=>e.style.display='flex');this.style.display='none';" style="font-size:11px;color:var(--th1);cursor:pointer">+ još ${slices.length-maxLeg}</div>`:''}
       </div>
     </div>`;
     const cards=slices.map(s=>{
-      const pct=s.tgt>0?Math.min(100,Math.round(s.cur/s.tgt*100)):0;
-      const left=s.tgt>s.cur?s.tgt-s.cur:0;
+      const info=getFundInfo(s.fullName);
       return`<div style="background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:13px;font-weight:600;color:#1a1a2e">${s.name}</span>
-          <span style="font-size:13px;font-weight:700;color:${s.color}">${eur(s.cur)}</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${info?'6':'0'}px">
+          <span style="font-size:13px;font-weight:600;color:#1a1a2e">${s.fullName}</span>
+          <span style="font-size:13px;font-weight:700;color:${s.color}">${s.amt>0?eur(s.amt)+'/mj':'—'}</span>
         </div>
-        ${s.tgt>0?`<div style="background:#f0f4ff;border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">
-          <div style="background:${s.color};height:100%;width:${pct}%;border-radius:6px"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:#94a3b8">
-          <span>${pct}% od cilja ${eur(s.tgt)}</span>
-          ${left>0?`<span>još ${eur(left)}</span>`:'<span style="color:#10b981;font-weight:600">✓ Cilj dostignut</span>'}
-        </div>`:'<div style="font-size:11px;color:#94a3b8">Bez postavljenog cilja</div>'}
+        ${info?`<div style="font-size:11px;color:#7090b0;line-height:1.5">${info.pct}</div>`:''}
       </div>`;
     }).join('');
-    body.innerHTML=donut+cards+`<button onclick="closeSavOvModal();openSavModal();" style="width:100%;padding:12px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px">Uredi plan štednje</button>`;
+    body.innerHTML=donut+`<div style="font-size:11px;color:#94a3b8;margin-bottom:12px;text-align:center">Raspodjela mjesečne štednje po fondovima</div>`+cards+`<button onclick="closeSavOvModal();openSavModal();" style="width:100%;padding:12px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px">Uredi plan štednje</button>`;
   }catch(e){body.innerHTML='<div class="empty-state">Greška: '+e.message+'</div>';}
 }
 function closeSavOvModal(){
