@@ -3460,35 +3460,43 @@ function openPreostaloModal(){
   var totV=tot?tot.textContent:'—';
   var curMonthName=MONTHS_HR[viewMonthIdx];
   var prevMonthName=viewMonthIdx>0?MONTHS_GEN[viewMonthIdx-1]:'—';
-  // get raw prenos number for input
   var manualKey='mf_prenos_manual_'+viewMonthIdx;
   var rawPre=parseFloat(localStorage.getItem(manualKey));
   if(isNaN(rawPre)){rawPre=parseFloat((pre?pre.textContent:'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.'));}
+  var inputVal=isNaN(rawPre)?'':fmtVal(rawPre);
   var html='<div style="background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px">'
-    +'<div style="display:flex;justify-content:space-between;margin-bottom:12px">'
-    +'<span style="font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:.05em"><span style="text-transform:uppercase">'+curMonthName+'</span> (prihodi − potrošeno)</span>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f0f4ff;margin-bottom:0">'
+    +'<span style="font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:.05em"><span style="text-transform:uppercase">'+curMonthName+'</span> (prihodi &minus; potrošeno)</span>'
     +'<span style="font-size:14px;font-weight:700;color:var(--th1)">'+remV+'</span></div>'
-    +'<div style="margin-bottom:12px">'
-    +'<div style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Prijenos iz '+prevMonthName+'</div>'
-    +'<div style="display:flex;align-items:center;gap:8px">'
-    +'<input id="prenos-input" type="text" inputmode="decimal" value="'+(isNaN(rawPre)?'':fmtVal(rawPre))+'" placeholder="0,00" style="flex:1;border:1.5px solid #e0e7f0;border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;outline:none">'
-    +'<button onclick="savePrenosFromModal()" style="padding:9px 16px;background:var(--th1);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Spremi</button>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f4ff">'
+    +'<span style="font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:.05em;text-transform:uppercase">Prijenos iz '+prevMonthName+'</span>'
+    +'<input id="prenos-input" type="text" inputmode="decimal" value="'+inputVal+'" placeholder="0,00 €" style="width:110px;border:1.5px solid #e0e7f0;border-radius:8px;padding:6px 10px;font-size:14px;font-weight:600;font-family:inherit;text-align:right;color:var(--th1);outline:none;background:#f8faff" onfocus="this.style.borderColor=\'var(--th1)\';this.select()" onblur="prenosBlur(this)" onkeydown="if(event.key===\'Enter\')this.blur()">'
     +'</div>'
-    
-    +'</div>'
-    +'<div style="border-top:1px solid #f0f4ff;padding-top:10px;display:flex;justify-content:space-between;align-items:center">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px">'
     +'<span style="font-size:11px;font-weight:600;color:var(--th1);text-transform:uppercase;letter-spacing:.05em">Ukupno raspoloživo</span>'
-    +'<span style="font-size:17px;font-weight:700;color:var(--th1)">'+totV+'</span></div></div>';
+    +'<span id="prenos-modal-total" style="font-size:17px;font-weight:700;color:var(--th1)">'+totV+'</span></div></div>';
   showSimpleModal('Preostalo', html);
 }
-function savePrenosFromModal(){
-  var inp=document.getElementById('prenos-input');
-  if(!inp)return;
+function prenosBlur(el){
+  if(!el)return;
+  el.style.borderColor='#e0e7f0';
   var key='mf_prenos_manual_'+viewMonthIdx;
-  var trimmed=inp.value.trim();
-  if(trimmed===''){localStorage.removeItem(key);}
-  else{var n=parseFloat(trimmed.replace(',','.'));if(!isNaN(n))localStorage.setItem(key,n);}
-  closeSimpleModal();
+  var trimmed=el.value.trim();
+  var n=parseFloat(trimmed.replace(/\./g,'').replace(',','.'));
+  if(trimmed===''||isNaN(n)){
+    localStorage.removeItem(key);
+    el.value='';
+  } else {
+    localStorage.setItem(key,n);
+    el.value=fmtVal(n);
+  }
+  // update modal total live
+  var remEl=document.getElementById('bh-remaining');
+  var remN=remEl?parseFloat(remEl.textContent.replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.'))||0:0;
+  var tot=isNaN(n)?remN:remN+(isNaN(n)?0:n);
+  var totEl=document.getElementById('prenos-modal-total');
+  if(totEl)totEl.textContent=eur(tot);
+  // update main card in background
   loadPregled();
 }
 function showSimpleModal(title, bodyHtml){
