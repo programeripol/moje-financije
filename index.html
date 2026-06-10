@@ -701,8 +701,12 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
     <div id="preostalo-body" style="display:none;margin-top:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <span style="font-size:12px;color:#94a3b8">Prenos iz ranijih mj</span>
+        <div style="display:flex;align-items:center;gap:5px">
+          <span style="font-size:12px;color:#94a3b8">Prenos iz prošlog mj</span>
+          <span id="bh-prenos-tag"></span>
+        </div>
         <div style="display:flex;align-items:center;gap:4px">
+          <button id="bh-prenos-reset" onclick="event.stopPropagation();resetPrenosAuto()" style="display:none;background:none;border:none;cursor:pointer;padding:2px;color:#94a3b8;font-size:10px">↺ auto</button>
           <span id="bh-prenos-val" style="font-size:13px;font-weight:600;color:var(--th1)">0,00 €</span>
           <button onclick="event.stopPropagation();editPrenosModal()" style="background:none;border:none;cursor:pointer;padding:2px;color:#94a3b8;font-size:13px">✎</button>
         </div>
@@ -2028,6 +2032,27 @@ async function saveMonthPlan(idx, data){
   monthPlanCache[key] = data;
 }
 
+async function calcAutoPrenostalo(monthIdx){
+  // Prenos = prošli mj preostalo (income - spending). prošli mj već nosi sve ranije.
+  if(monthIdx <= 0) return 0;
+  const prevIdx = monthIdx - 1;
+  const prevName = MONTHS_HR[prevIdx];
+  try{
+    const rows = await getRows(sheetId, prevName, 'A57:N500');
+    const entries = rows.filter(r=>r[1]);
+    const prevSpent = entries.reduce((s,r)=>s+(parseFloat(r[5])||0), 0);
+    const prevPlan = await loadMonthPlan(prevIdx);
+    // income for prev month
+    let prevIncome;
+    if(prevPlan && prevPlan.inc_json){
+      try{ prevIncome = JSON.parse(prevPlan.inc_json).reduce((s,g)=>s+(parseFloat(g.amount)||0),0); }catch(e){}
+    }
+    if(!prevIncome && prevPlan && prevPlan.income_override != null) prevIncome = parseFloat(prevPlan.income_override);
+    if(!prevIncome) prevIncome = totalIncome();
+    return prevIncome - prevSpent;
+  }catch(e){ return 0; }
+}
+
 function effectiveIncomePlan(plan){
   if(plan && plan.income_override != null) return parseFloat(plan.income_override);
   const curMi = new Date().getMonth();
@@ -2339,10 +2364,25 @@ async function loadPregled(){
     if(planEl) planEl.textContent = eur(totalPlan);
     document.getElementById('bh-spent').textContent = eur(totalSpent);
         const _rem=income-totalSpent;
-        const _pre=parseFloat(localStorage.getItem('mf_prenos'))||0;
+        // prenos: manual override > auto iz prošlog mj
+        const _manualKey='mf_prenos_manual_'+viewMonthIdx;
+        let _pre;
+        const _manualVal=localStorage.getItem(_manualKey);
+        if(_manualVal!==null){
+          _pre=parseFloat(_manualVal)||0;
+        } else {
+          _pre=await calcAutoPrenostalo(viewMonthIdx);
+        }
+        const _isManual=_manualVal!==null;
         const _tot=_rem+_pre;
         const remEl=document.getElementById('bh-remaining');if(remEl)remEl.textContent=eur(_rem);
         const preEl=document.getElementById('bh-prenos-val');if(preEl)preEl.textContent=eur(_pre);
+        const preTagEl=document.getElementById('bh-prenos-tag');
+        if(preTagEl)preTagEl.innerHTML=_isManual
+          ?'<span style="font-size:10px;background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 5px">ručno</span>'
+          :'<span style="font-size:10px;background:#f0f9ff;color:#0369a1;border-radius:4px;padding:1px 5px">auto</span>';
+        const resetBtn=document.getElementById('bh-prenos-reset');
+        if(resetBtn)resetBtn.style.display=_isManual?'inline':'none';
         const totEl=document.getElementById('bh-total-avail');if(totEl)totEl.textContent=eur(_tot);
         _lastPreostalo=_tot;
 
@@ -3444,12 +3484,19 @@ function toggleCard(bodyId, card){
   if(chev)chev.style.transform=open?'rotate(180deg)':'rotate(0deg)';
 }
 function editPrenosModal(){
-  var cur=parseFloat(localStorage.getItem('mf_prenos'))||0;
-  var val=prompt('Prenos iz ranijih mjeseci (€):', cur.toFixed(2));
+  var key='mf_prenos_manual_'+viewMonthIdx;
+  var cur=parseFloat(localStorage.getItem(key))||0;
+  var val=prompt('Prenos iz prošlog mjeseca (€) - ostavi prazno za auto:', cur?cur.toFixed(2):'');
   if(val===null)return;
-  var n=parseFloat(val.replace(',','.'));
+  var trimmed=val.trim();
+  if(trimmed===''){localStorage.removeItem(key);loadPregled();return;}
+  var n=parseFloat(trimmed.replace(',','.'));
   if(isNaN(n))return;
-  localStorage.setItem('mf_prenos',n);
+  localStorage.setItem(key,n);
+  loadPregled();
+}
+function resetPrenosAuto(){
+  localStorage.removeItem('mf_prenos_manual_'+viewMonthIdx);
   loadPregled();
 }
 function openSavModal(){
