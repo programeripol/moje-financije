@@ -799,7 +799,6 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <div class="card-title">Štednja (mj/€)</div>
     <div id="save-goals-list"></div>
     <button type="button" class="add-goal-btn" onclick="addSavingsGoal()">+ Dodaj cilj štednje</button>
-    <button type="button" class="add-goal-btn" onclick="addDefaultFunds()" style="margin-top:6px;color:#7090b0;border-color:#c8d4e8;font-size:11px">🧩 Dodaj preporučene fondove</button>
     <div class="plan-total-row" style="margin-top:10px">
       <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupna štednja</span>
       <span class="plan-total-val" id="p-save-total">—</span>
@@ -1292,17 +1291,6 @@ function addSavingsGoal(name='', amount=0){
   }, 50);
 }
 
-function addDefaultFunds(){
-  const defaults=["Fond sigurnosti", "Zdravlje", "Auto", "Odjeća", "Odmor", "Pokloni", "Elektronika", "Dom", "Mirovina"];
-  const existing=new Set(savingsGoals.map(g=>(g.name||'').toLowerCase().trim()));
-  let added=0;
-  defaults.forEach(name=>{
-    if(!existing.has(name.toLowerCase())){ savingsGoals.push({name,amount:0}); added++; }
-  });
-  if(added>0) renderSavingsGoals();
-  else showToast('Svi preporučeni fondovi već postoje');
-}
-
 function removeSavingsGoal(i){
   savingsGoals.splice(i,1);
   renderSavingsGoals();
@@ -1742,7 +1730,8 @@ function fillProfileForm(){
     savingsGoals = [{name:'Štednja', amount: profileData.save_plan}];
   }
   if(savingsGoals.length === 0){
-    savingsGoals = [{name:'Hitni fond', amount:0}];
+    ['Fond sigurnosti','Zdravlje','Auto','Odjeća','Odmor','Pokloni','Elektronika','Dom','Mirovina']
+      .forEach(name => savingsGoals.push({name, amount:0}));
   }
   renderSavingsGoals();
 }
