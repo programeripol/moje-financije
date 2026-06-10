@@ -705,12 +705,6 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <div id="cat-list"><div class="empty-state">Učitavam…</div></div>
   </details>
 
-  <div onclick="openAccModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
-    <div>
-      <div class="sum-label" style="color:var(--th1);margin:0 0 4px" id="acc-card-label-p">Računi</div>
-      <div id="acc-total-display" class="sum-val-main">—</div>
-    </div>
-  </div>
 
 </div>
 
@@ -1934,8 +1928,7 @@ function renderMonthNav(){
   const _accMnG=['siječanj','veljaču','ožujak','travanj','svibanj','lipanj','srpanj','kolovoz','rujan','listopad','studeni','prosinac'];
   const _accCl=document.getElementById('acc-card-label');
   if(_accCl) _accCl.textContent='Računi za '+(_accMnG[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
-  const _accClP=document.getElementById('acc-card-label-p');
-  if(_accClP) _accClP.textContent='Računi za '+(_accMnG[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
+
   const prev = document.getElementById('prev-month-btn');
   const next = document.getElementById('next-month-btn');
   if(prev) prev.disabled = (viewMonthIdx === 0);
@@ -2361,7 +2354,6 @@ async function loadPregled(){
     allRecentEntries = trackerRows.slice().reverse();
     recentExpanded   = false;
     renderRecentList();
-    updateAccTotal();
 
     // Drive folder link
     const driveLink = document.getElementById('recent-drive-link');
@@ -2379,7 +2371,6 @@ async function loadPregled(){
     ['bh-plan','bh-spent'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=zero; });
     allRecentEntries = [];
     renderRecentList();
-    updateAccTotal();
     const monthName = MONTHS_HR[viewMonthIdx];
     document.getElementById('cat-list').innerHTML = '<div class="empty-state">Nema podataka za '+monthName+'</div>';
   }
@@ -2419,12 +2410,6 @@ function renderRecentList(){
 function toggleRecentList(){
   recentExpanded = !recentExpanded;
   renderRecentList();
-}
-
-function updateAccTotal(){
-  const total=allRecentEntries.reduce((s,{r})=>s+(parseFloat(r[5])||0),0);
-  const el=document.getElementById('acc-total-display');
-  if(el) el.textContent=eur(total);
 }
 
 // ── GOALS ─────────────────────────────────────────────────────────────
@@ -3434,9 +3419,8 @@ function syncAmtDisplay(inp){
     <div style="padding:16px 0 8px;cursor:grab;text-align:center;touch-action:none" ontouchstart="potrosDragStart(event)" ontouchmove="potrosDragMove(event)" ontouchend="potrosDragEnd(event)">
       <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 20px 14px">
-      <span style="font-size:18px;font-weight:700;color:var(--th1)">Pregled po kategorijama</span>
-      <button onclick="closePotrosModal()" style="background:none;border:none;font-size:22px;color:#8898b8;cursor:pointer;padding:0 4px;line-height:1">&#x2715;</button>
+    <div style="padding:10px 20px 14px">
+      <div style="font-size:18px;font-weight:700;color:var(--th1)">Pregled po kategorijama</div>
     </div>
     <div style="overflow-y:auto;flex:1;padding:0 16px 28px" id="potros-modal-body"></div>
   </div>
