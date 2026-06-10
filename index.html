@@ -1267,17 +1267,17 @@ function totalVariable(){
 let savingsGoals = [];
 
 const FUND_INFO = {
-  'fond sigurnosti': {tip:'3–6 mjesečnih plaća. Netaknuto — samo za pravu krizu (otkaz, bolest, hitni popravak).', pct:'15–20% dok ne napuniš, zatim 0%'},
-  'zdravlje':        {tip:'Zubar, liječnik, ljekarna, naočale. Dolazi uvijek, samo ne znaš kad.', pct:'3–5% prihoda (~30–60 €/mj)'},
-  'auto':            {tip:'Servis, gume, registracija, sitni kvarovi. Planirati = ne paničariti.', pct:'5–10% vrijednosti auta/god (~100–200 €/mj)'},
-  'odjeća':          {tip:'Sezonska obnova i neplanirane kupovine. Bolje odvajati malo svaki mj nego ugasiti budžet jednom.', pct:'3–5% prihoda (~30–60 €/mj)'},
-  'odmor':           {tip:'Godišnji odmor, vikend izleti, putovanja. Puno lakše kad ne moraš sve platiti odjednom.', pct:'5–10% prihoda (~50–120 €/mj)'},
-  'pokloni':         {tip:'Božić, rođendani, vjenčanja. Predvidivi troškovi koje većina ne planira.', pct:'2–4% prihoda (~20–50 €/mj)'},
-  'elektronika':     {tip:'Zamjena mobitela, laptopa, kućanskih aparata. Trajnost je neizvjesna.', pct:'2–3% prihoda (~20–40 €/mj)'},
-  'dom':             {tip:'Popravci, nova oprema, renovacija. Vrijedi i za najam (premještanje, depozit).', pct:'1–2% vrijednosti stana/god ili ~50–100 €/mj'},
-  'mirovina':        {tip:'3. stup = porezna olakšica + državno sufinanciranje do 750 €/god. Što ranije, to bolje.', pct:'10–15% prihoda (~100–180 €/mj)'},
-  'ljubimci':        {tip:'Hrana, veterinar, osiguranje, oprema. Veterinarski hitni slučajevi mogu biti skupi.', pct:'100–250 €/mj ovisno o ljubimcu'},
-  'školovanje':      {tip:'Tečajevi, certifikati, fakultet, edukacija. Investicija u sebe s najboljim ROI-em.', pct:'3–5% prihoda (~30–60 €/mj)'},
+  'fond sigurnosti': {tip:'Samo za pravu krizu (otkaz, bolovanje). Cilj: 3–6 × plaća.', pct:'Odvajaj 15–20%/mj dok ne napuniš, min. 100 €/mj'},
+  'zdravlje':        {tip:'Zubar, privatni pregledi, naočale. Cilj: 500–1.000 €.', pct:'Odvajaj 3–5% od plaće, min. 20 €/mj'},
+  'auto':            {tip:'Servis, registracija, osiguranje, gume, popravci. Stariji auto = veća rezerva. Cilj: 500–1.500 €.', pct:'Odvajaj ~10% vrijednosti auta/god, min. 50 €/mj'},
+  'odjeća':          {tip:'Sezonska obnova i posebne prilike. Cilj: 300–600 €/god.', pct:'Odvajaj min. 25 €/mj'},
+  'odmor':           {tip:'Godišnji odmor, izleti, putovanja. Cilj: ovisi o stilu života (1.000–2.000+ €/god).', pct:'Podijeli cilj s 12, min. 50 €/mj'},
+  'pokloni':         {tip:'Božić, rođendani, vjenčanja, kolege koji idu u penziju. Cilj: 500–1.500 €/god.', pct:'Odvajaj 40–120 €/mj, min. 30 €/mj'},
+  'elektronika':     {tip:'Mobitel, laptop, kućanski aparati — Murphy\'s law: kad crkne jedan, crkne i drugi. Cilj: 500–1.000 €.', pct:'Odvajaj 2–3% od plaće, min. 20 €/mj'},
+  'dom':             {tip:'Popravci, oprema, renovacija, preseljenje, depozit. Cilj: 500–1.500 €.', pct:'Odvajaj min. 50 €/mj'},
+  'ljubimci':        {tip:'Veterinar, hitni pregledi, oprema, osiguranje (hrana ide u varijabilne troškove). Hitni vet može koštati 500+ €. Cilj: 500–1.000 €.', pct:'Odvajaj min. 30 €/mj'},
+  'školovanje':      {tip:'Tečajevi, certifikati, edukacija. Ulaganje u sebe s najboljim povratom. Cilj: 300–600 €/god.', pct:'Odvajaj min. 25 €/mj'},
+  'mirovina':        {tip:'Državna mirovina u HR nije dovoljna. 3. stup: uplati ~417 €/mj (5.000 €/god) → dobiješ 750 € od države godišnje — besplatan novac. Ostatak investiraj (ETF, nekretnine).', pct:'Odvajaj ukupno 10–15% od plaće, min. 100 €/mj. Što ranije kreneš, to bolje.'},
 };
 function getFundInfo(name){
   const k=(name||'').toLowerCase().replace(/^[^a-zšđčćž]+/i,'').trim();
