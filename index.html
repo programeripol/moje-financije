@@ -50,7 +50,7 @@ body.has-wp #nav-bar{background:rgba(255,255,255,.85)!important;backdrop-filter:
 
 /* ── SCREENS ── */
 .screen{display:none;max-width:600px;margin:0 auto;padding:16px 16px 20px}
-#s-skener,#s-pregled,#s-ciljevi,#s-profil{padding-top:52px}
+#s-skener,#s-pregled,#s-ciljevi,#s-profil{padding-top:calc(env(safe-area-inset-top,0px) + 16px)}
 .screen.active{display:block}
 
 /* ── LOGIN ── */
