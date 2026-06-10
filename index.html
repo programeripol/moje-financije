@@ -1755,10 +1755,10 @@ function fillProfileForm(){
   if(variableGoals.length === 0) ['Hrana','Gorivo','Ljubimci','Ostalo'].forEach(n=>variableGoals.push({name:n,amount:0}));
   renderVariableList();
   try { savingsGoals = JSON.parse(profileData.save_goals_json || 'null') || []; } catch(e){ savingsGoals = []; }
-  if(savingsGoals.length === 0 && (profileData.save_plan||0) > 0){
-    savingsGoals = [{name:'Štednja', amount: profileData.save_plan}];
-  }
-  if(savingsGoals.length === 0){
+  // migrate: replace old single-entry defaults with full fund list
+  const _oldDefaults = ['štednja','hitni fond',''];
+  if(savingsGoals.length <= 1 && (!savingsGoals.length || _oldDefaults.includes((savingsGoals[0].name||'').toLowerCase().trim()))){
+    savingsGoals = [];
     ['🛟 Fond sigurnosti','🏥 Zdravlje','🚗 Auto','👗 Odjeća','✈️ Odmor','🎁 Pokloni','💻 Elektronika','🏠 Dom','🐾 Ljubimci','📚 Školovanje','🏦 Mirovina']
       .forEach(name => savingsGoals.push({name, amount:0}));
   }
