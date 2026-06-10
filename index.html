@@ -26,7 +26,7 @@
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Poppins',sans-serif;background:var(--th-bg);min-height:100vh;color:var(--th-text);padding-bottom:calc(70px + env(safe-area-inset-bottom))}
-body.has-wp{background-size:cover!important;background-position:center!important;background-attachment:fixed!important}
+body.has-wp::before{content:'';position:fixed;inset:0;z-index:-1;background-image:var(--wp-url,none);background-size:cover;background-position:center;pointer-events:none}
 body.has-wp #floating-actions .fa-pill{background:rgba(0,0,0,.32)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 body.has-wp #nav-bar{background:rgba(255,255,255,.85)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 [data-theme="black"].has-wp #nav-bar{background:rgba(18,18,18,.88)!important}
@@ -909,12 +909,12 @@ function updateThemeBtns(){
 const PHOTO_WALLPAPERS=[{"id": "garfield_1", "file": "garfield 1.jpg", "group": "Garfield"}, {"id": "garfield_10", "file": "garfield 10.jpg", "group": "Garfield"}, {"id": "garfield_2", "file": "garfield 2.jpg", "group": "Garfield"}, {"id": "garfield_3", "file": "garfield 3.jpg", "group": "Garfield"}, {"id": "garfield_4", "file": "garfield 4.jpg", "group": "Garfield"}, {"id": "garfield_5", "file": "garfield 5.jpg", "group": "Garfield"}, {"id": "garfield_6", "file": "garfield 6.jpg", "group": "Garfield"}, {"id": "garfield_7", "file": "garfield 7.jpg", "group": "Garfield"}, {"id": "garfield_8", "file": "garfield 8.jpg", "group": "Garfield"}, {"id": "garfield_9", "file": "garfield 9.jpg", "group": "Garfield"}, {"id": "snoopy_1", "file": "snoopy 1.jpg", "group": "Snoopy"}, {"id": "summer_1", "file": "summer 1.jpg", "group": "Summer"}, {"id": "wallpaper_friends_1", "file": "wallpaper friends 1.jpg", "group": "Friends"}, {"id": "wallpaper_friends_11", "file": "wallpaper friends 11.jpg", "group": "Friends"}, {"id": "wallpaper_friends_12", "file": "wallpaper friends 12.jpg", "group": "Friends"}, {"id": "wallpaper_friends_13", "file": "wallpaper friends 13.jpg", "group": "Friends"}, {"id": "wallpaper_friends_2", "file": "wallpaper friends 2.jpg", "group": "Friends"}, {"id": "wallpaper_friends_4", "file": "wallpaper friends 4.jpg", "group": "Friends"}, {"id": "wallpaper_friends_5", "file": "wallpaper friends 5.jpg", "group": "Friends"}, {"id": "wallpaper_friends_6", "file": "wallpaper friends 6.jpg", "group": "Friends"}, {"id": "wallpaper_friends_7", "file": "wallpaper friends 7.jpg", "group": "Friends"}, {"id": "wallpaper_friends_8", "file": "wallpaper friends 8.jpg", "group": "Friends"}, {"id": "wallpaper_friends_9", "file": "wallpaper friends 9.jpg", "group": "Friends"}, {"id": "wicked_1", "file": "wicked 1.jpg", "group": "Wicked"}, {"id": "wicked_10", "file": "wicked 10.jpg", "group": "Wicked"}, {"id": "wicked_11", "file": "wicked 11.jpg", "group": "Wicked"}, {"id": "wicked_13", "file": "wicked 13.jpg", "group": "Wicked"}, {"id": "wicked_15", "file": "wicked 15.jpg", "group": "Wicked"}, {"id": "wicked_16", "file": "wicked 16.jpg", "group": "Wicked"}, {"id": "wicked_3", "file": "wicked 3.jpg", "group": "Wicked"}, {"id": "wicked_4", "file": "wicked 4.jpg", "group": "Wicked"}, {"id": "wicked_6", "file": "wicked 6.jpg", "group": "Wicked"}, {"id": "wicked_7", "file": "wicked 7.jpg", "group": "Wicked"}, {"id": "wicked_8", "file": "wicked 8.jpg", "group": "Wicked"}, {"id": "wicked_9", "file": "wicked 9.jpg", "group": "Wicked"}];
 function setWallpaper(id){
   if(!id||id==='none'){
-    document.body.style.backgroundImage='';
+    document.body.style.removeProperty('--wp-url');
     document.body.classList.remove('has-wp');
   } else {
     var wp=PHOTO_WALLPAPERS.find(function(w){return w.id===id;});
     if(wp){
-      document.body.style.backgroundImage='url(\'wallpaper/'+encodeURIComponent(wp.file)+'\')';
+      document.body.style.setProperty('--wp-url','url("wallpaper/'+encodeURIComponent(wp.file)+'")');
       document.body.classList.add('has-wp');
     }
   }
@@ -957,7 +957,7 @@ function renderWallpaperGrid(){
   var id=localStorage.getItem('mf_wallpaper')||'none';
   if(id&&id!=='none'){
     var wp=PHOTO_WALLPAPERS.find(function(w){return w.id===id;});
-    if(wp){document.body.style.backgroundImage='url(\'wallpaper/'+encodeURIComponent(wp.file)+'\')';document.body.classList.add('has-wp');}
+    if(wp){document.body.style.setProperty('--wp-url','url("wallpaper/'+encodeURIComponent(wp.file)+'")');document.body.classList.add('has-wp');}
   }
 })();
 
