@@ -203,6 +203,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--th1);bac
 .fl-amt input{flex:1;border:none;background:transparent;font-size:15px;font-family:inherit;color:var(--th-text);outline:none;padding:0;min-width:0}
 .fl-amt span{color:#aaa;font-size:15px;flex-shrink:0}
 .csel.fl-csel{border:none;border-radius:0;background:transparent;padding:24px 14px 8px;min-height:56px}
+#fl-kat .fl-lbl{opacity:0;top:9px;transform:none;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;transition:opacity .18s}
+#fl-kat.fl-has-val .fl-lbl,#fl-kat.fl-open .fl-lbl{opacity:1;color:var(--th1)}
 #receipt-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px}
 #pdf-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px;background:#f1f5f9;padding:20px 16px;text-align:center;cursor:pointer}
 #pdf-preview .pdf-icon{font-size:40px;margin-bottom:6px}
@@ -606,7 +608,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
         </optgroup>
       </select>
       <div class="csel fl-csel" id="csel-cat" data-sel="meta-cat" onclick="cselToggle(this)">
-        <span id="csel-cat-val">Kategorija</span><span class="csel-arr"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span id="csel-cat-val">Odaberi kategoriju</span><span class="csel-arr"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         <ul class="csel-opts" onclick="event.stopPropagation()">
           <li class="csel-grp">Stanovanje</li>
           <li data-v="Stanarina" onclick="cselPick(this,'Stanarina','Stanarina')">Stanarina</li>
@@ -1044,8 +1046,14 @@ const CAT_COLORS = {
 
 function cselToggle(el){
   const isOpen = el.classList.contains('open');
-  document.querySelectorAll('.csel.open').forEach(e=>e.classList.remove('open'));
-  if(!isOpen) el.classList.add('open');
+  document.querySelectorAll('.csel.open').forEach(e=>{
+    e.classList.remove('open');
+    const f=e.closest('.fl-field');if(f)f.classList.remove('fl-open');
+  });
+  if(!isOpen){
+    el.classList.add('open');
+    const f=el.closest('.fl-field');if(f)f.classList.add('fl-open');
+  }
 }
 function cselPick(li, val, text){
   const wrap = li.closest('.csel');
@@ -1058,7 +1066,7 @@ function cselPick(li, val, text){
   const flField = wrap.closest('.fl-field');
   if(flField) flField.classList.toggle('fl-has-val', !!val);
 }
-document.addEventListener('click', function(e){ if(!e.target.closest('.csel')) document.querySelectorAll('.csel.open').forEach(el=>el.classList.remove('open')); });
+document.addEventListener('click', function(e){ if(!e.target.closest('.csel')) document.querySelectorAll('.csel.open').forEach(el=>{el.classList.remove('open');const f=el.closest('.fl-field');if(f)f.classList.remove('fl-open');}); });
 
 function wireButtons(){
   const on = (id, fn) => { const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
