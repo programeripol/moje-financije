@@ -643,7 +643,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
   <hr class="divider">
   <div onclick="openAccModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-  <div style="color:var(--th1);font-size:14px;font-weight:600">Računi ovog mjeseca</div>
+  <div id="acc-card-label" style="color:var(--th1);font-size:14px;font-weight:600">Računi</div>
   <span style="display:inline-flex;align-items:center;"><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
 </div>
 
@@ -1919,6 +1919,9 @@ function renderMonthNav(){
   const label  = MONTHS_HR[viewMonthIdx] + ' ' + curYear();
   const el = document.getElementById('month-nav-label');
   if(el) el.textContent = label;
+  const _accMnG=['siječnja','veljače','ožujka','travnja','svibnja','lipnja','srpnja','kolovoza','rujna','listopada','studenog','prosinca'];
+  const _accCl=document.getElementById('acc-card-label');
+  if(_accCl) _accCl.textContent='Računi '+(_accMnG[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
   const prev = document.getElementById('prev-month-btn');
   const next = document.getElementById('next-month-btn');
   if(prev) prev.disabled = (viewMonthIdx === 0);
@@ -3207,6 +3210,9 @@ function openAccModal(){
   if(!overlay||!modal)return;
   overlay.style.display='block';modal.style.display='flex';
   document.body.style.overflow='hidden';
+  const _accMn=['siječnja','veljače','ožujka','travnja','svibnja','lipnja','srpnja','kolovoza','rujna','listopada','studenog','prosinca'];
+  const _accTl=document.getElementById('acc-modal-title');
+  if(_accTl) _accTl.textContent='Računi '+(_accMn[viewMonthIdx]||MONTHS_HR[viewMonthIdx]||'');
   requestAnimationFrame(()=>{overlay.style.opacity='1';modal.style.transform='translateY(0)';});
 }
 function closeAccModal(){
