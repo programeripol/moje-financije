@@ -3460,25 +3460,27 @@ async function openSavOvModal(){
     const n=goals.length;
     const pre=_lastPreostalo;
     const perFund=pre/n;
-    // donut — raspodjela je jednaka pa sve iste veličine, ali bojama razlikujemo
+    const totalGoal=goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+    // donut — cilj = 100%, boje = udio svakog fonda od ušteđenog
     const circ=2*Math.PI*36;
-    const dash=circ/n;let dashOff=0;
+    let dashOff=0;
     const slices=goals.map((g,i)=>{
       const color=SAV_COLORS[i%SAV_COLORS.length];
-      const sl=`<circle cx="45" cy="45" r="36" fill="none" stroke="${color}" stroke-width="11" stroke-dasharray="${dash} ${circ}" stroke-dashoffset="${-dashOff}" stroke-linecap="butt" transform="rotate(-90 45 45)"/>`;
-      dashOff+=dash;
+      const arcLen=totalGoal>0?Math.min(perFund,parseFloat(g.amount)||0)/totalGoal*circ:0;
+      const sl=`<circle cx="45" cy="45" r="36" fill="none" stroke="${color}" stroke-width="11" stroke-dasharray="${arcLen} ${circ}" stroke-dashoffset="${-dashOff}" stroke-linecap="butt" transform="rotate(-90 45 45)"/>`;
+      dashOff+=arcLen;
       const displayName=(g.name||'').replace(/^[^\w\u0100-\u017f]+/,'').trim();
       const goal=parseFloat(g.amount)||0;
       const pct=goal>0?Math.min(100,Math.round(perFund/goal*100)):0;
       return{sl,color,name:displayName,fullName:g.name||'',perFund,goal,pct};
     });
-    const totalGoal=goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+    const overallPct=totalGoal>0?Math.min(100,Math.round(pre/totalGoal*100)):0;
     const donut=`<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:16px">
       <svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">
         <circle cx="45" cy="45" r="36" fill="none" stroke="#f0f4ff" stroke-width="11"/>
         ${slices.map(s=>s.sl).join('')}
-        <text x="45" y="41" text-anchor="middle" font-size="9" fill="#7090b0" font-family="sans-serif">Ušteđeno</text>
-        <text x="45" y="55" text-anchor="middle" font-size="10" fill="#1a1a2e" font-weight="500" font-family="sans-serif">${eur(pre)}</text>
+        <text x="45" y="40" text-anchor="middle" font-size="13" fill="#1a1a2e" font-weight="600" font-family="sans-serif">${overallPct}%</text>
+        <text x="45" y="53" text-anchor="middle" font-size="8" fill="#7090b0" font-family="sans-serif">od cilja</text>
       </svg>
       <div style="flex:1">
         <div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj</div>
@@ -3893,7 +3895,7 @@ function syncAmtDisplay(inp){
     <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
   </div>
   <div style="padding:2px 20px 14px">
-    <div style="font-size:18px;font-weight:700;color:var(--th1)">Ukupna štednja</div>
+    <div style="font-size:18px;font-weight:700;color:var(--th1)">Štednja</div>
   </div>
   <div style="overflow-y:auto;flex:1;padding:0 20px 28px" id="sav-ov-body"></div>
 </div>
