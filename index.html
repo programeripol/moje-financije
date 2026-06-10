@@ -691,50 +691,26 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <span id="bh-income" style="display:none"></span>
     <span id="bh-savings" style="display:none"></span>
   </div>
-  <div class="sum-card" style="cursor:pointer;margin-bottom:8px" onclick="toggleCard('preostalo-body',this)">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div class="sum-label" style="margin:0">Preostalo</div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="sum-val-main" id="bh-remaining" style="margin:0">—</div>
-        <span class="card-chevron" id="preostalo-chev" style="font-size:12px;color:#94a3b8;transition:transform .2s">▼</span>
-      </div>
+  <div onclick="openPreostaloModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
+    <div>
+      <div class="sum-label" style="margin:0 0 4px">Preostalo</div>
+      <div id="bh-total-avail" class="sum-val-main">—</div>
     </div>
-    <div id="preostalo-body" style="display:none;margin-top:10px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="display:flex;align-items:center;gap:5px">
-          <span style="font-size:12px;color:#94a3b8">Prenos iz prošlog mj</span>
-          <span id="bh-prenos-tag"></span>
-        </div>
-        <div style="display:flex;align-items:center;gap:4px">
-          <button id="bh-prenos-reset" onclick="event.stopPropagation();resetPrenosAuto()" style="display:none;background:none;border:none;cursor:pointer;padding:2px;color:#94a3b8;font-size:10px">↺ auto</button>
-          <span id="bh-prenos-val" style="font-size:13px;font-weight:600;color:var(--th1)">0,00 €</span>
-          <button onclick="event.stopPropagation();editPrenosModal()" style="background:none;border:none;cursor:pointer;padding:2px;color:#94a3b8;font-size:13px">✎</button>
-        </div>
-      </div>
-      <div style="padding-top:8px;border-top:1px solid #f0f4ff;display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:11px;color:#94a3b8">Ukupno raspoloživo</span>
-        <span id="bh-total-avail" style="font-size:15px;font-weight:700;color:var(--th1)">—</span>
-      </div>
-    </div>
+    <span id="bh-remaining" style="display:none">—</span>
+    <span id="bh-prenos-val" style="display:none">—</span>
+    <span id="bh-prenos-tag" style="display:none"></span>
+    <span id="bh-total-avail-hidden" style="display:none"></span>
   </div>
 
   
-  <div style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;position:relative" onclick="toggleCard('stednja-body',this)">
+  <div onclick="openSavOvModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end;position:relative">
     <div class="card-spinner" id="hero-spin-sav"><div class="card-spinner-ring-dark"></div></div>
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div class="sum-label" style="margin:0">Štednja</div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <div id="sav-acc-total" class="sum-val-main" style="margin:0">—</div>
-        <span class="card-chevron" id="stednja-chev" style="font-size:12px;color:#94a3b8;transition:transform .2s">▼</span>
-      </div>
+    <div>
+      <div class="sum-label" style="margin:0 0 4px">Štednja</div>
+      <div id="sav-acc-total" class="sum-val-main">—</div>
     </div>
-    <div id="stednja-body" style="display:none;margin-top:10px">
-      <div style="display:flex;justify-content:flex-end;margin-bottom:6px">
-        <div id="sav-per-fund" style="font-size:11px;color:#94a3b8;text-align:right"></div>
-      </div>
-      <div id="sav-bars"></div>
-      <button onclick="event.stopPropagation();openSavOvModal();" style="width:100%;margin-top:10px;padding:9px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">Detalji →</button>
-    </div>
+    <div id="sav-per-fund" style="display:none"></div>
+    <div id="sav-bars" style="display:none"></div>
     <div id="sav-total" style="display:none"></div>
   </div>
 
@@ -3473,15 +3449,59 @@ function sovDragStart(e){_sovDragStartY=e.touches[0].clientY;_sovDragging=true;_
 function sovDragMove(e){if(!_sovDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_sovDragStartY;if(dy>0){_sovDragY=dy;document.getElementById('sav-ov-modal').style.transform='translateY('+dy+'px)';}}
 function sovDragEnd(e){if(!_sovDragging)return;_sovDragging=false;const m=document.getElementById('sav-ov-modal');m.style.transition='';if(_sovDragY>80){closeSavOvModal();}else{m.style.transform='translateY(0)';}}
 
-function toggleCard(bodyId, card){
-  var body=document.getElementById(bodyId);
-  if(!body)return;
-  var open=body.style.display==='none';
-  body.style.display=open?'block':'none';
-  // rotate chevron
-  var chevId=bodyId==='preostalo-body'?'preostalo-chev':'stednja-chev';
-  var chev=document.getElementById(chevId);
-  if(chev)chev.style.transform=open?'rotate(180deg)':'rotate(0deg)';
+function openPreostaloModal(){
+  var rem=document.getElementById('bh-remaining');
+  var pre=document.getElementById('bh-prenos-val');
+  var tag=document.getElementById('bh-prenos-tag');
+  var tot=document.getElementById('bh-total-avail');
+  var remV=rem?rem.textContent:'—';
+  var preV=pre?pre.textContent:'—';
+  var tagH=tag?tag.innerHTML:'';
+  var totV=tot?tot.textContent:'—';
+  var resetBtn=document.getElementById('bh-prenos-reset');
+  var isManual=resetBtn&&resetBtn.style.display!=='none';
+  var html='<div style="background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px">'
+    +'<div style="display:flex;justify-content:space-between;margin-bottom:10px">'
+    +'<span style="font-size:13px;color:#94a3b8">Ovaj mj (prihodi − potrošeno)</span>'
+    +'<span style="font-size:14px;font-weight:700;color:var(--th1)">'+remV+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
+    +'<div style="display:flex;align-items:center;gap:5px"><span style="font-size:13px;color:#94a3b8">Prenos iz prošlog mj</span>'+tagH+'</div>'
+    +'<div style="display:flex;align-items:center;gap:6px">'
+    +(isManual?'<button onclick="resetPrenosAuto()" style="font-size:10px;color:#94a3b8;background:none;border:none;cursor:pointer">↺ auto</button>':'')
+    +'<span style="font-size:14px;font-weight:700;color:var(--th1)">'+preV+'</span>'
+    +'<button onclick="editPrenosModal()" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:13px">✎</button>'
+    +'</div></div>'
+    +'<div style="border-top:1px solid #f0f4ff;padding-top:10px;display:flex;justify-content:space-between;align-items:center">'
+    +'<span style="font-size:13px;color:#94a3b8">Ukupno raspoloživo</span>'
+    +'<span style="font-size:17px;font-weight:700;color:var(--th1)">'+totV+'</span></div></div>';
+  showSimpleModal('Preostalo', html);
+}
+function showSimpleModal(title, bodyHtml){
+  var id='simple-modal-ov';
+  var existing=document.getElementById(id);
+  if(existing) existing.remove();
+  var ov=document.createElement('div');
+  ov.id=id;
+  ov.style.cssText='position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.45);transition:opacity .25s;opacity:0;display:block';
+  ov.innerHTML='<div id="simple-modal-sh" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:0 0 32px;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)">'
+    +'<div style="padding:14px 0 6px;text-align:center;touch-action:none" id="simple-modal-drag"><div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div></div>'
+    +'<div style="padding:2px 20px 14px;font-size:18px;font-weight:700;color:var(--th1)">'+title+'</div>'
+    +'<div style="padding:0 20px">'+bodyHtml+'</div></div>';
+  ov.onclick=function(e){if(e.target===ov)closeSimpleModal();};
+  document.body.appendChild(ov);
+  var sh=ov.querySelector('#simple-modal-sh');
+  var dy=0,sy=0,drag=false;
+  ov.querySelector('#simple-modal-drag').ontouchstart=function(e){sy=e.touches[0].clientY;drag=true;dy=0;sh.style.transition='none';};
+  document.addEventListener('touchmove',function mm(e){if(!drag)return;e.preventDefault();var d=e.touches[0].clientY-sy;if(d>0){dy=d;sh.style.transform='translateY('+d+'px)';}},{passive:false,once:false,capture:false});
+  document.addEventListener('touchend',function me(){if(!drag)return;drag=false;sh.style.transition='';if(dy>80)closeSimpleModal();else sh.style.transform='translateY(0)';},{once:false});
+  requestAnimationFrame(function(){ov.style.opacity='1';sh.style.transform='translateY(0)';});
+}
+function closeSimpleModal(){
+  var ov=document.getElementById('simple-modal-ov');
+  if(!ov)return;
+  var sh=ov.querySelector('#simple-modal-sh');
+  ov.style.opacity='0';sh.style.transform='translateY(100%)';
+  setTimeout(function(){ov.remove();},280);
 }
 function editPrenosModal(){
   var key='mf_prenos_manual_'+viewMonthIdx;
