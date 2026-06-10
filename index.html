@@ -1864,6 +1864,7 @@ function fillProfileForm(){
 }
 
 async function saveProfile(){
+  if(!confirm('Spremi promjene u profilu?')) return;
   const g = id => parseFloat(document.getElementById(id)?.value)||0;
   const saveTotalAmt   = savingsGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
   const incomeTotalAmt = incomeGoals.reduce((s,goal)=>s+(parseFloat(goal.amount)||0),0);
