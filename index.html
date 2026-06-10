@@ -189,6 +189,19 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--th1);bac
 #upload-zone h3{color:var(--th-text);font-size:16px;font-weight:500;letter-spacing:0;text-transform:none;margin:0 0 5px}
 #upload-zone p{font-size:13px;color:#94a3b8;margin:0}
 #upload-zone input{display:none}
+.fl-group{background:#fff;border:1px solid #e8edf8;border-radius:16px;margin-bottom:14px;overflow:visible}
+.fl-field{position:relative;border-bottom:1px solid #f0f4ff}
+.fl-field:last-child{border-bottom:none}
+.fl-field>input{display:block;width:100%;padding:24px 14px 8px;font-size:15px;font-family:inherit;color:var(--th-text);background:transparent;border:none;outline:none;-webkit-appearance:none;box-sizing:border-box}
+.fl-lbl{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:#94a3b8;pointer-events:none;transition:all .18s cubic-bezier(.4,0,.2,1);z-index:1}
+.fl-field>input:focus~.fl-lbl,.fl-field>input:not(:placeholder-shown)~.fl-lbl,.fl-field:focus-within .fl-lbl,.fl-field.fl-has-val .fl-lbl{top:9px;transform:none;font-size:10px;font-weight:600;color:var(--th1);letter-spacing:.06em;text-transform:uppercase}
+.fl-row{display:flex}
+.fl-row>.fl-field{flex:1}
+.fl-row>.fl-field+.fl-field{border-left:1px solid #f0f4ff}
+.fl-amt{display:flex;align-items:center;padding:24px 14px 8px}
+.fl-amt input{flex:1;border:none;background:transparent;font-size:15px;font-family:inherit;color:var(--th-text);outline:none;padding:0;min-width:0}
+.fl-amt span{color:#aaa;font-size:15px;flex-shrink:0}
+.csel.fl-csel{border:none;border-radius:0;background:transparent;padding:24px 14px 8px;min-height:56px}
 #receipt-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px}
 #pdf-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px;background:#f1f5f9;padding:20px 16px;text-align:center;cursor:pointer}
 #pdf-preview .pdf-icon{font-size:40px;margin-bottom:6px}
@@ -544,44 +557,25 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <button id="remove-file" onclick="removeSelectedFile()">×</button>
   </div>
 
-  <div class="card">
-    <div class="row2">
-      <div class="field">
-        <label>Naziv <span class="req">*</span></label>
-        <input type="text" id="meta-store" placeholder="Lidl, frizerka, Netflix…" autocomplete="off">
+  <div class="fl-group">
+    <div class="fl-field">
+      <input type="text" id="meta-store" placeholder=" " autocomplete="off">
+      <label class="fl-lbl" for="meta-store">Naziv <span class="req">*</span></label>
+    </div>
+    <div class="fl-row">
+      <div class="fl-field fl-has-val" id="fl-datum">
+        <input type="date" id="meta-date" onclick="try{this.showPicker()}catch(e){}" onchange="document.getElementById('fl-datum').classList.toggle('fl-has-val',!!this.value)">
+        <label class="fl-lbl" for="meta-date">Datum <span class="req">*</span></label>
       </div>
-      <div class="field">
-        <label>Datum <span class="req">*</span></label>
-        <input type="date" id="meta-date" class="date-empty" onclick="try{this.showPicker()}catch(e){}" onchange="this.classList.toggle('date-empty',!this.value)">
+      <div class="fl-field" id="fl-iznos">
+        <div class="fl-amt">
+          <input type="text" id="meta-amount" class="field-input" inputmode="decimal" placeholder=" " onblur="fmtAmtBlur(this);document.getElementById('fl-iznos').classList.toggle('fl-has-val',!!this.value.trim())" onfocus="fmtAmtFocus(this)">
+          <span>€</span>
+        </div>
+        <label class="fl-lbl" for="meta-amount">Iznos <span class="req">*</span></label>
       </div>
     </div>
-    <div class="field">
-      <label>Iznos <span class="req">*</span></label>
-      <div class="euro-suffix"><input type="text" id="meta-amount" class="field-input" placeholder="0,00 €" inputmode="decimal" onblur="fmtAmtBlur(this)" onfocus="fmtAmtFocus(this)"></div>
-    </div>
-<div class="field" style="margin:8px 0 12px">
-  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none">
-    <span>Na rate</span>
-    <span style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0">
-      <input type="checkbox" id="rate-toggle" onchange="toggleRateFields()" style="opacity:0;width:0;height:0;position:absolute">
-      <span id="rate-tog-vis" style="position:absolute;inset:0;background:#ccc;border-radius:12px;transition:background .2s;cursor:pointer"></span>
-      <span id="rate-tog-thumb" style="position:absolute;left:2px;top:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);pointer-events:none"></span>
-    </span>
-  </label>
-  <div id="rate-fields" style="display:none;margin-top:10px;gap:8px;flex-wrap:wrap">
-    <div style="flex:1;min-width:120px">
-      <label>Kartica</label>
-      <input type="text" id="rate-card" class="form-input" placeholder="Visa, Diners, Revolut">
-    </div>
-    <div style="flex:1;min-width:80px">
-      <label>Broj rata</label>
-      <input type="number" id="rate-count" class="form-input" min="2" max="36" placeholder="6">
-    </div>
-  </div>
-</div>
-
-    <div class="field">
-      <label>Kategorija <span class="req">*</span></label>
+    <div class="fl-field" id="fl-kat">
       <select id="meta-cat" style="display:none">
         <option value="" disabled selected>Odaberi kategoriju</option>
         <optgroup label="Stanovanje">
@@ -610,8 +604,8 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
           <option value="Other">Ostalo</option>
         </optgroup>
       </select>
-      <div class="csel" id="csel-cat" data-sel="meta-cat" onclick="cselToggle(this)">
-        <span id="csel-cat-val">Odaberi kategoriju</span><span class="csel-arr"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div class="csel fl-csel" id="csel-cat" data-sel="meta-cat" onclick="cselToggle(this)">
+        <span id="csel-cat-val">Kategorija</span><span class="csel-arr"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         <ul class="csel-opts" onclick="event.stopPropagation()">
           <li class="csel-grp">Stanovanje</li>
           <li data-v="Stanarina" onclick="cselPick(this,'Stanarina','Stanarina')">Stanarina</li>
@@ -636,10 +630,33 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
           <li data-v="Other" onclick="cselPick(this,'Other','Ostalo')">Ostalo</li>
         </ul>
       </div>
+      <label class="fl-lbl" for="meta-cat">Kategorija <span class="req">*</span></label>
     </div>
-    <div class="field">
-      <label>Opis</label>
-      <input type="text" id="meta-note" placeholder="">
+    <div class="fl-field">
+      <input type="text" id="meta-note" placeholder=" ">
+      <label class="fl-lbl" for="meta-note">Opis</label>
+    </div>
+  </div>
+  <div class="fl-group" style="margin-bottom:14px">
+    <div class="fl-field" style="border-bottom:none">
+      <label style="display:flex;align-items:center;justify-content:space-between;padding:14px 14px;cursor:pointer;user-select:none;margin:0">
+        <span style="font-size:15px;color:var(--th-text)">Na rate</span>
+        <span style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0">
+          <input type="checkbox" id="rate-toggle" onchange="toggleRateFields()" style="opacity:0;width:0;height:0;position:absolute">
+          <span id="rate-tog-vis" style="position:absolute;inset:0;background:#ccc;border-radius:12px;transition:background .2s;cursor:pointer"></span>
+          <span id="rate-tog-thumb" style="position:absolute;left:2px;top:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);pointer-events:none"></span>
+        </span>
+      </label>
+      <div id="rate-fields" style="display:none;padding:0 14px 14px;gap:8px;flex-wrap:wrap">
+        <div style="flex:1;min-width:120px">
+          <label style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Kartica</label>
+          <input type="text" id="rate-card" placeholder="Visa, Diners, Revolut">
+        </div>
+        <div style="flex:1;min-width:80px">
+          <label style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Broj rata</label>
+          <input type="number" id="rate-count" min="2" max="36" placeholder="6">
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1037,6 +1054,8 @@ function cselPick(li, val, text){
   const sel = document.getElementById(hiddenId);
   if(sel) sel.value = val;
   wrap.querySelectorAll('li[data-v]').forEach(l=>l.classList.toggle('csel-sel', l.dataset.v===val));
+  const flField = wrap.closest('.fl-field');
+  if(flField) flField.classList.toggle('fl-has-val', !!val);
 }
 document.addEventListener('click', function(e){ if(!e.target.closest('.csel')) document.querySelectorAll('.csel.open').forEach(el=>el.classList.remove('open')); });
 
@@ -2900,6 +2919,9 @@ function noviRacun(){
   const cselV=document.getElementById('csel-cat-val'); if(cselV){cselV.textContent='Odaberi kategoriju';} document.getElementById('meta-cat').value=''; document.querySelectorAll('#csel-cat li[data-v]').forEach(l=>l.classList.remove('csel-sel'));
   document.getElementById('meta-note').value='';
   document.getElementById('save-btn').disabled = false;
+  var _flIz=document.getElementById('fl-iznos');if(_flIz)_flIz.classList.remove('fl-has-val');
+  var _flKt=document.getElementById('fl-kat');if(_flKt)_flKt.classList.remove('fl-has-val');
+  var _flDt=document.getElementById('fl-datum');if(_flDt)_flDt.classList.add('fl-has-val');
   showScan('', '');
   setProgress(0);
 }
