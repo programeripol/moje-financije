@@ -3466,7 +3466,7 @@ function openPreostaloModal(){
   if(isNaN(rawPre)){rawPre=parseFloat((pre?pre.textContent:'0').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.'));}
   var html='<div style="background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px">'
     +'<div style="display:flex;justify-content:space-between;margin-bottom:12px">'
-    +'<span style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em">'+curMonthName+' · Prihodi − Potrošeno</span>'
+    +'<span style="font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:.05em"><span style="text-transform:uppercase">'+curMonthName+'</span> (prihodi − potrošeno)</span>'
     +'<span style="font-size:14px;font-weight:700;color:var(--th1)">'+remV+'</span></div>'
     +'<div style="margin-bottom:12px">'
     +'<div style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Prijenos iz '+prevMonthName+'</div>'
