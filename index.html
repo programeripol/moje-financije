@@ -3842,19 +3842,19 @@ function syncAmtDisplay(inp){
   <div style="padding:16px 0 12px;cursor:grab;text-align:center;touch-action:none" id="acc-modal-drag" ontouchstart="accDragStart(event)" ontouchmove="accDragMove(event)" ontouchend="accDragEnd(event)">
     <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
   </div>
-  <div style="padding:4px 20px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f4ff">
+  <div style="padding:4px 20px 14px;display:flex;justify-content:space-between;align-items:center">
     <div id="acc-modal-title" style="font-size:18px;font-weight:700;color:var(--th1)">Računi za lipnja</div>
     <div style="display:flex;align-items:center;gap:8px">
-      <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder">📁</a>
+      <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder"><svg width="16" height="14" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.5l5.85 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg></a>
       <div style="display:flex;gap:2px;background:#f0f4ff;border-radius:8px;padding:2px">
         <button id="acc-view-list" onclick="setAccView('list')" style="width:32px;height:28px;border:none;background:var(--th1);color:#fff;border-radius:6px;cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center" title="Lista">&#9776;</button>
         <button id="acc-view-grid" onclick="setAccView('grid')" style="width:32px;height:28px;border:none;background:transparent;color:#94a3b8;border-radius:6px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center" title="Galerija">&#8942;&#8942;</button>
       </div>
     </div>
   </div>
-  <div style="overflow-y:auto;flex:1;padding:0 20px 16px" id="acc-modal-body">
+  <div style="overflow-y:auto;flex:1;padding:4px 20px 16px" id="acc-modal-body">
     <div id="recent-list"></div>
-    <div id="gallery-grid" style="display:none;margin-top:12px"></div>
+    <div id="gallery-grid" style="display:none"></div>
   </div>
 </div>
 
