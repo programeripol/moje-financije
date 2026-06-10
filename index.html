@@ -27,19 +27,19 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Poppins',sans-serif;background:var(--th-bg);min-height:100vh;color:var(--th-text);padding-bottom:calc(70px + env(safe-area-inset-bottom))}
 body.has-wp{background-size:cover!important;background-position:center!important;background-attachment:fixed!important}
-body.has-wp #header{background:rgba(0,0,0,.28)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+body.has-wp #floating-actions .fa-pill{background:rgba(0,0,0,.32)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 body.has-wp #nav-bar{background:rgba(255,255,255,.85)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 [data-theme="black"].has-wp #nav-bar{background:rgba(18,18,18,.88)!important}
 
 /* ── HEADER ── */
-#header{background:linear-gradient(135deg,var(--th1),var(--th2));padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(var(--th1r),.3)}
-#header h1{font-size:17px;font-weight:600;color:#fff;letter-spacing:.01em}
+#header{display:none!important}
+#floating-actions{position:fixed;top:env(safe-area-inset-top,0);right:12px;z-index:110;display:none;align-items:center;gap:6px;padding:10px 0}
 #user-row{display:flex;align-items:center;gap:8px}
 #user-avatar{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.4)}
 #user-name{font-size:12px;color:rgba(255,255,255,.9);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #sign-out{background:none;border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.9);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit}
 #install-btn{display:none;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:#fff;padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;margin-right:6px;gap:4px;align-items:center}
-#install-btn.visible{display:flex}
+#install-btn.visible{display:flex!important}
 
 /* ── BOTTOM NAV ── */
 #nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e8edf8;display:none;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.06);padding-bottom:env(safe-area-inset-bottom)}
@@ -50,6 +50,7 @@ body.has-wp #nav-bar{background:rgba(255,255,255,.85)!important;backdrop-filter:
 
 /* ── SCREENS ── */
 .screen{display:none;max-width:600px;margin:0 auto;padding:16px 16px 20px}
+#s-skener,#s-pregled,#s-ciljevi,#s-profil{padding-top:52px}
 .screen.active{display:block}
 
 /* ── LOGIN ── */
@@ -345,7 +346,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 .csel-opts li.csel-sel{background:var(--th1);color:#fff;border-radius:6px;}
 #csel-cat-val{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-[data-theme="blue"] #header,[data-theme="olive"] #header,[data-theme="lila"] #header{background:var(--th1)!important}
+
 /* dark theme card overrides */
 [data-theme="black"] .sum-card,[data-theme="black"] .section,[data-theme="black"] .modal-sheet,[data-theme="black"] #sav-modal,[data-theme="black"] #potros-modal,[data-theme="black"] #settings-modal .settings-sheet{background:var(--th-card)!important;color:var(--th-text)!important}
 [data-theme="black"] .form-input{background:var(--th-surface)!important;color:var(--th-text)!important;border-color:#444!important}
@@ -392,13 +393,13 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 </div>
 
 <!-- HEADER -->
-<div id="header" style="display:none">
-  <h1 id="header-title">Ima se može se</h1>
-  <div id="user-row">
-    <button id="install-btn" title="Dodaj na početni zaslon">⬇ Instaliraj</button>
-    <img id="user-avatar" src="" alt="" onclick="toggleUserMenu()" style="cursor:pointer;border-radius:50%;width:32px;height:32px;order:3">
-    <button id="settings-btn" onclick="openSettings()" title="Postavke" style="background:none;border:none;cursor:pointer;padding:4px;line-height:1;order:2"><img src="data:image/png;base64,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" id="settings-icon" style="width:24px;height:24px;display:block"></button>
+<div id="header" style="display:none"><h1 id="header-title"></h1></div>
+<div id="floating-actions" style="display:none">
+  <div class="fa-pill" style="display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.9);border-radius:20px;padding:4px 6px 4px 8px;box-shadow:0 1px 8px rgba(0,0,0,.10)">
+    <button id="settings-btn" onclick="openSettings()" title="Postavke" style="background:none;border:none;cursor:pointer;padding:2px;line-height:1;display:flex;align-items:center"><img src="data:image/png;base64,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" id="settings-icon" style="width:22px;height:22px;display:block"></button>
+    <img id="user-avatar" src="" alt="" onclick="toggleUserMenu()" style="cursor:pointer;border-radius:50%;width:30px;height:30px">
   </div>
+  <button id="install-btn" onclick="showInstallModal()" style="display:none;background:rgba(255,255,255,0.9);border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--th1);cursor:pointer;box-shadow:0 1px 8px rgba(0,0,0,.10)">&#11015; Instaliraj</button>
 </div>
 
 <div id="user-menu-backdrop" onclick="closeUserMenu()" style="display:none;position:fixed;inset:0;z-index:9998"></div>
@@ -1555,7 +1556,6 @@ async function onToken(resp){
     
   }).catch(()=>{});
 
-  document.getElementById('header').style.display = 'flex';
   document.getElementById('s-login').classList.remove('active');
 
   // ── Vraćajući korisnik (sheetId je u lokalnoj memoriji) ──────────────
@@ -1596,7 +1596,7 @@ function signOut(){
   localStorage.removeItem('mf_token'); localStorage.removeItem('mf_token_expiry');
   // Ne brišemo: mf_autologin, mf_hint, mf_sheetId_*, mf_rootFolderId, itd.
   // Samo resetiramo in-memory varijable (bit će učitane iz localStorage pri sljedećoj prijavi)
-  document.getElementById('header').style.display = 'none';
+  var _fa=document.getElementById('floating-actions');if(_fa)_fa.style.display='none';
   document.getElementById('nav').style.display = 'none';
   document.getElementById('s-onboarding').style.display = 'none';
   showScreen('s-login');
@@ -1609,6 +1609,7 @@ function showApp(){
   document.getElementById('s-onboarding').style.display = 'none';
   goTab('skener');
   document.getElementById('nav').style.display = 'block';
+  var _fa=document.getElementById('floating-actions');if(_fa)_fa.style.display='flex';
   maybeShowInstallModal();
 }
 
