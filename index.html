@@ -27,6 +27,11 @@
 [data-appearance="glass"] .card,[data-appearance="glass"] .goal-card,[data-appearance="glass"] .g-card,[data-appearance="glass"] .collapsible-card,[data-appearance="glass"] #login-card,[data-appearance="glass"] #onboard-card,[data-appearance="glass"] .section,[data-appearance="glass"] .sum-card,[data-appearance="glass"] .modal-sheet,[data-appearance="glass"] #sav-modal,[data-appearance="glass"] #potros-modal,[data-appearance="glass"] #save-overlay-box,[data-appearance="glass"] .month-plan-panel,[data-appearance="glass"] #edit-drawer{background:rgba(255,255,255,.18)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border:1px solid rgba(255,255,255,.35)!important;box-shadow:0 4px 24px rgba(255,255,255,.08)!important}
 [data-appearance="glass"] #nav{background:rgba(255,255,255,.55)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important}
 [data-appearance="glass"] #upload-zone{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+[data-appearance="glass"] div[onclick*="openAccModal"],[data-appearance="glass"] div[onclick*="openIncModal"],[data-appearance="glass"] div[onclick*="openSavModal"]{background:rgba(255,255,255,.18)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border:1px solid rgba(255,255,255,.35)!important}
+/* ── GLASS ── */
+[data-appearance="glass"] .card,[data-appearance="glass"] .goal-card,[data-appearance="glass"] .g-card,[data-appearance="glass"] .collapsible-card,[data-appearance="glass"] #login-card,[data-appearance="glass"] #onboard-card,[data-appearance="glass"] .section,[data-appearance="glass"] .sum-card,[data-appearance="glass"] .modal-sheet,[data-appearance="glass"] #sav-modal,[data-appearance="glass"] #potros-modal,[data-appearance="glass"] #save-overlay-box,[data-appearance="glass"] .month-plan-panel,[data-appearance="glass"] #edit-drawer{background:rgba(255,255,255,.18)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border:1px solid rgba(255,255,255,.35)!important;box-shadow:0 4px 24px rgba(255,255,255,.08)!important}
+[data-appearance="glass"] #nav{background:rgba(255,255,255,.55)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important}
+[data-appearance="glass"] #upload-zone{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Poppins',sans-serif;background:var(--th-bg);min-height:100vh;color:var(--th-text);padding-bottom:calc(70px + env(safe-area-inset-bottom))}
@@ -933,6 +938,9 @@ function updateThemeBtns(){
 }
 // Apply saved theme on load
 (function(){var t=localStorage.getItem('mf_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);})();
+function setAppearance(a){if(a==='glass'){document.documentElement.setAttribute('data-appearance','glass');}else{document.documentElement.removeAttribute('data-appearance');}localStorage.setItem('mf_appearance',a);updateAppearanceBtns();}
+function updateAppearanceBtns(){var cur=localStorage.getItem('mf_appearance')||'bijela';document.querySelectorAll('.appearance-btn').forEach(function(b){b.style.outline=b.dataset.a===cur?'3px solid var(--th1)':'none';b.style.outlineOffset='3px';});}
+(function(){var a=localStorage.getItem('mf_appearance');if(a==='glass')document.documentElement.setAttribute('data-appearance','glass');})();
 function setAppearance(a){if(a==='glass'){document.documentElement.setAttribute('data-appearance','glass');}else{document.documentElement.removeAttribute('data-appearance');}localStorage.setItem('mf_appearance',a);updateAppearanceBtns();}
 function updateAppearanceBtns(){var cur=localStorage.getItem('mf_appearance')||'bijela';document.querySelectorAll('.appearance-btn').forEach(function(b){b.style.outline=b.dataset.a===cur?'3px solid var(--th1)':'none';b.style.outlineOffset='3px';});}
 (function(){var a=localStorage.getItem('mf_appearance');if(a==='glass')document.documentElement.setAttribute('data-appearance','glass');})();
@@ -3981,6 +3989,13 @@ function syncAmtDisplay(inp){
           <span style="font-size:11px;color:var(--th-text)">Crna</span>
         </button>
       </div>
+    <div style="margin-top:18px">
+      <div style="font-size:11px;font-weight:700;color:#7090b0;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">Izgled boxova</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="appearance-btn" data-a="bijela" onclick="setAppearance('bijela')" style="background:#fff;border:1.5px solid #dde3f0;border-radius:12px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#1a1a2e">☐ Bijela</button>
+        <button class="appearance-btn" data-a="glass" onclick="setAppearance('glass')" style="background:rgba(200,220,255,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.6);border-radius:12px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#1a1a2e">◈ Glass</button>
+      </div>
+    </div>
     <div style="margin-top:18px">
       <div style="font-size:11px;font-weight:700;color:#7090b0;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">Izgled boxova</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
