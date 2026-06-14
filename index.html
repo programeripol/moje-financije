@@ -192,19 +192,22 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--th1);bac
 .fl-group{background:#fff;border:1px solid #e8edf8;border-radius:16px;margin-bottom:14px;overflow:visible}
 .fl-field{position:relative;border-bottom:1px solid #f0f4ff}
 .fl-field:last-child{border-bottom:none}
-.fl-field>input{display:block;width:100%;padding:24px 14px 8px;font-size:15px;font-family:inherit;color:var(--th-text);background:transparent;border:none;outline:none;-webkit-appearance:none;box-sizing:border-box}
-.fl-lbl{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:#94a3b8;pointer-events:none;transition:all .18s cubic-bezier(.4,0,.2,1);z-index:1}
-.fl-field>input::placeholder{color:transparent;transition:color .15s}.fl-field>input:focus::placeholder{color:#b0b8cc}
-.fl-field>input:focus~.fl-lbl,.fl-field>input:not(:placeholder-shown)~.fl-lbl,.fl-field:focus-within .fl-lbl,.fl-field.fl-has-val .fl-lbl{top:9px;transform:none;font-size:10px;font-weight:600;color:var(--th1);letter-spacing:.06em;text-transform:uppercase}
+.fl-field>input{display:block;width:100%;padding:16px 14px;min-height:54px;font-size:15px;font-family:inherit;color:var(--th-text);background:transparent;border:none;outline:none;-webkit-appearance:none;box-sizing:border-box;transition:padding .15s}
+.fl-field:focus-within>input,.fl-field.fl-has-val>input{padding:24px 14px 8px}
+.fl-lbl{position:absolute;left:14px;top:8px;transform:none;font-size:11px;font-weight:500;color:var(--th1);pointer-events:none;opacity:0;transition:opacity .18s;z-index:1}
+.fl-field:focus-within .fl-lbl,.fl-field.fl-has-val .fl-lbl{opacity:1}
+.fl-field>input::placeholder{color:#94a3b8}
 .fl-row{display:flex}
 .fl-row>.fl-field{flex:1}
 .fl-row>.fl-field+.fl-field{border-left:1px solid #f0f4ff}
-.fl-amt{display:flex;align-items:center;padding:24px 14px 8px}
+.fl-amt{display:flex;align-items:center;padding:16px 14px;min-height:54px;transition:padding .15s}
+.fl-field:focus-within .fl-amt,.fl-field.fl-has-val .fl-amt{padding:24px 14px 8px}
 .fl-amt input{flex:1;border:none;background:transparent;font-size:15px;font-family:inherit;color:var(--th-text);outline:none;padding:0;min-width:0}
 .fl-amt span{color:#aaa;font-size:15px;flex-shrink:0}
-.csel.fl-csel{border:none;border-radius:0;background:transparent;padding:24px 14px 8px;min-height:56px}
-#fl-kat .fl-lbl{opacity:0;top:9px;transform:none;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;transition:opacity .18s}
-#fl-kat.fl-has-val .fl-lbl,#fl-kat.fl-open .fl-lbl{opacity:1;color:var(--th1)}
+.csel.fl-csel{border:none;border-radius:0;background:transparent;padding:16px 14px;min-height:54px;transition:padding .15s}
+.fl-field.fl-has-val .csel.fl-csel,.fl-field.fl-open .csel.fl-csel{padding:24px 14px 8px}
+#fl-kat .fl-lbl{opacity:0;transition:opacity .18s}
+#fl-kat.fl-has-val .fl-lbl,#fl-kat.fl-open .fl-lbl{opacity:1}
 #receipt-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px}
 #pdf-preview{display:none;width:100%;border-radius:12px;margin-bottom:10px;background:#f1f5f9;padding:20px 16px;text-align:center;cursor:pointer}
 #pdf-preview .pdf-icon{font-size:40px;margin-bottom:6px}
@@ -562,7 +565,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
   <div class="fl-group">
     <div class="fl-field">
-      <input type="text" id="meta-store" placeholder="Lidl, frizerka, Netflix…" autocomplete="off">
+      <input type="text" id="meta-store" placeholder="Naziv" autocomplete="off">
       <label class="fl-lbl" for="meta-store">Naziv <span class="req">*</span></label>
     </div>
     <div class="fl-row">
@@ -572,7 +575,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       </div>
       <div class="fl-field" id="fl-iznos">
         <div class="fl-amt">
-          <input type="text" id="meta-amount" class="field-input" inputmode="decimal" placeholder=" " onblur="fmtAmtBlur(this);document.getElementById('fl-iznos').classList.toggle('fl-has-val',!!this.value.trim())" onfocus="fmtAmtFocus(this)">
+          <input type="text" id="meta-amount" class="field-input" inputmode="decimal" placeholder="Iznos" onblur="fmtAmtBlur(this);document.getElementById('fl-iznos').classList.toggle('fl-has-val',!!this.value.trim())" onfocus="fmtAmtFocus(this)">
           <span>€</span>
         </div>
         <label class="fl-lbl" for="meta-amount">Iznos <span class="req">*</span></label>
@@ -636,7 +639,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <label class="fl-lbl" for="meta-cat">Kategorija <span class="req">*</span></label>
     </div>
     <div class="fl-field">
-      <input type="text" id="meta-note" placeholder=" ">
+      <input type="text" id="meta-note" placeholder="Opis">
       <label class="fl-lbl" for="meta-note">Opis</label>
     </div>
   </div>
@@ -3743,7 +3746,7 @@ function syncAmtDisplay(inp){
   </div>
   <div id="edit-img-wrap" style="display:none;margin-bottom:14px;cursor:pointer;border-radius:12px;overflow:hidden;position:relative"><div id="edit-img-spinner" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f0f4ff;border-radius:12px"><span class="spin-dot"></span></div><img id="edit-img-thumb" style="width:100%;max-height:160px;object-fit:cover;display:block;border-radius:12px;opacity:0;transition:opacity .3s"></div>
   <div class="row2">
-    <div class="field"><label>Naziv <span class="req">*</span></label><input type="text" id="edit-store" placeholder="Lidl, frizerka, Netflix…"></div>
+    <div class="field"><label>Naziv <span class="req">*</span></label><input type="text" id="edit-store" placeholder="Naziv"></div>
     <div class="field"><label>Datum <span class="req">*</span></label><input type="date" id="edit-date"></div>
   </div>
   <div class="field"><label>Iznos <span class="req">*</span></label><div class="euro-suffix"><input type="text" id="edit-amount" class="field-input" inputmode="decimal" placeholder="0,00 €" onblur="fmtAmtBlur(this)" onfocus="fmtAmtFocus(this)"></div></div>
