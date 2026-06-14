@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "hr.imasemozese.financije",
+        "sha256_cert_fingerprints": ["69:ED:0A:47:F1:AB:E9:E4:D5:52:9B:C0:0B:9B:64:61:C9:2C:EF:D4:3C:EB:CF:55:B4:C8:6A:99:49:56:24:8A"]
+      }
+    }]
