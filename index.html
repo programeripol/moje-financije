@@ -23,6 +23,10 @@
 [data-theme="olive"]{--th1:#6b8046;--th1r:107,128,70;--th2:#6b8046;--th-bg:#f0f4e8}
 [data-theme="lila"]{--th1:#b792d2;--th1r:183,146,210;--th2:#b792d2;--th-bg:#f5eefa}
 [data-theme="black"]{--th1:#2a2a2a;--th1r:42,42,42;--th2:#444;--th-bg:#111;--th-text:#e0e0e0;--th-card:#1e1e1e;--th-surface:#252525}
+/* ── GLASS ── */
+[data-appearance="glass"] .card,[data-appearance="glass"] .goal-card,[data-appearance="glass"] .g-card,[data-appearance="glass"] .collapsible-card,[data-appearance="glass"] #login-card,[data-appearance="glass"] #onboard-card,[data-appearance="glass"] .section,[data-appearance="glass"] .sum-card,[data-appearance="glass"] .modal-sheet,[data-appearance="glass"] #sav-modal,[data-appearance="glass"] #potros-modal,[data-appearance="glass"] #save-overlay-box,[data-appearance="glass"] .month-plan-panel,[data-appearance="glass"] #edit-drawer{background:rgba(255,255,255,.18)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border:1px solid rgba(255,255,255,.35)!important;box-shadow:0 4px 24px rgba(255,255,255,.08)!important}
+[data-appearance="glass"] #nav{background:rgba(255,255,255,.55)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important}
+[data-appearance="glass"] #upload-zone{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Poppins',sans-serif;background:var(--th-bg);min-height:100vh;color:var(--th-text);padding-bottom:calc(70px + env(safe-area-inset-bottom))}
@@ -929,6 +933,9 @@ function updateThemeBtns(){
 }
 // Apply saved theme on load
 (function(){var t=localStorage.getItem('mf_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);})();
+function setAppearance(a){if(a==='glass'){document.documentElement.setAttribute('data-appearance','glass');}else{document.documentElement.removeAttribute('data-appearance');}localStorage.setItem('mf_appearance',a);updateAppearanceBtns();}
+function updateAppearanceBtns(){var cur=localStorage.getItem('mf_appearance')||'bijela';document.querySelectorAll('.appearance-btn').forEach(function(b){b.style.outline=b.dataset.a===cur?'3px solid var(--th1)':'none';b.style.outlineOffset='3px';});}
+(function(){var a=localStorage.getItem('mf_appearance');if(a==='glass')document.documentElement.setAttribute('data-appearance','glass');})();
 const PHOTO_WALLPAPERS=[{"id": "garfield_1", "file": "garfield 1.jpg", "group": "Garfield"}, {"id": "garfield_10", "file": "garfield 10.jpg", "group": "Garfield"}, {"id": "garfield_2", "file": "garfield 2.jpg", "group": "Garfield"}, {"id": "garfield_3", "file": "garfield 3.jpg", "group": "Garfield"}, {"id": "garfield_4", "file": "garfield 4.jpg", "group": "Garfield"}, {"id": "garfield_5", "file": "garfield 5.jpg", "group": "Garfield"}, {"id": "garfield_6", "file": "garfield 6.jpg", "group": "Garfield"}, {"id": "garfield_7", "file": "garfield 7.jpg", "group": "Garfield"}, {"id": "garfield_8", "file": "garfield 8.jpg", "group": "Garfield"}, {"id": "garfield_9", "file": "garfield 9.jpg", "group": "Garfield"}, {"id": "snoopy_1", "file": "snoopy 1.jpg", "group": "Snoopy"}, {"id": "summer_1", "file": "summer 1.jpg", "group": "Summer"}, {"id": "wallpaper_friends_1", "file": "wallpaper friends 1.jpg", "group": "Friends"}, {"id": "wallpaper_friends_11", "file": "wallpaper friends 11.jpg", "group": "Friends"}, {"id": "wallpaper_friends_12", "file": "wallpaper friends 12.jpg", "group": "Friends"}, {"id": "wallpaper_friends_13", "file": "wallpaper friends 13.jpg", "group": "Friends"}, {"id": "wallpaper_friends_2", "file": "wallpaper friends 2.jpg", "group": "Friends"}, {"id": "wallpaper_friends_4", "file": "wallpaper friends 4.jpg", "group": "Friends"}, {"id": "wallpaper_friends_5", "file": "wallpaper friends 5.jpg", "group": "Friends"}, {"id": "wallpaper_friends_6", "file": "wallpaper friends 6.jpg", "group": "Friends"}, {"id": "wallpaper_friends_7", "file": "wallpaper friends 7.jpg", "group": "Friends"}, {"id": "wallpaper_friends_8", "file": "wallpaper friends 8.jpg", "group": "Friends"}, {"id": "wallpaper_friends_9", "file": "wallpaper friends 9.jpg", "group": "Friends"}, {"id": "wicked_1", "file": "wicked 1.jpg", "group": "Wicked"}, {"id": "wicked_10", "file": "wicked 10.jpg", "group": "Wicked"}, {"id": "wicked_11", "file": "wicked 11.jpg", "group": "Wicked"}, {"id": "wicked_13", "file": "wicked 13.jpg", "group": "Wicked"}, {"id": "wicked_15", "file": "wicked 15.jpg", "group": "Wicked"}, {"id": "wicked_16", "file": "wicked 16.jpg", "group": "Wicked"}, {"id": "wicked_3", "file": "wicked 3.jpg", "group": "Wicked"}, {"id": "wicked_4", "file": "wicked 4.jpg", "group": "Wicked"}, {"id": "wicked_6", "file": "wicked 6.jpg", "group": "Wicked"}, {"id": "wicked_7", "file": "wicked 7.jpg", "group": "Wicked"}, {"id": "wicked_8", "file": "wicked 8.jpg", "group": "Wicked"}, {"id": "wicked_9", "file": "wicked 9.jpg", "group": "Wicked"}];
 function setWallpaper(id){
   if(!id||id==='none'){
@@ -3974,6 +3981,13 @@ function syncAmtDisplay(inp){
           <span style="font-size:11px;color:var(--th-text)">Crna</span>
         </button>
       </div>
+    <div style="margin-top:18px">
+      <div style="font-size:11px;font-weight:700;color:#7090b0;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">Izgled boxova</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="appearance-btn" data-a="bijela" onclick="setAppearance('bijela')" style="background:#fff;border:1.5px solid #dde3f0;border-radius:12px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#1a1a2e">☐ Bijela</button>
+        <button class="appearance-btn" data-a="glass" onclick="setAppearance('glass')" style="background:rgba(200,220,255,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.6);border-radius:12px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#1a1a2e">◈ Glass</button>
+      </div>
+    </div>
       <div style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Pozadina</div>
       <div id="wp-grid"></div>
     </div>
