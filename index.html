@@ -23,6 +23,7 @@
 [data-theme="olive"]{--th1:#6b8046;--th1r:107,128,70;--th2:#6b8046;--th-bg:#f0f4e8}
 [data-theme="lila"]{--th1:#b792d2;--th1r:183,146,210;--th2:#b792d2;--th-bg:#f5eefa}
 [data-theme="black"]{--th1:#2a2a2a;--th1r:42,42,42;--th2:#444;--th-bg:#111;--th-text:#e0e0e0;--th-card:#1e1e1e;--th-surface:#252525}
+.theme-btn[style*="3px solid"] > div:first-child{box-shadow:inset 3px 3px 8px rgba(0,0,0,.25),inset -1px -1px 4px rgba(255,255,255,.1)!important;transform:scale(.93)!important}
 /* ── GLASS ── */
 [data-appearance="glass"] .card,[data-appearance="glass"] .goal-card,[data-appearance="glass"] .g-card,[data-appearance="glass"] .collapsible-card,[data-appearance="glass"] #login-card,[data-appearance="glass"] #onboard-card,[data-appearance="glass"] .section,[data-appearance="glass"] .sum-card,[data-appearance="glass"] .modal-sheet,[data-appearance="glass"] #sav-modal,[data-appearance="glass"] #potros-modal,[data-appearance="glass"] #save-overlay-box,[data-appearance="glass"] .month-plan-panel,[data-appearance="glass"] #edit-drawer{background:rgba(255,255,255,.18)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border:1px solid rgba(255,255,255,.35)!important;box-shadow:0 4px 24px rgba(255,255,255,.08)!important}
 [data-appearance="glass"] #nav{background:rgba(255,255,255,.55)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important}
@@ -953,9 +954,10 @@ function updateThemeBtns(){
 }
 // Apply saved theme on load
 (function(){var t=localStorage.getItem('mf_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);})();
+function setCustomWallpaper(input){var file=input.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(e){var dataUrl=e.target.result;localStorage.setItem('mf_wallpaper','__custom__');localStorage.setItem('mf_wp_custom_img',dataUrl);document.documentElement.style.setProperty('--wp-url','url('+dataUrl+')');document.documentElement.classList.add('has-wp');document.querySelectorAll('.wp-btn').forEach(function(b){b.style.outline='none';});var cb=document.getElementById('wp-custom-btn');if(cb){cb.style.outline='3px solid var(--th1)';cb.style.outlineOffset='3px';}};reader.readAsDataURL(file);input.value='';}
 function setAppearance(a){if(a==='glass'){document.documentElement.setAttribute('data-appearance','glass');}else{document.documentElement.removeAttribute('data-appearance');}localStorage.setItem('mf_appearance',a);updateAppearanceBtns();}
 function updateAppearanceBtns(){var cur=localStorage.getItem('mf_appearance')||'bijela';document.querySelectorAll('.appearance-btn').forEach(function(b){b.style.outline=b.dataset.a===cur?'3px solid var(--th1)':'none';b.style.outlineOffset='3px';});}
-(function(){var a=localStorage.getItem('mf_appearance');if(a==='glass')document.documentElement.setAttribute('data-appearance','glass');})();
+(function(){var a=localStorage.getItem('mf_appearance');if(a==='glass')document.documentElement.setAttribute('data-appearance','glass');var _cw=localStorage.getItem('mf_wallpaper');if(_cw==='__custom__'){var _ci=localStorage.getItem('mf_wp_custom_img');if(_ci){document.documentElement.style.setProperty('--wp-url','url('+_ci+')');document.documentElement.classList.add('has-wp');}}})();
 function setAppearance(a){if(a==='glass'){document.documentElement.setAttribute('data-appearance','glass');}else{document.documentElement.removeAttribute('data-appearance');}localStorage.setItem('mf_appearance',a);updateAppearanceBtns();}
 function updateAppearanceBtns(){var cur=localStorage.getItem('mf_appearance')||'bijela';document.querySelectorAll('.appearance-btn').forEach(function(b){b.style.outline=b.dataset.a===cur?'3px solid var(--th1)':'none';b.style.outlineOffset='3px';});}
 (function(){var a=localStorage.getItem('mf_appearance');if(a==='glass')document.documentElement.setAttribute('data-appearance','glass');})();
@@ -3972,47 +3974,43 @@ function syncAmtDisplay(inp){
   </div>
   <div style="overflow-y:auto;flex:1;padding:0 20px 28px" id="sav-ov-body"></div>
 </div>
-<div id="settings-modal" style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.45);transition:opacity .25s;opacity:0" onclick="if(event.target===this)closeSettings()">
-  <div id="settings-sheet" class="settings-sheet" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)">
-    <div style="padding:14px 0 6px;cursor:grab;text-align:center;flex-shrink:0;touch-action:none" ontouchstart="setDragStart(event)" ontouchmove="setDragMove(event)" ontouchend="setDragEnd(event)">
+<div id="settings-modal" onclick="if(event.target===this)closeSettings()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center">
+  <div id="settings-sheet" class="settings-sheet" style="background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:500px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:14px 0 6px;cursor:grab;text-align:center;flex-shrink:0;touch-action:none">
       <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
     </div>
     <div style="padding:4px 20px 12px;flex-shrink:0">
-      <h2 style="font-size:17px;font-weight:600;color:var(--th-text);margin:0">Postavke</h2>
+      <p style="font-size:17px;font-weight:600;color:var(--th-text);margin:0">Postavke</p>
     </div>
     <div style="overflow-y:auto;flex:1;padding:0 20px 32px;-webkit-overflow-scrolling:touch">
-      <div style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Teme</div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin-bottom:24px">
-        <button onclick="setTheme('default')" class="theme-btn" data-t="default" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
-          <span style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--th1),#1e88e5);display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
-          <span style="font-size:11px;color:var(--th-text)">Default</span>
-        </button>
-        <button onclick="setTheme('blue')" class="theme-btn" data-t="blue" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
-          <span style="width:44px;height:44px;border-radius:50%;background:#00bfff;display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
-          <span style="font-size:11px;color:var(--th-text)">Plava</span>
-        </button>
-        <button onclick="setTheme('olive')" class="theme-btn" data-t="olive" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
-          <span style="width:44px;height:44px;border-radius:50%;background:#6b8046;display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
-          <span style="font-size:11px;color:var(--th-text)">Maslinasta</span>
-        </button>
-        <button onclick="setTheme('lila')" class="theme-btn" data-t="lila" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
-          <span style="width:44px;height:44px;border-radius:50%;background:#b792d2;display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
-          <span style="font-size:11px;color:var(--th-text)">Lila</span>
-        </button>
-        <button onclick="setTheme('black')" class="theme-btn" data-t="black" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:0">
-          <span style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1a1a1a,#444);display:block;box-shadow:0 2px 8px rgba(0,0,0,.2)"></span>
-          <span style="font-size:11px;color:var(--th-text)">Crna</span>
-        </button>
+      <div style="margin-bottom:22px">
+        <div style="font-size:11px;font-weight:700;color:#1a1a2e;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">Teme</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button class="theme-btn" data-t="default" onclick="setTheme('default')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--th1),#1e88e5);box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Default</div></button>
+          <button class="theme-btn" data-t="blue" onclick="setTheme('blue')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:#00bfff;box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Plava</div></button>
+          <button class="theme-btn" data-t="olive" onclick="setTheme('olive')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:#6b8046;box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Maslinasta</div></button>
+          <button class="theme-btn" data-t="lila" onclick="setTheme('lila')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:#b792d2;box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Lila</div></button>
+          <button class="theme-btn" data-t="black" onclick="setTheme('black')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#1a1a1a,#444);box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Crna</div></button>
+        </div>
       </div>
-    <div style="margin-top:18px">
-      <div style="font-size:11px;font-weight:700;color:#7090b0;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">Izgled boxova</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="appearance-btn" data-a="bijela" onclick="setAppearance('bijela')" style="background:#fff;border:1.5px solid #dde3f0;border-radius:12px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#1a1a2e">☐ Bijela</button>
-        <button class="appearance-btn" data-a="glass" onclick="setAppearance('glass')" style="background:rgba(200,220,255,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.6);border-radius:12px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#1a1a2e">◈ Glass</button>
+      <div style="margin-bottom:22px">
+        <div style="font-size:11px;font-weight:700;color:#1a1a2e;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">Izgled</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="appearance-btn" data-a="bijela" onclick="setAppearance('bijela')" style="background:#fff;border:1.5px solid #dde3f0;border-radius:12px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#1a1a2e">&#9633; Bijela</button>
+          <button class="appearance-btn" data-a="glass" onclick="setAppearance('glass')" style="background:rgba(200,220,255,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.6);border-radius:12px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#1a1a2e">&#9672; Glass</button>
+        </div>
       </div>
-    </div>
-      <div style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Pozadina</div>
-      <div id="wp-grid"></div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#1a1a2e;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">Pozadina</div>
+        <div style="display:flex;gap:10px;align-items:flex-end;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch">
+          <label id="wp-custom-btn" for="wp-upload-input" title="Uploadaj svoju pozadinu iz galerije" style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex-shrink:0">
+            <div style="width:52px;height:52px;border-radius:16px;background:#f0f4ff;border:2px dashed #c0ccee;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:3px 3px 8px rgba(0,0,0,.1),-2px -2px 6px rgba(255,255,255,.8)">&#128247;</div>
+            <div style="font-size:11px;color:var(--th-text);white-space:nowrap">Galerija</div>
+          </label>
+          <input type="file" id="wp-upload-input" accept="image/*" style="display:none" onchange="setCustomWallpaper(this)">
+          <div id="wp-grid" style="display:flex;gap:10px;flex-shrink:0;align-items:flex-end"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
