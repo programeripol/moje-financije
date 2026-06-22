@@ -27,6 +27,9 @@
 [data-theme="black"] .nav-btn.active{color:#1a1a2e!important}
 [data-theme="black"]:not([data-appearance="glass"]) #s-profil{--th-text:#1a1a2e}
 [data-theme="black"]:not([data-appearance="glass"]) #income-list *,[data-theme="black"]:not([data-appearance="glass"]) #fixed-list *,[data-theme="black"]:not([data-appearance="glass"]) #variable-list *,[data-theme="black"]:not([data-appearance="glass"]) #save-goals-list *,[data-theme="black"]:not([data-appearance="glass"]) #p-income-total,[data-theme="black"]:not([data-appearance="glass"]) #p-fixed-total,[data-theme="black"]:not([data-appearance="glass"]) #p-variable-total,[data-theme="black"]:not([data-appearance="glass"]) #p-costs-total,[data-theme="black"]:not([data-appearance="glass"]) #p-save-total,[data-theme="black"]:not([data-appearance="glass"]) #profil-nm,[data-theme="black"]:not([data-appearance="glass"]) #profil-em,[data-theme="black"]:not([data-appearance="glass"]) div[onclick*="openSettings()"] *,[data-theme="black"]:not([data-appearance="glass"]) div[onclick*="signOutFromProfil"] *{color:#1a1a2e!important}
+.ps-card[data-open="0"]>*:not(.ps-hdr){display:none!important}
+.ps-hdr{cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding-bottom:4px}
+.ps-hdr .card-title{margin-bottom:0!important}
 /* ── GLASS ── */
 [data-appearance="glass"] .card,[data-appearance="glass"] .goal-card,[data-appearance="glass"] .g-card,[data-appearance="glass"] .collapsible-card,[data-appearance="glass"] #login-card,[data-appearance="glass"] #onboard-card,[data-appearance="glass"] .section,[data-appearance="glass"] .sum-card,[data-appearance="glass"] .modal-sheet,[data-appearance="glass"] #sav-modal,[data-appearance="glass"] #potros-modal,[data-appearance="glass"] #save-overlay-box,[data-appearance="glass"] .month-plan-panel,[data-appearance="glass"] #edit-drawer{background:rgba(255,255,255,.18)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border:1px solid rgba(255,255,255,.35)!important;box-shadow:0 4px 24px rgba(255,255,255,.08)!important}
 [data-appearance="glass"] #nav{background:rgba(255,255,255,.55)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important}
@@ -827,15 +830,14 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 <div class="screen" id="s-profil">
 
   <div style="display:flex;align-items:center;gap:12px;padding:0 0 20px">
-    <img id="profil-av" src="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #e8edf8;flex-shrink:0">
+    <img id="profil-av" src="" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid var(--th1);flex-shrink:0">
     <div>
       <div id="profil-nm" style="font-size:15px;font-weight:600;color:var(--th-text)"></div>
       <div id="profil-em" style="font-size:12px;color:#94a3b8;margin-top:2px"></div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">Prihodi (mj/€)</div>
+  <div class="card ps-card" data-open="0" id="ps-card-income"><div class="ps-hdr" onclick="togglePS('income')"><div class="card-title">Prihodi (mj/€)</div><span id="ps-c-income" style="font-size:20px;color:#aaa;transition:transform .3s;display:inline-block;line-height:1">▾</span></div>
     <div id="income-list"></div>
     <button type="button" class="add-goal-btn" onclick="addIncomeGoal()">+ Dodaj prihod</button>
     <div class="plan-total-row" style="margin-top:10px">
@@ -844,8 +846,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title" style="margin-bottom:4px">Troškovi (mj/€)</div>
+  <div class="card ps-card" data-open="0" id="ps-card-troskovi"><div class="ps-hdr" onclick="togglePS('troskovi')"><div class="card-title">Troškovi (mj/€)</div><span id="ps-c-troskovi" style="font-size:20px;color:#aaa;transition:transform .3s;display:inline-block;line-height:1">▾</span></div>
 
     <div class="costs-section-title">Fiksni</div>
     <div id="fixed-list"></div>
@@ -870,8 +871,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">Štednja (mj/€)</div>
+  <div class="card ps-card" data-open="0" id="ps-card-stednja"><div class="ps-hdr" onclick="togglePS('stednja')"><div class="card-title">Štednja (mj/€)</div><span id="ps-c-stednja" style="font-size:20px;color:#aaa;transition:transform .3s;display:inline-block;line-height:1">▾</span></div>
     <div id="save-goals-list"></div>
     <button type="button" class="add-goal-btn" onclick="addSavingsGoal()">+ Dodaj cilj štednje</button>
     <div class="plan-total-row" style="margin-top:10px">
@@ -1885,7 +1885,8 @@ async function findNextTrackerRow(monthName){
 }
 
 // ── PROFILE ──────────────────────────────────────────────────────────
-async function loadProfile(){
+async function togglePS(s){var c=document.getElementById("ps-card-"+s);if(!c)return;var o=c.getAttribute("data-open")==="1";c.setAttribute("data-open",o?"0":"1");var v=document.getElementById("ps-c-"+s);if(v)v.style.transform=o?"":"rotate(180deg)";}
+function loadProfile(){
   try{
     const rows = await getRows(sheetId, 'Profil', 'A2:B100');
     profileData = {};
