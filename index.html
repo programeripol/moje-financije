@@ -837,9 +837,9 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
   </div>
 
-  <div class="card ps-card" data-open="0" id="ps-card-income"><div class="ps-hdr" onclick="togglePS('income')"><div class="card-title">Prihodi (mj/€)</div><span id="ps-c-income" style="font-size:20px;color:#aaa;transition:transform .3s;display:inline-block;line-height:1">▾</span></div>
+  <div class="card ps-card" data-open="0" id="ps-card-income"><div class="ps-hdr" onclick="togglePS('income')"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px;line-height:1">💰</span><div class="card-title">Prihod (mj/€)</div></div><div style="display:flex;align-items:center;gap:6px"><span id="ps-badge-income" style="font-size:12px;font-weight:700;color:#fff;background:var(--th1);padding:2px 9px;border-radius:20px;opacity:0;transition:opacity .3s"></span><span id="ps-c-income" style="font-size:20px;color:#aaa;transition:transform .3s;display:inline-block;line-height:1">▾</span></div></div>
     <div id="income-list"></div>
-    <button type="button" class="add-goal-btn" onclick="addIncomeGoal()">+ Dodaj prihod</button>
+    <button type="button" class="add-goal-btn" onclick="addIncomeGoal()">+ + Dodaj</button>
     <div class="plan-total-row" style="margin-top:10px">
       <span class="plan-label" style="font-weight:600;color:#1a1a2e;margin:0">Ukupni prihodi</span>
       <span class="plan-total-val" id="p-income-total">—</span>
@@ -1885,7 +1885,7 @@ async function findNextTrackerRow(monthName){
 }
 
 // ── PROFILE ──────────────────────────────────────────────────────────
-function togglePS(s){var c=document.getElementById("ps-card-"+s);if(!c)return;var o=c.getAttribute("data-open")==="1";c.setAttribute("data-open",o?"0":"1");var v=document.getElementById("ps-c-"+s);if(v)v.style.transform=o?"":"rotate(180deg)";}
+function togglePS(s){var c=document.getElementById("ps-card-"+s);if(!c)return;var o=c.getAttribute("data-open")==="1";c.setAttribute("data-open",o?"0":"1");var v=document.getElementById("ps-c-"+s);if(v)v.style.transform=o?"":"rotate(180deg)";var b=document.getElementById("ps-badge-"+s);var t=document.getElementById("p-"+s+"-total");if(b&&t){b.textContent=o?t.textContent:"";b.style.opacity=o?"1":"0";}}
 async function loadProfile(){
   try{
     const rows = await getRows(sheetId, 'Profil', 'A2:B100');
@@ -2294,7 +2294,7 @@ async function saveIncomePlan(){
   try {
     const existing = await loadMonthPlan(viewMonthIdx) || {};
     await saveMonthPlan(viewMonthIdx, {...existing, inc_json: JSON.stringify(mPlanIncGoals)});
-    showToast('Prihodi spremljeni');
+    showToast('Prihod spremljen');
   } catch(e){ showToast('Greška: ' + e.message); }
   hideSaveOverlay();
 }
@@ -3909,7 +3909,7 @@ function syncAmtDisplay(inp){
       <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
     </div>
     <div style="padding:2px 20px 14px">
-      <div style="font-size:18px;font-weight:700;color:var(--th1)">Prihodi</div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:18px;font-weight:700;color:var(--th1)">Prihod</div><button onclick="if(confirm('Zatvori bez spremanja?'))closeIncModal()" style="background:none;border:none;font-size:22px;color:#aaa;cursor:pointer;line-height:1;padding:0 0 2px 8px">✕</button></div>
     </div>
     <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="inc-modal-body">
     <div id="mp-inc-list"></div>
@@ -3917,7 +3917,7 @@ function syncAmtDisplay(inp){
   </div>
     <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
       <button onclick="resetIncToProfile()" style="width:100%;padding:10px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px">Vrati na postavke profila</button>
-<button onclick="saveIncomeFromModal()" style="width:100%;padding:14px;background:var(--th1);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi prihode</button>
+<button onclick="saveIncomeFromModal()" style="width:100%;padding:14px;background:var(--th1);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">Spremi</button>
     </div>
   </div>
 
