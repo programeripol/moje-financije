@@ -1885,8 +1885,8 @@ async function findNextTrackerRow(monthName){
 }
 
 // ── PROFILE ──────────────────────────────────────────────────────────
-async function togglePS(s){var c=document.getElementById("ps-card-"+s);if(!c)return;var o=c.getAttribute("data-open")==="1";c.setAttribute("data-open",o?"0":"1");var v=document.getElementById("ps-c-"+s);if(v)v.style.transform=o?"":"rotate(180deg)";}
-function loadProfile(){
+function togglePS(s){var c=document.getElementById("ps-card-"+s);if(!c)return;var o=c.getAttribute("data-open")==="1";c.setAttribute("data-open",o?"0":"1");var v=document.getElementById("ps-c-"+s);if(v)v.style.transform=o?"":"rotate(180deg)";}
+async function loadProfile(){
   try{
     const rows = await getRows(sheetId, 'Profil', 'A2:B100');
     profileData = {};
