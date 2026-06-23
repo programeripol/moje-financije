@@ -762,8 +762,9 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <div>
       <div class="sum-label" style="margin:0 0 4px">Štednja</div>
       <div id="sav-acc-total" class="sum-val-main">—</div>
+      <div id="sav-card-donut" style="margin:8px 0 4px"></div>
     </div>
-    <div id="sav-card-donut" style="margin:8px 0 4px"></div><div id="sav-per-fund" style="display:none"></div>
+    <div id="sav-per-fund" style="display:none"></div>
     <div id="sav-bars" style="display:none"></div>
     <div id="sav-total" style="display:none"></div>
   </div>
@@ -3539,7 +3540,7 @@ function renderSavCardDonut(){
   circles+='<text x="'+CX+'" y="40" text-anchor="middle" font-size="13" fill="#1a1a2e" font-weight="600" font-family="sans-serif">'+overallPct+'%</text>';
   circles+='<text x="'+CX+'" y="53" text-anchor="middle" font-size="8" fill="#7090b0" font-family="sans-serif">od cilja</text>';
   const fmt=v=>(v||0).toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
-  el.innerHTML='<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px 16px 12px;margin-bottom:4px;text-align:center"><svg width="90" height="90" viewBox="0 0 90 90" style="display:block;margin:0 auto 10px">'+circles+'</svg><div style="display:flex;justify-content:space-around"><div><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj</div><div style="font-size:15px;font-weight:700;color:var(--th-text)">'+fmt(totalGoal)+'</div></div><div><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ušteđeno</div><div style="font-size:15px;font-weight:700;color:#6366f1">'+fmt(totalSaved)+'</div></div></div></div>';
+  el.innerHTML='<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:4px;display:flex;align-items:center;gap:16px"><svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">'+circles+'</svg><div style="flex:1"><div style="font-size:11px;color:#94a3b8;margin-bottom:3px">Ukupni cilj</div><div style="font-size:16px;font-weight:700;color:var(--th-text);margin-bottom:8px">'+fmt(totalGoal)+'</div><div style="font-size:11px;color:#94a3b8;margin-bottom:3px">Ušteđeno</div><div style="font-size:16px;font-weight:700;color:#6366f1">'+fmt(totalSaved)+'</div></div></div>';
 }
 function ciljanPadez(n){
   var abs=Math.abs(Math.round(n));
