@@ -3559,20 +3559,18 @@ function toggleSavCard(){
 function renderSavCardExpand(){
   var el=document.getElementById('sav-card-expand');
   if(!el)return;
-  var goals=savingsGoals||[];
-  if(!goals.length){el.innerHTML='<div style="text-align:center;color:#94a3b8;font-size:13px;padding:10px 0">Nema ciljeva</div>';return;}
+  var goals=(savingsGoals||[]).filter(function(g){return g.name;});
+  if(!goals.length){el.innerHTML='<div style="text-align:center;color:#94a3b8;font-size:13px;padding:10px 0">Nema ciljeva štednje</div>';return;}
   var colors=['#6366f1','#8b5cf6','#a78bfa','#c4b5fd'];
   var fmt=function(v){return(parseFloat(v)||0).toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';};
-  var totalGoal=goals.reduce(function(s,g){return s+(parseFloat(g.goal)||0);},0);
-  var accEl=document.getElementById('sav-acc-total');
-  var raw=(accEl?accEl.textContent:'').replace(/[^d,]/g,'').replace(',','.');
-  var totalSaved=parseFloat(raw)||0;
+  var n=goals.length;
+  var pre=window._lastPreostalo||0;
+  var perFund=n>0?pre/n:0;
   var html='';
   goals.forEach(function(g,i){
-    var goalAmt=parseFloat(g.goal)||0;
-    var color=colors[i%4];
-    var saved=totalGoal>0?totalSaved*(goalAmt/totalGoal):0;
-    var pct=goalAmt>0?Math.min(100,Math.round(saved/goalAmt*100)):0;
+    var goal=parseFloat(g.amount)||0;
+    var color=colors[i%colors.length];
+    var pct=goal>0?Math.min(100,Math.round(perFund/goal*100)):0;
     html+='<div style="background:#f8f9ff;border-radius:12px;padding:12px 14px;margin-bottom:8px">';
     html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
     html+='<div style="font-weight:600;font-size:14px;color:#1a1a2e">'+g.name+'</div>';
@@ -3582,8 +3580,8 @@ function renderSavCardExpand(){
     html+='<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;transition:width .6s"></div>';
     html+='</div>';
     html+='<div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8">';
-    html+='<span>Cilj: <span style="color:var(--th-text);font-weight:600">'+fmt(goalAmt)+'</span></span>';
-    if(g.monthly)html+='<span style="color:'+color+';font-weight:600">'+fmt(parseFloat(g.monthly))+'/mj</span>';
+    html+='<span>Ušteđeno: <span style="color:'+color+';font-weight:600">'+fmt(perFund)+'</span></span>';
+    html+='<span>Cilj: <span style="color:var(--th-text);font-weight:600">'+fmt(goal)+'</span></span>';
     html+='</div></div>';
   });
   el.innerHTML=html;
