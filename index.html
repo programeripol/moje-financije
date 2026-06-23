@@ -3531,10 +3531,16 @@ function renderSavCardDonut(){
   const pct=totalGoal>0?Math.min(1,totalSaved/totalGoal):0;
   const savedArc=pct*circ;
   const overallPct=Math.round(pct*100);
+  const colors=['#6366f1','#ec4899','#f59e0b','#10b981'];
   let arcs='<circle cx="45" cy="45" r="36" fill="none" stroke="#e8edf8" stroke-width="11"/>';
-  if(savedArc>0.01){
-    arcs+='<circle cx="45" cy="45" r="36" fill="none" stroke="#6366f1" stroke-width="11" stroke-dasharray="'+savedArc+' '+circ+'" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 45 45)"/>';
-  }
+  let off=0;
+  goals.forEach((g,i)=>{
+    const arcLen=totalGoal>0?((parseFloat(g.amount)||0)/totalGoal)*savedArc:0;
+    if(arcLen>0.01){
+      arcs+='<circle cx="45" cy="45" r="36" fill="none" stroke="'+colors[i%4]+'" stroke-width="11" stroke-dasharray="'+arcLen+' '+circ+'" stroke-dashoffset="'+(-off)+'" stroke-linecap="butt" transform="rotate(-90 45 45)"/>';
+      off+=arcLen;
+    }
+  });
   arcs+='<text x="45" y="40" text-anchor="middle" font-size="13" fill="#1a1a2e" font-weight="600" font-family="sans-serif">'+overallPct+'%<\/text>';
   arcs+='<text x="45" y="53" text-anchor="middle" font-size="8" fill="#7090b0" font-family="sans-serif">od cilja<\/text>';
   el.innerHTML='<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:4px;display:flex;align-items:center;gap:16px"><svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">'+arcs+'<\/svg><div style="flex:1"><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj<\/div><div style="font-size:15px;font-weight:700;color:var(--th-text);margin-bottom:8px">'+fmt(totalGoal)+'<\/div><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ušteđeno<\/div><div style="font-size:15px;font-weight:700;color:#6366f1">'+fmt(totalSaved)+'<\/div><\/div><\/div>';
