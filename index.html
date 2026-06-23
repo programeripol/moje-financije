@@ -721,13 +721,13 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
   
 
-  <div onclick="openIncModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
+  <div onclick="openIncModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-left:3px solid var(--th1);border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
     <div>
-      <div class="sum-label" style="margin:0 0 4px">Prihodi</div>
+      <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Prihod</div>
       <div class="card-spinner" id="hero-spin-inc"><div class="card-spinner-ring"></div></div>
       <div id="inc-total-display" class="sum-val-main">—</div>
     </div>
-    
+    <div style="display:flex;align-items:center;justify-content:flex-end"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="var(--th1)" opacity=".12"/><path d="M16 10v12M10 16h12" stroke="var(--th1)" stroke-width="2" stroke-linecap="round"/></svg></div>
   </div>
   <div class="summary-cards" id="budget-hero">
     <div class="sum-card-inv" onclick="openExpModal()" style="cursor:pointer">
