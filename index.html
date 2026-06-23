@@ -3528,20 +3528,23 @@ function renderSavCardDonut(){
   const totalGoal=goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
   const totalSaved=_lastPreostalo||0;
   const circ=2*Math.PI*36;
-  const overallPct=totalGoal>0?Math.min(100,Math.round(totalSaved/totalGoal*100)):0;
-  const colors=['#3b82f6','#10b981','#f59e0b','#ec4899','#ef4444','#06b6d4','#a855f7','#f97316'];
+  const pct=totalGoal>0?Math.min(1,totalSaved/totalGoal):0;
+  const savedArc=pct*circ;
+  const overallPct=Math.round(pct*100);
+  const colors=['#f43f5e','#f97316','#eab308','#22c55e','#06b6d4','#818cf8','#a855f7','#ec4899'];
   let arcs='<circle cx="45" cy="45" r="36" fill="none" stroke="#e8edf8" stroke-width="11"/>';
   let off=0;
   goals.forEach((g,i)=>{
-    const arcLen=totalGoal>0?((parseFloat(g.amount)||0)/totalGoal)*circ:0;
+    const arcLen=totalGoal>0?((parseFloat(g.amount)||0)/totalGoal)*savedArc:0;
     if(arcLen>0.01){
-      arcs+='<circle cx="45" cy="45" r="36" fill="none" stroke="'+colors[i%colors.length]+'" stroke-width="11" stroke-dasharray="'+(arcLen-1)+' '+circ+'" stroke-dashoffset="'+(-off)+'" stroke-linecap="butt" transform="rotate(-90 45 45)"/>';
+      arcs+='<circle cx="45" cy="45" r="36" fill="none" stroke="'+colors[i%colors.length]+'" stroke-width="11" stroke-dasharray="'+arcLen+' '+circ+'" stroke-dashoffset="'+(-off)+'" stroke-linecap="butt" transform="rotate(-90 45 45)"/>';
       off+=arcLen;
     }
   });
   arcs+='<text x="45" y="40" text-anchor="middle" font-size="13" fill="#1a1a2e" font-weight="600" font-family="sans-serif">'+overallPct+'%<\/text>';
   arcs+='<text x="45" y="53" text-anchor="middle" font-size="8" fill="#7090b0" font-family="sans-serif">od cilja<\/text>';
-  el.innerHTML='<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:4px;display:flex;align-items:center;gap:16px"><svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">'+arcs+'<\/svg><div style="flex:1"><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ušteđeno<\/div><div style="font-size:15px;font-weight:700;color:#6366f1;margin-bottom:8px">'+fmt(totalSaved)+'<\/div><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj<\/div><div style="font-size:15px;font-weight:700;color:var(--th-text)">'+fmt(totalGoal)+'<\/div><\/div><\/div>';
+  const legend=goals.map((g,i)=>'<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><div style="width:8px;height:8px;border-radius:50%;background:'+colors[i%colors.length]+';flex-shrink:0"></div><div style="font-size:11px;color:#1a1a2e">'+g.name+'<\/div><\/div>').join('');
+  el.innerHTML='<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:4px;display:flex;align-items:center;gap:16px"><svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">'+arcs+'<\/svg><div style="flex:1"><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ušteđeno<\/div><div style="font-size:15px;font-weight:700;color:#6366f1;margin-bottom:8px">'+fmt(totalSaved)+'<\/div><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj<\/div><div style="font-size:13px;font-weight:600;color:var(--th-text);margin-bottom:8px">'+fmt(totalGoal)+'<\/div>'+legend+'<\/div><\/div>';
 }
 function toggleSavCard(){
   var el=document.getElementById('sav-card-expand');
