@@ -3525,28 +3525,28 @@ function loadSavingsAccumulated(preostalo){
 function renderSavCardDonut(){
   const el=document.getElementById('sav-card-donut');
   if(!el)return;
-  const goals=savingsGoals||[];
+  const goals=(savingsGoals||[]).filter(g=>g.name);
   if(!goals.length){el.innerHTML='';return;}
-  const totalGoal=goals.reduce((s,g)=>s+(parseFloat(g.goal)||0),0);
+  const fmt=v=>(v||0).toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+  const totalGoal=goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
   const accEl=document.getElementById('sav-acc-total');
-  const raw=(accEl?accEl.textContent:'').replace(/[^\d,]/g,'').replace(',','.');
-  const totalSaved=parseFloat(raw)||0;
+  const raw=(accEl?accEl.textContent:'').replace(/[^\d,.]/g,'').replace(',','.');
+  const totalSaved=parseFloat(raw)||window._lastPreostalo||0;
   const R=36,CX=45,CY=45,SW=11,circ=2*Math.PI*R;
   const colors=['#6366f1','#8b5cf6','#a78bfa','#c4b5fd'];
   const overallPct=totalGoal>0?Math.min(100,Math.round(totalSaved/totalGoal*100)):0;
-  let circles='<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="#f0f4ff" stroke-width="'+SW+'"/>';
+  let circles='<circle cx="45" cy="45" r="36" fill="none" stroke="#f0f4ff" stroke-width="11"/>';
   let off=0;
   goals.forEach((g,i)=>{
-    const arcLen=totalGoal>0?((parseFloat(g.goal)||0)/totalGoal)*circ:0;
+    const arcLen=totalGoal>0?((parseFloat(g.amount)||0)/totalGoal)*circ:0;
     if(arcLen>0.01){
-      circles+='<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="'+colors[i%4]+'" stroke-width="'+SW+'" stroke-dasharray="'+arcLen+' '+circ+'" stroke-dashoffset="'+(-off)+'" stroke-linecap="butt" transform="rotate(-90 '+CX+' '+CY+')"/>';
+      circles+='<circle cx="45" cy="45" r="36" fill="none" stroke="'+colors[i%4]+'" stroke-width="11" stroke-dasharray="'+arcLen+' '+circ+'" stroke-dashoffset="'+(-off)+'" stroke-linecap="butt" transform="rotate(-90 45 45)"/>';
       off+=arcLen;
     }
   });
-  circles+='<text x="'+CX+'" y="40" text-anchor="middle" font-size="13" fill="#1a1a2e" font-weight="600" font-family="sans-serif">'+overallPct+'%</text>';
-  circles+='<text x="'+CX+'" y="53" text-anchor="middle" font-size="8" fill="#7090b0" font-family="sans-serif">od cilja</text>';
-  const fmt=v=>(v||0).toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
-  el.innerHTML='<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:4px;display:flex;align-items:center;gap:16px"><svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">'+circles+'</svg><div style="flex:1"><div style="font-size:11px;color:#94a3b8;margin-bottom:3px">Ukupni cilj</div><div style="font-size:16px;font-weight:700;color:var(--th-text);margin-bottom:8px">'+fmt(totalGoal)+'</div><div style="font-size:11px;color:#94a3b8;margin-bottom:3px">Ušteđeno</div><div style="font-size:16px;font-weight:700;color:#6366f1">'+fmt(totalSaved)+'</div></div></div>';
+  circles+='<text x="45" y="40" text-anchor="middle" font-size="13" fill="#1a1a2e" font-weight="600" font-family="sans-serif">'+overallPct+'%<\/text>';
+  circles+='<text x="45" y="53" text-anchor="middle" font-size="8" fill="#7090b0" font-family="sans-serif">od cilja<\/text>';
+  el.innerHTML='<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:4px;display:flex;align-items:center;gap:16px"><svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">'+circles+'<\/svg><div style="flex:1"><div style="font-size:11px;color:#94a3b8;margin-bottom:3px">Ukupni cilj<\/div><div style="font-size:16px;font-weight:700;color:var(--th-text);margin-bottom:6px">'+fmt(totalGoal)+'<\/div><div style="font-size:12px;font-weight:700;color:#6366f1;margin-bottom:4px">'+overallPct+'% do cilja<\/div><div style="font-size:11px;color:#94a3b8;margin-bottom:1px">Šteđeno<\/div><div style="font-size:14px;font-weight:700;color:#6366f1">'+fmt(totalSaved)+'<\/div><\/div><\/div>';
 }
 function toggleSavCard(){
   var el=document.getElementById('sav-card-expand');
