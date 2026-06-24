@@ -3581,24 +3581,26 @@ function renderSavCardExpand(){
     html+='<span>Cilj: <span style="color:var(--th-text);font-weight:600">'+fmt(goal)+'</span></span>';
     html+='</div></div>';
   });
+  var curMon=(typeof MONTHS_HR!=='undefined'&&typeof viewMonthIdx!=='undefined')?MONTHS_HR[viewMonthIdx]:'';
+  var prevMon=(typeof MONTHS_GEN!=='undefined'&&typeof viewMonthIdx!=='undefined'&&viewMonthIdx>0)?MONTHS_GEN[viewMonthIdx-1]:'';
   var remEl=document.getElementById('bh-remaining');
   var prenosEl=document.getElementById('bh-prenos-val');
-  var prenosTag=document.getElementById('bh-prenos-tag');
   var availEl=document.getElementById('bh-total-avail');
   var remVal=remEl?remEl.textContent:'—';
   var prenosVal=prenosEl?prenosEl.textContent:'—';
-  var prenosLabel=prenosTag?prenosTag.textContent:'Prijenos';
   var availVal=availEl?availEl.textContent:'—';
   var showPrenos=prenosEl&&prenosEl.textContent&&prenosEl.textContent!=='—';
+  var curLabel=(curMon||'Ovaj mj.')+' (prihodi - rashodi)';
+  var prenosLabel=prevMon?('Prijenos iz '+prevMon):'Prijenos';
   var breakdown='<div style="background:#f0f4ff;border-radius:12px;padding:12px;margin-bottom:14px">'
     +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
-    +'<span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Ovaj mjesec</span>'
+    +'<span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">'+curLabel+'</span>'
     +'<span style="font-size:13px;font-weight:700;color:#1565c0">'+remVal+'</span>'
     +'</div>'
     +(showPrenos?'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">'+prenosLabel+'</span><span style="font-size:13px;font-weight:700;color:#1565c0;background:#e8edf8;border-radius:6px;padding:3px 8px">'+prenosVal+'</span></div>':'')
     +'<div style="border-top:1px solid #dce5f5;margin:6px 0"></div>'
     +'<div style="display:flex;justify-content:space-between;align-items:center">'
-    +'<span style="font-size:11px;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:.5px">Ukupno raspoloživo</span>'
+    +'<span style="font-size:11px;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:.5px">Ukupno</span>'
     +'<span style="font-size:14px;font-weight:700;color:#1565c0">'+availVal+'</span>'
     +'</div>'
     +'</div>';
