@@ -745,7 +745,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <span id="bh-income" style="display:none"></span>
     <span id="bh-savings" style="display:none"></span>
   </div>
-  <div onclick="openPreostaloModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
+  <div onclick="openPreostaloModal()" style="display:none;cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
     <div>
       <div class="sum-label" style="margin:0 0 4px">Preostalo</div>
       <div id="bh-total-avail" class="sum-val-main">—</div>
@@ -3581,7 +3581,28 @@ function renderSavCardExpand(){
     html+='<span>Cilj: <span style="color:var(--th-text);font-weight:600">'+fmt(goal)+'</span></span>';
     html+='</div></div>';
   });
-  el.innerHTML=html;
+  var remEl=document.getElementById('bh-remaining');
+  var prenosEl=document.getElementById('bh-prenos-val');
+  var prenosTag=document.getElementById('bh-prenos-tag');
+  var availEl=document.getElementById('bh-total-avail');
+  var remVal=remEl?remEl.textContent:'—';
+  var prenosVal=prenosEl?prenosEl.textContent:'—';
+  var prenosLabel=prenosTag?prenosTag.textContent:'Prijenos';
+  var availVal=availEl?availEl.textContent:'—';
+  var showPrenos=prenosEl&&prenosEl.textContent&&prenosEl.textContent!=='—';
+  var breakdown='<div style="background:#f0f4ff;border-radius:12px;padding:12px;margin-bottom:14px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+    +'<span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Ovaj mjesec</span>'
+    +'<span style="font-size:13px;font-weight:700;color:#1565c0">'+remVal+'</span>'
+    +'</div>'
+    +(showPrenos?'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">'+prenosLabel+'</span><span style="font-size:13px;font-weight:700;color:#1565c0;background:#e8edf8;border-radius:6px;padding:3px 8px">'+prenosVal+'</span></div>':'')
+    +'<div style="border-top:1px solid #dce5f5;margin:6px 0"></div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center">'
+    +'<span style="font-size:11px;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:.5px">Ukupno raspoloživo</span>'
+    +'<span style="font-size:14px;font-weight:700;color:#1565c0">'+availVal+'</span>'
+    +'</div>'
+    +'</div>';
+  el.innerHTML=breakdown+html;
 }
 function ciljanPadez(n){
   var abs=Math.abs(Math.round(n));
