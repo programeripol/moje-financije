@@ -745,16 +745,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <span id="bh-income" style="display:none"></span>
     <span id="bh-savings" style="display:none"></span>
   </div>
-  <div onclick="openPreostaloModal()" style="display:none;cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
-    <div>
-      <div class="sum-label" style="margin:0 0 4px">Preostalo</div>
-      <div id="bh-total-avail" class="sum-val-main">—</div>
-    </div>
-    <span id="bh-remaining" style="display:none">—</span>
-    <span id="bh-prenos-val" style="display:none">—</span>
-    <span id="bh-prenos-tag" style="display:none"></span>
-    <span id="bh-total-avail-hidden" style="display:none"></span>
-  </div>
+  
 
   
   <div style="background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px">
@@ -2433,7 +2424,7 @@ async function loadPregled(){
     const planEl = document.getElementById('bh-plan');
     if(planEl) planEl.textContent = eur(totalPlan);
     document.getElementById('bh-spent').textContent = eur(totalSpent);
-        const _rem=income-totalSpent;
+        const _rem=income-totalSpent;_bhRem=_rem;
         // prenos: manual override > auto iz prošlog mj
         const _manualKey='mf_prenos_manual_'+viewMonthIdx;
         let _pre;
@@ -3486,6 +3477,7 @@ function incDragEnd(e){if(!_incDragging)return;_incDragging=false;if(_incDragY>8
 const SAV_COLORS=['#6366f1','#8b5cf6','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899','#3b82f6','#14b8a6','#84cc16','#f97316'];
 let _savGoalsCache=null;
 let _lastPreostalo=0;
+let _bhRem=0;
 
 function loadSavingsAccumulated(preostalo){
   if(preostalo!==undefined) _lastPreostalo=preostalo;
@@ -3583,13 +3575,11 @@ function renderSavCardExpand(){
   });
   var curMon=(typeof MONTHS_HR!=='undefined'&&typeof viewMonthIdx!=='undefined')?MONTHS_HR[viewMonthIdx]:'';
   var prevMon=(typeof MONTHS_GEN!=='undefined'&&typeof viewMonthIdx!=='undefined'&&viewMonthIdx>0)?MONTHS_GEN[viewMonthIdx-1]:'';
-  var remEl=document.getElementById('bh-remaining');
-  var prenosEl=document.getElementById('bh-prenos-val');
-  var availEl=document.getElementById('bh-total-avail');
-  var remVal=remEl?remEl.textContent:'—';
-  var prenosVal=prenosEl?prenosEl.textContent:'—';
-  var availVal=availEl?availEl.textContent:'—';
-  var showPrenos=prenosEl&&prenosEl.textContent&&prenosEl.textContent!=='—';
+  var bhPre=_lastPreostalo-_bhRem;
+  var remVal=_bhRem!==0?eur(_bhRem):'—';
+  var prenosVal=Math.abs(bhPre)>0.005?eur(bhPre):'—';
+  var availVal=_lastPreostalo!==0?eur(_lastPreostalo):'—';
+  var showPrenos=Math.abs(bhPre)>0.005;
   var curLabel=(curMon||'Ovaj mj.')+' (prihodi - rashodi)';
   var prenosLabel=prevMon?('Prijenos iz '+prevMon):'Prijenos';
   var breakdown='<div style="background:#f0f4ff;border-radius:12px;padding:12px;margin-bottom:14px">'
