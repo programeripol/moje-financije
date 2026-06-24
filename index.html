@@ -3557,7 +3557,7 @@ function renderSavCardExpand(){
   var el=document.getElementById('sav-card-expand');
   if(!el)return;
   var goals=(savingsGoals||[]).filter(function(g){return g.name;});
-  if(!goals.length){el.innerHTML='<div style="text-align:center;color:#94a3b8;font-size:13px;padding:10px 0">Nema ciljeva štednje</div>';return;}
+  var noGoalMsg=goals.length?'':'<div style="text-align:center;color:#94a3b8;font-size:13px;padding:10px 0">Nema ciljeva štednje</div>';
   var colors=['#f43f5e','#f97316','#eab308','#22c55e','#06b6d4','#818cf8','#a855f7','#ec4899'];
   var fmt=function(v){return(parseFloat(v)||0).toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';};
   var n=goals.length;
@@ -3604,7 +3604,7 @@ function renderSavCardExpand(){
     +'<span style="font-size:14px;font-weight:700;color:#1565c0">'+availVal+'</span>'
     +'</div>'
     +'</div>';
-  el.innerHTML=breakdown+html;
+  el.innerHTML=breakdown+(html||noGoalMsg);
 }
 function ciljanPadez(n){
   var abs=Math.abs(Math.round(n));
