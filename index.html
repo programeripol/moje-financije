@@ -3509,7 +3509,7 @@ function loadSavingsAccumulated(preostalo){
       </div>`;
     }).join('');
   }catch(e){ if(el) el.textContent='—'; }
-  finally{ if(sp) sp.classList.remove('active'); renderSavCardDonut(); }
+  finally{ if(sp) sp.classList.remove('active'); renderSavCardDonut(); renderSavCardExpand(); }
 }
 function renderSavCardDonut(){
   const el=document.getElementById('sav-card-donut');
