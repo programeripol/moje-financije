@@ -727,7 +727,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <div class="card-spinner" id="hero-spin-inc"><div class="card-spinner-ring"></div></div>
       <div id="inc-total-display" class="sum-val-main">—</div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:flex-end"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="var(--th1)" opacity=".12"/><path d="M16 10v12M10 16h12" stroke="var(--th1)" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div style="display:flex;align-items:center;justify-content:flex-end"></div>
     <svg id="inc-card-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" style="flex-shrink:0;transition:transform .25s;align-self:center;margin-left:8px"><polyline points="6 9 12 15 18 9"/></svg>
 </div>
 <div id="inc-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-radius:0 0 14px 14px;border-left:3px solid var(--th1);overflow:hidden;margin-bottom:8px">
@@ -2207,7 +2207,7 @@ function renderMPInc(){
       <span class="drag-handle">⠿</span>
       <input type="text" class="goal-name" style="flex:1;min-width:0" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Plaća" oninput="mPlanIncGoals[${i}].name=this.value">
       <input type="text" class="goal-amt" style="width:92px;flex:0 0 92px" inputmode="decimal" placeholder="0,00 €" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanIncGoals,${i})" onblur="amtBlur(this,mPlanIncGoals,${i},()=>{})">
-      <button class="save-goal-del" onclick="removeMPInc(${i})">×</button>
+      <button class="save-goal-del" onclick="if(confirm('Obriši stavku?'))removeMPInc(${i})">×</button>
     </div>`).join('');
   setupDragSort(c, mPlanIncGoals, renderMPInc);
 }
@@ -3546,7 +3546,7 @@ function renderSavCardDonut(){
   });
   arcs+='<text x="45" y="40" text-anchor="middle" font-size="13" fill="#1a1a2e" font-weight="600" font-family="sans-serif">'+overallPct+'%<\/text>';
   arcs+='<text x="45" y="53" text-anchor="middle" font-size="8" fill="#7090b0" font-family="sans-serif">od cilja<\/text>';
-  el.innerHTML='<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:4px;display:flex;align-items:center;gap:16px"><svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">'+arcs+'<\/svg><div style="flex:1"><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ušteđeno<\/div><div style="font-size:20px;font-weight:700;color:#1565c0;margin-bottom:8px">'+fmt(totalSaved)+'<\/div><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj<\/div><div style="font-size:14px;font-weight:600;color:var(--th-text)">'+fmt(totalGoal)+'<\/div><\/div><\/div>';
+  el.innerHTML='<div style="background:#fff;border:1px solid #e8edf8;border-radius:16px;padding:16px;margin-bottom:4px;display:flex;align-items:center;gap:16px"><div style="flex:1"><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ušteđeno<\/div><div style="font-size:20px;font-weight:700;color:#1565c0;margin-bottom:8px">'+fmt(totalSaved)+'<\/div><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj<\/div><div style="font-size:14px;font-weight:600;color:var(--th-text)">'+fmt(totalGoal)+'<\/div><\/div><svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">'+arcs+'<\/svg><\/div>';
 }
 function toggleSavCard(){
   var el=document.getElementById('sav-card-expand');
