@@ -784,7 +784,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
       
       <div id="sav-total-display" class="sum-val-main">—</div></div>
-      <span id="sav-card-chev" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <svg id="sav-card-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" style="flex-shrink:0;transition:transform .25s;align-self:center;margin-left:8px"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
     <div id="sav-card-expand" style="display:none"></div>
     <div id="sav-card-donut" style="display:none;margin:8px 0 0"></div>
@@ -2622,7 +2622,7 @@ async function loadPregled(){
     }).join('');
     clearPregledLoading();
     document.getElementById('cat-list').innerHTML = _allSortedCats.length > 0 ? donutHtml + catCards : '<div class="empty-state">Nema troškova ovaj mjesec.</div>';
-    const _pdp=document.getElementById('potros-donut-preview');if(_pdp){_pdp.innerHTML=_allSortedCats.length>0?donutHtml:'';const _pce=document.getElementById('potros-card-expand');if(!_pce||_pce.style.display!=='block')_pdp.style.display=_allSortedCats.length>0?'block':'none';}
+    const _pdp=document.getElementById('potros-donut-preview');if(_pdp){if(_allSortedCats.length>0){const _td=document.createElement('div');_td.innerHTML=donutHtml;const _fc=_td.firstElementChild;if(_fc)_fc.style.cssText='display:flex;align-items:center;gap:16px;padding:16px;margin:0;background:transparent';_pdp.innerHTML=_td.innerHTML;}else{_pdp.innerHTML='';} const _pce=document.getElementById('potros-card-expand');if(!_pce||_pce.style.display!=='block'){_pdp.style.display=_allSortedCats.length>0?'block':'none';const _ph=document.querySelector('[onclick="togglePotrosCard()"]');if(_ph){const _pv=_allSortedCats.length>0;_ph.style.borderBottom=_pv?'none':'';_ph.style.borderRadius=_pv?'14px 14px 0 0':'14px';}}}
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
     allRecentEntries = trackerRows.slice().sort(function(a,b){return parseDateHR(a.r[1])-parseDateHR(b.r[1]);});
@@ -3440,8 +3440,8 @@ function togglePotrosCard(force){
   const show=force===true?true:force===false?false:!isOpen;
   ex.style.display=show?'block':'none';
   if(ch) ch.style.transform=show?'rotate(180deg)':'rotate(0)';
-  if(hdr){hdr.style.borderBottom=show?'none':'';hdr.style.borderRadius=show?'14px 14px 0 0':'14px';}
   const preview=document.getElementById('potros-donut-preview');if(preview)preview.style.display=show?'none':'block';
+  if(hdr){const _pvVis=!show&&preview&&preview.children.length>0;hdr.style.borderBottom=(show||_pvVis)?'none':'';hdr.style.borderRadius=(show||_pvVis)?'14px 14px 0 0':'14px';}
   if(show){setTimeout(()=>{const s=document.getElementById('cat-list');const b=document.getElementById('potros-modal-body');if(s&&b)b.innerHTML=s.innerHTML;},400);}
 }
 function openExpModal(){toggleExpCard(true);}
