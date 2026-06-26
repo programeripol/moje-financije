@@ -2,7 +2,7 @@
       "relation": ["delegate_permission/common.handle_all_urls"],
       "target": {
         "namespace": "android_app",
-        "package_name": "hr.imasemozese.financije",
-        "sha256_cert_fingerprints": ["69:ED:0A:47:F1:AB:E9:E4:D5:52:9B:C0:0B:9B:64:61:C9:2C:EF:D4:3C:EB:CF:55:B4:C8:6A:99:49:56:24:8A"]
+        "package_name": "io.github.programeripol.twa",
+        "sha256_cert_fingerprints": ["59:1D:90:D5:B7:55:B0:36:82:83:EB:96:B4:9C:E6:BA:6A:86:E5:92:AB:FA:D9:0B:AF:08:5F:80:92:92:1D:14"]
       }
     }]
