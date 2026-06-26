@@ -721,14 +721,24 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
   
 
-  <div onclick="openIncModal()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-left:3px solid var(--th1);border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
+  <div onclick="toggleIncCard()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-left:3px solid var(--th1);border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-end">
     <div>
       <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Prihod</div>
       <div class="card-spinner" id="hero-spin-inc"><div class="card-spinner-ring"></div></div>
       <div id="inc-total-display" class="sum-val-main">—</div>
     </div>
     <div style="display:flex;align-items:center;justify-content:flex-end"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="var(--th1)" opacity=".12"/><path d="M16 10v12M10 16h12" stroke="var(--th1)" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <svg id="inc-card-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" style="flex-shrink:0;transition:transform .25s;align-self:center;margin-left:8px"><polyline points="6 9 12 15 18 9"/></svg>
+</div>
+<div id="inc-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-radius:0 0 14px 14px;border-left:3px solid var(--th1);overflow:hidden;margin-bottom:8px">
+  <div style="overflow-y:auto;max-height:55vh;padding:12px 16px 8px">
+    <div id="mp-inc-list"></div>
+    <button class="add-goal-btn" style="color:var(--th1);border-color:var(--th1);margin-top:8px" onclick="addMPInc()">+ Dodaj</button>
   </div>
+  <div style="padding:10px 16px;border-top:1px solid #e8edf8">
+    <button onclick="saveIncomeFromModal()" style="width:100%;padding:12px;background:var(--th1);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer">Spremi</button>
+  </div>
+</div>
   <div class="summary-cards" id="budget-hero">
     <div class="sum-card-inv" onclick="openExpModal()" style="cursor:pointer">
       <div class="card-spinner" id="hero-spin-plan"><div class="card-spinner-ring"></div></div>
@@ -3416,23 +3426,24 @@ function saveMonthPlanFromModal(){
   closeExpModal();
 }
 
-function openIncModal(){
-  const overlay=document.getElementById('inc-modal-overlay');
-  const modal=document.getElementById('inc-modal');
-  if(!overlay||!modal) return;
-  overlay.style.display='block'; modal.style.display='flex';
-  document.body.style.overflow='hidden';
-  requestAnimationFrame(()=>{ overlay.style.opacity='1'; modal.style.transform='translateY(0)'; });
-  mPlanIncGoals=[];
-  if(!mPlanIncGoals.length){const _ib=document.getElementById('mp-inc-list');if(_ib) _ib.innerHTML='<div style="text-align:center;padding:32px 0"><div class="save-spinner" style="margin:0 auto"></div></div>';}
-  initIncomePanel();
+function toggleIncCard(){
+  const el=document.getElementById('inc-card-expand');
+  const chev=document.getElementById('inc-card-chev');
+  const card=document.querySelector('[onclick="toggleIncCard()"]');
+  if(!el)return;
+  const open=el.style.display!=='none';
+  el.style.display=open?'none':'block';
+  if(chev)chev.style.transform=open?'':'rotate(180deg)';
+  if(card){card.style.marginBottom=open?'8px':'0';card.style.borderRadius=open?'14px':'14px 14px 0 0';}
+  if(!open)renderMPInc();
 }
 function closeIncModal(){
-  const overlay=document.getElementById('inc-modal-overlay');
-  const modal=document.getElementById('inc-modal');
-  if(!overlay||!modal) return;
-  overlay.style.opacity='0'; modal.style.transform='translateY(100%)';
-  setTimeout(()=>{ overlay.style.display='none'; modal.style.display='none'; document.body.style.overflow=''; },280);
+  const el=document.getElementById('inc-card-expand');
+  const chev=document.getElementById('inc-card-chev');
+  const card=document.querySelector('[onclick="toggleIncCard()"]');
+  if(el)el.style.display='none';
+  if(chev)chev.style.transform='';
+  if(card){card.style.marginBottom='8px';card.style.borderRadius='14px';}
 }
 function saveIncomeFromModal(){
   saveIncomePlan();
@@ -3992,7 +4003,7 @@ function syncAmtDisplay(inp){
       <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:18px;font-weight:700;color:var(--th1)">Prihod</div><button onclick="closeIncModal()" style="background:none;border:none;font-size:22px;color:#aaa;cursor:pointer;line-height:1;padding:0 0 2px 8px">✕</button></div>
     </div>
     <div style="overflow-y:auto;flex:1;padding:0 20px 8px" id="inc-modal-body">
-    <div id="mp-inc-list"></div>
+    <div></div>
     <button class="add-goal-btn" style="color:var(--th1);border-color:var(--th1);margin-top:8px" onclick="addMPInc()">+ Dodaj</button>
   </div>
     <div style="padding:12px 20px 28px;background:#fff;border-top:1px solid #f0f4ff">
