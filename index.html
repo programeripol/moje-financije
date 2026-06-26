@@ -748,7 +748,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
     <svg id="exp-card-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" style="flex-shrink:0;transition:transform .25s;align-self:center;margin-left:8px"><polyline points="6 9 12 15 18 9"/></svg>
   </div>
-  <div id="exp-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-radius:0 0 14px 14px;padding:0 16px 12px;margin-bottom:8px">
+  <div id="exp-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-left:3px solid var(--th1);border-radius:0 0 14px 14px;padding:0 16px 12px;margin-bottom:8px;overflow:hidden">
     <div style="overflow-y:auto;max-height:55vh;padding:4px 0">
       <div id="month-plan-body"></div>
     </div>
@@ -763,7 +763,8 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
     <svg id="potros-card-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" style="flex-shrink:0;transition:transform .25s;align-self:center;margin-left:8px"><polyline points="6 9 12 15 18 9"/></svg>
   </div>
-  <div id="potros-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-radius:0 0 14px 14px;padding:0 16px 12px">
+  <div id="potros-donut-preview" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-left:3px solid var(--th1);border-radius:0 0 14px 14px;overflow:hidden;margin-bottom:8px"></div>
+  <div id="potros-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-left:3px solid var(--th1);border-radius:0 0 14px 14px;padding:0 16px 12px;overflow:hidden">
     <div style="overflow-y:auto;max-height:55vh;padding:4px 0">
       <div id="potros-modal-body"></div>
     </div>
@@ -776,7 +777,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   
 
   
-  <div style="background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px">
+  <div style="background:#fff;border:1px solid #e8edf8;border-left:3px solid var(--th1);border-radius:14px;padding:14px 16px;margin-bottom:8px">
     <div onclick="toggleSavCard()" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">
       <div>
         <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Štednja</div>
@@ -2364,7 +2365,7 @@ async function fillMonthPlanForm(){
   const secStyle = (bg,color) => `style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:8px 0 6px;margin-top:10px;color:${color}"`;
   body.innerHTML =
     `<div id="mp-exp-list"></div>` +
-    `<button class="add-goal-btn" onclick="addMPExp()" style="color:var(--th1);border-color:#c0ccee">+ Dodaj trošak</button><br><button style="width:100%;margin-top:6px;padding:10px;background:none;border:1.5px solid var(--th1);color:var(--th1);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px" onclick="resetExpToProfile()">Vrati na postavke profila</button>` +
+    `<button class="add-goal-btn" onclick="addMPExp()" style="background:var(--th1);color:#fff;border:none;margin-top:8px;padding:8px 16px;border-radius:10px;font-weight:600">+ Dodaj</button><div style="padding:4px 0;text-align:right"><button onclick="resetExpToProfile()" style="background:none;border:none;color:var(--th1);font-size:11px;cursor:pointer;padding:4px 0;display:inline-flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--th1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>vrati na postavke profila</button></div>` +
     `<div class="month-plan-footer">` +
     `<button class="btn btn-primary" style="flex:1;padding:9px 0;font-size:13px" onclick="saveMonthPlanNow()">Spremi plan</button></div>`; renderMPExp(); renderMPSav();
 }
@@ -2621,6 +2622,7 @@ async function loadPregled(){
     }).join('');
     clearPregledLoading();
     document.getElementById('cat-list').innerHTML = _allSortedCats.length > 0 ? donutHtml + catCards : '<div class="empty-state">Nema troškova ovaj mjesec.</div>';
+    const _pdp=document.getElementById('potros-donut-preview');if(_pdp){_pdp.innerHTML=_allSortedCats.length>0?donutHtml:'';const _pce=document.getElementById('potros-card-expand');if(!_pce||_pce.style.display!=='block')_pdp.style.display=_allSortedCats.length>0?'block':'none';}
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
     allRecentEntries = trackerRows.slice().sort(function(a,b){return parseDateHR(a.r[1])-parseDateHR(b.r[1]);});
@@ -3439,6 +3441,7 @@ function togglePotrosCard(force){
   ex.style.display=show?'block':'none';
   if(ch) ch.style.transform=show?'rotate(180deg)':'rotate(0)';
   if(hdr){hdr.style.borderBottom=show?'none':'';hdr.style.borderRadius=show?'14px 14px 0 0':'14px';}
+  const preview=document.getElementById('potros-donut-preview');if(preview)preview.style.display=show?'none':'block';
   if(show){setTimeout(()=>{const s=document.getElementById('cat-list');const b=document.getElementById('potros-modal-body');if(s&&b)b.innerHTML=s.innerHTML;},400);}
 }
 function openExpModal(){toggleExpCard(true);}
