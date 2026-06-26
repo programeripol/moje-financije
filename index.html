@@ -739,22 +739,43 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   <button onclick="if(confirm('Vrati sve prihode na zadano?')){mPlanIncGoals=[];saveIncomePlan();renderMPInc();}" style="background:none;border:none;color:#94a3b8;font-size:11px;cursor:pointer;padding:4px 0">↩ Vrati na zadano</button>
 </div>
 </div>
-  <div class="summary-cards" id="budget-hero">
-    <div class="sum-card-inv" onclick="openExpModal()" style="cursor:pointer">
-      <div class="card-spinner" id="hero-spin-plan"><div class="card-spinner-ring"></div></div>
-      <div class="sum-label-inv">Planirano potrošiti</div>
-      <div class="sum-val-inv" id="bh-plan">0,00 €</div>
+  <div id="exp-card-wrap" style="margin-bottom:0">
+  <div onclick="toggleExpCard()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-left:3px solid var(--th1);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-end">
+    <div>
+      <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Planirano</div>
+      <div class="card-spinner" id="hero-spin-plan"><div class="card-spinner-ring-dark"></div></div>
+      <div class="sum-val-main" id="bh-plan">0,00 €</div>
     </div>
-    <div class="sum-card" onclick="openPotrosModal()" style="cursor:pointer">
+    <span id="exp-card-chevron" style="font-size:22px;color:var(--th1);transition:transform .25s;display:inline-block;line-height:1">⌄</span>
+  </div>
+  <div id="exp-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-radius:0 0 14px 14px;padding:0 16px 12px;margin-bottom:8px">
+    <div style="overflow-y:auto;max-height:55vh;padding:4px 0">
+      <div id="month-plan-body"></div>
+    </div>
+    <div style="padding:8px 0 0">
+      <button onclick="saveMonthPlanFromModal()" style="width:100%;padding:11px;background:var(--th1);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer">Spremi</button>
+    </div>
+  </div>
+</div>
+<div id="potros-card-wrap" style="margin-bottom:8px">
+  <div onclick="togglePotrosCard()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-left:3px solid var(--th1);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-end">
+    <div>
+      <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Potrošeno</div>
       <div class="card-spinner" id="hero-spin-spent"><div class="card-spinner-ring-dark"></div></div>
-      <div class="sum-label">Potrošeno</div>
       <div class="sum-val-main" id="bh-spent">0,00 €</div>
     </div>
-    <span id="bh-sub" style="display:none"></span>
-    <span id="bh-left" style="display:none"></span>
-    <span id="bh-income" style="display:none"></span>
-    <span id="bh-savings" style="display:none"></span>
+    <span id="potros-card-chevron" style="font-size:22px;color:var(--th1);transition:transform .25s;display:inline-block;line-height:1">⌄</span>
   </div>
+  <div id="potros-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-radius:0 0 14px 14px;padding:0 16px 12px">
+    <div style="overflow-y:auto;max-height:55vh;padding:4px 0">
+      <div id="potros-modal-body"></div>
+    </div>
+  </div>
+</div>
+<span id="bh-sub" style="display:none"></span>
+<span id="bh-left" style="display:none"></span>
+<span id="bh-income" style="display:none"></span>
+<span id="bh-savings" style="display:none"></span>
   
 
   
@@ -3396,32 +3417,28 @@ document.addEventListener('click', e=>{
 });
 
 
-function openExpModal(){
-  const overlay = document.getElementById('exp-modal-overlay');
-  const modal = document.getElementById('exp-modal');
-  if(!overlay||!modal) return;
-  overlay.style.display='block';
-  modal.style.display='flex';
-  document.body.style.overflow='hidden';
-  requestAnimationFrame(()=>{
-    overlay.style.opacity='1';
-    modal.style.transform='translateY(0)';
-  });
-  fillMonthPlanForm();
-  const _etl=document.getElementById('exp-modal-title');if(_etl){const _mn=['siječnju','veljači','ožujku','travnju','svibnju','lipnju','srpnju','kolovozu','rujnu','listopadu','studenom','prosincu'];_etl.textContent='Planirani troškovi u '+(_mn[viewMonthIdx]||'');}
+function toggleExpCard(force){
+  const ex=document.getElementById('exp-card-expand');
+  const ch=document.getElementById('exp-card-chevron');
+  if(!ex) return;
+  const isOpen=ex.style.display==='block';
+  const show=force===true?true:force===false?false:!isOpen;
+  ex.style.display=show?'block':'none';
+  if(ch) ch.style.transform=show?'rotate(180deg)':'rotate(0)';
+  if(show && typeof fillMonthPlanForm==='function') fillMonthPlanForm();
 }
-function closeExpModal(){
-  const overlay = document.getElementById('exp-modal-overlay');
-  const modal = document.getElementById('exp-modal');
-  if(!overlay||!modal) return;
-  overlay.style.opacity='0';
-  modal.style.transform='translateY(100%)';
-  setTimeout(()=>{
-    overlay.style.display='none';
-    modal.style.display='none';
-    document.body.style.overflow='';
-  },280);
+function togglePotrosCard(force){
+  const ex=document.getElementById('potros-card-expand');
+  const ch=document.getElementById('potros-card-chevron');
+  if(!ex) return;
+  const isOpen=ex.style.display==='block';
+  const show=force===true?true:force===false?false:!isOpen;
+  ex.style.display=show?'block':'none';
+  if(ch) ch.style.transform=show?'rotate(180deg)':'rotate(0)';
+  if(show){setTimeout(()=>{const s=document.getElementById('cat-list');const b=document.getElementById('potros-modal-body');if(s&&b)b.innerHTML=s.innerHTML;},400);}
 }
+function openExpModal(){toggleExpCard(true);}
+function closeExpModal(){toggleExpCard(false);}
 function saveMonthPlanFromModal(){
   saveMonthPlanNow();
   closeExpModal();
@@ -3451,30 +3468,9 @@ function saveIncomeFromModal(){
   closeIncModal();
 }
 
-function openPotrosModal(){
-  const overlay=document.getElementById('potros-modal-overlay');
-  const modal=document.getElementById('potros-modal');
-  if(!overlay||!modal) return;
-  overlay.style.display='block'; modal.style.display='flex';
-  document.body.style.overflow='hidden';
-  requestAnimationFrame(()=>{ overlay.style.opacity='1'; modal.style.transform='translateY(0)'; });
-  loadPregled();
-  setTimeout(()=>{
-    const src=document.getElementById('cat-list');
-    const body=document.getElementById('potros-modal-body');
-    if(src&&body) body.innerHTML=src.innerHTML;
-  },400);
-}
-function closePotrosModal(){
-  const overlay=document.getElementById('potros-modal-overlay');
-  const modal=document.getElementById('potros-modal');
-  if(!overlay||!modal) return;
-  overlay.style.opacity='0'; modal.style.transform='translateY(100%)';
-  setTimeout(()=>{ overlay.style.display='none'; modal.style.display='none'; document.body.style.overflow=''; },280);
-}
+function openPotrosModal(){togglePotrosCard(true);}
+function closePotrosModal(){togglePotrosCard(false);}
 
-// Exp modal drag-to-close
-let _expDragY=0,_expDragStartY=0,_expDragging=false;
 function expDragStart(e){_expDragStartY=e.touches[0].clientY;_expDragging=true;_expDragY=0;}
 function expDragMove(e){if(!_expDragging)return;e.preventDefault();const dy=e.touches[0].clientY-_expDragStartY;if(dy>0){_expDragY=dy;document.getElementById('exp-modal').style.transform='translateY('+dy+'px)';}}
 function expDragEnd(e){if(!_expDragging)return;_expDragging=false;if(_expDragY>80){closeExpModal();}else{document.getElementById('exp-modal').style.transform='translateY(0)';}}
