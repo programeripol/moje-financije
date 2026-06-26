@@ -767,7 +767,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <div id="sav-total-display" class="sum-val-main">—</div></div>
       <span id="sav-card-chev" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
     </div>
-    <div id="sav-card-donut" style="margin:10px 0 0"></div>
+    <div id="sav-card-donut" style="display:none;margin:8px 0 0"></div>
     <div id="sav-card-expand" style="display:none"></div>
     <div id="sav-per-fund" style="display:none"></div>
     <div id="sav-bars" style="display:none"></div>
@@ -3556,7 +3556,8 @@ function toggleSavCard(){
   var open=el&&el.style.display!=='none';
   if(el)el.style.display=open?'none':'block';
   if(chev)chev.style.transform=open?'':'rotate(180deg)';
-  if(!open)renderSavCardExpand();
+  var don=document.getElementById('sav-card-donut');if(don)don.style.display=open?'none':'block';
+  if(!open){renderSavCardDonut();renderSavCardExpand();}
 }
 function renderSavCardExpand(){
   var el=document.getElementById('sav-card-expand');
