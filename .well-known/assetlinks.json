@@ -2,7 +2,7 @@
       "relation": ["delegate_permission/common.handle_all_urls"],
       "target": {
         "namespace": "android_app",
-        "package_name": "io.github.programeripol.twa",
-        "sha256_cert_fingerprints": ["59:1D:90:D5:B7:55:B0:36:82:83:EB:96:B4:9C:E6:BA:6A:86:E5:92:AB:FA:D9:0B:AF:08:5F:80:92:92:1D:14"]
+        "package_name": "com.programeripol.imasemozese",
+        "sha256_cert_fingerprints": ["17:6E:6E:E1:C9:2F:88:E2:51:E6:CF:44:50:0D:B3:C1:45:C8:28:DE:CA:E2:69:7C:E3:17:28:35:CD:7F:A2:5D"]
       }
     }]
