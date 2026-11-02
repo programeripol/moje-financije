@@ -14,7 +14,7 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fredoka:wght@400;500;600;700&family=Lilita+One&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>:root{--th1:#1565c0;--th1r:21,101,192;--th2:#1e88e5;--th-bg:#f0f2f8;--th-text:#1a1a2e;--th-card:#fff;--th-surface:#f8faff}
 [data-theme="blue"]{--th1:#00bfff;--th1r:0,191,255;--th2:#00bfff;--th-bg:#e8f8ff}
@@ -378,45 +378,72 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="yellow"] .btn-primary,[data-theme="yellow"] .sum-card-inv,[data-theme="yellow"] .inst-btn,[data-theme="yellow"] .budget-hero{color:#2a2100}
 [data-theme="yellow"] .btn-primary{color:#2a2100}
 [data-theme="yellow"] .card-title,[data-theme="yellow"] .month-nav-label,[data-theme="yellow"] .month-nav-btn{color:#9a6f00}
-/* ── TEME: Dopamin decor ── */
-[data-theme="dopamin"]{--th1:#ff6a13;--th1r:255,106,19;--th2:#ff4f9a;--th-bg:#fff3dc;--th-text:#1b1b1f;--th-card:#fff;--th-surface:#fffaf0;--dp-ink:#1b1b1f;--dp-blue:#2f5bff;--dp-pink:#ff4f9a;--dp-yellow:#ffc928;--dp-lilac:#b48cff;--dp-mint:#38d9a9}
-[data-theme="dopamin"] body{font-family:'Fredoka','Poppins',sans-serif;background-color:var(--th-bg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' opacity='.32'%3E%3Cg fill='none' stroke-linecap='round' stroke-width='5'%3E%3Cpath d='M18 40q10-14 20 0t20 0t20 0' stroke='%232F5BFF'/%3E%3Cpath d='M130 160q10-14 20 0t20 0t20 0' stroke='%23FF4F9A'/%3E%3Cpath d='M150 30q8 12 0 22t0 22' stroke='%23FF7A1A'/%3E%3C/g%3E%3Ccircle cx='100' cy='90' r='7' fill='%23FFC928'/%3E%3Ccircle cx='30' cy='150' r='6' fill='%23FF4F9A'/%3E%3Ccircle cx='190' cy='110' r='5' fill='%232F5BFF'/%3E%3Ccircle cx='80' cy='195' r='5' fill='%23FF7A1A'/%3E%3Cpath d='M190 200l4 9 9 4-9 4-4 9-4-9-9-4 9-4z' fill='%23B48CFF' transform='translate%28-18 -20%29 scale%28.8%29'/%3E%3C/svg%3E");background-size:220px 220px;background-attachment:fixed}
+/* ── TEME: Dopamin decor (plakatni stil: ravne boje, pruge, šahovnica) ── */
+[data-theme="dopamin"]{--th1:#e0243a;--th1r:224,36,58;--th2:#ff4fa0;--th-bg:#fff1e6;--th-text:#1f3fd0;--th-card:#fff;--th-surface:#fff6ea;--dp-blue:#1f3fd0;--dp-red:#e0243a;--dp-pink:#ff8fc7;--dp-hot:#ff4fa0;--dp-yellow:#ffd92e;--dp-green:#1e9a5a;--dp-orange:#ff8a1f;--dp-cream:#fff6ea;--dp-lemon:#f4f7a8}
+[data-theme="dopamin"] body{font-family:'Fredoka','Poppins',sans-serif;background-color:#fff1e6;background-image:repeating-linear-gradient(90deg,#ffd9e8 0 26px,#fff1e6 26px 52px);background-attachment:fixed}
+[data-theme="dopamin"] body::before{content:"";position:fixed;left:0;right:0;top:0;height:14px;z-index:90;pointer-events:none;background:conic-gradient(#1f3fd0 25%,#fff6ea 0 50%,#1f3fd0 0 75%,#fff6ea 0) 0 0/14px 14px}
 [data-theme="dopamin"] input,[data-theme="dopamin"] textarea,[data-theme="dopamin"] button,[data-theme="dopamin"] select{font-family:'Fredoka','Poppins',sans-serif}
-[data-theme="dopamin"] .card,[data-theme="dopamin"] .sum-card,[data-theme="dopamin"] .goal-card{background:#fff;border:2.5px solid var(--dp-ink);border-radius:24px;box-shadow:4px 4px 0 var(--dp-ink)}
-[data-theme="dopamin"] .sum-card-inv{background:var(--dp-blue);border:2.5px solid var(--dp-ink);border-radius:24px;box-shadow:4px 4px 0 var(--dp-ink)}
-[data-theme="dopamin"] .budget-hero{background:linear-gradient(135deg,var(--dp-yellow),var(--th1) 55%,var(--dp-pink));color:var(--dp-ink);border:2.5px solid var(--dp-ink);border-radius:28px;box-shadow:5px 5px 0 var(--dp-ink)}
-[data-theme="dopamin"] .bh-stat{background:rgba(255,255,255,.55);border:2px solid var(--dp-ink);border-radius:18px}
-[data-theme="dopamin"] .card-title,[data-theme="dopamin"] .card-title-row .card-title{color:var(--dp-ink);font-weight:600}
-[data-theme="dopamin"] .month-nav-label{color:var(--dp-ink);font-weight:700;background:var(--dp-yellow);border:2.5px solid var(--dp-ink);border-radius:999px;padding:4px 22px;box-shadow:3px 3px 0 var(--dp-ink)}
-[data-theme="dopamin"] .month-nav-btn{color:var(--dp-ink);background:#fff;border:2.5px solid var(--dp-ink);border-radius:50%;width:38px;height:38px;padding:0;font-weight:600;font-size:22px;box-shadow:2px 2px 0 var(--dp-ink)}
-[data-theme="dopamin"] .btn,[data-theme="dopamin"] .inst-btn{border-radius:999px;font-weight:600}
-[data-theme="dopamin"] .btn-primary,[data-theme="dopamin"] .inst-btn{background:var(--dp-ink);color:#fff;border:2.5px solid var(--dp-ink);box-shadow:3px 3px 0 var(--th1)}
-[data-theme="dopamin"] .btn-primary:hover,[data-theme="dopamin"] .btn-primary:active{background:var(--dp-ink);filter:none;transform:translate(1px,1px);box-shadow:2px 2px 0 var(--th1)}
-[data-theme="dopamin"] .btn-primary:disabled{background:#8a8a92;box-shadow:none}
-[data-theme="dopamin"] .btn-outline,[data-theme="dopamin"] .recent-toggle,[data-theme="dopamin"] .add-goal-btn{background:#fff;border:2.5px solid var(--dp-ink);color:var(--dp-ink);border-radius:999px;font-weight:600}
-[data-theme="dopamin"] .btn-danger{background:var(--dp-pink);color:#fff;border:2px solid var(--dp-ink);border-radius:999px}
-[data-theme="dopamin"] input,[data-theme="dopamin"] textarea{background:#fff;border:2px solid var(--dp-ink);border-radius:16px}
-[data-theme="dopamin"] .fl-group{background:#fff;border:2.5px solid var(--dp-ink);border-radius:24px;box-shadow:4px 4px 0 var(--dp-ink);overflow:hidden;margin-bottom:16px}
-[data-theme="dopamin"] .fl-field{border-bottom:1.5px dashed rgba(27,27,31,.3)}
+[data-theme="dopamin"] h1,[data-theme="dopamin"] h2,[data-theme="dopamin"] h3,[data-theme="dopamin"] .card-title,[data-theme="dopamin"] .month-nav-label,[data-theme="dopamin"] .sum-val-main,[data-theme="dopamin"] .goal-name,[data-theme="dopamin"] .btn,[data-theme="dopamin"] .inst-btn,[data-theme="dopamin"] .nav-btn,[data-theme="dopamin"] #s-ciljevi>div:first-child{font-family:'Lilita One','Fredoka',sans-serif;font-weight:400;letter-spacing:.02em}
+/* kartice */
+[data-theme="dopamin"] .card,[data-theme="dopamin"] .sum-card,[data-theme="dopamin"] .fl-group{background:#fff;border:none;border-radius:26px;box-shadow:inset 0 0 0 5px #fff,inset 0 0 0 7px var(--dp-pink)}
+[data-theme="dopamin"] .card{padding:22px}
+[data-theme="dopamin"] .fl-group{overflow:hidden;margin-bottom:16px}
+[data-theme="dopamin"] .fl-field{border-bottom:2px dotted rgba(31,63,208,.35)}
 [data-theme="dopamin"] .fl-field:last-child{border-bottom:none}
-[data-theme="dopamin"] .fl-row>.fl-field+.fl-field{border-left:1.5px dashed rgba(27,27,31,.3)}
-[data-theme="dopamin"] .fl-lbl{color:var(--dp-blue);font-weight:600}
+[data-theme="dopamin"] .fl-row>.fl-field+.fl-field{border-left:2px dotted rgba(31,63,208,.35)}
+[data-theme="dopamin"] .fl-lbl{color:var(--dp-red);font-weight:600}
+[data-theme="dopamin"] .card-title,[data-theme="dopamin"] .card-title-row .card-title{color:var(--dp-red);font-size:15px}
+[data-theme="dopamin"] .sum-card-inv{background:var(--dp-blue);border:none;border-radius:26px}
+/* mjesec */
+[data-theme="dopamin"] .month-nav-label{color:var(--dp-cream);background:var(--dp-red);border-radius:999px;padding:5px 26px;font-size:22px}
+[data-theme="dopamin"] .month-nav-btn{color:#fff;background:var(--dp-blue);border:none;border-radius:50%;width:38px;height:38px;padding:0;font-size:22px;font-weight:600;line-height:38px}
+/* pregled — svaka kartica svoja boja */
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]{border:none!important;border-radius:26px!important;color:var(--dp-blue)}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-label,[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-val-main{color:inherit!important}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-val-main{font-size:26px}
+[data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"]{background:var(--dp-green)!important;color:var(--dp-cream)}
+[data-theme="dopamin"] #s-pregled div[onclick="toggleExpCard()"]{background:var(--dp-yellow)!important;color:var(--dp-blue)}
+[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]{background:var(--dp-pink)!important;color:var(--dp-blue)}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]:not([onclick]):not([id]){background:var(--dp-blue)!important;color:var(--dp-yellow)}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] svg path,[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] svg polyline{stroke:currentColor!important}
+[data-theme="dopamin"] #inc-card-expand,[data-theme="dopamin"] #exp-card-expand,[data-theme="dopamin"] #potros-donut-preview,[data-theme="dopamin"] #potros-card-expand{background:#fff!important;border-radius:0 0 26px 26px!important;margin-top:-8px;padding-top:8px;color:var(--dp-blue)}
+[data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"] *{color:var(--dp-cream)!important}
+/* gumbi */
+[data-theme="dopamin"] .btn,[data-theme="dopamin"] .inst-btn{border-radius:999px;font-size:17px}
+[data-theme="dopamin"] .btn-primary,[data-theme="dopamin"] .inst-btn{background:var(--dp-red);color:var(--dp-cream);border:none}
+[data-theme="dopamin"] .btn-primary:hover,[data-theme="dopamin"] .btn-primary:active{background:var(--dp-red);filter:brightness(.92)}
+[data-theme="dopamin"] .btn-primary:disabled{background:#e9a3ab}
+[data-theme="dopamin"] .btn-outline,[data-theme="dopamin"] .recent-toggle,[data-theme="dopamin"] .add-goal-btn{background:var(--dp-cream);border:2.5px solid var(--dp-blue);color:var(--dp-blue);border-radius:999px;font-weight:600}
+[data-theme="dopamin"] .btn-danger{background:var(--dp-red);color:var(--dp-cream);border-radius:999px}
+/* polja */
+[data-theme="dopamin"] input,[data-theme="dopamin"] textarea{background:var(--dp-cream);border:2px solid var(--dp-blue);border-radius:16px;color:var(--dp-blue)}
+[data-theme="dopamin"] input:focus,[data-theme="dopamin"] textarea:focus{border-color:var(--dp-red);box-shadow:0 0 0 3px rgba(224,36,58,.18)}
 [data-theme="dopamin"] .fl-field>input,[data-theme="dopamin"] .fl-field input,[data-theme="dopamin"] .fl-amt input{border:none!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
-[data-theme="dopamin"] input:focus,[data-theme="dopamin"] textarea:focus{border-color:var(--dp-blue);box-shadow:0 0 0 3px rgba(47,91,255,.2)}
-[data-theme="dopamin"] #upload-zone{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;border:2.5px dashed var(--dp-ink);border-radius:28px;box-shadow:4px 4px 0 var(--dp-pink)}
-[data-theme="dopamin"] #nav{background:var(--dp-yellow);border-top:3px solid var(--dp-ink);box-shadow:none}
-[data-theme="dopamin"] .nav-btn{color:var(--dp-ink);font-weight:600;opacity:.65}
-[data-theme="dopamin"] .nav-btn.active{color:var(--dp-ink)!important;opacity:1}
-[data-theme="dopamin"] .nav-btn.active .nav-icon{background:#fff;border:2px solid var(--dp-ink);border-radius:50%;padding:3px;width:32px;height:32px;margin-top:-6px;box-shadow:2px 2px 0 var(--dp-ink)}
-[data-theme="dopamin"] .cat-bar-wrap{background:#fff;border:2px solid var(--dp-ink);height:12px;border-radius:999px}
+[data-theme="dopamin"] ::placeholder{color:rgba(31,63,208,.45)!important}
+/* skener i ciljevi */
+[data-theme="dopamin"] #upload-zone{background:var(--dp-lemon);backdrop-filter:none;-webkit-backdrop-filter:none;border:3px dashed var(--dp-blue);border-radius:28px}
+[data-theme="dopamin"] #upload-zone h3{color:var(--dp-blue);font-family:'Lilita One','Fredoka',sans-serif;font-weight:400;font-size:22px;letter-spacing:.03em}
+[data-theme="dopamin"] #upload-zone p,[data-theme="dopamin"] #upload-zone .uz-icon{color:var(--dp-blue);opacity:.75}
+[data-theme="dopamin"] .goal-card{border:none;border-radius:26px;color:var(--dp-blue);box-shadow:none}
+[data-theme="dopamin"] .goal-card:nth-child(3n+1){background:var(--dp-pink)}
+[data-theme="dopamin"] .goal-card:nth-child(3n+2){background:var(--dp-yellow)}
+[data-theme="dopamin"] .goal-card:nth-child(3n+3){background:var(--dp-green);color:var(--dp-cream)}
+[data-theme="dopamin"] .goal-meta,[data-theme="dopamin"] .goal-pct{color:inherit;opacity:.85}
+[data-theme="dopamin"] .goal-card .btn-danger{background:var(--dp-red);color:var(--dp-cream)}
+[data-theme="dopamin"] .cat-bar-wrap{background:#fff;height:12px;border-radius:999px}
 [data-theme="dopamin"] .cat-bar-fill{border-radius:999px}
-[data-theme="dopamin"] #login-card{border:2.5px solid var(--dp-ink);box-shadow:6px 6px 0 var(--dp-ink);border-radius:32px}
-[data-theme="dopamin"] #settings-sheet{border-top:3px solid var(--dp-ink)}
-[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]{border-color:var(--dp-ink)!important;border-left-width:2.5px!important;border-right-width:2.5px!important;border-bottom-width:2.5px!important;border-radius:20px!important}
-[data-theme="dopamin"] div[style*="border-left"][style*="var(--th1)"]:not([style*="border-top:none"]):not([style*="border-top: none"]){border-top-width:2.5px!important;box-shadow:3px 3px 0 var(--dp-ink)}
-[data-theme="dopamin"] div[style*="border-left"][style*="var(--th1)"][style*="border-top"][style*="none"]{border-radius:0 0 20px 20px!important;box-shadow:3px 3px 0 var(--dp-ink);margin-top:2px}
-[data-theme="dopamin"] #s-profil div[onclick][style*="border-radius:14px"]{border:2.5px solid var(--dp-ink)!important;border-radius:999px!important;box-shadow:3px 3px 0 var(--dp-ink);padding:14px 22px!important}
-[data-theme="dopamin"] #s-profil div[onclick][style*="#fee2e2"]{background:#ffe3ee!important}
+/* navigacija */
+[data-theme="dopamin"] #nav{background:var(--dp-blue);border-top:none;box-shadow:none}
+[data-theme="dopamin"] .nav-btn{color:#fff;opacity:.8;font-size:11px}
+[data-theme="dopamin"] .nav-btn.active{color:var(--dp-yellow)!important;opacity:1}
+[data-theme="dopamin"] .nav-btn.active .nav-icon{background:var(--dp-yellow);border-radius:50%;padding:4px;width:34px;height:34px;margin-top:-8px}
+/* ostalo */
+[data-theme="dopamin"] #login-card{border:none;border-radius:34px;background:var(--dp-pink);box-shadow:none}
+[data-theme="dopamin"] #settings-sheet{background:var(--dp-cream)!important}
+[data-theme="dopamin"] #s-profil div[onclick][style*="border-radius:14px"]{background:#fff!important;border:none!important;border-radius:999px!important;padding:14px 22px!important;box-shadow:inset 0 0 0 3px var(--dp-pink)}
+[data-theme="dopamin"] #s-profil div[onclick][style*="#fee2e2"]{background:var(--dp-red)!important}
+[data-theme="dopamin"] #s-profil div[onclick][style*="#fee2e2"] span{color:var(--dp-cream)!important}
+[data-theme="dopamin"] #s-profil div[onclick][style*="#fee2e2"] svg path{stroke:var(--dp-cream)!important}
 </style>
 </head>
 <body>
