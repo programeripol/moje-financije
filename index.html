@@ -378,70 +378,75 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="yellow"] .btn-primary,[data-theme="yellow"] .sum-card-inv,[data-theme="yellow"] .inst-btn,[data-theme="yellow"] .budget-hero{color:#2a2100}
 [data-theme="yellow"] .btn-primary{color:#2a2100}
 [data-theme="yellow"] .card-title,[data-theme="yellow"] .month-nav-label,[data-theme="yellow"] .month-nav-btn{color:#9a6f00}
-/* ── TEME: Dopamin decor (plakatni stil: ravne boje, pruge, šahovnica) ── */
-[data-theme="dopamin"]{--th1:#e0243a;--th1r:224,36,58;--th2:#ff4fa0;--th-bg:#fff1e6;--th-text:#1f3fd0;--th-card:#fff;--th-surface:#fff6ea;--dp-blue:#1f3fd0;--dp-red:#e0243a;--dp-pink:#ff8fc7;--dp-hot:#ff4fa0;--dp-yellow:#ffd92e;--dp-green:#1e9a5a;--dp-orange:#ff8a1f;--dp-cream:#fff6ea;--dp-lemon:#f4f7a8}
-[data-theme="dopamin"] body{font-family:'Fredoka','Poppins',sans-serif;background-color:#fff1e6;background-image:repeating-linear-gradient(90deg,#ffd9e8 0 26px,#fff1e6 26px 52px);background-attachment:fixed}
-[data-theme="dopamin"] body::before{content:"";position:fixed;left:0;right:0;top:0;height:14px;z-index:90;pointer-events:none;background:conic-gradient(#1f3fd0 25%,#fff6ea 0 50%,#1f3fd0 0 75%,#fff6ea 0) 0 0/14px 14px}
+/* ── TEME: Dopamin decor (soba: žuti zid, pruge, tamnoplava, zelena, lavanda; svaka stranica drugačija) ── */
+[data-theme="dopamin"]{--th1:#f58a3c;--th1r:245,138,60;--th2:#e4572e;--th-bg:#f9d548;--th-text:#2a3c8f;--th-card:#fbf1de;--th-surface:#fbf1de;--dp-yellow:#f9d548;--dp-orange:#f58a3c;--dp-salmon:#f7b4a3;--dp-navy:#2a3c8f;--dp-green:#2fb36b;--dp-lav:#a99be8;--dp-cream:#fbf1de;--dp-terra:#e4572e;--pg-btn:#2a3c8f;--pg-btn-ink:#fbf1de;
+ --pg-bg:linear-gradient(#f9d548 0 36%,#fbf1de 36% 37%,transparent 37%),repeating-linear-gradient(90deg,#f58a3c 0 22px,#f7b4a3 22px 44px)}
+[data-theme="dopamin"] body{font-family:'Fredoka','Poppins',sans-serif;background:var(--pg-bg) fixed}
+[data-theme="dopamin"][data-tab="pregled"]{--pg-bg:radial-gradient(circle,rgba(255,255,255,.28) 0 7px,transparent 8px) 0 0/46px 46px,#a99be8;--pg-btn:#f9d548;--pg-btn-ink:#2a3c8f}
+[data-theme="dopamin"][data-tab="ciljevi"]{--pg-bg:radial-gradient(circle at 84% 78px,#fff 0 40px,#f3e7c9 41px 44px,transparent 45px),linear-gradient(#fff,#fff) 84% 0/2px 38px no-repeat,#f9d548;--pg-btn:#2a3c8f}
+[data-theme="dopamin"][data-tab="profil"]{--pg-bg:repeating-linear-gradient(90deg,#f7b4a3 0 22px,transparent 22px 44px) 0 0/100% 150px no-repeat,linear-gradient(#f58a3c 0 0) 0 0/100% 150px no-repeat,repeating-linear-gradient(90deg,#f3e6d0 0 64px,#e8d8bb 64px 66px);--pg-btn:#e4572e}
 [data-theme="dopamin"] input,[data-theme="dopamin"] textarea,[data-theme="dopamin"] button,[data-theme="dopamin"] select{font-family:'Fredoka','Poppins',sans-serif}
 [data-theme="dopamin"] h1,[data-theme="dopamin"] h2,[data-theme="dopamin"] h3,[data-theme="dopamin"] .card-title,[data-theme="dopamin"] .month-nav-label,[data-theme="dopamin"] .sum-val-main,[data-theme="dopamin"] .goal-name,[data-theme="dopamin"] .btn,[data-theme="dopamin"] .inst-btn,[data-theme="dopamin"] .nav-btn,[data-theme="dopamin"] #s-ciljevi>div:first-child{font-family:'Lilita One','Fredoka',sans-serif;font-weight:400;letter-spacing:.02em}
 /* kartice */
-[data-theme="dopamin"] .card,[data-theme="dopamin"] .sum-card,[data-theme="dopamin"] .fl-group{background:#fff;border:none;border-radius:26px;box-shadow:inset 0 0 0 5px #fff,inset 0 0 0 7px var(--dp-pink)}
+[data-theme="dopamin"] .card,[data-theme="dopamin"] .sum-card,[data-theme="dopamin"] .fl-group{background:var(--dp-cream);border:none;border-radius:26px;box-shadow:0 5px 0 rgba(42,60,143,.18)}
 [data-theme="dopamin"] .card{padding:22px}
 [data-theme="dopamin"] .fl-group{overflow:hidden;margin-bottom:16px}
-[data-theme="dopamin"] .fl-field{border-bottom:2px dotted rgba(31,63,208,.35)}
+[data-theme="dopamin"] .fl-field{border-bottom:2px dotted rgba(42,60,143,.3)}
 [data-theme="dopamin"] .fl-field:last-child{border-bottom:none}
-[data-theme="dopamin"] .fl-row>.fl-field+.fl-field{border-left:2px dotted rgba(31,63,208,.35)}
-[data-theme="dopamin"] .fl-lbl{color:var(--dp-red);font-weight:600}
-[data-theme="dopamin"] .card-title,[data-theme="dopamin"] .card-title-row .card-title{color:var(--dp-red);font-size:15px}
-[data-theme="dopamin"] .sum-card-inv{background:var(--dp-blue);border:none;border-radius:26px}
+[data-theme="dopamin"] .fl-row>.fl-field+.fl-field{border-left:2px dotted rgba(42,60,143,.3)}
+[data-theme="dopamin"] .fl-lbl{color:var(--dp-terra);font-weight:600}
+[data-theme="dopamin"] .card-title,[data-theme="dopamin"] .card-title-row .card-title{color:var(--dp-terra);font-size:15px}
+[data-theme="dopamin"] .sum-card-inv{background:var(--dp-navy);border:none;border-radius:26px}
 /* mjesec */
-[data-theme="dopamin"] .month-nav-label{color:var(--dp-cream);background:var(--dp-red);border-radius:999px;padding:5px 26px;font-size:22px}
-[data-theme="dopamin"] .month-nav-btn{color:#fff;background:var(--dp-blue);border:none;border-radius:50%;width:38px;height:38px;padding:0;font-size:22px;font-weight:600;line-height:38px}
+[data-theme="dopamin"] .month-nav-label{color:var(--dp-navy);background:var(--dp-yellow);border-radius:999px;padding:5px 26px;font-size:22px;box-shadow:0 4px 0 rgba(42,60,143,.25)}
+[data-theme="dopamin"] .month-nav-btn{color:var(--dp-cream);background:var(--dp-navy);border:none;border-radius:50%;width:38px;height:38px;padding:0;font-size:22px;font-weight:600;line-height:38px}
 /* pregled — svaka kartica svoja boja */
-[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]{border:none!important;border-radius:26px!important;color:var(--dp-blue)}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]{border:none!important;border-radius:26px!important;color:var(--dp-navy);box-shadow:0 5px 0 rgba(42,60,143,.22)}
 [data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-label,[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-val-main{color:inherit!important}
 [data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-val-main{font-size:26px}
 [data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"]{background:var(--dp-green)!important;color:var(--dp-cream)}
-[data-theme="dopamin"] #s-pregled div[onclick="toggleExpCard()"]{background:var(--dp-yellow)!important;color:var(--dp-blue)}
-[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]{background:var(--dp-pink)!important;color:var(--dp-blue)}
-[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]:not([onclick]):not([id]){background:var(--dp-blue)!important;color:var(--dp-yellow)}
-[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] svg path,[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] svg polyline{stroke:currentColor!important}
-[data-theme="dopamin"] #inc-card-expand,[data-theme="dopamin"] #exp-card-expand,[data-theme="dopamin"] #potros-donut-preview,[data-theme="dopamin"] #potros-card-expand{background:#fff!important;border-radius:0 0 26px 26px!important;margin-top:-8px;padding-top:8px;color:var(--dp-blue)}
 [data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"] *{color:var(--dp-cream)!important}
-/* gumbi */
+[data-theme="dopamin"] #s-pregled div[onclick="toggleExpCard()"]{background:var(--dp-yellow)!important;color:var(--dp-navy)}
+[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]{background:var(--dp-orange)!important;color:var(--dp-navy)}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]:not([onclick]):not([id]){background:var(--dp-navy)!important;color:var(--dp-yellow)}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] svg path,[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] svg polyline{stroke:currentColor!important}
+[data-theme="dopamin"] #inc-card-expand,[data-theme="dopamin"] #exp-card-expand,[data-theme="dopamin"] #potros-donut-preview,[data-theme="dopamin"] #potros-card-expand{background:var(--dp-cream)!important;border-radius:0 0 26px 26px!important;margin-top:-8px;padding-top:8px;color:var(--dp-navy)}
+/* gumbi (boja po stranici) */
 [data-theme="dopamin"] .btn,[data-theme="dopamin"] .inst-btn{border-radius:999px;font-size:17px}
-[data-theme="dopamin"] .btn-primary,[data-theme="dopamin"] .inst-btn{background:var(--dp-red);color:var(--dp-cream);border:none}
-[data-theme="dopamin"] .btn-primary:hover,[data-theme="dopamin"] .btn-primary:active{background:var(--dp-red);filter:brightness(.92)}
-[data-theme="dopamin"] .btn-primary:disabled{background:#e9a3ab}
-[data-theme="dopamin"] .btn-outline,[data-theme="dopamin"] .recent-toggle,[data-theme="dopamin"] .add-goal-btn{background:var(--dp-cream);border:2.5px solid var(--dp-blue);color:var(--dp-blue);border-radius:999px;font-weight:600}
-[data-theme="dopamin"] .btn-danger{background:var(--dp-red);color:var(--dp-cream);border-radius:999px}
+[data-theme="dopamin"] .btn-primary,[data-theme="dopamin"] .inst-btn{background:var(--pg-btn);color:var(--pg-btn-ink);border:none}
+[data-theme="dopamin"] .btn-primary:hover,[data-theme="dopamin"] .btn-primary:active{background:var(--pg-btn);filter:brightness(.92)}
+[data-theme="dopamin"] .btn-primary:disabled{background:#b9bfe0}
+[data-theme="dopamin"] .btn-outline,[data-theme="dopamin"] .recent-toggle,[data-theme="dopamin"] .add-goal-btn{background:var(--dp-cream);border:2.5px solid var(--dp-navy);color:var(--dp-navy);border-radius:999px;font-weight:600}
+[data-theme="dopamin"] .btn-danger{background:var(--dp-terra);color:var(--dp-cream);border-radius:999px}
 /* polja */
-[data-theme="dopamin"] input,[data-theme="dopamin"] textarea{background:var(--dp-cream);border:2px solid var(--dp-blue);border-radius:16px;color:var(--dp-blue)}
-[data-theme="dopamin"] input:focus,[data-theme="dopamin"] textarea:focus{border-color:var(--dp-red);box-shadow:0 0 0 3px rgba(224,36,58,.18)}
+[data-theme="dopamin"] input,[data-theme="dopamin"] textarea{background:#fff;border:2px solid var(--dp-navy);border-radius:16px;color:var(--dp-navy)}
+[data-theme="dopamin"] input:focus,[data-theme="dopamin"] textarea:focus{border-color:var(--dp-terra);box-shadow:0 0 0 3px rgba(228,87,46,.2)}
 [data-theme="dopamin"] .fl-field>input,[data-theme="dopamin"] .fl-field input,[data-theme="dopamin"] .fl-amt input{border:none!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
-[data-theme="dopamin"] ::placeholder{color:rgba(31,63,208,.45)!important}
-/* skener i ciljevi */
-[data-theme="dopamin"] #upload-zone{background:var(--dp-lemon);backdrop-filter:none;-webkit-backdrop-filter:none;border:3px dashed var(--dp-blue);border-radius:28px}
-[data-theme="dopamin"] #upload-zone h3{color:var(--dp-blue);font-family:'Lilita One','Fredoka',sans-serif;font-weight:400;font-size:22px;letter-spacing:.03em}
-[data-theme="dopamin"] #upload-zone p,[data-theme="dopamin"] #upload-zone .uz-icon{color:var(--dp-blue);opacity:.75}
-[data-theme="dopamin"] .goal-card{border:none;border-radius:26px;color:var(--dp-blue);box-shadow:none}
-[data-theme="dopamin"] .goal-card:nth-child(3n+1){background:var(--dp-pink)}
-[data-theme="dopamin"] .goal-card:nth-child(3n+2){background:var(--dp-yellow)}
-[data-theme="dopamin"] .goal-card:nth-child(3n+3){background:var(--dp-green);color:var(--dp-cream)}
-[data-theme="dopamin"] .goal-meta,[data-theme="dopamin"] .goal-pct{color:inherit;opacity:.85}
-[data-theme="dopamin"] .goal-card .btn-danger{background:var(--dp-red);color:var(--dp-cream)}
+[data-theme="dopamin"] ::placeholder{color:rgba(42,60,143,.45)!important}
+/* skener: žuti zid + letvica + pruge */
+[data-theme="dopamin"] #upload-zone{background:var(--dp-cream);backdrop-filter:none;-webkit-backdrop-filter:none;border:3px dashed var(--dp-navy);border-radius:28px}
+[data-theme="dopamin"] #upload-zone h3{color:var(--dp-navy);font-family:'Lilita One','Fredoka',sans-serif;font-weight:400;font-size:22px;letter-spacing:.03em}
+[data-theme="dopamin"] #upload-zone p,[data-theme="dopamin"] #upload-zone .uz-icon{color:var(--dp-navy);opacity:.75}
+/* ciljevi: kartice u bojama stolica */
+[data-theme="dopamin"] .goal-card{border:none;border-radius:26px;box-shadow:0 5px 0 rgba(42,60,143,.22);color:var(--dp-cream)}
+[data-theme="dopamin"] .goal-card:nth-child(4n+1){background:var(--dp-navy)}
+[data-theme="dopamin"] .goal-card:nth-child(4n+2){background:var(--dp-green)}
+[data-theme="dopamin"] .goal-card:nth-child(4n+3){background:var(--dp-lav);color:var(--dp-navy)}
+[data-theme="dopamin"] .goal-card:nth-child(4n+4){background:var(--dp-salmon);color:var(--dp-navy)}
+[data-theme="dopamin"] .goal-meta,[data-theme="dopamin"] .goal-pct{color:inherit;opacity:.9}
+[data-theme="dopamin"] .goal-card .btn-danger{background:var(--dp-terra);color:var(--dp-cream)}
 [data-theme="dopamin"] .cat-bar-wrap{background:#fff;height:12px;border-radius:999px}
 [data-theme="dopamin"] .cat-bar-fill{border-radius:999px}
 /* navigacija */
-[data-theme="dopamin"] #nav{background:var(--dp-blue);border-top:none;box-shadow:none}
+[data-theme="dopamin"] #nav{background:var(--dp-navy);border-top:none;box-shadow:none}
 [data-theme="dopamin"] .nav-btn{color:#fff;opacity:.8;font-size:11px}
 [data-theme="dopamin"] .nav-btn.active{color:var(--dp-yellow)!important;opacity:1}
 [data-theme="dopamin"] .nav-btn.active .nav-icon{background:var(--dp-yellow);border-radius:50%;padding:4px;width:34px;height:34px;margin-top:-8px}
 /* ostalo */
-[data-theme="dopamin"] #login-card{border:none;border-radius:34px;background:var(--dp-pink);box-shadow:none}
+[data-theme="dopamin"] #login-card{border:none;border-radius:34px;background:var(--dp-salmon);box-shadow:none}
 [data-theme="dopamin"] #settings-sheet{background:var(--dp-cream)!important}
-[data-theme="dopamin"] #s-profil div[onclick][style*="border-radius:14px"]{background:#fff!important;border:none!important;border-radius:999px!important;padding:14px 22px!important;box-shadow:inset 0 0 0 3px var(--dp-pink)}
-[data-theme="dopamin"] #s-profil div[onclick][style*="#fee2e2"]{background:var(--dp-red)!important}
+[data-theme="dopamin"] #s-profil div[onclick][style*="border-radius:14px"]{background:var(--dp-cream)!important;border:none!important;border-radius:999px!important;padding:14px 22px!important;box-shadow:0 4px 0 rgba(42,60,143,.2)}
+[data-theme="dopamin"] #s-profil div[onclick][style*="#fee2e2"]{background:var(--dp-terra)!important}
 [data-theme="dopamin"] #s-profil div[onclick][style*="#fee2e2"] span{color:var(--dp-cream)!important}
 [data-theme="dopamin"] #s-profil div[onclick][style*="#fee2e2"] svg path{stroke:var(--dp-cream)!important}
 </style>
@@ -1720,6 +1725,7 @@ const NAV_TABS = ['skener','pregled','ciljevi','profil'];
 
 function goTab(tab){
   currentTab = tab;
+  document.documentElement.setAttribute('data-tab', tab);
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('s-'+tab).classList.add('active');
