@@ -928,6 +928,10 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <span style="font-size:14px;font-weight:500;color:var(--th-text)">Tema aplikacije</span>
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
+    <div onclick="closeOldReceipts()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:14px;font-weight:500;color:var(--th-text)">Zatvori javne linkove starih računa</span>
+      <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
     <div onclick="signOutFromProfil()" style="cursor:pointer;background:#fff;border:1px solid #fee2e2;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:14px;font-weight:500;color:#e53935">Odjavi se</span>
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#e53935" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2834,6 +2838,38 @@ async function uploadToDrive(file, filename){
   setProgress(75);
   // Slika ostaje privatna (vidi je samo vlasnica računa) — javni link se više ne postavlja
   return { id: d.id, url: `https://drive.google.com/file/d/${d.id}/view` };
+}
+
+// Jednokratno: stari računi su imali "svatko s poveznicom"; ovo ih vraća na privatno
+async function closeOldReceipts(){
+  if(!confirm('Svim starim računima koje je aplikacija spremila uklonit ću javni link. Nakon toga ih vidiš samo ti (prijavljena u Google). Nastaviti?')) return;
+  showSaveOverlay('Provjeravam račune...');
+  let checked=0, closed=0, failed=0, pageToken='';
+  try{
+    do{
+      const q=encodeURIComponent("trashed=false and mimeType!='application/vnd.google-apps.folder' and mimeType!='application/vnd.google-apps.spreadsheet'");
+      const r=await gfetch(`https://www.googleapis.com/drive/v3/files?q=${q}&pageSize=200&fields=nextPageToken,files(id,permissions(id,type))${pageToken?'&pageToken='+pageToken:''}`);
+      for(const f of (r.files||[])){
+        checked++;
+        let perms=f.permissions;
+        if(!perms){
+          try{ perms=(await gfetch(`https://www.googleapis.com/drive/v3/files/${f.id}/permissions?fields=permissions(id,type)`)).permissions||[]; }catch(e){ perms=[]; }
+        }
+        for(const pm of perms.filter(x=>x.type==='anyone')){
+          try{
+            const d=await fetch(`https://www.googleapis.com/drive/v3/files/${f.id}/permissions/${pm.id}`,{method:'DELETE',headers:{Authorization:'Bearer '+token}});
+            if(d.ok||d.status===204) closed++; else failed++;
+          }catch(e){ failed++; }
+        }
+      }
+      pageToken=r.nextPageToken||'';
+    }while(pageToken);
+    hideSaveOverlay();
+    showToast(`✓ Provjereno ${checked}, zatvoreno ${closed}`+(failed?`, nije uspjelo ${failed}`:''), 6000);
+  }catch(e){
+    hideSaveOverlay();
+    showToast('Greška: '+e.message, 6000, 'error');
+  }
 }
 
 function toggleRateFields(){
