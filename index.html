@@ -14,9 +14,7 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;
-  document.getElementById('img-preview-wrap').style.display = 'none';
-  document.getElementById('img-preview-wrap').style.display = 'none';400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>:root{--th1:#1565c0;--th1r:21,101,192;--th2:#1e88e5;--th-bg:#f0f2f8;--th-text:#1a1a2e;--th-card:#fff;--th-surface:#f8faff}
 [data-theme="blue"]{--th1:#00bfff;--th1r:0,191,255;--th2:#00bfff;--th-bg:#e8f8ff}
@@ -374,6 +372,51 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="black"] .form-input{background:var(--th-surface)!important;color:var(--th-text)!important;border-color:#444!important}
 [data-theme="black"] label,[data-theme="black"] .sum-label,[data-theme="black"] .section-title{color:var(--th-text)!important}
 [data-theme="black"] body{color:var(--th-text)}
+
+/* ── TEME: žuta ── */
+[data-theme="yellow"]{--th1:#f2b705;--th1r:242,183,5;--th2:#ffd23f;--th-bg:#fff9e0}
+[data-theme="yellow"] .btn-primary,[data-theme="yellow"] .sum-card-inv,[data-theme="yellow"] .inst-btn,[data-theme="yellow"] .budget-hero{color:#2a2100}
+[data-theme="yellow"] .btn-primary{color:#2a2100}
+[data-theme="yellow"] .card-title,[data-theme="yellow"] .month-nav-label,[data-theme="yellow"] .month-nav-btn{color:#9a6f00}
+/* ── TEME: Dopamin decor ── */
+[data-theme="dopamin"]{--th1:#ff6a13;--th1r:255,106,19;--th2:#ff4f9a;--th-bg:#fff3dc;--th-text:#1b1b1f;--th-card:#fff;--th-surface:#fffaf0;--dp-ink:#1b1b1f;--dp-blue:#2f5bff;--dp-pink:#ff4f9a;--dp-yellow:#ffc928;--dp-lilac:#b48cff;--dp-mint:#38d9a9}
+[data-theme="dopamin"] body{font-family:'Fredoka','Poppins',sans-serif;background-color:var(--th-bg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' opacity='.32'%3E%3Cg fill='none' stroke-linecap='round' stroke-width='5'%3E%3Cpath d='M18 40q10-14 20 0t20 0t20 0' stroke='%232F5BFF'/%3E%3Cpath d='M130 160q10-14 20 0t20 0t20 0' stroke='%23FF4F9A'/%3E%3Cpath d='M150 30q8 12 0 22t0 22' stroke='%23FF7A1A'/%3E%3C/g%3E%3Ccircle cx='100' cy='90' r='7' fill='%23FFC928'/%3E%3Ccircle cx='30' cy='150' r='6' fill='%23FF4F9A'/%3E%3Ccircle cx='190' cy='110' r='5' fill='%232F5BFF'/%3E%3Ccircle cx='80' cy='195' r='5' fill='%23FF7A1A'/%3E%3Cpath d='M190 200l4 9 9 4-9 4-4 9-4-9-9-4 9-4z' fill='%23B48CFF' transform='translate%28-18 -20%29 scale%28.8%29'/%3E%3C/svg%3E");background-size:220px 220px;background-attachment:fixed}
+[data-theme="dopamin"] input,[data-theme="dopamin"] textarea,[data-theme="dopamin"] button,[data-theme="dopamin"] select{font-family:'Fredoka','Poppins',sans-serif}
+[data-theme="dopamin"] .card,[data-theme="dopamin"] .sum-card,[data-theme="dopamin"] .goal-card{background:#fff;border:2.5px solid var(--dp-ink);border-radius:24px;box-shadow:4px 4px 0 var(--dp-ink)}
+[data-theme="dopamin"] .sum-card-inv{background:var(--dp-blue);border:2.5px solid var(--dp-ink);border-radius:24px;box-shadow:4px 4px 0 var(--dp-ink)}
+[data-theme="dopamin"] .budget-hero{background:linear-gradient(135deg,var(--dp-yellow),var(--th1) 55%,var(--dp-pink));color:var(--dp-ink);border:2.5px solid var(--dp-ink);border-radius:28px;box-shadow:5px 5px 0 var(--dp-ink)}
+[data-theme="dopamin"] .bh-stat{background:rgba(255,255,255,.55);border:2px solid var(--dp-ink);border-radius:18px}
+[data-theme="dopamin"] .card-title,[data-theme="dopamin"] .card-title-row .card-title{color:var(--dp-ink);font-weight:600}
+[data-theme="dopamin"] .month-nav-label{color:var(--dp-ink);font-weight:700;background:var(--dp-yellow);border:2.5px solid var(--dp-ink);border-radius:999px;padding:4px 22px;box-shadow:3px 3px 0 var(--dp-ink)}
+[data-theme="dopamin"] .month-nav-btn{color:var(--dp-ink);background:#fff;border:2.5px solid var(--dp-ink);border-radius:50%;width:38px;height:38px;padding:0;font-weight:600;font-size:22px;box-shadow:2px 2px 0 var(--dp-ink)}
+[data-theme="dopamin"] .btn,[data-theme="dopamin"] .inst-btn{border-radius:999px;font-weight:600}
+[data-theme="dopamin"] .btn-primary,[data-theme="dopamin"] .inst-btn{background:var(--dp-ink);color:#fff;border:2.5px solid var(--dp-ink);box-shadow:3px 3px 0 var(--th1)}
+[data-theme="dopamin"] .btn-primary:hover,[data-theme="dopamin"] .btn-primary:active{background:var(--dp-ink);filter:none;transform:translate(1px,1px);box-shadow:2px 2px 0 var(--th1)}
+[data-theme="dopamin"] .btn-primary:disabled{background:#8a8a92;box-shadow:none}
+[data-theme="dopamin"] .btn-outline,[data-theme="dopamin"] .recent-toggle,[data-theme="dopamin"] .add-goal-btn{background:#fff;border:2.5px solid var(--dp-ink);color:var(--dp-ink);border-radius:999px;font-weight:600}
+[data-theme="dopamin"] .btn-danger{background:var(--dp-pink);color:#fff;border:2px solid var(--dp-ink);border-radius:999px}
+[data-theme="dopamin"] input,[data-theme="dopamin"] textarea{background:#fff;border:2px solid var(--dp-ink);border-radius:16px}
+[data-theme="dopamin"] .fl-group{background:#fff;border:2.5px solid var(--dp-ink);border-radius:24px;box-shadow:4px 4px 0 var(--dp-ink);overflow:hidden;margin-bottom:16px}
+[data-theme="dopamin"] .fl-field{border-bottom:1.5px dashed rgba(27,27,31,.3)}
+[data-theme="dopamin"] .fl-field:last-child{border-bottom:none}
+[data-theme="dopamin"] .fl-row>.fl-field+.fl-field{border-left:1.5px dashed rgba(27,27,31,.3)}
+[data-theme="dopamin"] .fl-lbl{color:var(--dp-blue);font-weight:600}
+[data-theme="dopamin"] .fl-field>input,[data-theme="dopamin"] .fl-field input,[data-theme="dopamin"] .fl-amt input{border:none!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+[data-theme="dopamin"] input:focus,[data-theme="dopamin"] textarea:focus{border-color:var(--dp-blue);box-shadow:0 0 0 3px rgba(47,91,255,.2)}
+[data-theme="dopamin"] #upload-zone{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;border:2.5px dashed var(--dp-ink);border-radius:28px;box-shadow:4px 4px 0 var(--dp-pink)}
+[data-theme="dopamin"] #nav{background:var(--dp-yellow);border-top:3px solid var(--dp-ink);box-shadow:none}
+[data-theme="dopamin"] .nav-btn{color:var(--dp-ink);font-weight:600;opacity:.65}
+[data-theme="dopamin"] .nav-btn.active{color:var(--dp-ink)!important;opacity:1}
+[data-theme="dopamin"] .nav-btn.active .nav-icon{background:#fff;border:2px solid var(--dp-ink);border-radius:50%;padding:3px;width:32px;height:32px;margin-top:-6px;box-shadow:2px 2px 0 var(--dp-ink)}
+[data-theme="dopamin"] .cat-bar-wrap{background:#fff;border:2px solid var(--dp-ink);height:12px;border-radius:999px}
+[data-theme="dopamin"] .cat-bar-fill{border-radius:999px}
+[data-theme="dopamin"] #login-card{border:2.5px solid var(--dp-ink);box-shadow:6px 6px 0 var(--dp-ink);border-radius:32px}
+[data-theme="dopamin"] #settings-sheet{border-top:3px solid var(--dp-ink)}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]{border-color:var(--dp-ink)!important;border-left-width:2.5px!important;border-right-width:2.5px!important;border-bottom-width:2.5px!important;border-radius:20px!important}
+[data-theme="dopamin"] div[style*="border-left"][style*="var(--th1)"]:not([style*="border-top:none"]):not([style*="border-top: none"]){border-top-width:2.5px!important;box-shadow:3px 3px 0 var(--dp-ink)}
+[data-theme="dopamin"] div[style*="border-left"][style*="var(--th1)"][style*="border-top"][style*="none"]{border-radius:0 0 20px 20px!important;box-shadow:3px 3px 0 var(--dp-ink);margin-top:2px}
+[data-theme="dopamin"] #s-profil div[onclick][style*="border-radius:14px"]{border:2.5px solid var(--dp-ink)!important;border-radius:999px!important;box-shadow:3px 3px 0 var(--dp-ink);padding:14px 22px!important}
+[data-theme="dopamin"] #s-profil div[onclick][style*="#fee2e2"]{background:#ffe3ee!important}
 </style>
 </head>
 <body>
@@ -882,7 +925,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   <div style="margin-top:28px;padding-top:20px;border-top:1.5px solid #f0f4ff">
     <div style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Postavke aplikacije</div>
     <div onclick="openSettings()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:14px;font-weight:500;color:var(--th-text)">Tema i pozadina</span>
+      <span style="font-size:14px;font-weight:500;color:var(--th-text)">Tema aplikacije</span>
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div onclick="signOutFromProfil()" style="cursor:pointer;background:#fff;border:1px solid #fee2e2;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
@@ -4027,7 +4070,9 @@ function syncAmtDisplay(inp){
       <div style="margin-bottom:22px">
         <div style="font-size:11px;font-weight:700;color:#1a1a2e;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">Teme</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <button class="theme-btn" data-t="default" onclick="setTheme('default')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--th1),#1e88e5);box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Default</div></button>
+          <button class="theme-btn" data-t="dopamin" onclick="setTheme('dopamin')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:conic-gradient(from 20deg,#ff6a13,#ff4f9a,#b48cff,#2f5bff,#ffc928,#ff6a13);box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Dopamin</div></button>
+          <button class="theme-btn" data-t="default" onclick="setTheme('default')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--th1),#1e88e5);box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Neutralna</div></button>
+          <button class="theme-btn" data-t="yellow" onclick="setTheme('yellow')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:#f2b705;box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Žuta</div></button>
           <button class="theme-btn" data-t="blue" onclick="setTheme('blue')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:#00bfff;box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Plava</div></button>
           <button class="theme-btn" data-t="olive" onclick="setTheme('olive')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:#6b8046;box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Maslinasta</div></button>
           <button class="theme-btn" data-t="lila" onclick="setTheme('lila')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:#b792d2;box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Lila</div></button>
