@@ -2953,7 +2953,7 @@ async function revBuild(text){
     const desc=(r[iDe]||'').trim();
     let cat, on=true, kind=type;
     if(type==='Transfer'||type==='Rev Payment'){
-      cat='Drugima'; if(amt>0) on=false; // dolazni prijenosi po defaultu isključeni
+      cat='Drugima';
     } else if(type==='ATM'){ cat='Other'; }
     else cat=revCat(desc);
     out.push({date:dt,desc:desc,amount:Math.round(net*100)/100,cat:cat,on:on,type:kind,dup:false});
@@ -2998,7 +2998,7 @@ function revRender(){
     </div>`;
   });
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
-  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi su isključeni (možeš ih uključiti – upisat će se kao minus u „Plaćeno drugima“). Preskočeno (top-up, razmjene, nezavršeno): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
+  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi (zeleni iznos, minus) upisuju se u „Plaćeno drugima“ kao povrat. Preskočeno (top-up, razmjene, nezavršeno): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
   revSum();
 }
 function revSum(){
