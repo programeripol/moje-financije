@@ -700,7 +700,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
         <optgroup label="Financije">
           <option value="Debt">Rate</option>
           <option value="Savings">Štednja</option>
-          <option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>
+          <option value="KeksPay">Keks Pay</option><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>
         </optgroup>
       </select>
       <div class="csel fl-csel" id="csel-cat" data-sel="meta-cat" onclick="cselToggle(this)">
@@ -726,6 +726,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
           <li class="csel-grp">Financije</li>
           <li data-v="Debt" onclick="cselPick(this,'Debt','Rate')">Rate</li>
           <li data-v="Savings" onclick="cselPick(this,'Savings','&#352;tednja')">&#352;tednja</li>
+          <li data-v="KeksPay" onclick="cselPick(this,'KeksPay','Keks Pay')">Keks Pay</li>
           <li data-v="Drugima" onclick="cselPick(this,'Drugima','Pla&#263;eno drugima')">Pla&#263;eno drugima</li>
           <li data-v="Other" onclick="cselPick(this,'Other','Ostalo')">Ostalo</li>
         </ul>
@@ -1114,13 +1115,13 @@ const CAT_HR = {
   Food:'Hrana', Pets:'Ljubimci', Fuel:'Prijevoz', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
   Allianz:'Osiguranje', Debt:'Rate', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
-  Savings:'Štednja', Drugima:'Plaćeno drugima', Other:'Ostalo'
+  Savings:'Štednja', KeksPay:'Keks Pay', Drugima:'Plaćeno drugima', Other:'Ostalo'
 };
 const CAT_COLORS = {
   Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
   Stanarina:'var(--th1)', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
   Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Prijevoz:'#38bdf8', Hobi:'#f97316', Putovanje:'#818cf8', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
-  Savings:'#10b981', Drugima:'#fb7185', Other:'#94a3b8'
+  Savings:'#10b981', KeksPay:'#06b6d4', Drugima:'#fb7185', Other:'#94a3b8'
 };
 
 // ── INIT ─────────────────────────────────────────────────────────────
@@ -2254,7 +2255,7 @@ function renderMPInc(){
 function addMPInc(){ mPlanIncGoals.push({name:'',amount:0}); renderMPInc(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-inc-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
 function removeMPInc(i){ mPlanIncGoals.splice(i,1); renderMPInc(); }
 
-const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Prijevoz">Prijevoz</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>`;
+const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Prijevoz">Prijevoz</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="KeksPay">Keks Pay</option><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>`;
 
 function renderMPExp(){
   const c = document.getElementById('mp-exp-list'); if(!c) return;
@@ -2899,6 +2900,7 @@ async function uploadToDrive(file, filename){
 // ── UVOZ REVOLUT CSV ─────────────────────────────────────────────────
 var REV_ROWS=[];
 var REV_RULES=[
+ [/keks/i,'KeksPay'],
  [/kaufland|konzum|spar|lidl|tiki|studenac|mlinar|plodine|interspar|eurospin|pelati|mljekara|ledo|pekar|mcdonald|restoran|gelato|wolt|glovo|beer|ohana|bufet|cafe|caffe|kava/i,'Food'],
  [/\bina\b|petrol|tifon|c plin|crodux|omv|lukoil|mol |bolt|uber|parking|autocesta|hac|arz|vulkaniz|centar za vozila/i,'Prijevoz'],
  [/apipet|pet |zoo|veterin|ljubimac/i,'Pets'],
@@ -4211,7 +4213,7 @@ function syncAmtDisplay(inp){
       <option value="Debt">Rate</option>
       <option value="Savings">Štednja</option>
       </optgroup>
-      <option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>
+      <option value="KeksPay">Keks Pay</option><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>
     </select>
       <div class="csel" id="csel-edit-cat" data-sel="edit-cat" onclick="cselToggle(this)">
         <span id="csel-edit-cat-val">Odaberi kategoriju</span><span class="csel-arr"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -4236,6 +4238,7 @@ function syncAmtDisplay(inp){
           <li class="csel-grp">Financije</li>
           <li data-v="Debt" onclick="cselPick(this,'Debt','Rate')">Rate</li>
           <li data-v="Savings" onclick="cselPick(this,'Savings','Štednja')">Štednja</li>
+          <li data-v="KeksPay" onclick="cselPick(this,'KeksPay','Keks Pay')">Keks Pay</li>
           <li data-v="Drugima" onclick="cselPick(this,'Drugima','Pla&#263;eno drugima')">Pla&#263;eno drugima</li>
           <li data-v="Other" onclick="cselPick(this,'Other','Ostalo')">Ostalo</li>
         </ul>
