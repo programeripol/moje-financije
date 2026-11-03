@@ -2948,12 +2948,16 @@ function revPick(inp){
   if(!token){ signIn(); return; }
   showSaveOverlay('Čitam datoteke...');
   (async()=>{
-    const acc={items:[],skipped:0,other:0};
+    const acc={items:[],skipped:0,other:0}; const sigs=new Set(); let dupFiles=0;
     try{
       for(const f of files){
+        const n0=acc.items.length, s0=acc.skipped, o0=acc.other;
         if(/\.pdf$/i.test(f.name)||f.type==='application/pdf') await revFromPdf(f,acc);
         else revFromCsv(await f.text(),acc);
+        const sig=acc.items.slice(n0).map(o=>o.date+'|'+o.amount+'|'+o.note).join('#');
+        if(sig&&sigs.has(sig)){ acc.items.length=n0; acc.skipped=s0; acc.other=o0; dupFiles++; } else if(sig) sigs.add(sig);
       }
+      acc.dupFiles=dupFiles;
     }catch(e){ hideSaveOverlay(); showToast(String(e&&e.message||e),6000,'err'); return; }
     hideSaveOverlay();
     await revFinish(acc);
@@ -3050,7 +3054,7 @@ function revFromZabaPages(pages,acc){
       if(/EKUPI/i.test(d)){ acc.items.push({date:t.date,desc:short,amount:t.amt,cat:'Prihod',on:true,type:'Plaća',income:true,note:'Zaba: '+short,dup:false}); return; }
       acc.items.push({date:t.date,desc:short,amount:-t.amt,cat:'Other',on:false,type:'Zaba uplata',note:'Zaba: '+short,dup:false});
     } else {
-      const cat=/Podizanje gotovog|Naknada|TROŠKOVI UČINJENI/i.test(d)?'Other':revCat(short);
+      const cat=/Podizanje gotovog|Naknada|TROŠKOVI UČINJENI/i.test(d)?'Other':/transfer nac/i.test(d)?'Drugima':revCat(short);
       acc.items.push({date:t.date,desc:short,amount:t.amt,cat:cat,on:true,type:'Zaba',note:'Zaba: '+short,dup:false});
     }
   });
@@ -3077,7 +3081,7 @@ async function revFinish(acc){
     out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; } });
   }catch(e){ hideSaveOverlay(); showToast('Greška pri provjeri: '+(e.message||e),5000,'err'); return; }
   hideSaveOverlay();
-  REV_ROWS=out; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other;
+  REV_ROWS=out; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other; REV_ROWS._dupFiles=acc.dupFiles||0;
   revRender();
   document.getElementById('rev-modal').style.display='block';
 }
@@ -3098,7 +3102,7 @@ function revRender(){
     </div>`;
   });
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
-  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Plaća od eKupija upisuje se kao prihod i zamjenjuje plan za taj mjesec. Ostale uplate na Zabu isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
+  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Plaća od eKupija upisuje se kao prihod i zamjenjuje plan za taj mjesec. Ostale uplate na Zabu isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+(REV_ROWS._dupFiles?'; duplih datoteka preskočeno: '+REV_ROWS._dupFiles:'')+'.';
   revSum();
 }
 function revSum(){
