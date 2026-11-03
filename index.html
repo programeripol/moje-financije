@@ -461,6 +461,20 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
+<div id="rev-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(15,23,42,.55)">
+  <div style="position:absolute;left:0;right:0;bottom:0;top:40px;background:#fff;border-radius:22px 22px 0 0;display:flex;flex-direction:column;max-width:560px;margin:0 auto">
+    <div style="padding:16px 18px 8px;display:flex;justify-content:space-between;align-items:center">
+      <b style="font-size:17px">Uvoz iz Revoluta</b>
+      <span onclick="revClose()" style="cursor:pointer;font-size:24px;line-height:1;padding:0 6px">&times;</span>
+    </div>
+    <div id="rev-info" style="padding:0 18px 8px;font-size:12.5px;color:#64748b"></div>
+    <div id="rev-list" style="flex:1;overflow:auto;padding:0 12px"></div>
+    <div style="padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #e8edf8;display:flex;gap:10px;align-items:center">
+      <div id="rev-sum" style="flex:1;font-size:13px;font-weight:600"></div>
+      <button onclick="revImport()" id="rev-btn" style="background:var(--th1);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer">Uvezi</button>
+    </div>
+  </div>
+</div>
 <div id="toast"></div>
 
 <!-- DELETE CONFIRM -->
@@ -686,7 +700,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
         <optgroup label="Financije">
           <option value="Debt">Rate</option>
           <option value="Savings">Štednja</option>
-          <option value="Other">Ostalo</option>
+          <option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>
         </optgroup>
       </select>
       <div class="csel fl-csel" id="csel-cat" data-sel="meta-cat" onclick="cselToggle(this)">
@@ -712,6 +726,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
           <li class="csel-grp">Financije</li>
           <li data-v="Debt" onclick="cselPick(this,'Debt','Rate')">Rate</li>
           <li data-v="Savings" onclick="cselPick(this,'Savings','&#352;tednja')">&#352;tednja</li>
+          <li data-v="Drugima" onclick="cselPick(this,'Drugima','Pla&#263;eno drugima')">Pla&#263;eno drugima</li>
           <li data-v="Other" onclick="cselPick(this,'Other','Ostalo')">Ostalo</li>
         </ul>
       </div>
@@ -961,6 +976,11 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <span style="font-size:14px;font-weight:500;color:var(--th-text)">Tema aplikacije</span>
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
+    <div onclick="document.getElementById('rev-file').click()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:14px;font-weight:500;color:var(--th-text)">Uvoz izvatka (Revolut CSV)</span>
+      <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <input type="file" id="rev-file" accept=".csv,text/csv" style="display:none" onchange="revPick(this)">
     <div onclick="closeOldReceipts()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:14px;font-weight:500;color:var(--th-text)">Zatvori javne linkove starih računa</span>
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1094,13 +1114,13 @@ const CAT_HR = {
   Food:'Hrana', Pets:'Ljubimci', Fuel:'Prijevoz', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
   Allianz:'Osiguranje', Debt:'Rate', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
-  Savings:'Štednja', Other:'Ostalo'
+  Savings:'Štednja', Drugima:'Plaćeno drugima', Other:'Ostalo'
 };
 const CAT_COLORS = {
   Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
   Stanarina:'var(--th1)', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
   Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Prijevoz:'#38bdf8', Hobi:'#f97316', Putovanje:'#818cf8', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
-  Savings:'#10b981', Other:'#94a3b8'
+  Savings:'#10b981', Drugima:'#fb7185', Other:'#94a3b8'
 };
 
 // ── INIT ─────────────────────────────────────────────────────────────
@@ -2234,7 +2254,7 @@ function renderMPInc(){
 function addMPInc(){ mPlanIncGoals.push({name:'',amount:0}); renderMPInc(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-inc-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
 function removeMPInc(i){ mPlanIncGoals.splice(i,1); renderMPInc(); }
 
-const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Prijevoz">Prijevoz</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="Other">Ostalo</option>`;
+const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Prijevoz">Prijevoz</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>`;
 
 function renderMPExp(){
   const c = document.getElementById('mp-exp-list'); if(!c) return;
@@ -2875,6 +2895,136 @@ async function uploadToDrive(file, filename){
 }
 
 // Jednokratno: stari računi su imali "svatko s poveznicom"; ovo ih vraća na privatno
+
+// ── UVOZ REVOLUT CSV ─────────────────────────────────────────────────
+var REV_ROWS=[];
+var REV_RULES=[
+ [/kaufland|konzum|spar|lidl|tiki|studenac|mlinar|plodine|interspar|eurospin|pelati|mljekara|ledo|pekar|mcdonald|restoran|gelato|wolt|glovo|beer|ohana|bufet|cafe|caffe|kava/i,'Food'],
+ [/\bina\b|petrol|tifon|c plin|crodux|omv|lukoil|mol |bolt|uber|parking|autocesta|hac|arz|vulkaniz|centar za vozila/i,'Prijevoz'],
+ [/apipet|pet |zoo|veterin|ljubimac/i,'Pets'],
+ [/claude|openai|elevenlabs|google one|google play|apple|netflix|spotify|youtube|adobe|canva|github|icloud|microsoft/i,'Software'],
+ [/m[üu]ller|dm |bipa|douglas|sephora|kozmet|frizer/i,'Beauty'],
+ [/ustanova|ljekarn|apoteka|dental|ordinacija|poliklinika|terme/i,'Zdravlje'],
+ [/about you|zara|h&m|hm |temu|shein|decathlon|zalando|answear|reserved/i,'Odijelo'],
+ [/cinestar|kino|theatre|dance|masterclass|ticket|entertainment|bikers/i,'Zabava'],
+ [/ikea|bauhaus|merkur|jysk|emmezeta|lesnina/i,'Dom'],
+ [/air|wizz|ryanair|hotel|booking|airbnb|croatia airlines/i,'Putovanje']
+];
+function revCat(desc){ for(const [re,c] of REV_RULES){ if(re.test(desc)) return c; } return 'Other'; }
+function revParseCSV(t){
+  t=t.replace(/^﻿/,'');
+  const rows=[]; let r=[], f='', q=false;
+  for(let i=0;i<t.length;i++){
+    const c=t[i];
+    if(q){ if(c==='"'){ if(t[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else if(c==='"') q=true;
+    else if(c===','){ r.push(f); f=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&t[i+1]==='\n') i++; r.push(f); f=''; if(r.length>1||r[0]!=='') rows.push(r); r=[]; }
+    else f+=c;
+  }
+  if(f!==''||r.length){ r.push(f); rows.push(r); }
+  return rows;
+}
+function revEsc(x){ return String(x).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function revPick(inp){
+  const file=inp.files&&inp.files[0]; inp.value='';
+  if(!file) return;
+  if(!token){ signIn(); return; }
+  const rd=new FileReader();
+  rd.onload=()=>revBuild(String(rd.result||''));
+  rd.readAsText(file,'utf-8');
+}
+async function revBuild(text){
+  const tbl=revParseCSV(text);
+  const h=tbl[0]||[]; const ix=n=>h.indexOf(n);
+  const iT=ix('Type'),iD=ix('Started Date'),iC=ix('Completed Date'),iDe=ix('Description'),iA=ix('Amount'),iF=ix('Fee'),iCu=ix('Currency'),iS=ix('State');
+  if(iT<0||iA<0||iDe<0||iS<0){ showToast('Ovo ne izgleda kao Revolut CSV izvadak','', 'err'); return; }
+  const yr=curYear(); let skipped=0, other=0; const out=[];
+  for(const r of tbl.slice(1)){
+    const type=r[iT], st=r[iS];
+    if(st!=='COMPLETED'){ skipped++; continue; }
+    if(type==='Topup'||type==='Exchange'){ skipped++; continue; }
+    if((r[iCu]||'EUR')!=='EUR'){ other++; continue; }
+    const dt=(r[iC]||r[iD]||'').slice(0,10);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(dt)){ skipped++; continue; }
+    if(parseInt(dt.slice(0,4))!==yr){ other++; continue; }
+    const amt=parseFloat(r[iA])||0, fee=parseFloat(r[iF]||0)||0;
+    const net=-(amt-fee); // trošak pozitivan, povrat negativan
+    const desc=(r[iDe]||'').trim();
+    let cat, on=true, kind=type;
+    if(type==='Transfer'||type==='Rev Payment'){
+      cat='Drugima'; if(amt>0) on=false; // dolazni prijenosi po defaultu isključeni
+    } else if(type==='ATM'){ cat='Other'; }
+    else cat=revCat(desc);
+    out.push({date:dt,desc:desc,amount:Math.round(net*100)/100,cat:cat,on:on,type:kind,dup:false});
+  }
+  // dedupe prema postojećim redovima po mjesecu
+  showSaveOverlay('Provjeravam već uneseno...');
+  try{
+    await ensureResources();
+    const months={}; out.forEach(o=>months[parseInt(o.date.slice(5,7))-1]=1);
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+    const have=new Set((meta.sheets||[]).map(s=>s.properties.title));
+    const seen={};
+    for(const mi of Object.keys(months)){
+      const name=MONTHS_HR[mi]; seen[mi]=new Set();
+      if(!have.has(name)) continue;
+      try{
+        const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(name+'!B57:L500')}`);
+        (res.values||[]).forEach(v=>{ if(v&&v[0]) seen[mi].add(revKey(v[0], v[4], v[10])); });
+      }catch(e){}
+    }
+    out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; o.note='Revolut: '+o.desc; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; } });
+  }catch(e){ hideSaveOverlay(); showToast('Greška pri provjeri: '+(e.message||e),5000,'err'); return; }
+  hideSaveOverlay();
+  REV_ROWS=out; REV_ROWS._skipped=skipped; REV_ROWS._other=other;
+  revRender();
+  document.getElementById('rev-modal').style.display='block';
+}
+function revKey(d,a,n){ let t=String(a==null?'':a).replace(/[^0-9,.\-]/g,''); if(t.indexOf(',')>=0) t=t.replace(/\./g,'').replace(',','.'); const v=Math.round((parseFloat(t)||0)*100)/100; return String(d).trim()+'|'+v.toFixed(2)+'|'+String(n||'').trim(); }
+function revOpts(sel){ return Object.keys(CAT_HR).map(k=>`<option value="${k}"${k===sel?' selected':''}>${revEsc(CAT_HR[k])}</option>`).join(''); }
+function revRender(){
+  const L=document.getElementById('rev-list'); let h='';
+  REV_ROWS.forEach((o,i)=>{
+    const neg=o.amount<0;
+    h+=`<div style="display:flex;gap:8px;align-items:center;padding:9px 6px;border-bottom:1px solid #f1f5f9;${o.dup?'opacity:.45':''}">
+      <input type="checkbox" ${o.on?'checked':''} onchange="REV_ROWS[${i}].on=this.checked;revSum()" style="width:18px;height:18px;flex:none">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${revEsc(o.desc)||'—'}</div>
+        <div style="font-size:11.5px;color:#64748b">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':''}</div>
+        <select onchange="REV_ROWS[${i}].cat=this.value" style="margin-top:4px;font-size:12.5px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:8px;max-width:100%">${revOpts(o.cat)}</select>
+      </div>
+      <div style="font-size:13.5px;font-weight:700;white-space:nowrap;color:${neg?'#16a34a':'#0f172a'}">${eur(o.amount)}</div>
+    </div>`;
+  });
+  L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
+  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi su isključeni (možeš ih uključiti – upisat će se kao minus u „Plaćeno drugima“). Preskočeno (top-up, razmjene, nezavršeno): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
+  revSum();
+}
+function revSum(){
+  const on=REV_ROWS.filter(o=>o.on); const tot=on.reduce((a,o)=>a+o.amount,0);
+  document.getElementById('rev-sum').textContent=on.length+' stavki · '+eur(tot);
+  document.getElementById('rev-btn').disabled=!on.length;
+}
+function revClose(){ document.getElementById('rev-modal').style.display='none'; }
+async function revImport(){
+  const on=REV_ROWS.filter(o=>o.on); if(!on.length) return;
+  showSaveOverlay('Upisujem '+on.length+' stavki...');
+  try{
+    await ensureResources();
+    const by={}; on.forEach(o=>{ const m=MONTHS_HR[parseInt(o.date.slice(5,7))-1]; (by[m]=by[m]||[]).push(o); });
+    for(const m of Object.keys(by)){
+      await ensureMonthSheet(m);
+      const row=await findNextTrackerRow(m);
+      const data=by[m].sort((a,b)=>a.date<b.date?-1:1).map(o=>{ const d=Array(14).fill(''); d[1]=fmtDateHR(o.date); d[5]=o.amount; d[8]=o.cat; d[11]=o.note; return d; });
+      await writeRange(sheetId, `${m}!A${row}`, data);
+    }
+    hideSaveOverlay(); revClose();
+    showToast('Uvezeno '+on.length+' stavki iz Revoluta ✓');
+    try{ if(typeof loadPregled==='function') loadPregled(); }catch(e){}
+  }catch(e){ hideSaveOverlay(); showToast('Greška pri uvozu: '+(e.message||e),6000,'err'); }
+}
+
 async function closeOldReceipts(){
   if(!confirm('Svim starim računima koje je aplikacija spremila uklonit ću javni link. Nakon toga ih vidiš samo ti (prijavljena u Google). Nastaviti?')) return;
   showSaveOverlay('Provjeravam račune...');
@@ -3978,7 +4128,7 @@ function syncAmtDisplay(inp){
       <option value="Debt">Rate</option>
       <option value="Savings">Štednja</option>
       </optgroup>
-      <option value="Other">Ostalo</option>
+      <option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>
     </select>
       <div class="csel" id="csel-edit-cat" data-sel="edit-cat" onclick="cselToggle(this)">
         <span id="csel-edit-cat-val">Odaberi kategoriju</span><span class="csel-arr"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -4003,6 +4153,7 @@ function syncAmtDisplay(inp){
           <li class="csel-grp">Financije</li>
           <li data-v="Debt" onclick="cselPick(this,'Debt','Rate')">Rate</li>
           <li data-v="Savings" onclick="cselPick(this,'Savings','Štednja')">Štednja</li>
+          <li data-v="Drugima" onclick="cselPick(this,'Drugima','Pla&#263;eno drugima')">Pla&#263;eno drugima</li>
           <li data-v="Other" onclick="cselPick(this,'Other','Ostalo')">Ostalo</li>
         </ul>
       </div>
