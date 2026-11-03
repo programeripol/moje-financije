@@ -2152,6 +2152,7 @@ async function calcAutoPrenostalo(monthIdx){
     const rows = await getRows(sheetId, prevName, 'A57:N500');
     const entries = rows.filter(r=>r[1]);
     const prevSpent = entries.reduce((s,r)=>s+((r[8]==='Prihod')?0:(parseFloat(r[5])||0)), 0);
+    const prevRecv = entries.reduce((s,r)=>s+((r[8]==='Prihod')?(parseFloat(r[5])||0):0), 0);
     const prevPlan = await loadMonthPlan(prevIdx);
     // income for prev month
     let prevIncome;
@@ -2160,6 +2161,7 @@ async function calcAutoPrenostalo(monthIdx){
     }
     if(!prevIncome && prevPlan && prevPlan.income_override != null) prevIncome = parseFloat(prevPlan.income_override);
     if(!prevIncome) prevIncome = totalIncome();
+    if(prevRecv>0) prevIncome = prevRecv; // stvarna plaća prošlog mjeseca
     return prevIncome - prevSpent;
   }catch(e){ return 0; }
 }
@@ -2294,12 +2296,20 @@ function addMPSav(){ mPlanSavGoals.push({name:'',amount:0}); renderMPSav(); setT
 function removeMPSav(i){ mPlanSavGoals.splice(i,1); renderMPSav(); }
 
 
+var _recvMonth=0;
 async function updateIncTotal(){
   const sp = document.getElementById('hero-spin-inc');
   if(sp && sp.classList.contains('active')) return;
   const total = (mPlanIncGoals||[]).reduce((sum,g)=>sum+(parseFloat(g.amount)||0),0);
   const el = document.getElementById('inc-total-display');
-  if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
+  const recEl = document.getElementById('bh-received');
+  if(_recvMonth>0){
+    if(el) el.textContent = eur(_recvMonth);
+    if(recEl){ recEl.style.display='block'; recEl.textContent = 'Stvarna plaća'+(total>0?' (plan: '+eur(total)+')':''); }
+  } else {
+    if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
+    if(recEl){ recEl.style.display='none'; recEl.textContent=''; }
+  }
 }
 function initIncomePanel(){
   const _incFb=()=>{ try{ const r=JSON.parse((profileData&&profileData.income_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (incomeGoals&&incomeGoals.length)?incomeGoals.map(g=>Object.assign({},g)):[]; };
@@ -2464,12 +2474,11 @@ async function loadPregled(){
       actual[cat] = (actual[cat]||0) + amt;
       totalSpent += amt;
     });
-    const recEl = document.getElementById('bh-received');
-    if(recEl){ recEl.style.display = received>0 ? 'block' : 'none'; recEl.textContent = received>0 ? 'Primljeno: '+eur(received) : ''; }
+    _recvMonth = received;
 
     const monthPlan = await loadMonthPlan(viewMonthIdx);
     const effPlan   = getEffectivePlan(monthPlan);
-    const income    = effectiveIncomePlan(monthPlan);
+    const income    = received>0 ? received : effectiveIncomePlan(monthPlan); // stvarna plaća ima prednost pred planom
     const savePlan  = (monthPlan && monthPlan.save_plan != null) ? monthPlan.save_plan : totalSavingsPlan();
     const fixedPlan = effectiveFixedPlan(monthPlan);
     const varPlan   = effectiveVariablePlan(monthPlan);
@@ -3089,7 +3098,7 @@ function revRender(){
     </div>`;
   });
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
-  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Plaća od eKupija upisuje se kao „Primljeno“ (ne računa se kao trošak). Ostale uplate na Zabu isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
+  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Plaća od eKupija upisuje se kao prihod i zamjenjuje plan za taj mjesec. Ostale uplate na Zabu isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
   revSum();
 }
 function revSum(){
