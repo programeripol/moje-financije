@@ -464,7 +464,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 <div id="rev-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(15,23,42,.55)">
   <div style="position:absolute;left:0;right:0;bottom:0;top:40px;background:#fff;border-radius:22px 22px 0 0;display:flex;flex-direction:column;max-width:560px;margin:0 auto">
     <div style="padding:16px 18px 8px;display:flex;justify-content:space-between;align-items:center">
-      <b style="font-size:17px">Uvoz iz Revoluta</b>
+      <b style="font-size:17px">Uvoz izvatka</b>
       <span onclick="revClose()" style="cursor:pointer;font-size:24px;line-height:1;padding:0 6px">&times;</span>
     </div>
     <div id="rev-info" style="padding:0 18px 8px;font-size:12.5px;color:#64748b"></div>
@@ -977,10 +977,10 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div onclick="document.getElementById('rev-file').click()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:14px;font-weight:500;color:var(--th-text)">Uvoz izvatka (Revolut CSV)</span>
+      <span style="font-size:14px;font-weight:500;color:var(--th-text)">Uvoz izvatka (Revolut CSV / Zaba PDF)</span>
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
-    <input type="file" id="rev-file" accept=".csv,text/csv" style="display:none" onchange="revPick(this)">
+    <input type="file" id="rev-file" accept=".csv,text/csv,.pdf,application/pdf" multiple style="display:none" onchange="revPick(this)">
     <div onclick="closeOldReceipts()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:14px;font-weight:500;color:var(--th-text)">Zatvori javne linkove starih računa</span>
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2927,38 +2927,121 @@ function revParseCSV(t){
 }
 function revEsc(x){ return String(x).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 function revPick(inp){
-  const file=inp.files&&inp.files[0]; inp.value='';
-  if(!file) return;
+  const files=Array.from(inp.files||[]); inp.value='';
+  if(!files.length) return;
   if(!token){ signIn(); return; }
-  const rd=new FileReader();
-  rd.onload=()=>revBuild(String(rd.result||''));
-  rd.readAsText(file,'utf-8');
+  showSaveOverlay('Čitam datoteke...');
+  (async()=>{
+    const acc={items:[],skipped:0,other:0};
+    try{
+      for(const f of files){
+        if(/\.pdf$/i.test(f.name)||f.type==='application/pdf') await revFromPdf(f,acc);
+        else revFromCsv(await f.text(),acc);
+      }
+    }catch(e){ hideSaveOverlay(); showToast(String(e&&e.message||e),6000,'err'); return; }
+    hideSaveOverlay();
+    await revFinish(acc);
+  })();
 }
-async function revBuild(text){
+function revFromCsv(text,acc){
   const tbl=revParseCSV(text);
   const h=tbl[0]||[]; const ix=n=>h.indexOf(n);
   const iT=ix('Type'),iD=ix('Started Date'),iC=ix('Completed Date'),iDe=ix('Description'),iA=ix('Amount'),iF=ix('Fee'),iCu=ix('Currency'),iS=ix('State');
-  if(iT<0||iA<0||iDe<0||iS<0){ showToast('Ovo ne izgleda kao Revolut CSV izvadak','', 'err'); return; }
-  const yr=curYear(); let skipped=0, other=0; const out=[];
+  if(iT<0||iA<0||iDe<0||iS<0) throw new Error('Ovo ne izgleda kao Revolut CSV izvadak');
   for(const r of tbl.slice(1)){
     const type=r[iT], st=r[iS];
-    if(st!=='COMPLETED'){ skipped++; continue; }
-    if(type==='Topup'||type==='Exchange'){ skipped++; continue; }
-    if((r[iCu]||'EUR')!=='EUR'){ other++; continue; }
+    if(st!=='COMPLETED'||type==='Topup'||type==='Exchange'){ acc.skipped++; continue; }
+    if((r[iCu]||'EUR')!=='EUR'){ acc.other++; continue; }
     const dt=(r[iC]||r[iD]||'').slice(0,10);
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(dt)){ skipped++; continue; }
-    if(parseInt(dt.slice(0,4))!==yr){ other++; continue; }
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(dt)){ acc.skipped++; continue; }
     const amt=parseFloat(r[iA])||0, fee=parseFloat(r[iF]||0)||0;
     const net=-(amt-fee); // trošak pozitivan, povrat negativan
     const desc=(r[iDe]||'').trim();
-    let cat, on=true, kind=type;
-    if(type==='Transfer'||type==='Rev Payment'){
-      cat='Drugima';
-    } else if(type==='ATM'){ cat='Other'; }
+    let cat;
+    if(type==='Transfer'||type==='Rev Payment') cat='Drugima';
+    else if(type==='ATM') cat='Other';
     else cat=revCat(desc);
-    out.push({date:dt,desc:desc,amount:Math.round(net*100)/100,cat:cat,on:on,type:kind,dup:false});
+    acc.items.push({date:dt,desc:desc,amount:Math.round(net*100)/100,cat:cat,on:true,type:type,note:'Revolut: '+desc,dup:false});
   }
-  // dedupe prema postojećim redovima po mjesecu
+}
+// ── Zaba PDF izvadak ──
+function revLoadPdfJs(){
+  return new Promise((res,rej)=>{
+    if(window.pdfjsLib) return res(window.pdfjsLib);
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload=()=>{ try{ window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; res(window.pdfjsLib); }catch(e){ rej(e); } };
+    s.onerror=()=>rej(new Error('Ne mogu učitati čitač PDF-a (provjeri internet).'));
+    document.head.appendChild(s);
+  });
+}
+async function revFromPdf(file,acc){
+  const lib=await revLoadPdfJs();
+  const pdf=await lib.getDocument({data:await file.arrayBuffer()}).promise;
+  const pages=[];
+  for(let i=1;i<=pdf.numPages;i++){
+    const tc=await (await pdf.getPage(i)).getTextContent();
+    pages.push(tc.items.filter(t=>t.str&&t.str.trim()).map(t=>({str:t.str.trim(),x:t.transform[4],y:t.transform[5],w:t.width})));
+  }
+  revFromZabaPages(pages,acc);
+}
+function revMoney(t){ return parseFloat(String(t).replace(/\./g,'').replace(',','.')); }
+function revFromZabaPages(pages,acc){
+  const all=[].concat.apply([],pages.map(p=>p));
+  if(!all.some(t=>/Zagreba[čc]ka banka/i.test(t.str))||!all.some(t=>/^Priljev$/i.test(t.str))) throw new Error('Ovo ne izgleda kao Zaba izvadak (PDF)');
+  let cur=null, done=false, pr=null, od=null; const txs=[];
+  for(const items of pages){
+    if(done) break;
+    const hp=items.find(t=>/^Priljev$/i.test(t.str)), ho=items.find(t=>/^Odljev$/i.test(t.str));
+    if(hp&&ho){ pr=hp.x+hp.w; od=ho.x+ho.w; }
+    if(pr==null) continue;
+    // grupiranje po retku
+    const rows=[]; items.slice().sort((a,b)=>b.y-a.y||a.x-b.x).forEach(t=>{
+      const r=rows.find(r=>Math.abs(r.y-t.y)<2.5); if(r) r.items.push(t); else rows.push({y:t.y,items:[t]});
+    });
+    rows.sort((a,b)=>b.y-a.y);
+    for(const r of rows){
+      r.items.sort((a,b)=>a.x-b.x);
+      const line=r.items.map(t=>t.str).join(' ');
+      if(/Zbroj prometa|NOVO STANJE/i.test(line)){ done=true; break; }
+      const dm=/^(\d{2})\.(\d{2})\.(\d{4})\.?$/.exec(r.items[0].str)||/^(\d{2})\.(\d{2})\.(\d{4})\.?\s/.exec(r.items[0].str);
+      if(dm){ cur={date:dm[3]+'-'+dm[2]+'-'+dm[1],text:[],amt:null,dir:null}; txs.push(cur); }
+      if(!cur) continue;
+      r.items.forEach((t,i)=>{
+        if(i===0&&dm){ const rest=t.str.replace(/^\d{2}\.\d{2}\.\d{4}\.?\s*/,''); if(rest) cur.text.push(rest); return; }
+        if(/^-?\d{1,3}(\.\d{3})*,\d{2}$/.test(t.str)&&(t.x+t.w)>=pr-70){
+          cur.amt=revMoney(t.str); cur.dir=Math.abs((t.x+t.w)-pr)<Math.abs((t.x+t.w)-od)?'in':'out'; return;
+        }
+        cur.text.push(t.str);
+      });
+    }
+  }
+  if(!txs.length) throw new Error('U izvatku nisam našla prometa.');
+  const clean=t=>t.text.join(' ').replace(/\s+/g,' ').trim().replace(/^[A-Z]\d{12,}\s*/,'').replace(/\s+(USD|GBP|CHF|[A-Z]{3}) [\d.,]+ TEČAJ ZABA.*$/i,'');
+  // ime vlasnika kartice = zajednički završetak svih kartičnih opisa
+  const toks=txs.filter(t=>/^Kupovina /i.test(clean(t))).map(t=>clean(t).split(' '));
+  let suf=[];
+  if(toks.length>=2){
+    for(let k=1;k<=4;k++){ const w=toks[0].slice(-k).join(' '); if(toks.every(a=>a.length>k&&a.slice(-k).join(' ')===w)&&/^[A-ZŠĐČĆŽ ]+$/.test(w)) suf=toks[0].slice(-k); else break; }
+  }
+  const ownerRe=suf.length>=2?new RegExp('\\s*'+suf.map(x=>x.replace(/[.*+?^${}()|[\]]/g,'\\$&')).join('\\s+')+'\\s*$','i'):null;
+  txs.forEach(t=>{
+    if(t.amt==null){ acc.skipped++; return; }
+    let d=clean(t); if(ownerRe) d=d.replace(ownerRe,'').trim();
+    if(/^Kupovina Revolut\*/i.test(d)){ acc.skipped++; return; } // top-up Revoluta, trošak je u Revolut izvatku
+    const short=d.replace(/^Kupovina\s+/i,'');
+    if(t.dir==='in'){
+      acc.items.push({date:t.date,desc:short,amount:-t.amt,cat:'Other',on:false,type:'Zaba uplata',note:'Zaba: '+short,dup:false});
+    } else {
+      const cat=/Podizanje gotovog|Naknada|TROŠKOVI UČINJENI/i.test(d)?'Other':revCat(short);
+      acc.items.push({date:t.date,desc:short,amount:t.amt,cat:cat,on:true,type:'Zaba',note:'Zaba: '+short,dup:false});
+    }
+  });
+}
+async function revFinish(acc){
+  const yr=curYear(); const out=[];
+  acc.items.forEach(o=>{ if(parseInt(o.date.slice(0,4))!==yr) acc.other++; else out.push(o); });
+  out.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
   showSaveOverlay('Provjeravam već uneseno...');
   try{
     await ensureResources();
@@ -2974,10 +3057,10 @@ async function revBuild(text){
         (res.values||[]).forEach(v=>{ if(v&&v[0]) seen[mi].add(revKey(v[0], v[4], v[10])); });
       }catch(e){}
     }
-    out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; o.note='Revolut: '+o.desc; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; } });
+    out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; } });
   }catch(e){ hideSaveOverlay(); showToast('Greška pri provjeri: '+(e.message||e),5000,'err'); return; }
   hideSaveOverlay();
-  REV_ROWS=out; REV_ROWS._skipped=skipped; REV_ROWS._other=other;
+  REV_ROWS=out; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other;
   revRender();
   document.getElementById('rev-modal').style.display='block';
 }
@@ -2998,7 +3081,7 @@ function revRender(){
     </div>`;
   });
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
-  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi (zeleni iznos, minus) upisuju se u „Plaćeno drugima“ kao povrat. Preskočeno (top-up, razmjene, nezavršeno): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
+  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Uplate na Zabu (plaća i sl.) isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
   revSum();
 }
 function revSum(){
@@ -3020,7 +3103,7 @@ async function revImport(){
       await writeRange(sheetId, `${m}!A${row}`, data);
     }
     hideSaveOverlay(); revClose();
-    showToast('Uvezeno '+on.length+' stavki iz Revoluta ✓');
+    showToast('Uvezeno '+on.length+' stavki ✓');
     try{ if(typeof loadPregled==='function') loadPregled(); }catch(e){}
   }catch(e){ hideSaveOverlay(); showToast('Greška pri uvozu: '+(e.message||e),6000,'err'); }
 }
