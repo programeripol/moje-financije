@@ -790,6 +790,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Prihod</div>
       <div class="card-spinner" id="hero-spin-inc"><div class="card-spinner-ring"></div></div>
       <div id="inc-total-display" class="sum-val-main">—</div>
+      <div id="bh-received" style="display:none;font-size:12px;font-weight:600;color:#16a34a;margin-top:3px"></div>
     </div>
     <div style="display:flex;align-items:center;justify-content:flex-end"></div>
     <svg id="inc-card-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" style="flex-shrink:0;transition:transform .25s;align-self:center;margin-left:8px"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1115,13 +1116,13 @@ const CAT_HR = {
   Food:'Hrana', Pets:'Ljubimci', Fuel:'Prijevoz', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
   Allianz:'Osiguranje', Debt:'Rate', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
-  Savings:'Štednja', KeksPay:'Keks Pay', Drugima:'Plaćeno drugima', Other:'Ostalo'
+  Savings:'Štednja', KeksPay:'Keks Pay', Drugima:'Plaćeno drugima', Prihod:'Prihod (primljeno)', Other:'Ostalo'
 };
 const CAT_COLORS = {
   Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
   Stanarina:'var(--th1)', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
   Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Prijevoz:'#38bdf8', Hobi:'#f97316', Putovanje:'#818cf8', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
-  Savings:'#10b981', KeksPay:'#06b6d4', Drugima:'#fb7185', Other:'#94a3b8'
+  Savings:'#10b981', KeksPay:'#06b6d4', Drugima:'#fb7185', Prihod:'#16a34a', Other:'#94a3b8'
 };
 
 // ── INIT ─────────────────────────────────────────────────────────────
@@ -2150,7 +2151,7 @@ async function calcAutoPrenostalo(monthIdx){
   try{
     const rows = await getRows(sheetId, prevName, 'A57:N500');
     const entries = rows.filter(r=>r[1]);
-    const prevSpent = entries.reduce((s,r)=>s+(parseFloat(r[5])||0), 0);
+    const prevSpent = entries.reduce((s,r)=>s+((r[8]==='Prihod')?0:(parseFloat(r[5])||0)), 0);
     const prevPlan = await loadMonthPlan(prevIdx);
     // income for prev month
     let prevIncome;
@@ -2455,12 +2456,16 @@ async function loadPregled(){
 
     const actual = {};
     let totalSpent = 0;
+    let received = 0;
     entries.forEach(r=>{
       const cat = r[8]||'Other'; // I = kategorija
       const amt = parseFloat(r[5])||0; // F = iznos
+      if(cat==='Prihod'){ received += amt; return; } // primljeno (plaća) nije trošak
       actual[cat] = (actual[cat]||0) + amt;
       totalSpent += amt;
     });
+    const recEl = document.getElementById('bh-received');
+    if(recEl){ recEl.style.display = received>0 ? 'block' : 'none'; recEl.textContent = received>0 ? 'Primljeno: '+eur(received) : ''; }
 
     const monthPlan = await loadMonthPlan(viewMonthIdx);
     const effPlan   = getEffectivePlan(monthPlan);
@@ -3033,6 +3038,7 @@ function revFromZabaPages(pages,acc){
     if(/^Kupovina Revolut\*/i.test(d)){ acc.skipped++; return; } // top-up Revoluta, trošak je u Revolut izvatku
     const short=d.replace(/^Kupovina\s+/i,'');
     if(t.dir==='in'){
+      if(/EKUPI/i.test(d)){ acc.items.push({date:t.date,desc:short,amount:t.amt,cat:'Prihod',on:true,type:'Plaća',income:true,note:'Zaba: '+short,dup:false}); return; }
       acc.items.push({date:t.date,desc:short,amount:-t.amt,cat:'Other',on:false,type:'Zaba uplata',note:'Zaba: '+short,dup:false});
     } else {
       const cat=/Podizanje gotovog|Naknada|TROŠKOVI UČINJENI/i.test(d)?'Other':revCat(short);
@@ -3071,7 +3077,7 @@ function revOpts(sel){ return Object.keys(CAT_HR).map(k=>`<option value="${k}"${
 function revRender(){
   const L=document.getElementById('rev-list'); let h='';
   REV_ROWS.forEach((o,i)=>{
-    const neg=o.amount<0;
+    const neg=o.amount<0||o.income;
     h+=`<div style="display:flex;gap:8px;align-items:center;padding:9px 6px;border-bottom:1px solid #f1f5f9;${o.dup?'opacity:.45':''}">
       <input type="checkbox" ${o.on?'checked':''} onchange="REV_ROWS[${i}].on=this.checked;revSum()" style="width:18px;height:18px;flex:none">
       <div style="flex:1;min-width:0">
@@ -3079,16 +3085,16 @@ function revRender(){
         <div style="font-size:11.5px;color:#64748b">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':''}</div>
         <select onchange="REV_ROWS[${i}].cat=this.value" style="margin-top:4px;font-size:12.5px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:8px;max-width:100%">${revOpts(o.cat)}</select>
       </div>
-      <div style="font-size:13.5px;font-weight:700;white-space:nowrap;color:${neg?'#16a34a':'#0f172a'}">${eur(o.amount)}</div>
+      <div style="font-size:13.5px;font-weight:700;white-space:nowrap;color:${neg?'#16a34a':'#0f172a'}">${o.income?'+ ':''}${eur(o.amount)}</div>
     </div>`;
   });
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
-  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Uplate na Zabu (plaća i sl.) isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
+  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Plaća od eKupija upisuje se kao „Primljeno“ (ne računa se kao trošak). Ostale uplate na Zabu isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+'.';
   revSum();
 }
 function revSum(){
-  const on=REV_ROWS.filter(o=>o.on); const tot=on.reduce((a,o)=>a+o.amount,0);
-  document.getElementById('rev-sum').textContent=on.length+' stavki · '+eur(tot);
+  const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income).reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
+  document.getElementById('rev-sum').textContent=on.length+' stavki · troškovi '+eur(tot)+(inc?' · plaća +'+eur(inc):'');
   document.getElementById('rev-btn').disabled=!on.length;
 }
 function revClose(){ document.getElementById('rev-modal').style.display='none'; }
