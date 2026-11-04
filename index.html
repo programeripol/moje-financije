@@ -468,6 +468,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <span onclick="revClose()" style="cursor:pointer;font-size:24px;line-height:1;padding:0 6px">&times;</span>
     </div>
     <div id="rev-info" style="padding:0 18px 8px;font-size:12.5px;color:#64748b"></div>
+    <div style="padding:0 18px 8px;display:flex;gap:8px;align-items:center;font-size:12.5px;color:#64748b"><span style="flex:1">✓ = ide u tablicu, prazno = preskače se</span><button onclick="revAll(true)" style="border:1px solid #e2e8f0;background:#fff;border-radius:9px;padding:6px 10px;font-size:12.5px;cursor:pointer">Označi sve</button><button onclick="revAll(false)" style="border:1px solid #e2e8f0;background:#fff;border-radius:9px;padding:6px 10px;font-size:12.5px;cursor:pointer">Poništi sve</button></div>
     <div id="rev-list" style="flex:1;overflow:auto;padding:0 12px"></div>
     <div style="padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #e8edf8;display:flex;gap:10px;align-items:center">
       <div id="rev-sum" style="flex:1;font-size:13px;font-weight:600"></div>
@@ -3091,8 +3092,8 @@ function revRender(){
   const L=document.getElementById('rev-list'); let h='';
   REV_ROWS.forEach((o,i)=>{
     const neg=o.amount<0||o.income;
-    h+=`<div style="display:flex;gap:8px;align-items:center;padding:9px 6px;border-bottom:1px solid #f1f5f9;${o.dup?'opacity:.45':''}">
-      <input type="checkbox" ${o.on?'checked':''} onchange="REV_ROWS[${i}].on=this.checked;revSum()" style="width:18px;height:18px;flex:none">
+    h+=`<div id="revr-${i}" style="display:flex;gap:10px;align-items:center;padding:9px 6px;border-bottom:1px solid #f1f5f9;opacity:${o.on?1:.45}">
+      <div id="revc-${i}" onclick="revTog(${i})" style="flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--th1);background:${o.on?'var(--th1)':'#fff'};color:#fff;font-size:17px;font-weight:700;line-height:22px;text-align:center;cursor:pointer;user-select:none">${o.on?'✓':''}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${revEsc(o.desc)||'—'}</div>
         <div style="font-size:11.5px;color:#64748b">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':''}</div>
@@ -3105,6 +3106,13 @@ function revRender(){
   document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Plaća od eKupija upisuje se kao prihod i zamjenjuje plan za taj mjesec. Ostale uplate na Zabu isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+(REV_ROWS._dupFiles?'; duplih datoteka preskočeno: '+REV_ROWS._dupFiles:'')+'.';
   revSum();
 }
+function revPaint(i){
+  const o=REV_ROWS[i]; const c=document.getElementById('revc-'+i), r=document.getElementById('revr-'+i);
+  if(c){ c.style.background=o.on?'var(--th1)':'#fff'; c.textContent=o.on?'✓':''; }
+  if(r) r.style.opacity=o.on?1:.45;
+}
+function revTog(i){ REV_ROWS[i].on=!REV_ROWS[i].on; revPaint(i); revSum(); }
+function revAll(v){ REV_ROWS.forEach((o,i)=>{ o.on=v&&!o.dup; revPaint(i); }); revSum(); }
 function revSum(){
   const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income).reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
   document.getElementById('rev-sum').textContent=on.length+' stavki · troškovi '+eur(tot)+(inc?' · plaća +'+eur(inc):'');
