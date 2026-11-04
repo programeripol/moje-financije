@@ -3082,17 +3082,16 @@ async function revFinish(acc){
     out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; } });
   }catch(e){ hideSaveOverlay(); showToast('Greška pri provjeri: '+(e.message||e),5000,'err'); return; }
   hideSaveOverlay();
-  REV_ROWS=out; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other; REV_ROWS._dupFiles=acc.dupFiles||0;
+  REV_OPEN={}; REV_ROWS=out; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other; REV_ROWS._dupFiles=acc.dupFiles||0;
   revRender();
   document.getElementById('rev-modal').style.display='block';
 }
 function revKey(d,a,n){ let t=String(a==null?'':a).replace(/[^0-9,.\-]/g,''); if(t.indexOf(',')>=0) t=t.replace(/\./g,'').replace(',','.'); const v=Math.round((parseFloat(t)||0)*100)/100; return String(d).trim()+'|'+v.toFixed(2)+'|'+String(n||'').trim(); }
 function revOpts(sel){ return Object.keys(CAT_HR).map(k=>`<option value="${k}"${k===sel?' selected':''}>${revEsc(CAT_HR[k])}</option>`).join(''); }
-function revRender(){
-  const L=document.getElementById('rev-list'); let h='';
-  REV_ROWS.forEach((o,i)=>{
-    const neg=o.amount<0||o.income;
-    h+=`<div id="revr-${i}" style="display:flex;gap:10px;align-items:center;padding:9px 6px;border-bottom:1px solid #f1f5f9;opacity:${o.on?1:.45}">
+var REV_OPEN={};
+function revRowHtml(o,i){
+  const neg=o.amount<0||o.income;
+  return `<div id="revr-${i}" style="display:flex;gap:10px;align-items:center;padding:9px 6px;border-bottom:1px solid #f1f5f9;opacity:${o.on?1:.45}">
       <div id="revc-${i}" onclick="revTog(${i})" style="flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--th1);background:${o.on?'var(--th1)':'#fff'};color:#fff;font-size:17px;font-weight:700;line-height:22px;text-align:center;cursor:pointer;user-select:none">${o.on?'✓':''}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${revEsc(o.desc)||'—'}</div>
@@ -3101,6 +3100,21 @@ function revRender(){
       </div>
       <div style="font-size:13.5px;font-weight:700;white-space:nowrap;color:${neg?'#16a34a':'#0f172a'}">${o.income?'+ ':''}${eur(o.amount)}</div>
     </div>`;
+}
+function revMonthKeys(){ const k=[]; REV_ROWS.forEach(o=>{ const m=o.date.slice(0,7); if(k.indexOf(m)<0) k.push(m); }); return k.sort(); }
+function revRender(){
+  const L=document.getElementById('rev-list'); let h='';
+  revMonthKeys().forEach(m=>{
+    const open=!!REV_OPEN[m];
+    h+=`<div style="border:1px solid #e8edf8;border-radius:14px;margin:0 0 8px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 10px;background:#f8fafc;cursor:pointer" onclick="revOpen('${m}')">
+        <div id="revmc-${m}" onclick="event.stopPropagation();revMonth('${m}')" style="flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--th1);color:#fff;font-size:17px;font-weight:700;line-height:22px;text-align:center;user-select:none"></div>
+        <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px">${MONTHS_HR[parseInt(m.slice(5))-1]} ${m.slice(0,4)}</div><div id="revms-${m}" style="font-size:12px;color:#64748b"></div></div>
+        <span id="revar-${m}" style="font-size:14px;color:#94a3b8">${open?'▾':'▸'}</span>
+      </div>
+      <div id="revb-${m}" style="display:${open?'block':'none'};padding:0 6px">`;
+    REV_ROWS.forEach((o,i)=>{ if(o.date.slice(0,7)===m) h+=revRowHtml(o,i); });
+    h+=`</div></div>`;
   });
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
   document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Plaća od eKupija upisuje se kao prihod i zamjenjuje plan za taj mjesec. Ostale uplate na Zabu isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+(REV_ROWS._dupFiles?'; duplih datoteka preskočeno: '+REV_ROWS._dupFiles:'')+'.';
@@ -3113,10 +3127,24 @@ function revPaint(i){
 }
 function revTog(i){ REV_ROWS[i].on=!REV_ROWS[i].on; revPaint(i); revSum(); }
 function revAll(v){ REV_ROWS.forEach((o,i)=>{ o.on=v&&!o.dup; revPaint(i); }); revSum(); }
+function revOpen(m){ REV_OPEN[m]=!REV_OPEN[m]; const b=document.getElementById('revb-'+m), ar=document.getElementById('revar-'+m); if(b) b.style.display=REV_OPEN[m]?'block':'none'; if(ar) ar.textContent=REV_OPEN[m]?'▾':'▸'; }
+function revMonth(m){
+  const rows=REV_ROWS.map((o,i)=>({o,i})).filter(x=>x.o.date.slice(0,7)===m);
+  const all=rows.every(x=>x.o.on);
+  rows.forEach(x=>{ x.o.on=all?false:!x.o.dup; revPaint(x.i); });
+  revSum();
+}
 function revSum(){
   const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income).reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
   document.getElementById('rev-sum').textContent=on.length+' stavki · troškovi '+eur(tot)+(inc?' · plaća +'+eur(inc):'');
   document.getElementById('rev-btn').disabled=!on.length;
+  revMonthKeys().forEach(m=>{
+    const rows=REV_ROWS.filter(o=>o.date.slice(0,7)===m), sel=rows.filter(o=>o.on);
+    const exp=sel.filter(o=>!o.income).reduce((a,o)=>a+o.amount,0), pay=sel.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
+    const c=document.getElementById('revmc-'+m), t=document.getElementById('revms-'+m);
+    if(c){ c.style.background=sel.length?'var(--th1)':'#fff'; c.textContent=sel.length===rows.length?'✓':(sel.length?'–':''); }
+    if(t) t.textContent=sel.length+' od '+rows.length+' stavki · '+eur(exp)+(pay?' · plaća +'+eur(pay):'');
+  });
 }
 function revClose(){ document.getElementById('rev-modal').style.display='none'; }
 async function revImport(){
