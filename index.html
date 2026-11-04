@@ -3117,7 +3117,8 @@ function revRender(){
     h+=`</div></div>`;
   });
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
-  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Plaća od eKupija upisuje se kao prihod i zamjenjuje plan za taj mjesec. Ostale uplate na Zabu isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+(REV_ROWS._dupFiles?'; duplih datoteka preskočeno: '+REV_ROWS._dupFiles:'')+'.';
+  const _sk=(REV_ROWS._skipped||0), _ot=REV_ROWS._other||0, _df=REV_ROWS._dupFiles||0;
+  document.getElementById('rev-info').innerHTML='<div style="line-height:1.55"><b style="color:#0f172a">Što će se upisati</b><br>• Kvačica ✓ = stavka ide u tablicu, prazno = preskače se.<br>• <b>Troškovi:</b> kartična plaćanja, gotovina i odlazni prijenosi.<br>• <b>Plaćeno drugima:</b> odlazni prijenosi osobama; dolazni (zeleni iznos) se oduzimaju od toga.<br>• <b>Plaća od eKupija</b> ide kao prihod tog mjeseca i zamjenjuje plan.<br>• Ostale uplate na Zabu su isključene – uključi ih samo ako ih želiš odbiti od troškova.<br><span style="color:#94a3b8">Automatski preskočeno: '+_sk+' (top-up Revoluta, razmjene valuta, nezavršeno, prijenosi Zaba→Revolut)'+(_ot?'; '+_ot+' izvan ove godine ili valute':'')+(_df?'; '+_df+' duplih datoteka':'')+'.</span></div>';
   revSum();
 }
 function revPaint(i){
