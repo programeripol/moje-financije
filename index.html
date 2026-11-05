@@ -1117,13 +1117,13 @@ const CAT_HR = {
   Food:'Hrana', Pets:'Ljubimci', Fuel:'Prijevoz', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
   Allianz:'Osiguranje', Debt:'Rate', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
-  Savings:'Štednja', KeksPay:'Keks Pay', Drugima:'Plaćeno drugima', Prihod:'Prihod (primljeno)', Other:'Ostalo'
+  Savings:'Štednja', KeksPay:'Keks Pay', Drugima:'Plaćeno drugima', Prihod:'Prihod (primljeno)', Prijenos:'Prijenos između računa', Other:'Ostalo'
 };
 const CAT_COLORS = {
   Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
   Stanarina:'var(--th1)', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
   Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Prijevoz:'#38bdf8', Hobi:'#f97316', Putovanje:'#818cf8', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
-  Savings:'#10b981', KeksPay:'#06b6d4', Drugima:'#fb7185', Prihod:'#16a34a', Other:'#94a3b8'
+  Savings:'#10b981', KeksPay:'#06b6d4', Drugima:'#fb7185', Prihod:'#16a34a', Prijenos:'#cbd5e1', Other:'#94a3b8'
 };
 
 // ── INIT ─────────────────────────────────────────────────────────────
@@ -2152,7 +2152,7 @@ async function calcAutoPrenostalo(monthIdx){
   try{
     const rows = await getRows(sheetId, prevName, 'A57:N500');
     const entries = rows.filter(r=>r[1]);
-    const prevSpent = entries.reduce((s,r)=>s+((r[8]==='Prihod')?0:(parseFloat(r[5])||0)), 0);
+    const prevSpent = entries.reduce((s,r)=>s+((r[8]==='Prihod'||r[8]==='Prijenos')?0:(parseFloat(r[5])||0)), 0);
     const prevRecv = entries.reduce((s,r)=>s+((r[8]==='Prihod')?(parseFloat(r[5])||0):0), 0);
     const prevPlan = await loadMonthPlan(prevIdx);
     // income for prev month
@@ -2471,6 +2471,7 @@ async function loadPregled(){
     entries.forEach(r=>{
       const cat = r[8]||'Other'; // I = kategorija
       const amt = parseFloat(r[5])||0; // F = iznos
+      if(cat==='Prijenos') return; // prijenos između vlastitih računa nije trošak
       if(cat==='Prihod'){ received += amt; return; } // primljeno (plaća) nije trošak
       actual[cat] = (actual[cat]||0) + amt;
       totalSpent += amt;
@@ -2971,7 +2972,7 @@ function revFromCsv(text,acc){
   if(iT<0||iA<0||iDe<0||iS<0) throw new Error('Ovo ne izgleda kao Revolut CSV izvadak');
   for(const r of tbl.slice(1)){
     const type=r[iT], st=r[iS];
-    if(st!=='COMPLETED'||type==='Topup'||type==='Exchange'){ acc.skipped++; continue; }
+    if(st!=='COMPLETED'||type==='Exchange'){ acc.skipped++; continue; }
     if((r[iCu]||'EUR')!=='EUR'){ acc.other++; continue; }
     const dt=(r[iC]||r[iD]||'').slice(0,10);
     if(!/^\d{4}-\d{2}-\d{2}$/.test(dt)){ acc.skipped++; continue; }
@@ -2979,7 +2980,8 @@ function revFromCsv(text,acc){
     const net=-(amt-fee); // trošak pozitivan, povrat negativan
     const desc=(r[iDe]||'').trim();
     let cat;
-    if(type==='Transfer'||type==='Rev Payment') cat='Drugima';
+    if(type==='Topup') cat='Prijenos';
+    else if(type==='Transfer'||type==='Rev Payment') cat='Drugima';
     else if(type==='ATM') cat='Other';
     else cat=revCat(desc);
     acc.items.push({date:dt,desc:desc,amount:Math.round(net*100)/100,cat:cat,on:true,type:type,note:'Revolut: '+desc,dup:false});
@@ -3049,11 +3051,11 @@ function revFromZabaPages(pages,acc){
   txs.forEach(t=>{
     if(t.amt==null){ acc.skipped++; return; }
     let d=clean(t); if(ownerRe) d=d.replace(ownerRe,'').trim();
-    if(/^Kupovina Revolut\*/i.test(d)){ acc.skipped++; return; } // top-up Revoluta, trošak je u Revolut izvatku
+    if(/^Kupovina Revolut\*/i.test(d)){ acc.items.push({date:t.date,desc:'Prijenos na Revolut',amount:t.amt,cat:'Prijenos',on:true,type:'Prijenos',note:'Zaba: Prijenos na Revolut',dup:false}); return; }
     const short=d.replace(/^Kupovina\s+/i,'');
     if(t.dir==='in'){
       if(/EKUPI/i.test(d)){ acc.items.push({date:t.date,desc:short,amount:t.amt,cat:'Prihod',on:true,type:'Plaća',income:true,note:'Zaba: '+short,dup:false}); return; }
-      acc.items.push({date:t.date,desc:short,amount:-t.amt,cat:'Other',on:false,type:'Zaba uplata',note:'Zaba: '+short,dup:false});
+      acc.items.push({date:t.date,desc:short,amount:-t.amt,cat:'Drugima',on:true,type:'Zaba uplata',note:'Zaba: '+short,dup:false});
     } else {
       const cat=/Podizanje gotovog|Naknada|TROŠKOVI UČINJENI/i.test(d)?'Other':/transfer nac/i.test(d)?'Drugima':revCat(short);
       acc.items.push({date:t.date,desc:short,amount:t.amt,cat:cat,on:true,type:'Zaba',note:'Zaba: '+short,dup:false});
@@ -3118,7 +3120,7 @@ function revRender(){
   });
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
   const _sk=(REV_ROWS._skipped||0), _ot=REV_ROWS._other||0, _df=REV_ROWS._dupFiles||0;
-  document.getElementById('rev-info').innerHTML='<div style="line-height:1.55"><b style="color:#0f172a">Što će se upisati</b><br>• Kvačica ✓ = stavka ide u tablicu, prazno = preskače se.<br>• <b>Troškovi:</b> kartična plaćanja, gotovina i odlazni prijenosi.<br>• <b>Plaćeno drugima:</b> odlazni prijenosi osobama; dolazni (zeleni iznos) se oduzimaju od toga.<br>• <b>Plaća od eKupija</b> ide kao prihod tog mjeseca i zamjenjuje plan.<br>• Ostale uplate na Zabu su isključene – uključi ih samo ako ih želiš odbiti od troškova.<br><span style="color:#94a3b8">Automatski preskočeno: '+_sk+' (top-up Revoluta, razmjene valuta, nezavršeno, prijenosi Zaba→Revolut)'+(_ot?'; '+_ot+' izvan ove godine ili valute':'')+(_df?'; '+_df+' duplih datoteka':'')+'.</span></div>';
+  document.getElementById('rev-info').innerHTML='<div style="line-height:1.55"><b style="color:#0f172a">Kako ovo radi</b><br>✓ = ide u tablicu, prazno = ne ide. Označi što želiš prenijeti u aplikaciju.<br>• <b>Plaćanja karticom i dizanje gotovine</b> na bankomatu → trošak.<br>• <b>Novac koji si ti poslala nekome</b> → „Plaćeno drugima“.<br>• <b>Novac koji je netko poslao tebi</b> (zeleni iznos) → isto „Plaćeno drugima“, ali kao minus. Primjer: platiš 100 €, prijateljica ti vrati 30 € → u toj kategoriji ostaje 70 €.<br>• <b>Plaća od eKupija</b> → prihod tog mjeseca (umjesto plana).<br>• <b>Prebacivanje novca između tvojih računa</b> (Zaba ↔ Revolut) → „Prijenos između računa“. Upiše se, ali se ne računa kao trošak, pa se ništa ne udvostručuje.<br><span style="color:#94a3b8">Preskočeno automatski: '+_sk+' (razmjene valuta unutar Revoluta, nezavršena i vraćena plaćanja)'+(_ot?'; '+_ot+' izvan ove godine ili valute':'')+(_df?'; '+_df+' duplih datoteka':'')+'.</span></div>';
   revSum();
 }
 function revPaint(i){
@@ -3136,12 +3138,12 @@ function revMonth(m){
   revSum();
 }
 function revSum(){
-  const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income).reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
+  const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
   document.getElementById('rev-sum').textContent=on.length+' stavki · troškovi '+eur(tot)+(inc?' · plaća +'+eur(inc):'');
   document.getElementById('rev-btn').disabled=!on.length;
   revMonthKeys().forEach(m=>{
     const rows=REV_ROWS.filter(o=>o.date.slice(0,7)===m), sel=rows.filter(o=>o.on);
-    const exp=sel.filter(o=>!o.income).reduce((a,o)=>a+o.amount,0), pay=sel.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
+    const exp=sel.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0), pay=sel.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
     const c=document.getElementById('revmc-'+m), t=document.getElementById('revms-'+m);
     if(c){ c.style.background=sel.length?'var(--th1)':'#fff'; c.textContent=sel.length===rows.length?'✓':(sel.length?'–':''); }
     if(t) t.textContent=sel.length+' od '+rows.length+' stavki · '+eur(exp)+(pay?' · plaća +'+eur(pay):'');
