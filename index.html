@@ -479,6 +479,8 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #s-skener #rate-fields{padding:0 20px 18px!important;gap:16px!important}
 [data-theme="dopamin"] #s-skener #rate-fields input{color:var(--dp-navy)!important;font-family:inherit;font-size:16px;font-weight:800;padding:6px 0!important;min-height:0!important;border-bottom:2px solid rgba(42,60,143,.2)!important}
 [data-theme="dopamin"] #s-skener .req{color:var(--dp-navy)!important;opacity:1!important}
+[data-theme="dopamin"] #s-skener input[type="date"]{text-align:left!important;-webkit-appearance:none;appearance:none;display:block}
+[data-theme="dopamin"] #s-skener input[type="date"]::-webkit-date-and-time-value{text-align:left;margin:0}
 [data-theme="dopamin"] #s-skener input[type="date"]::-webkit-calendar-picker-indicator{filter:brightness(0) saturate(100%) invert(19%) sepia(55%) saturate(2900%) hue-rotate(222deg) brightness(82%) contrast(92%);opacity:1}
 /* spremljeni računi: više zraka */
 [data-theme="dopamin"] #acc-modal .acc-grab{padding:20px 0 16px!important}
@@ -723,7 +725,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <p>fotografiraj, odaberi iz galerije ili priloži PDF</p>
     <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
     <input type="file" id="file-cam" accept="image/*" capture="environment" onchange="handleFile(this.files[0])">
-    <input type="file" id="file-gal" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" onchange="handleFile(this.files[0])">
+    <input type="file" id="file-gal" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif" onchange="handleFile(this.files[0])">
     <input type="file" id="file-pdf" accept="application/pdf,.pdf" onchange="handleFile(this.files[0])">
     <div class="uz-opts">
       <button type="button" onclick="event.stopPropagation();uzPick('file-cam')"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Slikaj</button>
