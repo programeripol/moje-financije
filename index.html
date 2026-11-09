@@ -429,21 +429,21 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 .sk-head,.sk-x,.uz-opts,.uz-plus,.kat-quick,#kat-sheet,#kat-sheet-ov{display:none}
 [data-theme="dopamin"] .dp-hide{display:none!important}
 [data-theme="dopamin"] #s-skener{padding-top:var(--sk-top)}
-[data-theme="dopamin"] .sk-head{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin:0 0 26px}
+[data-theme="dopamin"] .sk-head{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin:12px 0 38px}
 [data-theme="dopamin"] .sk-head h2{font-size:26px;font-weight:800;line-height:1;color:var(--dp-navy);margin:0}
-[data-theme="dopamin"] .sk-head button{height:36px;box-sizing:border-box;border:1.5px solid rgba(42,60,143,.32);border-radius:12px;background:var(--dp-cream);color:var(--dp-navy);font-size:13px;font-weight:700;padding:0 12px;cursor:pointer}
+[data-theme="dopamin"] .sk-head button{height:38px;box-sizing:border-box;border:2px solid var(--dp-navy);border-radius:999px;background:var(--dp-yellow);color:var(--dp-navy);font-family:inherit;font-size:14px;font-weight:800;padding:0 16px;cursor:pointer;box-shadow:0 3px 0 rgba(42,60,143,.2)}
 [data-theme="dopamin"] #s-skener.sk-open .sk-acc{display:none}
-[data-theme="dopamin"] #s-skener.sk-open .sk-x{display:flex;align-items:center;justify-content:center;width:36px;padding:0;border-radius:50%}
-[data-theme="dopamin"] #upload-zone{margin-bottom:60px;background:var(--dp-cream);backdrop-filter:none;-webkit-backdrop-filter:none;border:2.5px dashed rgba(42,60,143,.5);border-radius:26px;padding:0 14px;min-height:112px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+[data-theme="dopamin"] #s-skener.sk-open .sk-x{display:flex;align-items:center;justify-content:center;width:38px;padding:0;border-radius:50%}
+[data-theme="dopamin"] #upload-zone{margin-bottom:60px;background:var(--dp-cream);backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:0 5px 0 rgba(42,60,143,.18);border-radius:26px;padding:0 14px;min-height:112px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 [data-theme="dopamin"] #upload-zone .uz-icon{position:relative;width:44px;height:36px;margin:0;color:var(--dp-navy);opacity:1}
 [data-theme="dopamin"] #upload-zone .uz-icon svg{width:38px;height:38px;stroke-width:2.2}
-[data-theme="dopamin"] #upload-zone .uz-plus{display:flex;align-items:center;justify-content:center;position:absolute;right:-8px;top:-8px;width:22px;height:22px;border-radius:50%;background:var(--dp-navy);color:var(--dp-cream)}
+[data-theme="dopamin"] #upload-zone .uz-plus{display:flex;align-items:center;justify-content:center;position:absolute;right:-1px;top:-2px;width:22px;height:22px;border-radius:50%;background:var(--dp-navy);color:var(--dp-cream)}
 [data-theme="dopamin"] #upload-zone h3{color:var(--dp-navy);font-family:'Baloo 2',sans-serif;font-weight:800;font-size:22px;line-height:1.1;margin:4px 0 0;letter-spacing:.01em}
 [data-theme="dopamin"] #upload-zone p{color:#5b6291;opacity:1;font-size:12px;font-weight:600;line-height:1.25;margin:0;text-wrap:balance}
 [data-theme="dopamin"] #upload-zone.uz-open{background:transparent;border:none;padding:0;cursor:default;flex-direction:row;gap:10px}
 [data-theme="dopamin"] #upload-zone.uz-open>.uz-icon,[data-theme="dopamin"] #upload-zone.uz-open>h3,[data-theme="dopamin"] #upload-zone.uz-open>p{display:none}
 [data-theme="dopamin"] #upload-zone.uz-open .uz-opts{display:flex;gap:10px;width:100%;height:100%}
-.uz-opts button{flex:1;height:100%;box-sizing:border-box;border:2.5px dashed rgba(42,60,143,.5);border-radius:22px;background:var(--dp-cream);color:var(--dp-navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:inherit;font-size:14px;font-weight:800;padding:0 4px;cursor:pointer}
+.uz-opts button{flex:1;height:100%;box-sizing:border-box;border:none;box-shadow:0 5px 0 rgba(42,60,143,.18);border-radius:22px;background:var(--dp-cream);color:var(--dp-navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:inherit;font-size:14px;font-weight:800;padding:0 4px;cursor:pointer}
 [data-theme="dopamin"] #fl-kat .csel,[data-theme="dopamin"] #fl-kat>.fl-lbl{display:none}
 [data-theme="dopamin"] #fl-kat .kat-quick{display:block;padding:14px 20px}
 .kq-lbl{font-size:13px;font-weight:800;letter-spacing:.6px;color:var(--dp-navy);margin-bottom:10px}
@@ -452,8 +452,11 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 #kat-quick .kq-chip{flex:none;padding:0 12px}
 .kq-chip{height:34px;border:2px solid var(--dp-navy);white-space:nowrap;background:transparent;color:var(--dp-navy);border-radius:999px;padding:0 14px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .kq-chip.on{background:var(--dp-navy);color:var(--dp-cream)}
-[data-theme="dopamin"] #kat-sheet-ov.open{display:block;position:fixed;inset:0;background:rgba(38,51,127,.6);z-index:210}
-[data-theme="dopamin"] #kat-sheet.open{display:block;position:fixed;left:0;right:0;bottom:0;max-height:86vh;overflow-y:auto;background:var(--dp-cream);border-radius:28px 28px 0 0;padding:12px 24px calc(24px + env(safe-area-inset-bottom,0px));z-index:211;box-sizing:border-box;color:var(--dp-navy)}
+[data-theme="dopamin"] #kat-sheet-ov{display:block;position:fixed;inset:0;background:rgba(38,51,127,.6);z-index:210;opacity:0;pointer-events:none;transition:opacity .3s}
+[data-theme="dopamin"] #kat-sheet-ov.open{opacity:1;pointer-events:auto}
+[data-theme="dopamin"] #kat-sheet{display:block;position:fixed;left:0;right:0;bottom:0;max-height:86vh;overflow-y:auto;background:var(--dp-cream);border-radius:28px 28px 0 0;padding:12px 24px calc(28px + env(safe-area-inset-bottom,0px));z-index:211;box-sizing:border-box;color:var(--dp-navy);transform:translateY(105%);visibility:hidden;transition:transform .34s cubic-bezier(.32,.72,0,1),visibility 0s .34s;overscroll-behavior:contain}
+[data-theme="dopamin"] #kat-sheet.open{transform:translateY(0);visibility:visible;transition:transform .34s cubic-bezier(.32,.72,0,1),visibility 0s}
+[data-theme="dopamin"] #kat-sheet.drag{transition:none}
 .ks-grab{width:44px;height:5px;border-radius:3px;background:#b9b3c9;margin:0 auto 12px}
 .ks-top{display:flex;align-items:center;justify-content:space-between;font-size:22px;font-weight:800;line-height:1}
 .ks-x{width:34px;height:34px;border-radius:50%;border:3px solid var(--dp-navy);background:var(--dp-yellow);color:var(--dp-navy);font-size:20px;font-weight:800;line-height:1;padding:0;cursor:pointer;font-family:inherit}
@@ -472,6 +475,16 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #s-skener .fl-rate-row>label{padding:16px 20px!important}
 [data-theme="dopamin"] #s-skener .fl-rate-row>label>span:first-child{font-size:15px!important;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--dp-navy)!important}
 [data-theme="dopamin"] #save-btn{height:54px;border-radius:18px;font-size:19px;font-weight:800;letter-spacing:.3px;box-shadow:0 5px 0 #121a52;margin-top:4px}
+[data-theme="dopamin"] #s-skener .fl-rate-row .rf-lbl{font-size:13px!important;font-weight:800!important;letter-spacing:.6px!important;text-transform:uppercase;color:var(--dp-navy)!important;margin:0 0 2px!important}
+[data-theme="dopamin"] #s-skener #rate-fields{padding:0 20px 18px!important;gap:16px!important}
+[data-theme="dopamin"] #s-skener #rate-fields input{color:var(--dp-navy)!important;font-family:inherit;font-size:16px;font-weight:800;padding:6px 0!important;min-height:0!important;border-bottom:2px solid rgba(42,60,143,.2)!important}
+/* spremljeni računi: više zraka */
+[data-theme="dopamin"] #acc-modal .acc-grab{padding:20px 0 16px!important}
+[data-theme="dopamin"] #acc-modal .acc-hd{padding:14px 24px 18px!important}
+[data-theme="dopamin"] #acc-modal .acc-seg{margin:0 24px 22px!important}
+[data-theme="dopamin"] #acc-modal .acc-body{padding:8px 24px 110px!important}
+[data-theme="dopamin"] #acc-modal .receipt-row{padding:16px 0;gap:12px}
+[data-theme="dopamin"] #acc-modal #gallery-grid{gap:16px;padding-top:6px}
 /* ciljevi: kartice na valovitoj šahovnici */
 [data-theme="dopamin"] #s-ciljevi .section-title{display:inline-block;background:var(--dp-cream);padding:6px 18px;border-radius:999px;font-size:20px}
 [data-theme="dopamin"] .goal-card{border:none;border-radius:26px;box-shadow:0 5px 0 rgba(38,64,143,.35);color:var(--dp-navy)}
@@ -486,8 +499,8 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 /* navigacija */
 [data-theme="dopamin"] #nav{background:var(--dp-cream);border-top:none;border-radius:28px 28px 0 0;box-shadow:0 -3px 0 rgba(42,60,143,.10)}
 [data-theme="dopamin"] .nav-items{padding:10px 12px 8px}
-[data-theme="dopamin"] .nav-btn{color:#5b6291;opacity:1;font-size:12px;font-weight:700;border-radius:18px;padding:8px 0 6px;margin:0 3px}
-[data-theme="dopamin"] .nav-btn:not(.active) .nav-icon{filter:invert(1);opacity:.72}
+[data-theme="dopamin"] .nav-btn{color:var(--dp-navy);opacity:1;font-size:12px;font-weight:700;border-radius:18px;padding:8px 0 6px;margin:0 3px}
+[data-theme="dopamin"] .nav-btn .nav-icon{filter:url(#dp-navy-f);opacity:1}
 [data-theme="dopamin"] .nav-btn.active{background:var(--dp-yellow);color:var(--dp-navy)!important;font-weight:800}
 [data-theme="dopamin"] .nav-btn.active .nav-icon{background:none;border-radius:0;padding:0;width:24px;height:24px;margin-top:0}
 [data-theme="dopamin"] body{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
@@ -504,6 +517,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="dp-navy-f" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 0.1647  0 0 0 0 0.2353  0 0 0 0 0.5608  0 0 0 1 0"/></filter></svg>
 
 <!-- SPLASH SCREEN -->
 <div id="splash">
@@ -690,7 +704,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 <div class="screen" id="s-skener">
 
   <div class="sk-head">
-    <h2>Novi račun</h2>
+    <h2>Skener</h2>
     <button type="button" class="sk-acc" onclick="openAccModal()">Spremljeni računi</button>
     <button type="button" class="sk-x" aria-label="Zatvori" onclick="uzOpen(false)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
@@ -705,7 +719,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <p>fotografiraj, odaberi iz galerije ili priloži PDF</p>
     <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
     <input type="file" id="file-cam" accept="image/*" capture="environment" onchange="handleFile(this.files[0])">
-    <input type="file" id="file-gal" accept="image/*" onchange="handleFile(this.files[0])">
+    <input type="file" id="file-gal" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" onchange="handleFile(this.files[0])">
     <input type="file" id="file-pdf" accept="application/pdf,.pdf" onchange="handleFile(this.files[0])">
     <div class="uz-opts">
       <button type="button" onclick="event.stopPropagation();uzPick('file-cam')"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Slikaj</button>
@@ -725,7 +739,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
   <div class="fl-group">
     <div class="fl-field">
-      <input type="text" id="meta-store" placeholder="Naziv" autocomplete="off">
+      <input type="text" id="meta-store" placeholder="Npr. Konzum, Kaufland" autocomplete="off">
       <label class="fl-lbl" for="meta-store">Naziv <span class="req">*</span></label>
     </div>
     <div class="fl-row">
@@ -735,7 +749,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       </div>
       <div class="fl-field" id="fl-iznos">
         <div class="fl-amt">
-          <input type="text" id="meta-amount" class="field-input" inputmode="decimal" placeholder="Iznos" onblur="fmtAmtBlur(this);document.getElementById('fl-iznos').classList.toggle('fl-has-val',!!this.value.trim())" onfocus="fmtAmtFocus(this)">
+          <input type="text" id="meta-amount" class="field-input" inputmode="decimal" placeholder="0,00" onblur="fmtAmtBlur(this);document.getElementById('fl-iznos').classList.toggle('fl-has-val',!!this.value.trim())" onfocus="fmtAmtFocus(this)">
           <span>€</span>
         </div>
         <label class="fl-lbl" for="meta-amount">Iznos <span class="req">*</span></label>
@@ -816,11 +830,11 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       </label>
       <div id="rate-fields" style="display:none;padding:0 14px 14px;gap:8px;flex-wrap:wrap">
         <div style="flex:1;min-width:120px">
-          <label style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Kartica</label>
-          <input type="text" id="rate-card" placeholder="Visa, Diners, Revolut">
+          <label class="rf-lbl" style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Kartica</label>
+          <input type="text" id="rate-card" placeholder="Npr. Visa">
         </div>
         <div style="flex:1;min-width:80px">
-          <label style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Broj rata</label>
+          <label class="rf-lbl" style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px">Broj rata</label>
           <input type="number" id="rate-count" min="2" max="36" placeholder="6">
         </div>
       </div>
@@ -1104,6 +1118,7 @@ function setTheme(t){
   else{document.documentElement.setAttribute('data-theme',t);}
   localStorage.setItem('mf_theme',t);
   updateThemeBtns();
+  if(typeof navIcons==='function') try{navIcons();}catch(e){}
 }
 function updateThemeBtns(){
   var cur=localStorage.getItem('mf_theme')||'default';
@@ -1253,7 +1268,7 @@ function katSheet(on){
   var sh=document.getElementById('kat-sheet'), ov=document.getElementById('kat-sheet-ov'); if(!sh||!ov) return;
   if(on){
     var sel=(document.getElementById('meta-cat')||{}).value||'';
-    var h='<div class="ks-grab"></div><div class="ks-top"><span>Kategorija</span><button type="button" class="ks-x" onclick="katSheet(false)" aria-label="Zatvori">×</button></div>';
+    var h='<div class="ks-grab"></div><div class="ks-top"><span>Kategorija</span></div>';
     KAT_GROUPS.forEach(function(g){
       h+='<div class="ks-grp"><div class="ks-grp-t">'+g[0]+'</div><div class="kq-row">';
       g[1].forEach(function(x){ h+='<button type="button" class="kq-chip'+(x[0]===sel?' on':'')+'" onclick="katPick(\''+x[0]+'\')">'+x[1]+'</button>'; });
@@ -1264,6 +1279,24 @@ function katSheet(on){
   sh.classList.toggle('open',!!on); ov.classList.toggle('open',!!on);
 }
 document.addEventListener('DOMContentLoaded',katRender);
+document.addEventListener('DOMContentLoaded',function(){ try{navIcons();}catch(e){} });
+document.addEventListener('DOMContentLoaded',function(){
+  var sh=document.getElementById('kat-sheet'); if(!sh) return;
+  var y0=0,dy=0,on=false;
+  sh.addEventListener('touchstart',function(e){ y0=e.touches[0].clientY; dy=0; on=(sh.scrollTop<=0); },{passive:true});
+  sh.addEventListener('touchmove',function(e){
+    if(!on) return;
+    var d=e.touches[0].clientY-y0;
+    if(d>0){ dy=d; sh.classList.add('drag'); sh.style.transform='translateY('+d+'px)'; if(e.cancelable) e.preventDefault(); }
+    else if(dy>0){ dy=0; sh.style.transform=''; }
+  },{passive:false});
+  sh.addEventListener('touchend',function(){
+    if(!on) return; on=false;
+    sh.classList.remove('drag'); sh.style.transform='';
+    if(dy>80) katSheet(false);
+    dy=0;
+  });
+});
 function cselPick(li, val, text){
   const wrap = li.closest('.csel');
   wrap.querySelector('[id$="-val"]').textContent = text;
@@ -1898,6 +1931,14 @@ function showApp(){
 // ── NAVIGATION ───────────────────────────────────────────────────────
 const NAV_TABS = ['skener','pregled','ciljevi','profil'];
 
+function navIcons(){
+  // Dopamin: sve ikone su crne, a CSS filter ih boji u plavo; ostale teme: aktivna crna, ostale bijele
+  const dp = document.documentElement.getAttribute('data-theme')==='dopamin';
+  NAV_TABS.forEach(t => {
+    const el = document.getElementById('icon-'+t);
+    if(el) el.src = `nav-${t}-${(dp || t === currentTab) ? 'crni' : 'bijeli'}.png`;
+  });
+}
 function goTab(tab){
   currentTab = tab;
   document.documentElement.setAttribute('data-tab', tab);
@@ -1906,11 +1947,7 @@ function goTab(tab){
   document.getElementById('s-'+tab).classList.add('active');
   document.getElementById('nav-'+tab).classList.add('active');
 
-  // Zamijeni ikone: aktivna → crna, ostale → bijela
-  NAV_TABS.forEach(t => {
-    const el = document.getElementById('icon-'+t);
-    if(el) el.src = `nav-${t}-${t === tab ? 'crni' : 'bijeli'}.png`;
-  });
+  navIcons();
 
   const titles = {skener:'Skener', pregled:'Pregled', ciljevi:'Ciljevi i Rate', profil:'Moj profil'};
   document.getElementById('header-title').textContent = titles[tab];
@@ -3359,7 +3396,7 @@ function toggleRateFields(){
   if(!f||!t)return;
   var on=t.checked;
   f.style.display=on?'flex':'none';
-  if(vis)vis.style.background=on?'var(--th1)':'#ccc';
+  if(vis)vis.style.background=on?'var(--acc-on,var(--th1))':'#ccc';
   if(thumb)thumb.style.left=on?'22px':'2px';
 }
 function toggleEditRateFields(){
@@ -3370,7 +3407,7 @@ function toggleEditRateFields(){
   if(!f||!t)return;
   var on=t.checked;
   f.style.display=on?'flex':'none';
-  if(vis)vis.style.background=on?'var(--th1)':' #ccc';
+  if(vis)vis.style.background=on?'var(--acc-on,var(--th1))':'#ccc';
   if(thumb)thumb.style.left=on?'22px':'2px';
 }
 async function saveReceipt(){
@@ -4548,10 +4585,10 @@ function syncAmtDisplay(inp){
 </div>
 <div id="acc-modal-overlay" onclick="closeAccModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;transition:opacity .25s;opacity:0"></div>
 <div id="acc-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:201;background:#fff;border-radius:24px 24px 0 0;height:88vh;overflow:hidden;flex-direction:column;box-shadow:0 -4px 32px rgba(var(--th1r),.13);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%)">
-  <div style="padding:16px 0 12px;cursor:grab;text-align:center;touch-action:none" id="acc-modal-drag" ontouchstart="accDragStart(event)" ontouchmove="accDragMove(event)" ontouchend="accDragEnd(event)">
+  <div class="acc-grab" style="padding:16px 0 12px;cursor:grab;text-align:center;touch-action:none" id="acc-modal-drag" ontouchstart="accDragStart(event)" ontouchmove="accDragMove(event)" ontouchend="accDragEnd(event)">
     <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
   </div>
-  <div style="padding:4px 20px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+  <div class="acc-hd" style="padding:4px 20px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
     <div id="acc-modal-title" style="font-size:20px;font-weight:800;color:var(--acc-title,var(--th1))">Računi za lipnja</div>
     <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder"><svg width="26" height="23" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.5l5.85 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg></a>
   </div>
@@ -4559,7 +4596,7 @@ function syncAmtDisplay(inp){
     <button id="acc-view-list" onclick="setAccView('list')" style="flex:1;height:36px;border:none;background:var(--acc-on,var(--th1));color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:700;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Popis</button>
     <button id="acc-view-grid" onclick="setAccView('grid')" style="flex:1;height:36px;border:none;background:transparent;color:#94a3b8;border-radius:9px;cursor:pointer;font-size:14px;font-weight:700;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Slike</button>
   </div>
-  <div style="overflow-y:auto;flex:1;padding:4px 20px 16px" id="acc-modal-body">
+  <div class="acc-body" style="overflow-y:auto;flex:1;padding:4px 20px 16px" id="acc-modal-body">
     <div id="recent-list"></div>
     <div id="gallery-grid" style="display:none"></div>
   </div>
