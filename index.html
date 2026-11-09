@@ -442,7 +442,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #upload-zone.uz-open::after{display:none}
 [data-theme="dopamin"] #upload-zone .uz-icon{position:relative;width:44px;height:36px;margin:0;color:var(--dp-navy);opacity:1}
 [data-theme="dopamin"] #upload-zone .uz-icon svg{width:38px;height:38px;stroke-width:2.2}
-[data-theme="dopamin"] #upload-zone .uz-plus{display:flex;align-items:center;justify-content:center;position:absolute;right:-1px;top:-2px;width:17px;height:17px;border-radius:50%;background:var(--dp-navy);color:var(--dp-cream)}
+[data-theme="dopamin"] #upload-zone .uz-plus{display:flex;align-items:center;justify-content:center;position:absolute;right:-3px;top:0;width:14px;height:14px;border-radius:50%;background:var(--dp-navy);color:var(--dp-cream)}
 [data-theme="dopamin"] #upload-zone h3{color:var(--dp-navy);font-family:'Baloo 2',sans-serif;font-weight:800;font-size:22px;line-height:1.1;margin:4px 0 0;letter-spacing:.01em}
 [data-theme="dopamin"] #upload-zone p{color:#5b6291;opacity:1;font-size:12px;font-weight:600;line-height:1.25;margin:0;text-wrap:balance}
 [data-theme="dopamin"] #upload-zone.uz-open{background:transparent;border:none;padding:0;cursor:default;flex-direction:row;gap:10px}
@@ -801,7 +801,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
        ondragover="event.preventDefault();this.classList.add('drag')"
        ondragleave="this.classList.remove('drag')"
        ondrop="handleDrop(event)">
-    <div class="uz-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="uz-plus"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></div>
+    <div class="uz-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="uz-plus"><svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></div>
     <h3>DODAJ RAČUN</h3>
     <p>fotografiraj, odaberi iz galerije ili priloži PDF</p>
     <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
