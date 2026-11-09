@@ -434,7 +434,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] .sk-head button{height:38px;box-sizing:border-box;border:2px solid var(--dp-navy);border-radius:999px;background:var(--dp-yellow);color:var(--dp-navy);font-family:inherit;font-size:14px;font-weight:800;padding:0 16px;cursor:pointer;box-shadow:0 3px 0 rgba(42,60,143,.2)}
 [data-theme="dopamin"] #s-skener.sk-open .sk-acc{display:none}
 [data-theme="dopamin"] #s-skener.sk-open .sk-x{display:flex;align-items:center;justify-content:center;width:38px;padding:0;border-radius:50%}
-[data-theme="dopamin"] #upload-zone{margin-bottom:48px;background:var(--dp-cream);backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:0 5px 0 rgba(42,60,143,.18);border-radius:26px;padding:0 14px;min-height:112px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+[data-theme="dopamin"] #upload-zone{margin-bottom:40px;background:var(--dp-cream);backdrop-filter:none;-webkit-backdrop-filter:none;border:none;box-shadow:0 5px 0 rgba(42,60,143,.18);border-radius:26px;padding:0 14px;min-height:112px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 [data-theme="dopamin"] #upload-zone .uz-icon{position:relative;width:44px;height:36px;margin:0;color:var(--dp-navy);opacity:1}
 [data-theme="dopamin"] #upload-zone .uz-icon svg{width:38px;height:38px;stroke-width:2.2}
 [data-theme="dopamin"] #upload-zone .uz-plus{display:flex;align-items:center;justify-content:center;position:absolute;right:-4px;top:-5px;width:22px;height:22px;border-radius:50%;background:var(--dp-navy);color:var(--dp-cream)}
@@ -501,9 +501,11 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 /* navigacija */
 [data-theme="dopamin"] #nav{background:var(--dp-cream);border-top:none;border-radius:28px 28px 0 0;box-shadow:0 -3px 0 rgba(42,60,143,.10)}
 [data-theme="dopamin"] .nav-items{padding:10px 12px 8px}
+[data-theme="dopamin"] .nav-btn:not(.active){color:rgba(42,60,143,.72);font-weight:600}
 [data-theme="dopamin"] .nav-btn{color:var(--dp-navy);opacity:1;font-size:12px;font-weight:700;border-radius:18px;padding:8px 0 6px;margin:0 3px}
 [data-theme="dopamin"] .nav-btn .nav-icon{filter:url(#dp-navy-f);opacity:1}
-[data-theme="dopamin"] .nav-btn.active{background:var(--dp-yellow);color:var(--dp-navy)!important;font-weight:800}
+[data-theme="dopamin"] .nav-btn.active{background:none;color:var(--dp-navy)!important;font-weight:800}
+[data-theme="dopamin"] .nav-btn:not(.active) .nav-icon{opacity:1}
 [data-theme="dopamin"] .nav-btn.active .nav-icon{background:none;border-radius:0;padding:0;width:24px;height:24px;margin-top:0}
 [data-theme="dopamin"] body{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
 [data-theme="dopamin"]{--acc-on:#2a3c8f;--acc-title:#2a3c8f}
@@ -1934,11 +1936,11 @@ function showApp(){
 const NAV_TABS = ['skener','pregled','ciljevi','profil'];
 
 function navIcons(){
-  // Dopamin: sve ikone su crne, a CSS filter ih boji u plavo; ostale teme: aktivna crna, ostale bijele
+  // aktivna = puna (crni), ostale = obrisi (bijeli); u Dopamin temi CSS filter sve boji u plavo
   const dp = document.documentElement.getAttribute('data-theme')==='dopamin';
   NAV_TABS.forEach(t => {
     const el = document.getElementById('icon-'+t);
-    if(el) el.src = `nav-${t}-${(dp || t === currentTab) ? 'crni' : 'bijeli'}.png`;
+    if(el) el.src = `nav-${t}-${t === currentTab ? 'crni' : 'bijeli'}.png`;
   });
 }
 function goTab(tab){
