@@ -552,14 +552,33 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #acc-modal .receipt-row{padding:16px 0;gap:12px}
 [data-theme="dopamin"] #acc-modal #gallery-grid{gap:16px;padding-top:6px}
 /* ciljevi: kartice na valovitoj šahovnici */
-[data-theme="dopamin"] #s-ciljevi .section-title{display:inline-block;background:var(--dp-cream);padding:6px 18px;border-radius:999px;font-size:20px}
-[data-theme="dopamin"] .goal-card{border:none;border-radius:26px;box-shadow:0 5px 0 rgba(38,64,143,.35);color:var(--dp-navy)}
-[data-theme="dopamin"] .goal-card:nth-child(4n+1){background:var(--dp-cream)}
-[data-theme="dopamin"] .goal-card:nth-child(4n+2){background:var(--dp-yellow)}
-[data-theme="dopamin"] .goal-card:nth-child(4n+3){background:var(--dp-salmon)}
-[data-theme="dopamin"] .goal-card:nth-child(4n+4){background:#e3dcff}
-[data-theme="dopamin"] .goal-meta,[data-theme="dopamin"] .goal-pct{color:inherit;opacity:.85}
-[data-theme="dopamin"] .goal-card .btn-danger{background:var(--dp-terra);color:var(--dp-cream)}
+[data-theme="dopamin"] #s-ciljevi{padding-top:var(--sk-top)}
+[data-theme="dopamin"] #s-ciljevi .section-title{display:inline-block;background:var(--dp-cream);color:var(--dp-navy);padding:6px 18px 8px;border-radius:999px;font-size:26px;font-weight:800;line-height:1.1}
+[data-theme="dopamin"] #s-ciljevi>div:first-child{margin:12px 0 22px!important;min-height:36px}
+[data-theme="dopamin"] #s-ciljevi>div:first-child .btn-outline{height:38px;box-sizing:border-box;border:2px solid var(--dp-navy);border-radius:999px;background:var(--dp-yellow);color:var(--dp-navy);font-family:inherit;font-size:14px;font-weight:800;padding:0 16px}
+[data-theme="dopamin"] .goal-card{background:var(--dp-cream);border:3px solid #ff9fb5;border-radius:26px;padding:17px;margin-bottom:18px;color:var(--dp-navy)}
+[data-theme="dopamin"] .goal-card.gc-loan{border-color:#f9d548}
+[data-theme="dopamin"] .goal-card .goal-name{font-size:18px;font-weight:800;color:var(--dp-navy)}
+[data-theme="dopamin"] .goal-meta{font-size:13px;font-weight:600;color:#5b6291;opacity:1;margin-top:2px}
+[data-theme="dopamin"] .goal-pct{font-size:13px;font-weight:800;color:var(--dp-navy);opacity:1;margin-top:8px}
+[data-theme="dopamin"] .goal-top{margin-bottom:14px}
+[data-theme="dopamin"] .goal-type{font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:4px 12px;border-radius:999px;color:var(--dp-navy)}
+[data-theme="dopamin"] .goal-type.savings{background:#ff9fb5;color:var(--dp-navy)}
+[data-theme="dopamin"] .goal-type.loan{background:#f9d548;color:var(--dp-navy)}
+[data-theme="dopamin"] .goal-progress{height:12px;border-radius:999px;background:rgba(42,60,143,.12);margin-bottom:0}
+[data-theme="dopamin"] .goal-fill,[data-theme="dopamin"] .goal-fill.savings,[data-theme="dopamin"] .goal-fill.loan{background:var(--dp-navy);border-radius:999px}
+[data-theme="dopamin"] .goal-card .btn-danger{height:34px;box-sizing:border-box;background:var(--dp-cream);color:#e0364f;border:1.5px solid rgba(42,60,143,.32);border-radius:12px;font-family:inherit;font-size:13px;font-weight:800;padding:0 14px}
+[data-theme="dopamin"] #s-ciljevi .empty-state{color:var(--dp-navy);font-size:14px;font-weight:700;background:var(--dp-cream);border-radius:26px;padding:24px}
+[data-theme="dopamin"] #goal-form{background:var(--dp-cream);border:3px solid #ff9fb5;border-radius:26px;padding:17px;color:var(--dp-navy)}
+[data-theme="dopamin"] #goal-form .card-title{font-size:15px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--dp-navy);margin-bottom:14px}
+[data-theme="dopamin"] #goal-form .field{margin-bottom:14px}
+[data-theme="dopamin"] #goal-form .field label{display:block;font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--dp-navy);margin-bottom:6px}
+[data-theme="dopamin"] #goal-form input,[data-theme="dopamin"] #goal-form select{height:48px;box-sizing:border-box;width:100%;border:1.5px solid rgba(42,60,143,.32)!important;border-radius:12px!important;background:#fff!important;color:var(--dp-navy)!important;font-family:inherit;font-size:16px;font-weight:700;padding:0 14px}
+[data-theme="dopamin"] #goal-form .euro-wrap input{padding-left:30px}
+[data-theme="dopamin"] #goal-form .euro-wrap span{left:14px;color:var(--dp-navy);font-weight:700}
+[data-theme="dopamin"] #goal-form input:focus,[data-theme="dopamin"] #goal-form select:focus{border-color:var(--dp-navy)!important}
+[data-theme="dopamin"] #goal-form .btn-outline{height:54px;box-sizing:border-box;border:1.5px solid rgba(42,60,143,.32);border-radius:18px;background:var(--dp-cream);color:var(--dp-navy);font-family:inherit;font-size:16px;font-weight:800;padding:0 18px}
+[data-theme="dopamin"] #goal-form .btn-primary{height:54px;border-radius:18px;font-size:19px;font-weight:800;letter-spacing:.3px;padding:0!important}
 [data-theme="dopamin"] .cat-bar-wrap{background:#fff;height:12px;border-radius:999px}
 [data-theme="dopamin"] .cat-bar-fill{border-radius:999px}
 /* navigacija */
@@ -3085,7 +3104,7 @@ async function loadGoals(){
 
       const monthsLeft = isLoan ? rem : (tgt - cur > 0 && mon > 0 ? Math.ceil((tgt-cur)/mon) : 0);
 
-      return `<div class="goal-card">
+      return `<div class="goal-card ${isLoan?'gc-loan':'gc-sav'}">
         <div class="goal-top">
           <div>
             <div class="goal-name">${name||''}</div>
