@@ -443,7 +443,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #upload-zone.uz-open::after{display:none}
 [data-theme="dopamin"] #upload-zone .uz-icon{position:relative;width:44px;height:36px;margin:0;color:var(--dp-navy);opacity:1}
 [data-theme="dopamin"] #upload-zone .uz-icon svg{width:38px;height:38px;stroke-width:2.2}
-[data-theme="dopamin"] #upload-zone .uz-plus{display:flex;align-items:center;justify-content:center;position:absolute;right:-3px;top:0;width:14px;height:14px;border-radius:50%;background:var(--dp-navy);color:var(--dp-cream)}
+[data-theme="dopamin"] #upload-zone .uz-plus{display:flex;align-items:center;justify-content:center;position:absolute;right:-1px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--dp-navy);color:var(--dp-cream)}
 [data-theme="dopamin"] #upload-zone h3{color:var(--dp-navy);font-family:'Baloo 2',sans-serif;font-weight:800;font-size:22px;line-height:1.1;margin:4px 0 0;letter-spacing:.01em}
 [data-theme="dopamin"] #upload-zone p{color:#5b6291;opacity:1;font-size:12px;font-weight:600;line-height:1.25;margin:0;text-wrap:balance}
 [data-theme="dopamin"] #upload-zone.uz-open{background:transparent;border:none;padding:0;cursor:default;flex-direction:row;gap:10px}
@@ -492,7 +492,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 /* Dopamin: bez sjena na kutijama i gumbima */
 [data-theme="dopamin"] *,[data-theme="dopamin"] *::before,[data-theme="dopamin"] *::after{box-shadow:none!important}
 /* ── PROFIL (Dopamin) ── */
-.pf-dp,#pf-ov,#pf-sheet{display:none}
+.pf-dp,#pf-ov,#pf-sheet,#pp-ov,#pp-sheet{display:none}
 [data-theme="dopamin"] #s-profil .pf-old{display:none!important}
 [data-theme="dopamin"] #s-profil{padding-top:var(--sk-top)}
 [data-theme="dopamin"] #s-profil .pf-head{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin:12px 0 22px}
@@ -500,22 +500,17 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] .pf-pill{height:38px;box-sizing:border-box;display:flex;align-items:center;gap:8px;border:2px solid var(--dp-navy);background:transparent;border-radius:999px;padding:0 14px 0 4px;color:var(--dp-navy);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer}
 [data-theme="dopamin"] .pf-pav{width:28px;height:28px;border-radius:50%;background:var(--dp-navy);color:var(--dp-cream);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
 [data-theme="dopamin"] #s-profil .pf-sum{display:block;background:var(--dp-cream);border-radius:26px;padding:18px 20px;box-shadow:0 5px 0 rgba(42,60,143,.18);margin-bottom:18px;color:var(--dp-navy)}
-[data-theme="dopamin"] #s-profil .ps-card{background:var(--dp-cream);border:3px solid #3a9d7a;border-radius:26px;padding:22px 17px;box-shadow:0 5px 0 rgba(42,60,143,.18);margin:0 0 18px;color:var(--dp-navy)}
-[data-theme="dopamin"] #s-profil .ps-card[data-open="1"]{padding:15px 17px 17px}
-[data-theme="dopamin"] #ps-card-troskovi{border-color:#f9d548!important}
-[data-theme="dopamin"] #ps-card-stednja{border-color:#ff9fb5!important}
+[data-theme="dopamin"] #s-profil .ps-card{background:var(--dp-cream);border:none;border-radius:22px;padding:16px 20px;box-shadow:0 5px 0 rgba(42,60,143,.18);margin:0 0 18px;color:var(--dp-navy)}
+[data-theme="dopamin"] #s-profil .ps-card[data-open="1"]{padding:16px 17px 18px}
 [data-theme="dopamin"] #s-profil .ps-hdr{padding:0;gap:8px}
 [data-theme="dopamin"] #s-profil .pf-l{display:flex;align-items:center;gap:10px;min-width:0}
-[data-theme="dopamin"] #s-profil .pf-ico{display:flex;width:34px;height:34px;border-radius:12px;align-items:center;justify-content:center;flex:none;background:#3a9d7a}
-[data-theme="dopamin"] #s-profil .pf-ico-troskovi{background:#f9d548}
-[data-theme="dopamin"] #s-profil .pf-ico-stednja{background:#ff9fb5}
-[data-theme="dopamin"] #s-profil .ps-hdr .card-title{font-size:15px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--dp-navy);background:none;padding:0;margin:0;white-space:nowrap}
-[data-theme="dopamin"] #s-profil .pf-amt{display:inline;font-size:21px;font-weight:800;color:var(--dp-navy);margin-right:6px;white-space:nowrap}
+[data-theme="dopamin"] #s-profil .pf-ico{display:flex;width:24px;height:24px;align-items:center;justify-content:center;flex:none;background:none}
+[data-theme="dopamin"] #s-profil .ps-hdr .card-title{font-size:16px;font-weight:800;line-height:1.1;letter-spacing:0;text-transform:none;color:var(--dp-navy);background:none;padding:0;margin:0;white-space:nowrap}
+[data-theme="dopamin"] #s-profil .pf-sub{display:block;font-size:12px;font-weight:600;color:#5b6291;margin-top:2px}
+[data-theme="dopamin"] #s-profil .pf-amt{display:inline;font-size:18px;font-weight:800;color:var(--dp-navy);margin-right:6px;white-space:nowrap}
 [data-theme="dopamin"] #s-profil [id^="ps-badge"]{display:none}
-[data-theme="dopamin"] #s-profil .ps-hdr [id^="ps-c-"] svg{width:22px;height:14px}
-[data-theme="dopamin"] #ps-card-income [id^="ps-c-"] path{stroke:#3a9d7a;stroke-width:2.6}
-[data-theme="dopamin"] #ps-card-troskovi [id^="ps-c-"] path{stroke:#f9d548;stroke-width:2.6}
-[data-theme="dopamin"] #ps-card-stednja [id^="ps-c-"] path{stroke:#ff9fb5;stroke-width:2.6}
+[data-theme="dopamin"] #s-profil .ps-hdr [id^="ps-c-"] svg{width:16px;height:10px}
+[data-theme="dopamin"] #s-profil .ps-hdr [id^="ps-c-"] path{stroke:var(--dp-navy);stroke-width:2.4}
 [data-theme="dopamin"] #s-profil .ps-card[data-open="1"]>.ps-hdr{margin-bottom:14px}
 [data-theme="dopamin"] #s-profil .save-goal-row{display:flex;align-items:center;gap:0;height:48px;box-sizing:border-box;border:1.5px solid rgba(42,60,143,.32);border-radius:12px;background:#fff;padding:0 6px 0 14px;margin:0 0 10px}
 [data-theme="dopamin"] #s-profil .save-goal-row .drag-handle{display:none}
@@ -525,7 +520,8 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #s-profil .save-goal-del{width:30px;height:30px;color:#5b6291;font-size:20px;padding:0}
 [data-theme="dopamin"] #s-profil .fund-info-btn{color:var(--dp-navy);margin-right:6px}
 [data-theme="dopamin"] #s-profil .add-goal-btn{width:100%;height:44px;border:1.5px solid rgba(42,60,143,.32);border-radius:12px;background:var(--dp-cream);color:var(--dp-navy);font-family:inherit;font-size:14px;font-weight:700;padding:0;margin-top:12px}
-[data-theme="dopamin"] #s-profil .costs-section-title{font-size:12px;font-weight:800;letter-spacing:.8px;color:#5b6291;margin:4px 0 10px}
+[data-theme="dopamin"] #s-profil .costs-section-title{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#5b6291;margin:4px 2px 10px}
+[data-theme="dopamin"] #s-profil .cs-tot{font-size:16px;letter-spacing:0;color:var(--dp-navy)}
 [data-theme="dopamin"] #s-profil .costs-subtotal{border-top:2px solid rgba(42,60,143,.12);padding:10px 2px 0;margin-top:14px}
 [data-theme="dopamin"] #s-profil .costs-subtotal-label{font-size:13px;font-weight:700;color:var(--dp-navy)}
 [data-theme="dopamin"] #s-profil .costs-subtotal-val{font-size:16px;font-weight:800;color:var(--dp-navy)}
@@ -536,6 +532,82 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #s-profil .pf-lt small{display:block;font-size:12px;font-weight:600;color:#5b6291;margin-top:2px}
 [data-theme="dopamin"][data-tab="profil"]{--pg-c:#f6d9d2;--pg-bg:none}
 [data-theme="dopamin"][data-tab="profil"] body::before{content:"";position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:-1;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 880%22 preserveAspectRatio=%22xMidYMid slice%22%3E%3Crect width=%22400%22 height=%22880%22 fill=%22%23fbe3cf%22/%3E%3Cdefs%3E%3ClinearGradient id=%22o%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23f8bd70%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fad9a6%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22b%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%236bb0da%22/%3E%3Cstop offset=%221%22 stop-color=%22%234a93cb%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22p%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23f58fa9%22/%3E%3Cstop offset=%221%22 stop-color=%22%23f8c0cc%22/%3E%3C/linearGradient%3E%3Cfilter id=%22bl%22 x=%22-5%25%22 y=%22-5%25%22 width=%22110%25%22 height=%22110%25%22%3E%3CfeGaussianBlur stdDeviation=%221.3%22/%3E%3C/filter%3E%3C/defs%3E%3Cpath d=%22M0 0H400V300C340 335 300 290 270 230C230 150 150 175 100 150C55 128 25 100 0 112Z%22 fill=%22url(%23o)%22/%3E%3Cg filter=%22url(%23bl)%22%3E%3Cpath d=%22M400 40V330C350 352 305 305 262 252C230 212 232 118 285 98C335 80 385 96 400 40Z%22 fill=%22%23e8ecf5%22/%3E%3Cpath d=%22M0 50C60 38 135 92 172 172C205 235 140 335 0 325Z%22 fill=%22url(%23p)%22/%3E%3Cpath d=%22M0 118C42 125 72 205 60 305L0 312Z%22 fill=%22%23f07d99%22 opacity=%22.85%22/%3E%3Cpath d=%22M0 235C100 232 150 305 232 272C302 244 342 190 400 200V430C300 440 250 385 180 385C100 385 40 365 0 335Z%22 fill=%22%23f9cdb8%22/%3E%3Cpath d=%22M240 222C300 232 360 172 400 172V322C350 342 290 322 240 222Z%22 fill=%22%23f8c27c%22/%3E%3Cpath d=%22M0 335C120 335 200 300 400 335V525C300 475 200 505 120 525C60 535 20 505 0 495Z%22 fill=%22%23fcebdd%22/%3E%3Cpath d=%22M0 525C100 525 180 475 260 432C330 400 380 432 400 452V645C300 645 220 603 150 603C80 603 30 623 0 613Z%22 fill=%22%23bfe5e1%22/%3E%3Cpath d=%22M0 610C80 575 200 645 262 595C332 543 372 523 400 543V790C300 765 262 705 160 705C80 705 30 685 0 695Z%22 fill=%22url(%23b)%22/%3E%3Cpath d=%22M0 655C40 625 125 645 152 695C182 745 122 805 0 805Z%22 fill=%22%234a8fc8%22 opacity=%22.9%22/%3E%3Cpath d=%22M180 880C222 705 282 592 400 612V880Z%22 fill=%22%23f9cfd5%22/%3E%3Cpath d=%22M0 805C62 792 122 805 192 880H0Z%22 fill=%22%23fcefe6%22/%3E%3Cpath d=%22M300 880C320 775 370 742 400 748V880Z%22 fill=%22%23f0708c%22/%3E%3C/g%3E%3Cpath transform=%22translate(232 38) scale(2.94)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23f06f8a%22/%3E%3Cpath transform=%22translate(388 150) scale(2.52)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%235aa3d6%22/%3E%3Cpath transform=%22translate(278 155) scale(3.99)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23f8c58f%22/%3E%3Cpath transform=%22translate(70 208) scale(4.62)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23ffffff%22/%3E%3Cpath transform=%22translate(42 402) scale(3.36)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23bfe5e1%22/%3E%3Cpath transform=%22translate(255 420) scale(4.20)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23f06f8a%22/%3E%3Cpath transform=%22translate(340 430) scale(2.31)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23f06f8a%22/%3E%3Cpath transform=%22translate(375 508) scale(1.89)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23f6a54a%22/%3E%3Cpath transform=%22translate(65 590) scale(4.62)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23f8c0cc%22/%3E%3Cpath transform=%22translate(122 648) scale(2.31)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23f0708c%22/%3E%3Cpath transform=%22translate(400 70) scale(1.89)%22 d=%22M0 5 C-8 -2 -4 -9 0 -4 C4 -9 8 -2 0 5Z%22 fill=%22%23bfe5e1%22/%3E%3Ccircle cx=%22181.0%22 cy=%22492.6%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22342.0%22 cy=%22167.1%22 r=%222%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22317.2%22 cy=%2282.8%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22215.5%22 cy=%22783.5%22 r=%221%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22385.9%22 cy=%22575.5%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22332.7%22 cy=%2255.6%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22239.8%22 cy=%22684.7%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22337.0%22 cy=%22456.8%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22265.0%22 cy=%22402.5%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22398.3%22 cy=%22739.4%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22205.2%22 cy=%2226.2%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22338.6%22 cy=%22340.1%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%2285.4%22 cy=%22815.8%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.7%22/%3E%3Ccircle cx=%22392.1%22 cy=%22349.7%22 r=%221%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%2279.4%22 cy=%22593.9%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22133.0%22 cy=%22848.4%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22282.8%22 cy=%229.6%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22272.8%22 cy=%22165.8%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22167.7%22 cy=%22337.7%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%220.2%22 cy=%22760.6%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%2274.9%22 cy=%22876.3%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%2285.3%22 cy=%22227.3%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%2229.4%22 cy=%2279.3%22 r=%221.3%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22147.5%22 cy=%22547.5%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22332.9%22 cy=%22119.4%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%2261.7%22 cy=%22799.4%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%2263.4%22 cy=%22553.5%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%22352.9%22 cy=%22531.1%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%2243.6%22 cy=%22450.9%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22281.8%22 cy=%22226.1%22 r=%222%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3Ccircle cx=%2270.2%22 cy=%22633.9%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22191.7%22 cy=%22575.1%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22366.9%22 cy=%22179.5%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22164.6%22 cy=%22219.2%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22147.5%22 cy=%22503.5%22 r=%221.3%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%2255.4%22 cy=%22396.3%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22276.5%22 cy=%22514.3%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22369.4%22 cy=%22417.8%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%22385.1%22 cy=%2218.7%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22292.2%22 cy=%22280.6%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22218.4%22 cy=%22648.6%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%2234.0%22 cy=%22416.5%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22345.4%22 cy=%22504.1%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%225.0%22 cy=%2263.6%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22397.3%22 cy=%22774.2%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22277.7%22 cy=%22402.8%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22207.5%22 cy=%22452.8%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22192.4%22 cy=%22202.6%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22264.1%22 cy=%22427.9%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%2257.3%22 cy=%22538.3%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3Ccircle cx=%22372.1%22 cy=%22438.5%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22266.4%22 cy=%22174.7%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22153.8%22 cy=%22513.1%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%2253.8%22 cy=%22308.7%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22380.0%22 cy=%22243.6%22 r=%221.3%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22188.5%22 cy=%22814.6%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22208.0%22 cy=%22591.5%22 r=%222%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22331.5%22 cy=%22244.7%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22112.4%22 cy=%22311.7%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22162.1%22 cy=%22167.1%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22318.7%22 cy=%22865.9%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22252.0%22 cy=%22576.4%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%2279.2%22 cy=%22725.0%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%224.3%22 cy=%22415.5%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22108.9%22 cy=%22304.3%22 r=%221.3%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22362.5%22 cy=%2276.7%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22181.4%22 cy=%22550.5%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22227.5%22 cy=%22773.8%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.7%22/%3E%3Ccircle cx=%22260.5%22 cy=%22180.3%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22360.0%22 cy=%22862.8%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22104.8%22 cy=%22632.1%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3Ccircle cx=%2233.1%22 cy=%22388.0%22 r=%222%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22367.9%22 cy=%22192.1%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%2269.2%22 cy=%22294.8%22 r=%221.3%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22399.9%22 cy=%22792.5%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22379.7%22 cy=%2275.7%22 r=%221.3%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22223.5%22 cy=%22731.4%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22337.4%22 cy=%22492.8%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%22381.9%22 cy=%22765.7%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22387.4%22 cy=%22461.3%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22214.4%22 cy=%22442.8%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22387.8%22 cy=%22454.1%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%2248.8%22 cy=%2282.0%22 r=%221.3%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22183.6%22 cy=%22810.3%22 r=%222%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22189.3%22 cy=%22111.7%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22126.9%22 cy=%22168.5%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22280.8%22 cy=%22860.0%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%2290.9%22 cy=%22604.6%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%2297.8%22 cy=%22439.0%22 r=%222%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%2249.1%22 cy=%22449.2%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22280.5%22 cy=%22773.3%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22165.4%22 cy=%22465.8%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22345.5%22 cy=%22469.9%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22340.5%22 cy=%22538.3%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22251.2%22 cy=%22305.9%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3Ccircle cx=%22126.0%22 cy=%22812.0%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%2253.6%22 cy=%22210.6%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%2238.8%22 cy=%22732.3%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%2250.4%22 cy=%22354.4%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%22228.0%22 cy=%22314.7%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22202.3%22 cy=%22667.2%22 r=%221.3%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%2242.5%22 cy=%2232.9%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%2273.8%22 cy=%22179.4%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3Ccircle cx=%2238.1%22 cy=%2254.5%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%22130.7%22 cy=%22410.9%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22240.4%22 cy=%2211.7%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22163.2%22 cy=%22316.4%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22241.9%22 cy=%2283.4%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22320.7%22 cy=%22620.1%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%2276.4%22 cy=%22514.5%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22364.5%22 cy=%22655.1%22 r=%221.3%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22358.6%22 cy=%22774.3%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22162.3%22 cy=%22635.9%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22187.5%22 cy=%229.3%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%2219.8%22 cy=%22240.2%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22263.9%22 cy=%22501.2%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22400.0%22 cy=%22565.2%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%229.1%22 cy=%22541.5%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22160.6%22 cy=%2244.4%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%224.3%22 cy=%22227.5%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3Ccircle cx=%22216.2%22 cy=%22365.8%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%22323.8%22 cy=%2267.1%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22154.4%22 cy=%22853.7%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22238.6%22 cy=%22378.0%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.7%22/%3E%3Ccircle cx=%22210.7%22 cy=%22526.1%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22193.3%22 cy=%22237.4%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22299.1%22 cy=%2223.6%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22253.2%22 cy=%22359.7%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22299.3%22 cy=%2244.1%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%22171.8%22 cy=%22420.3%22 r=%221.3%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%2239.4%22 cy=%22712.9%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22241.4%22 cy=%22101.3%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%2281.5%22 cy=%2245.8%22 r=%221.3%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22177.1%22 cy=%22587.7%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22255.8%22 cy=%22600.2%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22326.1%22 cy=%22120.5%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%2295.4%22 cy=%22100.2%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22338.6%22 cy=%22241.8%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%22301.3%22 cy=%22167.0%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22366.3%22 cy=%22773.3%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%223.8%22 cy=%22228.4%22 r=%221%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%2241.0%22 cy=%22476.7%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%2264.3%22 cy=%22206.6%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.7%22/%3E%3Ccircle cx=%22141.6%22 cy=%22297.7%22 r=%222%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22335.4%22 cy=%2265.4%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22335.2%22 cy=%22676.7%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22103.2%22 cy=%22712.7%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22334.5%22 cy=%22525.1%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22330.5%22 cy=%22161.8%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22184.8%22 cy=%22285.3%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22227.2%22 cy=%22717.5%22 r=%222%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%2230.4%22 cy=%22187.7%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%22197.9%22 cy=%22672.5%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%2287.5%22 cy=%22578.4%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22129.0%22 cy=%22388.1%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22321.2%22 cy=%22268.2%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22387.1%22 cy=%22642.2%22 r=%221.3%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22331.4%22 cy=%2221.2%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22318.5%22 cy=%22650.2%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%2261.9%22 cy=%22520.2%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22303.6%22 cy=%22775.2%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%22206.3%22 cy=%22478.9%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22336.7%22 cy=%22372.0%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22133.8%22 cy=%22240.8%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%2210.4%22 cy=%22575.1%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22168.8%22 cy=%22626.7%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22305.9%22 cy=%22347.1%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3Ccircle cx=%2254.7%22 cy=%22429.5%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22366.0%22 cy=%22361.3%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22333.5%22 cy=%22782.0%22 r=%221%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22284.0%22 cy=%22706.0%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%2298.3%22 cy=%22142.8%22 r=%222%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22128.4%22 cy=%22342.6%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22188.6%22 cy=%22643.1%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22310.4%22 cy=%22157.9%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22233.6%22 cy=%22800.2%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%2279.0%22 cy=%22316.2%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22188.8%22 cy=%22447.6%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22161.0%22 cy=%22801.4%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22376.8%22 cy=%22484.4%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.7%22/%3E%3Ccircle cx=%22365.7%22 cy=%22301.0%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22159.8%22 cy=%22191.3%22 r=%221.3%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22317.9%22 cy=%22681.3%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22356.9%22 cy=%22769.2%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22285.3%22 cy=%22533.3%22 r=%221.3%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22308.8%22 cy=%22127.4%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22397.2%22 cy=%22234.5%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22308.2%22 cy=%221.2%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22140.7%22 cy=%22541.1%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22187.5%22 cy=%22840.8%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%22166.8%22 cy=%22806.7%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%2214.9%22 cy=%22363.6%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22126.4%22 cy=%22356.8%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22286.1%22 cy=%22316.5%22 r=%221.3%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22157.7%22 cy=%22406.3%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%224.9%22 cy=%22331.9%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22225.6%22 cy=%22403.1%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22360.6%22 cy=%22133.9%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22119.3%22 cy=%22296.9%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%2234.8%22 cy=%22166.0%22 r=%222%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22131.8%22 cy=%22831.6%22 r=%222%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22132.7%22 cy=%22727.7%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%22248.7%22 cy=%22115.7%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22160.9%22 cy=%22736.5%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%2212.9%22 cy=%22868.9%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22136.7%22 cy=%22724.5%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22306.7%22 cy=%22722.6%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.7%22/%3E%3Ccircle cx=%22368.5%22 cy=%22548.3%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22127.1%22 cy=%22694.1%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22212.0%22 cy=%22229.4%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22260.3%22 cy=%2293.5%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22133.1%22 cy=%22258.3%22 r=%221%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%2263.3%22 cy=%22674.5%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22141.0%22 cy=%22440.4%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%2279.3%22 cy=%22821.5%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22250.8%22 cy=%22174.2%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22191.2%22 cy=%22367.4%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22371.6%22 cy=%22317.9%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22389.4%22 cy=%22119.3%22 r=%221%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%2267.4%22 cy=%22656.2%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%2249.1%22 cy=%22725.7%22 r=%221.6%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%2296.3%22 cy=%22504.8%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22219.1%22 cy=%2267.1%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22313.1%22 cy=%22818.3%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3Ccircle cx=%22338.9%22 cy=%22797.7%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22164.8%22 cy=%2229.1%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22162.3%22 cy=%22295.9%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22227.2%22 cy=%22292.2%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22315.0%22 cy=%22354.8%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22188.0%22 cy=%22362.1%22 r=%222%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22355.7%22 cy=%22407.9%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22226.4%22 cy=%22796.6%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22172.9%22 cy=%22795.8%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22290.2%22 cy=%22792.1%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22300.8%22 cy=%22268.2%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22337.8%22 cy=%22213.3%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22278.0%22 cy=%22463.1%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22262.7%22 cy=%22827.4%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%22147.5%22 cy=%22480.6%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22298.6%22 cy=%22498.8%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22316.9%22 cy=%22108.9%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%2297.6%22 cy=%22263.4%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22176.3%22 cy=%22396.0%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22276.9%22 cy=%22203.1%22 r=%221.6%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22359.4%22 cy=%22270.9%22 r=%222%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22351.5%22 cy=%22178.4%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.7%22/%3E%3Ccircle cx=%22335.2%22 cy=%22311.7%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%22254.2%22 cy=%22614.2%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%2294.5%22 cy=%22835.5%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22122.4%22 cy=%22719.6%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22351.6%22 cy=%22294.7%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%2267.8%22 cy=%22758.2%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.85%22/%3E%3Ccircle cx=%2278.6%22 cy=%22159.3%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22118.2%22 cy=%22240.5%22 r=%221%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%2291.6%22 cy=%22264.8%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%22110.7%22 cy=%22563.1%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22176.1%22 cy=%22464.9%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22234.6%22 cy=%22472.8%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%2265.8%22 cy=%22869.7%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22111.6%22 cy=%22482.3%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22248.8%22 cy=%22806.4%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%2224.1%22 cy=%2256.3%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3Ccircle cx=%22193.4%22 cy=%2228.1%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22273.7%22 cy=%22458.1%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%2244.8%22 cy=%22383.3%22 r=%222%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22314.6%22 cy=%22696.2%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22217.7%22 cy=%22750.3%22 r=%222%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%2281.0%22 cy=%22854.2%22 r=%221%22 fill=%22%23ffffff%22 opacity=%22.7%22/%3E%3Ccircle cx=%22349.2%22 cy=%22158.4%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22243.4%22 cy=%22709.4%22 r=%222%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%22342.7%22 cy=%2227.2%22 r=%221%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22255.9%22 cy=%22510.0%22 r=%221.3%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%2221.6%22 cy=%22374.3%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.85%22/%3E%3Ccircle cx=%22210.2%22 cy=%22233.0%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22328.2%22 cy=%22151.0%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22198.7%22 cy=%22579.9%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.7%22/%3E%3Ccircle cx=%22164.3%22 cy=%22320.7%22 r=%221.3%22 fill=%22%233a7fc0%22 opacity=%22.55%22/%3E%3Ccircle cx=%2251.4%22 cy=%22664.8%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22182.1%22 cy=%22655.5%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%22163.9%22 cy=%22462.5%22 r=%221%22 fill=%22%236a4bb8%22 opacity=%22.85%22/%3E%3Ccircle cx=%22119.2%22 cy=%22373.5%22 r=%221%22 fill=%22%23d94b6b%22 opacity=%22.85%22/%3E%3Ccircle cx=%22398.4%22 cy=%22671.7%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%2247.5%22 cy=%22752.7%22 r=%222%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22373.0%22 cy=%22320.3%22 r=%221.6%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%2215.9%22 cy=%22354.7%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%22227.0%22 cy=%22802.6%22 r=%221.3%22 fill=%22%236a4bb8%22 opacity=%22.7%22/%3E%3Ccircle cx=%22374.2%22 cy=%22187.7%22 r=%222%22 fill=%22%23d94b6b%22 opacity=%22.55%22/%3E%3Ccircle cx=%22167.4%22 cy=%22216.9%22 r=%221.3%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22160.1%22 cy=%22522.6%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.7%22/%3E%3Ccircle cx=%22196.1%22 cy=%22551.5%22 r=%221.3%22 fill=%22%236a4bb8%22 opacity=%22.55%22/%3E%3Ccircle cx=%22216.1%22 cy=%22368.9%22 r=%221%22 fill=%22%233a7fc0%22 opacity=%22.7%22/%3E%3Ccircle cx=%22145.1%22 cy=%22241.6%22 r=%221%22 fill=%22%23ffffff%22 opacity=%22.55%22/%3E%3Ccircle cx=%22296.6%22 cy=%22450.7%22 r=%221.3%22 fill=%22%23f0a03a%22 opacity=%22.55%22/%3E%3Ccircle cx=%22144.4%22 cy=%22135.1%22 r=%221.6%22 fill=%22%232c4fa3%22 opacity=%22.55%22/%3E%3Ccircle cx=%22289.4%22 cy=%22798.2%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22180.0%22 cy=%22752.0%22 r=%222%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22308.3%22 cy=%22457.0%22 r=%221%22 fill=%22%23f0a03a%22 opacity=%22.7%22/%3E%3Ccircle cx=%22243.2%22 cy=%22429.8%22 r=%221.3%22 fill=%22%232c4fa3%22 opacity=%22.85%22/%3E%3Ccircle cx=%22238.2%22 cy=%2228.0%22 r=%221.6%22 fill=%22%236a4bb8%22 opacity=%22.7%22/%3E%3Ccircle cx=%22191.4%22 cy=%22610.7%22 r=%221.6%22 fill=%22%23f0a03a%22 opacity=%22.85%22/%3E%3C/svg%3E") center/cover no-repeat}
+[data-theme="dopamin"] #s-profil .pf-sum{cursor:pointer}
+/* ── Uvoz izvatka ── */
+.rv{position:fixed;inset:0;z-index:600;background:rgba(38,51,127,.55);--rv-ink:#14183a;--rv-mut:#4a5080;--rv-acc:var(--th1,#2a3c8f);--rv-bg:#fff;--rv-card:#f8fafc}
+[data-theme="dopamin"] .rv{--rv-acc:#2a3c8f;--rv-bg:#fbf1de;--rv-card:#fff}
+.rv-sheet{position:absolute;left:0;right:0;bottom:0;top:40px;background:var(--rv-bg);border-radius:28px 28px 0 0;display:flex;flex-direction:column;max-width:560px;margin:0 auto;color:var(--rv-ink);font-family:inherit}
+.rv-grab{width:44px;height:5px;border-radius:3px;background:rgba(42,60,143,.25);margin:12px auto 4px;flex:none}
+.rv-top{display:flex;justify-content:space-between;align-items:center;padding:10px 24px 6px;flex:none}
+.rv-top b{font-size:26px;font-weight:800;color:var(--rv-acc);line-height:1.1}
+.rv-x{border:0;background:none;color:var(--rv-acc);padding:6px;margin:-6px;cursor:pointer;display:flex}
+.rv-info{padding:6px 24px 10px;flex:none}
+.rv-clamp{font-size:15px;line-height:1.5;color:var(--rv-ink);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.rv-clamp.open{display:block;-webkit-line-clamp:unset;max-height:34vh;overflow-y:auto}
+.rv-clamp b{font-weight:800}
+.rv-clamp .rv-skip{color:var(--rv-mut);font-size:13.5px}
+.rv-more{border:0;background:none;color:var(--rv-acc);font-family:inherit;font-size:14px;font-weight:800;padding:6px 0 0;cursor:pointer}
+.rv-all{display:flex;align-items:center;gap:12px;margin:2px 18px 10px;padding:12px 14px;border-radius:16px;background:rgba(42,60,143,.08);cursor:pointer;flex:none;font-size:15px;font-weight:800;user-select:none}
+.rv-all span{flex:1}
+.rv-all small{font-size:13px;font-weight:700;color:var(--rv-mut)}
+.rv-list{flex:1;overflow:auto;padding:0 18px 8px;-webkit-overflow-scrolling:touch}
+.rv-cb{flex:none;width:28px;height:28px;border-radius:9px;border:2.5px solid rgba(42,60,143,.45);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-sizing:border-box}
+.rv-cb.on,.rv-cb.part{background:#3a9d7a;border-color:#3a9d7a}
+.rv-cb svg{display:block}
+.rv-cb.sm{width:26px;height:26px;border-radius:8px}
+.rv-m{background:var(--rv-card);border-radius:20px;margin:0 0 10px;overflow:hidden;border:2px solid rgba(42,60,143,.12)}
+.rv-mh{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;user-select:none}
+.rv-mt{flex:1;min-width:0}
+.rv-mt b{display:block;font-size:17px;font-weight:800;line-height:1.15}
+.rv-mt span{font-size:13px;font-weight:600;color:var(--rv-mut)}
+.rv-ar{flex:none;transition:transform .25s;display:flex}
+.rv-ar.open{transform:rotate(90deg)}
+.rv-mb{padding:0 14px 6px}
+.rv-r{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:2px solid rgba(42,60,143,.08)}
+.rv-r.off{opacity:.68}
+.rv-rt{flex:1;min-width:0}
+.rv-rt .d{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-rt .m{font-size:12.5px;font-weight:600;color:var(--rv-mut);margin-top:1px}
+.rv-rt select{margin-top:6px;height:36px;font-family:inherit;font-size:13.5px;font-weight:700;color:var(--rv-ink);padding:0 10px;border:1.5px solid rgba(42,60,143,.3);border-radius:10px;background:#fff;max-width:100%}
+.rv-am{font-size:15px;font-weight:800;white-space:nowrap}
+.rv-am.pos{color:#2e8465}
+.rv-foot{flex:none;display:flex;align-items:center;gap:14px;padding:14px 24px calc(16px + env(safe-area-inset-bottom,0px));border-top:2px solid rgba(42,60,143,.1)}
+.rv-sum{flex:1;min-width:0;line-height:1.25}
+.rv-sum b{display:block;font-size:17px;font-weight:800}
+.rv-sum span{font-size:13px;font-weight:600;color:var(--rv-mut)}
+.rv-btn{height:54px;padding:0 30px;border:0;border-radius:18px;background:var(--rv-acc);color:#fff;font-family:inherit;font-size:19px;font-weight:800;cursor:pointer;flex:none}
+.rv-btn:disabled{opacity:.4}
+[data-theme="dopamin"] #pp-ov{display:block;position:fixed;inset:0;background:rgba(38,51,127,.55);z-index:310;opacity:0;pointer-events:none;transition:opacity .3s}
+[data-theme="dopamin"] #pp-ov.open{opacity:1;pointer-events:auto}
+[data-theme="dopamin"] #pp-sheet{display:block;position:fixed;left:0;right:0;bottom:0;height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--dp-cream);border-radius:28px 28px 0 0;padding:12px 24px calc(34px + env(safe-area-inset-bottom,0px));z-index:311;box-sizing:border-box;color:var(--dp-navy);transform:translateY(105%);visibility:hidden;transition:transform .34s cubic-bezier(.32,.72,0,1),visibility 0s .34s}
+[data-theme="dopamin"] #pp-sheet.open{transform:translateY(0);visibility:visible;transition:transform .34s cubic-bezier(.32,.72,0,1),visibility 0s}
+[data-theme="dopamin"] #pp-sheet.drag{transition:none}
+.pp-grab{width:44px;height:5px;border-radius:3px;background:rgba(42,60,143,.25);margin:0 auto 18px}
+.pp-t{font-size:24px;font-weight:800;line-height:1.1}
+.pp-s{font-size:13px;font-weight:600;color:#5b6291;margin:2px 0 14px}
+.pp-donut{position:relative;width:170px;height:170px;margin:6px auto 14px}
+.pp-donut svg{display:block}
+.pp-dc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.pp-dc b{font-size:22px;font-weight:800}
+.pp-dc small{font-size:12px;font-weight:600;color:#5b6291}
+.pp-leg{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 16px;font-size:13px;margin-bottom:22px}
+.pp-leg div{display:flex;align-items:center;gap:6px}
+.pp-leg i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.pp-leg b{font-weight:800}
+.pp-g{background:#fff;border-radius:18px;padding:14px 16px;margin-bottom:12px}
+.pp-gh{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;font-weight:800;margin-bottom:8px}
+.pp-gh em{font-style:normal;font-size:12px;font-weight:700;color:#5b6291;margin-left:8px}
+.pp-r{margin-top:9px}
+.pp-rl{display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:700}
+.pp-rl span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pp-rl small{font-size:11px;font-weight:600;color:#5b6291}
+.pp-bar{height:8px;border-radius:99px;background:rgba(42,60,143,.1);margin-top:4px;overflow:hidden}
+.pp-bar i{display:block;height:100%;border-radius:99px}
+.pp-empty{font-size:13px;font-weight:600;color:#5b6291}
+.pp-tbl{margin-top:16px;font-size:14px}
+.pp-tbl div{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:6px;padding:9px 2px;border-top:2px solid rgba(42,60,143,.1);font-weight:700}
+.pp-tbl div span:nth-child(n+2){text-align:right}
+.pp-th{border-top:none!important;font-size:12px!important;font-weight:800!important;color:#5b6291;text-transform:uppercase;letter-spacing:.6px}
 [data-theme="dopamin"] #pf-ov{display:block;position:fixed;inset:0;background:rgba(38,51,127,.55);z-index:310;opacity:0;pointer-events:none;transition:opacity .3s}
 [data-theme="dopamin"] #pf-ov.open{opacity:1;pointer-events:auto}
 [data-theme="dopamin"] #pf-sheet{display:block;position:fixed;left:0;right:0;bottom:0;background:var(--dp-cream);border-radius:28px 28px 0 0;padding:12px 24px calc(34px + env(safe-area-inset-bottom,0px));z-index:311;box-sizing:border-box;color:var(--dp-navy);transform:translateY(105%);visibility:hidden;transition:transform .34s cubic-bezier(.32,.72,0,1),visibility 0s .34s}
@@ -615,18 +687,16 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
-<div id="rev-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(15,23,42,.55)">
-  <div style="position:absolute;left:0;right:0;bottom:0;top:40px;background:#fff;border-radius:22px 22px 0 0;display:flex;flex-direction:column;max-width:560px;margin:0 auto">
-    <div style="padding:16px 18px 8px;display:flex;justify-content:space-between;align-items:center">
-      <b style="font-size:17px">Uvoz izvatka</b>
-      <span onclick="revClose()" style="cursor:pointer;font-size:24px;line-height:1;padding:0 6px">&times;</span>
-    </div>
-    <div id="rev-info" style="padding:0 18px 8px;font-size:12.5px;color:#64748b"></div>
-    <div style="padding:0 18px 8px;display:flex;gap:8px;align-items:center;font-size:12.5px;color:#64748b"><span style="flex:1">✓ = ide u tablicu, prazno = preskače se</span><button onclick="revAll(true)" style="border:1px solid #e2e8f0;background:#fff;border-radius:9px;padding:6px 10px;font-size:12.5px;cursor:pointer">Označi sve</button><button onclick="revAll(false)" style="border:1px solid #e2e8f0;background:#fff;border-radius:9px;padding:6px 10px;font-size:12.5px;cursor:pointer">Poništi sve</button></div>
-    <div id="rev-list" style="flex:1;overflow:auto;padding:0 12px"></div>
-    <div style="padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #e8edf8;display:flex;gap:10px;align-items:center">
-      <div id="rev-sum" style="flex:1;font-size:13px;font-weight:600"></div>
-      <button onclick="revImport()" id="rev-btn" style="background:var(--th1);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer">Uvezi</button>
+<div id="rev-modal" class="rv" style="display:none">
+  <div class="rv-sheet">
+    <div class="rv-grab"></div>
+    <div class="rv-top"><b>Uvoz izvatka</b><button type="button" class="rv-x" onclick="revClose()" aria-label="Zatvori"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="rv-info"><div id="rev-info" class="rv-clamp"></div><button type="button" id="rev-more" class="rv-more" onclick="revInfoTog()">Prikaži više</button></div>
+    <div class="rv-all" onclick="revAllTog()"><div id="rev-allcb" class="rv-cb"></div><span>Označi sve stavke</span><small id="rev-allc"></small></div>
+    <div id="rev-list" class="rv-list"></div>
+    <div class="rv-foot">
+      <div class="rv-sum"><b id="rev-sum"></b><span id="rev-sum2"></span></div>
+      <button type="button" onclick="revImport()" id="rev-btn" class="rv-btn">Uvezi</button>
     </div>
   </div>
 </div>
@@ -1089,7 +1159,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <h2>Moj profil</h2>
     <button type="button" id="pf-pill" class="pf-pill" onclick="pfSheet(true)" aria-label="Račun"><span class="pf-pav" id="pf-pav">D</span><span id="pf-pnm">Dora</span></button>
   </div>
-  <div class="pf-sum pf-dp" id="pf-sum"></div>
+  <div class="pf-sum pf-dp" id="pf-sum" onclick="ppSheet(true)"></div>
 
   <div class="pf-old" style="display:flex;align-items:center;gap:12px;padding:0 0 20px">
     <img id="profil-av" src="" style="width:60px;height:60px;border-radius:50%;object-fit:cover;flex-shrink:0">
@@ -1099,7 +1169,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
   </div>
 
-  <div class="card ps-card" data-open="0" id="ps-card-income"><div class="ps-hdr" onclick="togglePS('income')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-income"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbf1de" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span><div class="card-title">Prihod (mj/€)</div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-income"></span><span id="ps-badge-income" style="font-size:12px;font-weight:700;color:#fff;background:var(--th1);padding:2px 9px;border-radius:20px;opacity:0;transition:opacity .3s"></span><span id="ps-c-income" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
+  <div class="card ps-card" data-open="0" id="ps-card-income"><div class="ps-hdr" onclick="togglePS('income')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-income"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a9d7a" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-3"/><path d="M21 9v6h-5a3 3 0 0 1 0-6z"/></svg></span><div class="card-title">Prihodi<small class="pf-sub">mjesečno</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-income"></span><span id="ps-badge-income" style="font-size:12px;font-weight:700;color:#fff;background:var(--th1);padding:2px 9px;border-radius:20px;opacity:0;transition:opacity .3s"></span><span id="ps-c-income" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
     <div id="income-list"></div>
     <button type="button" class="add-goal-btn" onclick="addIncomeGoal()">+ Dodaj</button>
     <div class="plan-total-row" style="margin-top:10px">
@@ -1108,24 +1178,16 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
   </div>
 
-  <div class="card ps-card" data-open="0" id="ps-card-troskovi"><div class="ps-hdr" onclick="togglePS('troskovi')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-troskovi"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2a3c8f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span><div class="card-title">Troškovi (mj/€)</div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-troskovi"></span><span id="ps-c-troskovi" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
+  <div class="card ps-card" data-open="0" id="ps-card-troskovi"><div class="ps-hdr" onclick="togglePS('troskovi')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-troskovi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e4572e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l1 13H5z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></span><div class="card-title">Troškovi<small class="pf-sub">mjesečno</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-troskovi"></span><span id="ps-c-troskovi" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
 
-    <div class="costs-section-title">Fiksni</div>
+    <div class="costs-section-title"><span>Fiksni</span><span class="cs-tot" id="p-fixed-total">—</span></div>
     <div id="fixed-list"></div>
     <button type="button" class="add-goal-btn" onclick="addFixedGoal()">+ Dodaj fiksni trošak</button>
-    <div class="costs-subtotal">
-      <span class="costs-subtotal-label">Ukupno fiksni</span>
-      <span class="costs-subtotal-val" id="p-fixed-total">—</span>
-    </div>
 
 
-    <div class="costs-section-title" style="margin-top:24px">Varijabilni</div>
+    <div class="costs-section-title" style="margin-top:24px"><span>Varijabilni</span><span class="cs-tot" id="p-variable-total">—</span></div>
     <div id="variable-list"></div>
     <button type="button" class="add-goal-btn" onclick="addVariableGoal()">+ Dodaj varijabilni trošak</button>
-    <div class="costs-subtotal">
-      <span class="costs-subtotal-label">Ukupno varijabilni</span>
-      <span class="costs-subtotal-val" id="p-variable-total">—</span>
-    </div>
 
     <div class="costs-total-row" style="margin-top:12px">
       <span class="costs-total-label">Ukupni troškovi</span>
@@ -1133,7 +1195,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     </div>
   </div>
 
-  <div class="card ps-card" data-open="0" id="ps-card-stednja"><div class="ps-hdr" onclick="togglePS('stednja')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-stednja"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2a3c8f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span><div class="card-title">Štednja (mj/€)</div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-stednja"></span><span id="ps-badge-stednja" style="font-size:12px;font-weight:700;color:#fff;background:var(--th1);padding:2px 9px;border-radius:20px;opacity:0;transition:opacity .3s"></span><span id="ps-c-stednja" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
+  <div class="card ps-card" data-open="0" id="ps-card-stednja"><div class="ps-hdr" onclick="togglePS('stednja')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-stednja"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff6f91" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12c0-3-3-5-7-5S5 9 5 12c0 2 1 3.5 2.5 4.4V19h3v-1.5h3V19h3v-2.6c1.5-.9 2.5-2.4 2.5-4.4z"/><path d="M19 11h2v3h-1.5"/><circle cx="15" cy="11" r=".6" fill="#ff6f91"/></svg></span><div class="card-title">Štednja<small class="pf-sub">godišnje</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-stednja"></span><span id="ps-badge-stednja" style="font-size:12px;font-weight:700;color:#fff;background:var(--th1);padding:2px 9px;border-radius:20px;opacity:0;transition:opacity .3s"></span><span id="ps-c-stednja" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
     <div id="save-goals-list"></div>
     <button type="button" class="add-goal-btn" onclick="addSavingsGoal()">+ Dodaj cilj štednje</button>
     <div class="plan-total-row" style="margin-top:10px">
@@ -1327,10 +1389,7 @@ function uzOpen(on){
   if(sc) sc.classList.toggle('sk-open',!!on);
 }
 function uzTap(){
-  if(!_isDp()){ document.getElementById('file-input').click(); return; }
-  var z=document.getElementById('upload-zone');
-  if(z && z.classList.contains('uz-open')) return;
-  uzOpen(true);
+  var f=document.getElementById('file-input'); if(f){ f.value=''; f.click(); }
 }
 function uzPick(id){ uzOpen(false); var f=document.getElementById(id); if(f){ f.value=''; f.click(); } }
 document.addEventListener('keydown',function(e){
@@ -1381,13 +1440,13 @@ function pfRefresh(){
     var cost=sum(typeof fixedGoals!=='undefined'?fixedGoals:[])+sum(typeof variableGoals!=='undefined'?variableGoals:[]);
     var sav=sum(typeof savingsGoals!=='undefined'?savingsGoals:[]);
     var set=function(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; };
-    set('pf-amt-income',pfEur(inc)); set('pf-amt-troskovi',pfEur(cost)); set('pf-amt-stednja',pfEur(sav));
+    set('pf-amt-income',pfEur(inc)); set('pf-amt-troskovi',pfEur(cost)); set('pf-amt-stednja',pfEur(sav*12));
     var box=document.getElementById('pf-sum'); if(!box) return;
-    var title='<div style="font-size:15px;font-weight:800;letter-spacing:.4px">OKVIRNI MJESEČNI PLAN</div>';
-    var head=title;
+    var chev='<svg width="10" height="14" viewBox="0 0 9 14" fill="none" aria-hidden="true" style="flex:none"><path d="M1 1L7 7L1 13" stroke="#2a3c8f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var title='<div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:15px;font-weight:800;letter-spacing:.4px">OKVIRNI MJESEČNI PLAN</div>'+chev+'</div>';
     if(!(inc>0)){ box.innerHTML=title+'<div style="margin-top:10px;font-size:14px;font-weight:600;color:#5b6291">Upiši prihod, troškove i štednju pa će se ovdje vidjeti omjer.</div>'; return; }
-    var rest=Math.max(0,inc-cost-sav), tot=Math.max(inc,cost+sav);
-    var segs=[{v:cost,bg:'#f9d548',fg:'#2a3c8f',lbl:'Troškovi'},{v:sav,bg:'#ff9fb5',fg:'#2a3c8f',lbl:'Štednja'},{v:rest,bg:'#3a9d7a',fg:'#fbf1de',lbl:'Ostalo'}];
+    var tot=inc+cost+sav;
+    var segs=[{v:inc,bg:'#3a9d7a',fg:'#fbf1de',lbl:'Prihodi'},{v:cost,bg:'#f9d548',fg:'#2a3c8f',lbl:'Troškovi'},{v:sav,bg:'#ff9fb5',fg:'#2a3c8f',lbl:'Štednja'}];
     segs.sort(function(a,b){ return b.v-a.v; });
     var bar='',leg='';
     segs.forEach(function(x){
@@ -1395,10 +1454,44 @@ function pfRefresh(){
       bar+='<div style="width:'+w+'%;background:'+x.bg+';color:'+x.fg+';display:flex;align-items:center;justify-content:center;min-width:0">'+(w>=9?pct+'%':'')+'</div>';
       leg+='<div style="display:flex;align-items:center;gap:5px;white-space:nowrap"><i style="width:9px;height:9px;border-radius:50%;background:'+x.bg+';display:inline-block;flex:none"></i><span style="font-weight:800">'+x.lbl+'</span><span style="font-weight:600">'+pfShort(x.v)+'</span></div>';
     });
-    box.innerHTML=head+
+    box.innerHTML=title+
       '<div style="margin-top:14px;display:flex;height:34px;border-radius:999px;overflow:hidden;font-size:14px;font-weight:800">'+bar+'</div>'+
       '<div style="margin-top:12px;display:flex;justify-content:space-between;gap:6px;font-size:clamp(10px,3.1vw,12.5px)">'+leg+'</div>';
   }catch(e){}
+}
+// ── detaljni prikaz plana (grafovi) ──
+function ppSheet(on){
+  var sh=document.getElementById('pp-sheet'), ov=document.getElementById('pp-ov'); if(!sh||!ov) return;
+  if(on){ try{ sh.innerHTML=ppBuild(); sh.scrollTop=0; }catch(e){ sh.innerHTML='<div class="pp-grab"></div><div class="pp-t">Okvirni plan</div>'; } }
+  sh.classList.toggle('open',!!on); ov.classList.toggle('open',!!on);
+}
+function ppBuild(){
+  var L=function(a){ return (typeof a!=='undefined'&&a)?a.filter(function(g){ return (parseFloat(g.amount)||0)>0; }):[]; };
+  var S=function(a){ return a.reduce(function(s,g){ return s+(parseFloat(g.amount)||0); },0); };
+  var I=L(incomeGoals),F=L(fixedGoals),V=L(variableGoals),A=L(savingsGoals);
+  var inc=S(I),fx=S(F),vr=S(V),sv=S(A),rest=inc-fx-vr-sv;
+  var base=Math.max(inc,fx+vr+sv)||1;
+  var pc=function(v){ return inc>0?Math.round(v/inc*100)+'%':'–'; };
+  var cols={inc:'#3a9d7a',fx:'#f9d548',vr:'#f2653a',sv:'#ff9fb5',rest:'#3a9d7a'};
+  var segs=[['Fiksni',fx,cols.fx],['Varijabilni',vr,cols.vr],['Štednja',sv,cols.sv],['Ostaje',Math.max(0,rest),cols.rest]];
+  var off=0,ring='';
+  segs.forEach(function(x){ var p=x[1]/base*100; if(p<=0) return; ring+='<circle cx="21" cy="21" r="15.9155" fill="none" stroke="'+x[2]+'" stroke-width="7" stroke-dasharray="'+p.toFixed(3)+' '+(100-p).toFixed(3)+'" stroke-dashoffset="'+(25-off).toFixed(3)+'"/>'; off+=p; });
+  var h='<div class="pp-grab"></div><div class="pp-t">Okvirni plan</div><div class="pp-s">Prosjek po mjesecu</div>';
+  h+='<div class="pp-donut"><svg viewBox="0 0 42 42" width="170" height="170"><circle cx="21" cy="21" r="15.9155" fill="none" stroke="rgba(42,60,143,.1)" stroke-width="7"/>'+ring+'</svg><div class="pp-dc"><small>'+(rest>=0?'ostaje':'minus')+'</small><b>'+pfShort(Math.abs(rest))+'</b><small>mjesečno</small></div></div>';
+  h+='<div class="pp-leg">';
+  segs.forEach(function(x){ h+='<div><i style="background:'+x[2]+'"></i><span>'+x[0]+'</span><b>'+pc(x[1])+'</b></div>'; });
+  h+='</div>';
+  var grp=function(name,arr,col,tot,note){
+    var mx=Math.max.apply(null,arr.map(function(g){ return parseFloat(g.amount)||0; }).concat([1]));
+    var o='<div class="pp-g"><div class="pp-gh"><span>'+name+'</span><span>'+pfShort(tot)+'<em>'+pc(tot)+'</em></span></div>';
+    if(!arr.length) o+='<div class="pp-empty">Nema stavki</div>';
+    arr.forEach(function(g){ var v=parseFloat(g.amount)||0; o+='<div class="pp-r"><div class="pp-rl"><span>'+(revEsc(g.name||'')||'(bez naziva)')+'</span><span>'+pfShort(v)+(note?' <small>'+pfShort(v*12)+'/god</small>':'')+'</span></div><div class="pp-bar"><i style="width:'+Math.max(3,v/mx*100)+'%;background:'+col+'"></i></div></div>'; });
+    return o+'</div>';
+  };
+  h+=grp('Prihodi',I,cols.inc,inc)+grp('Fiksni troškovi',F,cols.fx,fx)+grp('Varijabilni troškovi',V,cols.vr,vr)+grp('Štednja',A,cols.sv,sv,true);
+  h+='<div class="pp-tbl"><div class="pp-th"><span></span><span>Mjesečno</span><span>Godišnje</span></div>';
+  [['Prihodi',inc],['Troškovi',fx+vr],['Štednja',sv],[rest>=0?'Ostaje':'Minus',rest]].forEach(function(r){ h+='<div><span>'+r[0]+'</span><span>'+pfShort(r[1])+'</span><span>'+pfShort(r[1]*12)+'</span></div>'; });
+  return h+'</div>';
 }
 function pfIdentity(){
   var nm=(document.getElementById('profil-nm')||{}).textContent||'', em=(document.getElementById('profil-em')||{}).textContent||'';
@@ -1437,6 +1530,13 @@ function katSheet(on){
   }
   sh.classList.toggle('open',!!on); ov.classList.toggle('open',!!on);
 }
+document.addEventListener('DOMContentLoaded',function(){
+  var sh=document.getElementById('pp-sheet'); if(!sh) return;
+  var y0=0,dy=0,on=false;
+  sh.addEventListener('touchstart',function(e){ y0=e.touches[0].clientY; dy=0; on=(sh.scrollTop<=0); },{passive:true});
+  sh.addEventListener('touchmove',function(e){ if(!on) return; var d=e.touches[0].clientY-y0; if(d>0){ dy=d; sh.classList.add('drag'); sh.style.transform='translateY('+d+'px)'; if(e.cancelable) e.preventDefault(); } else if(dy>0){ dy=0; sh.style.transform=''; } },{passive:false});
+  sh.addEventListener('touchend',function(){ if(!on) return; on=false; sh.classList.remove('drag'); sh.style.transform=''; if(dy>80) ppSheet(false); dy=0; });
+});
 document.addEventListener('DOMContentLoaded',katRender);
 document.addEventListener('DOMContentLoaded',function(){ try{navIcons();}catch(e){} });
 document.addEventListener('DOMContentLoaded',function(){
@@ -1870,10 +1970,10 @@ function renderSavingsGoals(){
         <input type="text" class="goal-name" value="${(g.name||'').replace(/"/g,'&quot;')}" placeholder="Npr. Godišnji odmor" oninput="savingsGoals[${i}].name=this.value">
         ${info?`<button class="fund-info-btn" onclick="toggleFundInfo(${i})" title="Savjet">ℹ</button>`:''}
         <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €"
-          value="${fmtVal(g.amount)}"
+          value="${fmtVal(Math.round((parseFloat(g.amount)||0)*1200)/100)}"
           onfocus="amtFocus(this)"
-          oninput="amtInput(this,savingsGoals,${i})"
-          onblur="amtBlur(this,savingsGoals,${i},recalcSavings)">
+          oninput="savingsGoals[${i}].amount=fmtParse(this.value)/12"
+          onblur="savYBlur(this,${i})">
         <button class="save-goal-del" onclick="removeSavingsGoal(${i})" title="Ukloni">×</button>
       </div>
       ${info?`<div class="fund-info-panel" id="fip-${i}"><strong>${info.pct}</strong> — ${info.tip}</div>`:''}
@@ -1899,10 +1999,11 @@ function removeSavingsGoal(i){
   renderSavingsGoals();
 }
 
+function savYBlur(el,i){ const y=fmtParse(el.value); savingsGoals[i].amount=y/12; el.value=fmtVal(y); recalcSavings(); }
 function recalcSavings(){
-  const total = savingsGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+  const total = savingsGoals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0)*12;
   const el = document.getElementById('p-save-total');
-  if(el) el.textContent = fmtVal(total);
+  if(el) el.textContent = fmtVal(Math.round(total*100)/100);
   pfRefresh();
 }
 
@@ -3442,61 +3543,74 @@ async function revFinish(acc){
 function revKey(d,a,n){ let t=String(a==null?'':a).replace(/[^0-9,.\-]/g,''); if(t.indexOf(',')>=0) t=t.replace(/\./g,'').replace(',','.'); const v=Math.round((parseFloat(t)||0)*100)/100; return String(d).trim()+'|'+v.toFixed(2)+'|'+String(n||'').trim(); }
 function revOpts(sel){ return Object.keys(CAT_HR).map(k=>`<option value="${k}"${k===sel?' selected':''}>${revEsc(CAT_HR[k])}</option>`).join(''); }
 var REV_OPEN={};
+var RV_TICK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+var RV_DASH='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round"><path d="M6 12h12"/></svg>';
+function revCbPaint(el,st){ if(!el) return; el.className='rv-cb'+(el.dataset.sm?' sm':'')+(st==='on'?' on':st==='part'?' part':''); el.innerHTML=st==='on'?RV_TICK:st==='part'?RV_DASH:''; }
 function revRowHtml(o,i){
   const neg=o.amount<0||o.income;
-  return `<div id="revr-${i}" style="display:flex;gap:10px;align-items:center;padding:9px 6px;border-bottom:1px solid #f1f5f9;opacity:${o.on?1:.45}">
-      <div id="revc-${i}" onclick="revTog(${i})" style="flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--th1);background:${o.on?'var(--th1)':'#fff'};color:#fff;font-size:17px;font-weight:700;line-height:22px;text-align:center;cursor:pointer;user-select:none">${o.on?'✓':''}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${revEsc(o.desc)||'—'}</div>
-        <div style="font-size:11.5px;color:#64748b">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':''}</div>
-        <select onchange="REV_ROWS[${i}].cat=this.value" style="margin-top:4px;font-size:12.5px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:8px;max-width:100%">${revOpts(o.cat)}</select>
+  return `<div id="revr-${i}" class="rv-r${o.on?'':' off'}">
+      <div id="revc-${i}" data-sm="1" class="rv-cb sm${o.on?' on':''}" onclick="revTog(${i})">${o.on?RV_TICK:''}</div>
+      <div class="rv-rt">
+        <div class="d">${revEsc(o.desc)||'—'}</div>
+        <div class="m">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':''}</div>
+        <select onchange="REV_ROWS[${i}].cat=this.value">${revOpts(o.cat)}</select>
       </div>
-      <div style="font-size:13.5px;font-weight:700;white-space:nowrap;color:${neg?'#16a34a':'#0f172a'}">${o.income?'+ ':''}${eur(o.amount)}</div>
+      <div class="rv-am${neg?' pos':''}">${o.income?'+ ':''}${eur(o.amount)}</div>
     </div>`;
 }
 function revMonthKeys(){ const k=[]; REV_ROWS.forEach(o=>{ const m=o.date.slice(0,7); if(k.indexOf(m)<0) k.push(m); }); return k.sort(); }
+var RV_ARROW='<svg width="10" height="16" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#2a3c8f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function revInfoTog(){ const t=document.getElementById('rev-info'), b=document.getElementById('rev-more'); const o=t.classList.toggle('open'); b.textContent=o?'Prikaži manje':'Prikaži više'; }
 function revRender(){
   const L=document.getElementById('rev-list'); let h='';
   revMonthKeys().forEach(m=>{
     const open=!!REV_OPEN[m];
-    h+=`<div style="border:1px solid #e8edf8;border-radius:14px;margin:0 0 8px;overflow:hidden">
-      <div style="display:flex;align-items:center;gap:10px;padding:11px 10px;background:#f8fafc;cursor:pointer" onclick="revOpen('${m}')">
-        <div id="revmc-${m}" onclick="event.stopPropagation();revMonth('${m}')" style="flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--th1);color:#fff;font-size:17px;font-weight:700;line-height:22px;text-align:center;user-select:none"></div>
-        <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px">${MONTHS_HR[parseInt(m.slice(5))-1]} ${m.slice(0,4)}</div><div id="revms-${m}" style="font-size:12px;color:#64748b"></div></div>
-        <span id="revar-${m}" style="font-size:14px;color:#94a3b8">${open?'▾':'▸'}</span>
+    h+=`<div class="rv-m">
+      <div class="rv-mh" onclick="revOpen('${m}')">
+        <div id="revmc-${m}" class="rv-cb" onclick="event.stopPropagation();revMonth('${m}')"></div>
+        <div class="rv-mt"><b>${MONTHS_HR[parseInt(m.slice(5))-1]} ${m.slice(0,4)}</b><span id="revms-${m}"></span></div>
+        <span id="revar-${m}" class="rv-ar${open?' open':''}">${RV_ARROW}</span>
       </div>
-      <div id="revb-${m}" style="display:${open?'block':'none'};padding:0 6px">`;
+      <div id="revb-${m}" class="rv-mb" style="display:${open?'block':'none'}">`;
     REV_ROWS.forEach((o,i)=>{ if(o.date.slice(0,7)===m) h+=revRowHtml(o,i); });
     h+=`</div></div>`;
   });
-  L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
+  L.innerHTML=h||'<div style="padding:30px;text-align:center;color:var(--rv-mut)">Nema stavki za uvoz.</div>';
   const _sk=(REV_ROWS._skipped||0), _ot=REV_ROWS._other||0, _df=REV_ROWS._dupFiles||0;
-  document.getElementById('rev-info').innerHTML='<div style="line-height:1.55"><b style="color:#0f172a">Kako ovo radi</b><br>✓ = ide u tablicu, prazno = ne ide. Označi što želiš prenijeti u aplikaciju.<br>• <b>Plaćanja karticom i dizanje gotovine</b> na bankomatu → trošak u svojoj kategoriji.<br>• <b>Novac koji si ti poslala nekome</b> → „Plaćeno drugima“.<br>• <b>Novac koji je netko uplatio tebi</b> (zeleni iznos) → „Uplaćeno (od drugih)“. Ne spaja se s „Plaćeno drugima“, jer se ne zna tko je što vratio. Upiše se kao minus pa se u ukupnoj potrošnji oduzima.<br>• <b>Plaća od eKupija</b> → prihod tog mjeseca (umjesto plana).<br>• <b>Prebacivanje novca između tvojih računa</b> (Zaba ↔ Revolut) → „Prijenos između računa“. Upiše se, ali se ne računa kao trošak, pa se ništa ne udvostručuje.<br><span style="color:#94a3b8">Preskočeno automatski: '+_sk+' (razmjene valuta unutar Revoluta, nezavršena i vraćena plaćanja)'+(_ot?'; '+_ot+' izvan ove godine ili valute':'')+(_df?'; '+_df+' duplih datoteka':'')+'.</span></div>';
+  document.getElementById('rev-info').classList.remove('open'); document.getElementById('rev-more').textContent='Prikaži više';
+  document.getElementById('rev-info').innerHTML='<b>Kako ovo radi</b><br>✓ = ide u tablicu, prazno = ne ide. Označi što želiš prenijeti u aplikaciju.<br>• <b>Plaćanja karticom i dizanje gotovine</b> na bankomatu → trošak u svojoj kategoriji.<br>• <b>Novac koji si ti poslala nekome</b> → „Plaćeno drugima“.<br>• <b>Novac koji je netko uplatio tebi</b> (zeleni iznos) → „Uplaćeno (od drugih)“. Ne spaja se s „Plaćeno drugima“, jer se ne zna tko je što vratio. Upiše se kao minus pa se u ukupnoj potrošnji oduzima.<br>• <b>Plaća od eKupija</b> → prihod tog mjeseca (umjesto plana).<br>• <b>Prebacivanje novca između tvojih računa</b> (Zaba ↔ Revolut) → „Prijenos između računa“. Upiše se, ali se ne računa kao trošak, pa se ništa ne udvostručuje.<br><span class="rv-skip">Preskočeno automatski: '+_sk+' (razmjene valuta unutar Revoluta, nezavršena i vraćena plaćanja)'+(_ot?'; '+_ot+' izvan ove godine ili valute':'')+(_df?'; '+_df+' duplih datoteka':'')+'.</span>';
   revSum();
 }
 function revPaint(i){
   const o=REV_ROWS[i]; const c=document.getElementById('revc-'+i), r=document.getElementById('revr-'+i);
-  if(c){ c.style.background=o.on?'var(--th1)':'#fff'; c.textContent=o.on?'✓':''; }
-  if(r) r.style.opacity=o.on?1:.45;
+  if(c) revCbPaint(c,o.on?'on':'');
+  if(r) r.classList.toggle('off',!o.on);
 }
 function revTog(i){ REV_ROWS[i].on=!REV_ROWS[i].on; revPaint(i); revSum(); }
 function revAll(v){ REV_ROWS.forEach((o,i)=>{ o.on=v&&!o.dup; revPaint(i); }); revSum(); }
-function revOpen(m){ REV_OPEN[m]=!REV_OPEN[m]; const b=document.getElementById('revb-'+m), ar=document.getElementById('revar-'+m); if(b) b.style.display=REV_OPEN[m]?'block':'none'; if(ar) ar.textContent=REV_OPEN[m]?'▾':'▸'; }
+function revAllTog(){ const el=REV_ROWS.filter(o=>!o.dup); revAll(!(el.length&&el.every(o=>o.on))); }
+function revOpen(m){ REV_OPEN[m]=!REV_OPEN[m]; const b=document.getElementById('revb-'+m), ar=document.getElementById('revar-'+m); if(b) b.style.display=REV_OPEN[m]?'block':'none'; if(ar) ar.classList.toggle('open',!!REV_OPEN[m]); }
 function revMonth(m){
   const rows=REV_ROWS.map((o,i)=>({o,i})).filter(x=>x.o.date.slice(0,7)===m);
-  const all=rows.every(x=>x.o.on);
+  const el=rows.filter(x=>!x.o.dup);
+  const all=el.length&&el.every(x=>x.o.on);
   rows.forEach(x=>{ x.o.on=all?false:!x.o.dup; revPaint(x.i); });
   revSum();
 }
 function revSum(){
   const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
-  document.getElementById('rev-sum').textContent=on.length+' stavki · troškovi '+eur(tot)+(inc?' · plaća +'+eur(inc):'');
+  const w=n=>n+' '+(n%10===1&&n%100!==11?'stavka':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'stavke':'stavki'));
+  document.getElementById('rev-sum').textContent=w(on.length);
+  document.getElementById('rev-sum2').textContent='troškovi '+eur(tot)+(inc?' · plaća +'+eur(inc):'');
   document.getElementById('rev-btn').disabled=!on.length;
+  const el=REV_ROWS.filter(o=>!o.dup);
+  revCbPaint(document.getElementById('rev-allcb'), on.length&&on.length===el.length?'on':(on.length?'part':''));
+  const ac=document.getElementById('rev-allc'); if(ac) ac.textContent=on.length+' od '+REV_ROWS.length;
   revMonthKeys().forEach(m=>{
     const rows=REV_ROWS.filter(o=>o.date.slice(0,7)===m), sel=rows.filter(o=>o.on);
     const exp=sel.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0), pay=sel.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
     const c=document.getElementById('revmc-'+m), t=document.getElementById('revms-'+m);
-    if(c){ c.style.background=sel.length?'var(--th1)':'#fff'; c.textContent=sel.length===rows.length?'✓':(sel.length?'–':''); }
+    revCbPaint(c, sel.length===rows.length?'on':(sel.length?'part':''));
     if(t) t.textContent=sel.length+' od '+rows.length+' stavki · '+eur(exp)+(pay?' · plaća +'+eur(pay):'');
   });
 }
@@ -4768,6 +4882,8 @@ function syncAmtDisplay(inp){
 <div id="kat-sheet-ov" onclick="katSheet(false)"></div>
 <div id="kat-sheet" role="dialog" aria-label="Kategorija"></div>
 
+<div id="pp-ov" onclick="ppSheet(false)"></div>
+<div id="pp-sheet" role="dialog" aria-label="Okvirni plan"></div>
 <div id="pf-ov" onclick="pfSheet(false)"></div>
 <div id="pf-sheet" role="dialog" aria-label="Račun">
   <div class="ks-grab"></div>
