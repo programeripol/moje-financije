@@ -564,6 +564,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
       Prijavi se s Google računom
     </button>
+    <div id="switch-acc" onclick="signIn('choose')" style="display:none;margin-top:12px;font-size:13px;color:#64748b;text-decoration:underline;cursor:pointer;text-align:center">Drugi Google račun</div>
     <div class="feats">
       <div class="feat"><div class="feat-dot"></div>Fotografiraj račune — automatski u Sheets</div>
       <div class="feat"><div class="feat-dot"></div>Plan vs stvarna potrošnja po kategoriji</div>
@@ -1222,34 +1223,44 @@ function getRedirectUri(){
 }
 
 // Prijava: redirect na Google → Google vraća token u URL hash
-function signIn(){
+// mode: 'silent' = bez ikakvog ekrana (ako je Google sesija živa), 'choose' = izbor računa, inače: tvoj račun bez pitanja
+function signIn(mode){
+  if(typeof mode!=='string') mode='';
   const hint = localStorage.getItem('mf_hint') || '';
   const params = new URLSearchParams({
     client_id:              CLIENT_ID,
     redirect_uri:           getRedirectUri(),
     response_type:          'token',
     scope:                  SCOPES,
-    include_granted_scopes: 'false',
-    prompt:                 'select_account'
+    include_granted_scopes: 'false'
   });
-  if(hint) params.set('login_hint', hint);
+  if(mode==='silent') params.set('prompt','none');
+  else if(mode==='choose' || !hint) params.set('prompt','select_account');
+  if(hint && mode!=='choose') params.set('login_hint', hint);
   location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params;
 }
 
 // Provjeri je li Google vratio token u URL hash-u nakon redirecta
 function checkOAuthReturn(){
+  if(location.hash && /[#&]error=/.test(location.hash)){
+    // Tiha prijava nije uspjela (Google traži interakciju) — pokaži "Nastavi kao ..." gumb
+    history.replaceState(null, '', location.pathname);
+    try{ sessionStorage.setItem('mf_silent_fail','1'); }catch(e){}
+    return false;
+  }
   if(!location.hash || !location.hash.includes('access_token')) return false;
   try{
     const p = new URLSearchParams(location.hash.slice(1));
     const tok = p.get('access_token');
+    const exp = parseInt(p.get('expires_in')) || 3600;
     if(!tok) return false;
     history.replaceState(null, '', location.pathname);
     // Ako smo u iframeu (tihi refresh) — pošalji token roditelju
     if(window.parent !== window){
-      window.parent.postMessage({type:'mf_token_refresh', token: tok}, location.origin);
+      window.parent.postMessage({type:'mf_token_refresh', token: tok, expires_in: exp}, location.origin);
       return true;
     }
-    onToken({ access_token: tok });
+    onToken({ access_token: tok, expires_in: exp });
     return true;
   }catch(e){ return false; }
 }
@@ -1274,7 +1285,7 @@ function scheduleTokenRefresh(){
 }
 window.addEventListener('message', e => {
   if(e.origin === location.origin && e.data && e.data.type === 'mf_token_refresh' && e.data.token){
-    onToken({ access_token: e.data.token });
+    onToken({ access_token: e.data.token, expires_in: e.data.expires_in });
   }
 });
 function showResumeButton(email){
@@ -1283,6 +1294,7 @@ function showResumeButton(email){
   const short = email.length > 28 ? email.slice(0,25)+'…' : email;
   btn.disabled = false;
   btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:18px"> Nastavi kao ' + short;
+  const sw = document.getElementById('switch-acc'); if(sw) sw.style.display = 'block';
   // onclick ne postavljamo — wireButtons() addEventListener poziva signIn() koji čita mf_hint
 }
 
@@ -1291,6 +1303,7 @@ function resetLoginBtn(){
   if(!btn) return;
   btn.disabled = false;
   btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:18px"> Prijavi se s Google računom';
+  const sw = document.getElementById('switch-acc'); if(sw) sw.style.display = 'none';
   // onclick ne postavljamo — wireButtons() addEventListener poziva signIn()
 }
 
@@ -1300,12 +1313,21 @@ function tryAutoLogin(){
   const hint        = localStorage.getItem('mf_hint') || '';
   if(wasLoggedIn && hint){
     const storedTok = localStorage.getItem('mf_token');
-    if(storedTok){
-      // Probaj sačuvani token odmah — ne redirectamo van PWA-a
-      onToken({ access_token: storedTok });
+    const storedExp = parseInt(localStorage.getItem('mf_token_expiry')||'0');
+    if(storedTok && storedExp > Date.now()){
+      // Token je još važeći — koristi ga odmah, bez ikakvog pitanja
+      onToken({ access_token: storedTok, reuse: true });
       return;
     }
-    // Nema tokena → "Nastavi kao X" gumb
+    // Token istekao: jednom po otvaranju probaj TIHU prijavu (bez ekrana, ako je Google sesija živa)
+    try{
+      if(!sessionStorage.getItem('mf_silent_try') && !sessionStorage.getItem('mf_silent_fail')){
+        sessionStorage.setItem('mf_silent_try','1');
+        signIn('silent');
+        return;
+      }
+    }catch(e){}
+    // Tiha prijava nije uspjela → "Nastavi kao X" gumb
     splashAuthComplete();
     showResumeButton(hint);
     return;
@@ -1672,8 +1694,13 @@ async function onToken(resp){
     return;
   }
   localStorage.setItem('mf_autologin', '1');
-  localStorage.setItem('mf_token', resp.access_token);
-  localStorage.setItem('mf_token_expiry', String(Date.now() + 2592000000)); // 30 days
+  if(!resp.reuse){
+    // Pravi rok trajanja Googleovog tokena (obično 1 sat), s malom rezervom
+    const ttl = parseInt(resp.expires_in) || 3600;
+    localStorage.setItem('mf_token', resp.access_token);
+    localStorage.setItem('mf_token_expiry', String(Date.now() + Math.max(60, ttl - 120) * 1000));
+  }
+  try{ sessionStorage.removeItem('mf_silent_try'); sessionStorage.removeItem('mf_silent_fail'); }catch(e){}
   token = resp.access_token;
   scheduleTokenRefresh();
 
