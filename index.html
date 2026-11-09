@@ -481,7 +481,8 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #s-skener .fl-rate-row>label>span:first-child{font-size:15px!important;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--dp-navy)!important}
 [data-theme="dopamin"] #save-btn{height:54px;border-radius:18px;font-size:19px;font-weight:800;letter-spacing:.3px;box-shadow:0 5px 0 #121a52;margin-top:4px}
 [data-theme="dopamin"] #s-skener .fl-rate-row .rf-lbl{font-size:13px!important;font-weight:800!important;letter-spacing:.6px!important;text-transform:uppercase;color:var(--dp-navy)!important;margin:0 0 2px!important}
-[data-theme="dopamin"] #s-skener #rate-fields{padding:0 20px 18px!important;gap:16px!important}
+[data-theme="dopamin"] #s-skener #rate-fields{display:flex!important;padding:0 20px!important;gap:16px!important;max-height:0;opacity:0;overflow:hidden;transform:translateY(-6px);transition:max-height .38s cubic-bezier(.32,.72,0,1),opacity .28s ease,padding .38s cubic-bezier(.32,.72,0,1),transform .38s cubic-bezier(.32,.72,0,1)}
+[data-theme="dopamin"] #s-skener #rate-fields.rf-open{max-height:140px;opacity:1;padding:0 20px 18px!important;transform:none}
 [data-theme="dopamin"] #s-skener #rate-fields input{color:var(--dp-navy)!important;font-family:inherit;font-size:16px;font-weight:800;padding:6px 0!important;min-height:0!important;border-bottom:2px solid rgba(42,60,143,.2)!important}
 [data-theme="dopamin"] #s-skener .req{color:var(--dp-navy)!important;opacity:1!important}
 [data-theme="dopamin"] #s-skener input[type="date"]{text-align:left!important;-webkit-appearance:none;appearance:none;display:block}
@@ -3537,6 +3538,7 @@ function toggleRateFields(){
   if(!f||!t)return;
   var on=t.checked;
   f.style.display=on?'flex':'none';
+  f.classList.toggle('rf-open',on);
   if(vis)vis.style.background=on?'var(--acc-on,var(--th1))':'#ccc';
   if(thumb)thumb.style.left=on?'22px':'2px';
 }
@@ -4741,7 +4743,6 @@ function syncAmtDisplay(inp){
     <div id="recent-list"></div>
     <div id="gallery-grid" style="display:none"></div>
   </div>
-  <button onclick="addReceiptFromModal()" style="position:absolute;bottom:28px;right:20px;width:54px;height:54px;border-radius:50%;background:var(--th1);border:none;color:#fff;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 4px 18px rgba(var(--th1r),.38);display:flex;align-items:center;justify-content:center;z-index:10" title="Dodaj račun">+</button>
 </div>
 
 <div id="kat-sheet-ov" onclick="katSheet(false)"></div>
