@@ -468,6 +468,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <span onclick="revClose()" style="cursor:pointer;font-size:24px;line-height:1;padding:0 6px">&times;</span>
     </div>
     <div id="rev-info" style="padding:0 18px 8px;font-size:12.5px;color:#64748b"></div>
+    <div style="padding:0 18px 8px;display:flex;gap:8px;align-items:center;font-size:12.5px;color:#64748b"><span style="flex:1">✓ = ide u tablicu, prazno = preskače se</span><button onclick="revAll(true)" style="border:1px solid #e2e8f0;background:#fff;border-radius:9px;padding:6px 10px;font-size:12.5px;cursor:pointer">Označi sve</button><button onclick="revAll(false)" style="border:1px solid #e2e8f0;background:#fff;border-radius:9px;padding:6px 10px;font-size:12.5px;cursor:pointer">Poništi sve</button></div>
     <div id="rev-list" style="flex:1;overflow:auto;padding:0 12px"></div>
     <div style="padding:12px 18px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #e8edf8;display:flex;gap:10px;align-items:center">
       <div id="rev-sum" style="flex:1;font-size:13px;font-weight:600"></div>
@@ -563,6 +564,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
       Prijavi se s Google računom
     </button>
+    <div id="switch-acc" onclick="signIn('choose')" style="display:none;margin-top:12px;font-size:13px;color:#64748b;text-decoration:underline;cursor:pointer;text-align:center">Drugi Google račun</div>
     <div class="feats">
       <div class="feat"><div class="feat-dot"></div>Fotografiraj račune — automatski u Sheets</div>
       <div class="feat"><div class="feat-dot"></div>Plan vs stvarna potrošnja po kategoriji</div>
@@ -983,10 +985,6 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <input type="file" id="rev-file" accept=".csv,text/csv,.pdf,application/pdf" multiple style="display:none" onchange="revPick(this)">
-    <div onclick="closeOldReceipts()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:14px;font-weight:500;color:var(--th-text)">Zatvori javne linkove starih računa</span>
-      <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
     <div onclick="signOutFromProfil()" style="cursor:pointer;background:#fff;border:1px solid #fee2e2;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:14px;font-weight:500;color:#e53935">Odjavi se</span>
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#e53935" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1116,13 +1114,13 @@ const CAT_HR = {
   Food:'Hrana', Pets:'Ljubimci', Fuel:'Prijevoz', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
   Allianz:'Osiguranje', Debt:'Rate', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
-  Savings:'Štednja', KeksPay:'Keks Pay', Drugima:'Plaćeno drugima', Prihod:'Prihod (primljeno)', Other:'Ostalo'
+  Savings:'Štednja', KeksPay:'Keks Pay', Drugima:'Plaćeno drugima', Prihod:'Prihod (primljeno)', Prijenos:'Prijenos između računa', Uplaceno:'Uplaćeno (od drugih)', Other:'Ostalo'
 };
 const CAT_COLORS = {
   Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
   Stanarina:'var(--th1)', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
   Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Prijevoz:'#38bdf8', Hobi:'#f97316', Putovanje:'#818cf8', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
-  Savings:'#10b981', KeksPay:'#06b6d4', Drugima:'#fb7185', Prihod:'#16a34a', Other:'#94a3b8'
+  Savings:'#10b981', KeksPay:'#06b6d4', Drugima:'#fb7185', Prihod:'#16a34a', Prijenos:'#cbd5e1', Uplaceno:'#34d399', Other:'#94a3b8'
 };
 
 // ── INIT ─────────────────────────────────────────────────────────────
@@ -1225,34 +1223,44 @@ function getRedirectUri(){
 }
 
 // Prijava: redirect na Google → Google vraća token u URL hash
-function signIn(){
+// mode: 'silent' = bez ikakvog ekrana (ako je Google sesija živa), 'choose' = izbor računa, inače: tvoj račun bez pitanja
+function signIn(mode){
+  if(typeof mode!=='string') mode='';
   const hint = localStorage.getItem('mf_hint') || '';
   const params = new URLSearchParams({
     client_id:              CLIENT_ID,
     redirect_uri:           getRedirectUri(),
     response_type:          'token',
     scope:                  SCOPES,
-    include_granted_scopes: 'false',
-    prompt:                 'select_account'
+    include_granted_scopes: 'false'
   });
-  if(hint) params.set('login_hint', hint);
+  if(mode==='silent') params.set('prompt','none');
+  else if(mode==='choose' || !hint) params.set('prompt','select_account');
+  if(hint && mode!=='choose') params.set('login_hint', hint);
   location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params;
 }
 
 // Provjeri je li Google vratio token u URL hash-u nakon redirecta
 function checkOAuthReturn(){
+  if(location.hash && /[#&]error=/.test(location.hash)){
+    // Tiha prijava nije uspjela (Google traži interakciju) — pokaži "Nastavi kao ..." gumb
+    history.replaceState(null, '', location.pathname);
+    try{ sessionStorage.setItem('mf_silent_fail','1'); }catch(e){}
+    return false;
+  }
   if(!location.hash || !location.hash.includes('access_token')) return false;
   try{
     const p = new URLSearchParams(location.hash.slice(1));
     const tok = p.get('access_token');
+    const exp = parseInt(p.get('expires_in')) || 3600;
     if(!tok) return false;
     history.replaceState(null, '', location.pathname);
     // Ako smo u iframeu (tihi refresh) — pošalji token roditelju
     if(window.parent !== window){
-      window.parent.postMessage({type:'mf_token_refresh', token: tok}, location.origin);
+      window.parent.postMessage({type:'mf_token_refresh', token: tok, expires_in: exp}, location.origin);
       return true;
     }
-    onToken({ access_token: tok });
+    onToken({ access_token: tok, expires_in: exp });
     return true;
   }catch(e){ return false; }
 }
@@ -1277,7 +1285,7 @@ function scheduleTokenRefresh(){
 }
 window.addEventListener('message', e => {
   if(e.origin === location.origin && e.data && e.data.type === 'mf_token_refresh' && e.data.token){
-    onToken({ access_token: e.data.token });
+    onToken({ access_token: e.data.token, expires_in: e.data.expires_in });
   }
 });
 function showResumeButton(email){
@@ -1286,6 +1294,7 @@ function showResumeButton(email){
   const short = email.length > 28 ? email.slice(0,25)+'…' : email;
   btn.disabled = false;
   btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:18px"> Nastavi kao ' + short;
+  const sw = document.getElementById('switch-acc'); if(sw) sw.style.display = 'block';
   // onclick ne postavljamo — wireButtons() addEventListener poziva signIn() koji čita mf_hint
 }
 
@@ -1294,6 +1303,7 @@ function resetLoginBtn(){
   if(!btn) return;
   btn.disabled = false;
   btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style="width:18px"> Prijavi se s Google računom';
+  const sw = document.getElementById('switch-acc'); if(sw) sw.style.display = 'none';
   // onclick ne postavljamo — wireButtons() addEventListener poziva signIn()
 }
 
@@ -1303,12 +1313,21 @@ function tryAutoLogin(){
   const hint        = localStorage.getItem('mf_hint') || '';
   if(wasLoggedIn && hint){
     const storedTok = localStorage.getItem('mf_token');
-    if(storedTok){
-      // Probaj sačuvani token odmah — ne redirectamo van PWA-a
-      onToken({ access_token: storedTok });
+    const storedExp = parseInt(localStorage.getItem('mf_token_expiry')||'0');
+    if(storedTok && storedExp > Date.now()){
+      // Token je još važeći — koristi ga odmah, bez ikakvog pitanja
+      onToken({ access_token: storedTok, reuse: true });
       return;
     }
-    // Nema tokena → "Nastavi kao X" gumb
+    // Token istekao: jednom po otvaranju probaj TIHU prijavu (bez ekrana, ako je Google sesija živa)
+    try{
+      if(!sessionStorage.getItem('mf_silent_try') && !sessionStorage.getItem('mf_silent_fail')){
+        sessionStorage.setItem('mf_silent_try','1');
+        signIn('silent');
+        return;
+      }
+    }catch(e){}
+    // Tiha prijava nije uspjela → "Nastavi kao X" gumb
     splashAuthComplete();
     showResumeButton(hint);
     return;
@@ -1675,8 +1694,13 @@ async function onToken(resp){
     return;
   }
   localStorage.setItem('mf_autologin', '1');
-  localStorage.setItem('mf_token', resp.access_token);
-  localStorage.setItem('mf_token_expiry', String(Date.now() + 2592000000)); // 30 days
+  if(!resp.reuse){
+    // Pravi rok trajanja Googleovog tokena (obično 1 sat), s malom rezervom
+    const ttl = parseInt(resp.expires_in) || 3600;
+    localStorage.setItem('mf_token', resp.access_token);
+    localStorage.setItem('mf_token_expiry', String(Date.now() + Math.max(60, ttl - 120) * 1000));
+  }
+  try{ sessionStorage.removeItem('mf_silent_try'); sessionStorage.removeItem('mf_silent_fail'); }catch(e){}
   token = resp.access_token;
   scheduleTokenRefresh();
 
@@ -2151,7 +2175,7 @@ async function calcAutoPrenostalo(monthIdx){
   try{
     const rows = await getRows(sheetId, prevName, 'A57:N500');
     const entries = rows.filter(r=>r[1]);
-    const prevSpent = entries.reduce((s,r)=>s+((r[8]==='Prihod')?0:(parseFloat(r[5])||0)), 0);
+    const prevSpent = entries.reduce((s,r)=>s+((r[8]==='Prihod'||r[8]==='Prijenos')?0:(parseFloat(r[5])||0)), 0);
     const prevRecv = entries.reduce((s,r)=>s+((r[8]==='Prihod')?(parseFloat(r[5])||0):0), 0);
     const prevPlan = await loadMonthPlan(prevIdx);
     // income for prev month
@@ -2470,6 +2494,7 @@ async function loadPregled(){
     entries.forEach(r=>{
       const cat = r[8]||'Other'; // I = kategorija
       const amt = parseFloat(r[5])||0; // F = iznos
+      if(cat==='Prijenos') return; // prijenos između vlastitih računa nije trošak
       if(cat==='Prihod'){ received += amt; return; } // primljeno (plaća) nije trošak
       actual[cat] = (actual[cat]||0) + amt;
       totalSpent += amt;
@@ -2970,7 +2995,7 @@ function revFromCsv(text,acc){
   if(iT<0||iA<0||iDe<0||iS<0) throw new Error('Ovo ne izgleda kao Revolut CSV izvadak');
   for(const r of tbl.slice(1)){
     const type=r[iT], st=r[iS];
-    if(st!=='COMPLETED'||type==='Topup'||type==='Exchange'){ acc.skipped++; continue; }
+    if(st!=='COMPLETED'||type==='Exchange'){ acc.skipped++; continue; }
     if((r[iCu]||'EUR')!=='EUR'){ acc.other++; continue; }
     const dt=(r[iC]||r[iD]||'').slice(0,10);
     if(!/^\d{4}-\d{2}-\d{2}$/.test(dt)){ acc.skipped++; continue; }
@@ -2978,7 +3003,8 @@ function revFromCsv(text,acc){
     const net=-(amt-fee); // trošak pozitivan, povrat negativan
     const desc=(r[iDe]||'').trim();
     let cat;
-    if(type==='Transfer'||type==='Rev Payment') cat='Drugima';
+    if(type==='Topup') cat='Prijenos';
+    else if(type==='Transfer'||type==='Rev Payment') cat=(amt>0?'Uplaceno':'Drugima');
     else if(type==='ATM') cat='Other';
     else cat=revCat(desc);
     acc.items.push({date:dt,desc:desc,amount:Math.round(net*100)/100,cat:cat,on:true,type:type,note:'Revolut: '+desc,dup:false});
@@ -3048,11 +3074,11 @@ function revFromZabaPages(pages,acc){
   txs.forEach(t=>{
     if(t.amt==null){ acc.skipped++; return; }
     let d=clean(t); if(ownerRe) d=d.replace(ownerRe,'').trim();
-    if(/^Kupovina Revolut\*/i.test(d)){ acc.skipped++; return; } // top-up Revoluta, trošak je u Revolut izvatku
+    if(/^Kupovina Revolut\*/i.test(d)){ acc.items.push({date:t.date,desc:'Prijenos na Revolut',amount:t.amt,cat:'Prijenos',on:true,type:'Prijenos',note:'Zaba: Prijenos na Revolut',dup:false}); return; }
     const short=d.replace(/^Kupovina\s+/i,'');
     if(t.dir==='in'){
       if(/EKUPI/i.test(d)){ acc.items.push({date:t.date,desc:short,amount:t.amt,cat:'Prihod',on:true,type:'Plaća',income:true,note:'Zaba: '+short,dup:false}); return; }
-      acc.items.push({date:t.date,desc:short,amount:-t.amt,cat:'Other',on:false,type:'Zaba uplata',note:'Zaba: '+short,dup:false});
+      acc.items.push({date:t.date,desc:short,amount:-t.amt,cat:'Uplaceno',on:true,type:'Zaba uplata',note:'Zaba: '+short,dup:false});
     } else {
       const cat=/Podizanje gotovog|Naknada|TROŠKOVI UČINJENI/i.test(d)?'Other':/transfer nac/i.test(d)?'Drugima':revCat(short);
       acc.items.push({date:t.date,desc:short,amount:t.amt,cat:cat,on:true,type:'Zaba',note:'Zaba: '+short,dup:false});
@@ -3081,18 +3107,17 @@ async function revFinish(acc){
     out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; } });
   }catch(e){ hideSaveOverlay(); showToast('Greška pri provjeri: '+(e.message||e),5000,'err'); return; }
   hideSaveOverlay();
-  REV_ROWS=out; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other; REV_ROWS._dupFiles=acc.dupFiles||0;
+  REV_OPEN={}; REV_ROWS=out; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other; REV_ROWS._dupFiles=acc.dupFiles||0;
   revRender();
   document.getElementById('rev-modal').style.display='block';
 }
 function revKey(d,a,n){ let t=String(a==null?'':a).replace(/[^0-9,.\-]/g,''); if(t.indexOf(',')>=0) t=t.replace(/\./g,'').replace(',','.'); const v=Math.round((parseFloat(t)||0)*100)/100; return String(d).trim()+'|'+v.toFixed(2)+'|'+String(n||'').trim(); }
 function revOpts(sel){ return Object.keys(CAT_HR).map(k=>`<option value="${k}"${k===sel?' selected':''}>${revEsc(CAT_HR[k])}</option>`).join(''); }
-function revRender(){
-  const L=document.getElementById('rev-list'); let h='';
-  REV_ROWS.forEach((o,i)=>{
-    const neg=o.amount<0||o.income;
-    h+=`<div style="display:flex;gap:8px;align-items:center;padding:9px 6px;border-bottom:1px solid #f1f5f9;${o.dup?'opacity:.45':''}">
-      <input type="checkbox" ${o.on?'checked':''} onchange="REV_ROWS[${i}].on=this.checked;revSum()" style="width:18px;height:18px;flex:none">
+var REV_OPEN={};
+function revRowHtml(o,i){
+  const neg=o.amount<0||o.income;
+  return `<div id="revr-${i}" style="display:flex;gap:10px;align-items:center;padding:9px 6px;border-bottom:1px solid #f1f5f9;opacity:${o.on?1:.45}">
+      <div id="revc-${i}" onclick="revTog(${i})" style="flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--th1);background:${o.on?'var(--th1)':'#fff'};color:#fff;font-size:17px;font-weight:700;line-height:22px;text-align:center;cursor:pointer;user-select:none">${o.on?'✓':''}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${revEsc(o.desc)||'—'}</div>
         <div style="font-size:11.5px;color:#64748b">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':''}</div>
@@ -3100,15 +3125,52 @@ function revRender(){
       </div>
       <div style="font-size:13.5px;font-weight:700;white-space:nowrap;color:${neg?'#16a34a':'#0f172a'}">${o.income?'+ ':''}${eur(o.amount)}</div>
     </div>`;
+}
+function revMonthKeys(){ const k=[]; REV_ROWS.forEach(o=>{ const m=o.date.slice(0,7); if(k.indexOf(m)<0) k.push(m); }); return k.sort(); }
+function revRender(){
+  const L=document.getElementById('rev-list'); let h='';
+  revMonthKeys().forEach(m=>{
+    const open=!!REV_OPEN[m];
+    h+=`<div style="border:1px solid #e8edf8;border-radius:14px;margin:0 0 8px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 10px;background:#f8fafc;cursor:pointer" onclick="revOpen('${m}')">
+        <div id="revmc-${m}" onclick="event.stopPropagation();revMonth('${m}')" style="flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--th1);color:#fff;font-size:17px;font-weight:700;line-height:22px;text-align:center;user-select:none"></div>
+        <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px">${MONTHS_HR[parseInt(m.slice(5))-1]} ${m.slice(0,4)}</div><div id="revms-${m}" style="font-size:12px;color:#64748b"></div></div>
+        <span id="revar-${m}" style="font-size:14px;color:#94a3b8">${open?'▾':'▸'}</span>
+      </div>
+      <div id="revb-${m}" style="display:${open?'block':'none'};padding:0 6px">`;
+    REV_ROWS.forEach((o,i)=>{ if(o.date.slice(0,7)===m) h+=revRowHtml(o,i); });
+    h+=`</div></div>`;
   });
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:#64748b">Nema stavki za uvoz.</div>';
-  document.getElementById('rev-info').textContent='Označene stavke upisat će se u tablicu. Dolazni prijenosi s Revoluta (zeleni iznos) upisuju se kao minus u „Plaćeno drugima“. Plaća od eKupija upisuje se kao prihod i zamjenjuje plan za taj mjesec. Ostale uplate na Zabu isključene su – uključi samo ako ih želiš kao minus. Preskočeno (top-up, razmjene, nezavršeno, prijenosi Zaba→Revolut): '+(REV_ROWS._skipped||0)+(REV_ROWS._other?'; izvan ove godine/valute: '+REV_ROWS._other:'')+(REV_ROWS._dupFiles?'; duplih datoteka preskočeno: '+REV_ROWS._dupFiles:'')+'.';
+  const _sk=(REV_ROWS._skipped||0), _ot=REV_ROWS._other||0, _df=REV_ROWS._dupFiles||0;
+  document.getElementById('rev-info').innerHTML='<div style="line-height:1.55"><b style="color:#0f172a">Kako ovo radi</b><br>✓ = ide u tablicu, prazno = ne ide. Označi što želiš prenijeti u aplikaciju.<br>• <b>Plaćanja karticom i dizanje gotovine</b> na bankomatu → trošak u svojoj kategoriji.<br>• <b>Novac koji si ti poslala nekome</b> → „Plaćeno drugima“.<br>• <b>Novac koji je netko uplatio tebi</b> (zeleni iznos) → „Uplaćeno (od drugih)“. Ne spaja se s „Plaćeno drugima“, jer se ne zna tko je što vratio. Upiše se kao minus pa se u ukupnoj potrošnji oduzima.<br>• <b>Plaća od eKupija</b> → prihod tog mjeseca (umjesto plana).<br>• <b>Prebacivanje novca između tvojih računa</b> (Zaba ↔ Revolut) → „Prijenos između računa“. Upiše se, ali se ne računa kao trošak, pa se ništa ne udvostručuje.<br><span style="color:#94a3b8">Preskočeno automatski: '+_sk+' (razmjene valuta unutar Revoluta, nezavršena i vraćena plaćanja)'+(_ot?'; '+_ot+' izvan ove godine ili valute':'')+(_df?'; '+_df+' duplih datoteka':'')+'.</span></div>';
+  revSum();
+}
+function revPaint(i){
+  const o=REV_ROWS[i]; const c=document.getElementById('revc-'+i), r=document.getElementById('revr-'+i);
+  if(c){ c.style.background=o.on?'var(--th1)':'#fff'; c.textContent=o.on?'✓':''; }
+  if(r) r.style.opacity=o.on?1:.45;
+}
+function revTog(i){ REV_ROWS[i].on=!REV_ROWS[i].on; revPaint(i); revSum(); }
+function revAll(v){ REV_ROWS.forEach((o,i)=>{ o.on=v&&!o.dup; revPaint(i); }); revSum(); }
+function revOpen(m){ REV_OPEN[m]=!REV_OPEN[m]; const b=document.getElementById('revb-'+m), ar=document.getElementById('revar-'+m); if(b) b.style.display=REV_OPEN[m]?'block':'none'; if(ar) ar.textContent=REV_OPEN[m]?'▾':'▸'; }
+function revMonth(m){
+  const rows=REV_ROWS.map((o,i)=>({o,i})).filter(x=>x.o.date.slice(0,7)===m);
+  const all=rows.every(x=>x.o.on);
+  rows.forEach(x=>{ x.o.on=all?false:!x.o.dup; revPaint(x.i); });
   revSum();
 }
 function revSum(){
-  const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income).reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
+  const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
   document.getElementById('rev-sum').textContent=on.length+' stavki · troškovi '+eur(tot)+(inc?' · plaća +'+eur(inc):'');
   document.getElementById('rev-btn').disabled=!on.length;
+  revMonthKeys().forEach(m=>{
+    const rows=REV_ROWS.filter(o=>o.date.slice(0,7)===m), sel=rows.filter(o=>o.on);
+    const exp=sel.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0), pay=sel.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
+    const c=document.getElementById('revmc-'+m), t=document.getElementById('revms-'+m);
+    if(c){ c.style.background=sel.length?'var(--th1)':'#fff'; c.textContent=sel.length===rows.length?'✓':(sel.length?'–':''); }
+    if(t) t.textContent=sel.length+' od '+rows.length+' stavki · '+eur(exp)+(pay?' · plaća +'+eur(pay):'');
+  });
 }
 function revClose(){ document.getElementById('rev-modal').style.display='none'; }
 async function revImport(){
