@@ -323,6 +323,7 @@ details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(18
 .card-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .card-title-row .card-title{margin-bottom:0;font-size:13px;font-weight:600;color:var(--th1);text-transform:uppercase;letter-spacing:.05em}
 .card-drive-link{font-size:18px;text-decoration:none;opacity:.6;transition:.15s;line-height:1}
+#acc-modal .card-drive-link{opacity:1;padding:4px}
 .card-drive-link:hover{opacity:1}
 .recent-toggle{width:100%;background:none;border:1px solid #e0e7f0;border-radius:10px;padding:8px;font-size:12px;font-weight:600;color:var(--th1);cursor:pointer;font-family:inherit;margin-top:8px;transition:.15s}
 /* receipt rows */
@@ -428,26 +429,28 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 .sk-head,.sk-x,.uz-opts,.uz-plus,.kat-quick,#kat-sheet,#kat-sheet-ov{display:none}
 [data-theme="dopamin"] .dp-hide{display:none!important}
 [data-theme="dopamin"] #s-skener{padding-top:var(--sk-top)}
-[data-theme="dopamin"] .sk-head{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin:0 0 10px}
+[data-theme="dopamin"] .sk-head{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin:0 0 26px}
 [data-theme="dopamin"] .sk-head h2{font-size:26px;font-weight:800;line-height:1;color:var(--dp-navy);margin:0}
-[data-theme="dopamin"] .sk-head button{height:36px;box-sizing:border-box;border:2px solid var(--dp-navy);border-radius:12px;background:var(--dp-cream);color:var(--dp-navy);font-size:14px;font-weight:800;padding:0 12px;cursor:pointer}
+[data-theme="dopamin"] .sk-head button{height:36px;box-sizing:border-box;border:1.5px solid rgba(42,60,143,.32);border-radius:12px;background:var(--dp-cream);color:var(--dp-navy);font-size:13px;font-weight:700;padding:0 12px;cursor:pointer}
 [data-theme="dopamin"] #s-skener.sk-open .sk-acc{display:none}
 [data-theme="dopamin"] #s-skener.sk-open .sk-x{display:flex;align-items:center;justify-content:center;width:36px;padding:0;border-radius:50%}
-[data-theme="dopamin"] #upload-zone{margin-bottom:60px;background:var(--dp-cream);backdrop-filter:none;-webkit-backdrop-filter:none;border:3px dashed var(--dp-navy);border-radius:26px;padding:0 20px;height:128px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+[data-theme="dopamin"] #upload-zone{margin-bottom:60px;background:var(--dp-cream);backdrop-filter:none;-webkit-backdrop-filter:none;border:2.5px dashed rgba(42,60,143,.5);border-radius:26px;padding:0 20px;height:112px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 [data-theme="dopamin"] #upload-zone .uz-icon{position:relative;width:44px;height:36px;margin:0;color:var(--dp-navy);opacity:1}
 [data-theme="dopamin"] #upload-zone .uz-icon svg{width:38px;height:38px;stroke-width:2.2}
 [data-theme="dopamin"] #upload-zone .uz-plus{display:flex;align-items:center;justify-content:center;position:absolute;right:-8px;top:-8px;width:22px;height:22px;border-radius:50%;background:var(--dp-navy);color:var(--dp-cream)}
 [data-theme="dopamin"] #upload-zone h3{color:var(--dp-navy);font-family:'Baloo 2',sans-serif;font-weight:800;font-size:22px;line-height:1.1;margin:4px 0 0;letter-spacing:.01em}
-[data-theme="dopamin"] #upload-zone p{color:#5b6291;opacity:1;font-size:12.5px;font-weight:600;line-height:1.25;margin:0}
+[data-theme="dopamin"] #upload-zone p{color:#5b6291;opacity:1;font-size:12px;font-weight:600;line-height:1.25;margin:0;white-space:nowrap}
 [data-theme="dopamin"] #upload-zone.uz-open{background:transparent;border:none;padding:0;cursor:default;flex-direction:row;gap:10px}
 [data-theme="dopamin"] #upload-zone.uz-open>.uz-icon,[data-theme="dopamin"] #upload-zone.uz-open>h3,[data-theme="dopamin"] #upload-zone.uz-open>p{display:none}
 [data-theme="dopamin"] #upload-zone.uz-open .uz-opts{display:flex;gap:10px;width:100%;height:100%}
-.uz-opts button{flex:1;height:100%;box-sizing:border-box;border:3px dashed var(--dp-navy);border-radius:22px;background:var(--dp-cream);color:var(--dp-navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:inherit;font-size:14px;font-weight:800;padding:0 4px;cursor:pointer}
+.uz-opts button{flex:1;height:100%;box-sizing:border-box;border:2.5px dashed rgba(42,60,143,.5);border-radius:22px;background:var(--dp-cream);color:var(--dp-navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:inherit;font-size:14px;font-weight:800;padding:0 4px;cursor:pointer}
 [data-theme="dopamin"] #fl-kat .csel,[data-theme="dopamin"] #fl-kat>.fl-lbl{display:none}
 [data-theme="dopamin"] #fl-kat .kat-quick{display:block;padding:14px 20px}
-.kq-lbl{font-size:11px;font-weight:700;letter-spacing:.6px;color:#5b6291;margin-bottom:10px}
+.kq-lbl{font-size:13px;font-weight:800;letter-spacing:.6px;color:var(--dp-navy);margin-bottom:10px}
 .kq-row{display:flex;flex-wrap:wrap;gap:8px}
-.kq-chip{height:34px;border:2px solid var(--dp-navy);background:transparent;color:var(--dp-navy);border-radius:999px;padding:0 14px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+#kat-quick .kq-row{flex-wrap:nowrap;gap:6px;overflow:hidden}
+#kat-quick .kq-chip{flex:none;padding:0 12px}
+.kq-chip{height:34px;border:2px solid var(--dp-navy);white-space:nowrap;background:transparent;color:var(--dp-navy);border-radius:999px;padding:0 14px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .kq-chip.on{background:var(--dp-navy);color:var(--dp-cream)}
 [data-theme="dopamin"] #kat-sheet-ov.open{display:block;position:fixed;inset:0;background:rgba(38,51,127,.6);z-index:210}
 [data-theme="dopamin"] #kat-sheet.open{display:block;position:fixed;left:0;right:0;bottom:0;max-height:86vh;overflow-y:auto;background:var(--dp-cream);border-radius:28px 28px 0 0;padding:12px 24px calc(24px + env(safe-area-inset-bottom,0px));z-index:211;box-sizing:border-box;color:var(--dp-navy)}
@@ -457,6 +460,13 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 .ks-grp{margin-top:14px}
 .ks-grp-t{font-size:11px;font-weight:800;letter-spacing:.8px;color:#5b6291;margin-bottom:8px;text-transform:uppercase}
 [data-theme="dopamin"] #s-skener .fl-group{padding:0}
+[data-theme="dopamin"] #s-skener .fl-field{border-bottom:2px solid rgba(42,60,143,.12)}
+[data-theme="dopamin"] #s-skener .fl-row>.fl-field:last-child{border-bottom:2px solid rgba(42,60,143,.12)}
+[data-theme="dopamin"] #s-skener .fl-row>.fl-field+.fl-field{border-left:2px solid rgba(42,60,143,.12)}
+[data-theme="dopamin"] #s-skener .fl-lbl{opacity:1!important;top:11px;font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--dp-navy)}
+[data-theme="dopamin"] #s-skener .fl-field>input{padding:34px 20px 12px!important;min-height:70px}
+[data-theme="dopamin"] #s-skener .fl-amt{padding:34px 20px 12px!important;min-height:70px;box-sizing:border-box}
+[data-theme="dopamin"] #s-skener #fl-kat{border-bottom:2px solid rgba(42,60,143,.12)}
 [data-theme="dopamin"] #s-skener .fl-field>input{padding-left:20px;padding-right:20px}
 [data-theme="dopamin"] #s-skener .fl-lbl{left:20px}
 [data-theme="dopamin"] #s-skener .fl-rate-row>label{padding:16px 20px!important}
@@ -474,10 +484,16 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] .cat-bar-wrap{background:#fff;height:12px;border-radius:999px}
 [data-theme="dopamin"] .cat-bar-fill{border-radius:999px}
 /* navigacija */
-[data-theme="dopamin"] #nav{background:var(--dp-navy);border-top:none;box-shadow:none}
-[data-theme="dopamin"] .nav-btn{color:#fff;opacity:.8;font-size:11px}
-[data-theme="dopamin"] .nav-btn.active{color:var(--dp-yellow)!important;opacity:1}
-[data-theme="dopamin"] .nav-btn.active .nav-icon{background:var(--dp-yellow);border-radius:50%;padding:4px;width:34px;height:34px;margin-top:-8px}
+[data-theme="dopamin"] #nav{background:var(--dp-cream);border-top:none;border-radius:28px 28px 0 0;box-shadow:0 -3px 0 rgba(42,60,143,.10)}
+[data-theme="dopamin"] .nav-items{padding:10px 12px 8px}
+[data-theme="dopamin"] .nav-btn{color:#5b6291;opacity:1;font-size:12px;font-weight:700;border-radius:18px;padding:8px 0 6px;margin:0 3px}
+[data-theme="dopamin"] .nav-btn:not(.active) .nav-icon{filter:invert(1);opacity:.72}
+[data-theme="dopamin"] .nav-btn.active{background:var(--dp-yellow);color:var(--dp-navy)!important;font-weight:800}
+[data-theme="dopamin"] .nav-btn.active .nav-icon{background:none;border-radius:0;padding:0;width:24px;height:24px;margin-top:0}
+[data-theme="dopamin"] body{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+[data-theme="dopamin"]{--acc-on:#2a3c8f;--acc-title:#2a3c8f}
+[data-theme="dopamin"] #acc-modal{background:var(--dp-cream)!important}
+[data-theme="dopamin"] #acc-modal .acc-seg{background:rgba(42,60,143,.08)}
 /* ostalo */
 [data-theme="dopamin"] #login-card{border:none;border-radius:34px;background:var(--dp-salmon);box-shadow:none}
 [data-theme="dopamin"] #settings-sheet{background:var(--dp-cream)!important}
@@ -686,7 +702,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
        ondrop="handleDrop(event)">
     <div class="uz-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span class="uz-plus"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></div>
     <h3>DODAJ RAČUN</h3>
-    <p>fotografiraj, odaberi iz galerije<br>ili priloži PDF</p>
+    <p>fotografiraj, odaberi iz galerije ili priloži PDF</p>
     <input type="file" id="file-input" accept="image/*,application/pdf,.pdf" onchange="handleFile(this.files[0])">
     <input type="file" id="file-cam" accept="image/*" capture="environment" onchange="handleFile(this.files[0])">
     <input type="file" id="file-gal" accept="image/*" onchange="handleFile(this.files[0])">
@@ -1223,7 +1239,11 @@ function katRender(){
   katQuick(sel).forEach(function(v){ h+='<button type="button" class="kq-chip'+(v===sel?' on':'')+'" onclick="katPick(\''+v+'\')">'+katLabel(v)+'</button>'; });
   h+='<button type="button" class="kq-chip" onclick="katSheet(true)">Sve …</button></div>';
   box.innerHTML=h;
+  var row=box.querySelector('.kq-row');
+  if(row){ var cs=row.querySelectorAll('.kq-chip'); for(var i=cs.length-2;i>=0 && row.scrollWidth>row.clientWidth+1;i--){ if(!cs[i].classList.contains('on')) cs[i].remove(); } }
 }
+window.addEventListener('resize',function(){ if(typeof katRender==='function') katRender(); });
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ if(typeof katRender==='function') katRender(); });
 function katPick(v){
   var li=document.querySelector('#csel-cat li[data-v="'+v+'"]');
   if(li) cselPick(li,v,li.textContent);
@@ -2848,7 +2868,7 @@ function setAccView(view){
   var gridEl=document.getElementById('gallery-grid');
   var btnL=document.getElementById('acc-view-list');
   var btnG=document.getElementById('acc-view-grid');
-  var on='var(--th1)',off='transparent',onC='#fff',offC='#94a3b8';
+  var on='var(--acc-on,var(--th1))',off='transparent',onC='#fff',offC='#94a3b8';
   if(view==='list'){
     if(listEl)listEl.style.display='';
     if(gridEl)gridEl.style.display='none';
@@ -4531,15 +4551,13 @@ function syncAmtDisplay(inp){
   <div style="padding:16px 0 12px;cursor:grab;text-align:center;touch-action:none" id="acc-modal-drag" ontouchstart="accDragStart(event)" ontouchmove="accDragMove(event)" ontouchend="accDragEnd(event)">
     <div style="width:44px;height:5px;border-radius:3px;background:#cbd5e1;margin:0 auto"></div>
   </div>
-  <div style="padding:4px 20px 14px;display:flex;justify-content:space-between;align-items:center">
-    <div id="acc-modal-title" style="font-size:18px;font-weight:700;color:var(--th1)">Računi za lipnja</div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder"><svg width="16" height="14" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.5l5.85 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg></a>
-      <div style="display:flex;gap:2px;background:#f0f4ff;border-radius:8px;padding:2px">
-        <button id="acc-view-list" onclick="setAccView('list')" style="width:32px;height:28px;border:none;background:var(--th1);color:#fff;border-radius:6px;cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center" title="Lista">&#9776;</button>
-        <button id="acc-view-grid" onclick="setAccView('grid')" style="width:32px;height:28px;border:none;background:transparent;color:#94a3b8;border-radius:6px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center" title="Galerija">&#8942;&#8942;</button>
-      </div>
-    </div>
+  <div style="padding:4px 20px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+    <div id="acc-modal-title" style="font-size:20px;font-weight:800;color:var(--acc-title,var(--th1))">Računi za lipnja</div>
+    <a id="recent-drive-link" href="#" target="_blank" class="card-drive-link" style="display:none" title="Otvori Drive folder"><svg width="26" height="23" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.5l5.85 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg></a>
+  </div>
+  <div class="acc-seg" style="margin:0 20px 14px;display:flex;gap:4px;background:#f0f4ff;border-radius:12px;padding:4px">
+    <button id="acc-view-list" onclick="setAccView('list')" style="flex:1;height:36px;border:none;background:var(--acc-on,var(--th1));color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:700;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Popis</button>
+    <button id="acc-view-grid" onclick="setAccView('grid')" style="flex:1;height:36px;border:none;background:transparent;color:#94a3b8;border-radius:9px;cursor:pointer;font-size:14px;font-weight:700;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Slike</button>
   </div>
   <div style="overflow-y:auto;flex:1;padding:4px 20px 16px" id="acc-modal-body">
     <div id="recent-list"></div>
