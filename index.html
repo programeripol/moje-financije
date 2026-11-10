@@ -612,6 +612,8 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 .rv-mb{padding:0 14px 6px}
 .rv-r{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:2px solid rgba(42,60,143,.08)}
 .rv-r.off{opacity:.68}
+.rv-r.maybe{opacity:1;background:rgba(249,213,72,.32);border-left:5px solid #e8803a;border-radius:12px;padding-left:10px;margin:4px 0}
+.rv-r .maybe-t{color:#c4561a;font-weight:800}
 .rv-rt{flex:1;min-width:0}
 .rv-rt .d{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rv-rt .m{font-size:12.5px;font-weight:600;color:var(--rv-mut);margin-top:1px}
@@ -3402,20 +3404,20 @@ function rateSummaryHtml(rows){
   }
   return seed+'<div class="rt-sum"><div class="rt-t">Rate koje otplaćuješ</div><div class="rt-big"><div><small>mjesečno</small><b>'+eur(mon)+'</b></div><div><small>ukupno ostaje</small><b>'+eur(left)+'</b></div></div><div class="rt-h">Što dolazi po mjesecima</div>'+cal+'</div>';
 }
-var RATE_SEED=[{n:'IKEA',m:32.86,N:4,k:2,d:'PBZ Visa Premium'},{n:'Triglav Kompare',m:22.87,N:10,k:5,d:'PBZ Visa Premium'},{n:'Emmezeta',m:26.66,N:12,k:7,d:'PBZ Visa Premium'}];
+var RATE_SEED=[{n:'IKEA',m:32.86,N:4,k:2,d:'PBZ Visa Premium'},{n:'Triglav Kompare',m:22.87,N:10,k:5,d:'PBZ Visa Premium'},{n:'Emmezeta',m:26.66,N:12,k:7,d:'PBZ Visa Premium'},{n:'Mobitel (mama)',m:46,N:36,paid:4,d:'Mama'}];
 function rateNorm(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d'); }
 function rateSeedHtml(rows){
   var have=rows.map(function(x){ return rateNorm(x.r[0]); });
   var miss=RATE_SEED.filter(function(q){ return !have.some(function(h){ return h.indexOf(rateNorm(q.n).split(' ')[0])>=0; }); });
   if(!miss.length) return '';
-  return '<div class="rt-seed"><b>Rate s PBZ ekrana</b><span>'+miss.map(function(q){ return q.n; }).join(', ')+' — dodaj ih jednim klikom. Rata s ekrana računa se kao ona koja tek slijedi.</span><button type="button" class="btn btn-primary" onclick="rateSeedAdd()">Dodaj rate</button></div>';
+  return '<div class="rt-seed"><b>Rate koje možeš dodati</b><span>'+miss.map(function(q){ return q.paid!=null ? q.n+' ('+q.paid+' od '+q.N+' plaćeno, '+eur(q.m)+'/mj)' : q.n; }).join(', ')+' — dodaj ih jednim klikom.</span><button type="button" class="btn btn-primary" onclick="rateSeedAdd()">Dodaj rate</button></div>';
 }
 async function rateSeedAdd(){
   try{
     showSaveOverlay('Dodajem rate...');
     var rows=(await getRows(sheetId,'Ciljevi','A2:H200')).filter(function(r){ return r&&r[0]; }).map(function(r){ return rateNorm(r[0]); });
     var add=RATE_SEED.filter(function(q){ return !rows.some(function(h){ return h.indexOf(rateNorm(q.n).split(' ')[0])>=0; }); })
-      .map(function(q){ return [q.n,'loan',Math.round(q.m*q.N*100)/100,0,q.m,q.N-q.k+1,q.d+' · rata '+q.k+'/'+q.N,today()]; });
+      .map(function(q){ return q.paid!=null ? [q.n,'loan',Math.round(q.m*q.N*100)/100,0,q.m,q.N-q.paid,q.d+', '+q.paid+' od '+q.N+' rata',today()] : [q.n,'loan',Math.round(q.m*q.N*100)/100,0,q.m,q.N-q.k+1,q.d+' · rata '+q.k+'/'+q.N,today()]; });
     if(add.length) await appendRows(sheetId,'Ciljevi',add);
     hideSaveOverlay(); showToast('Rate dodane ✓'); loadGoals();
   }catch(e){ hideSaveOverlay(); showToast('Greška: '+(e.message||e),5000,'err'); }
@@ -3452,6 +3454,19 @@ async function rateFromImport(items){
     }
   }
   if(add.length) await appendRows(sheetId,'Ciljevi',add);
+  return n;
+}
+// uplata od 46 € Danijeli (mama, mobitel) smanjuje preostale rate cilja "Mobitel (mama)"
+async function momFromImport(items){
+  var n=items.filter(function(o){ return !o.income && o.amount>0 && Math.abs(o.amount-46)<0.01 && /danijela\s+buzan/i.test(rateNorm((o.desc||'')+' '+(o.note||''))); }).length;
+  if(!n) return 0;
+  var rows=(await getRows(sheetId,'Ciljevi','A2:H200')).map(function(r,i){ return {r:r,row:i+2}; });
+  var g=rows.find(function(x){ return x.r&&x.r[1]==='loan' && /mama/.test(rateNorm(x.r[0]+' '+(x.r[6]||''))); });
+  if(!g) return 0;
+  var cur=parseInt(g.r[5])||0; if(cur<=0) return 0;
+  var rem=Math.max(0,cur-n), m=/od\s+(\d+)\s+rata/i.exec(g.r[6]||''), N=m?+m[1]:36;
+  await writeRange(sheetId,'Ciljevi!F'+g.row,[[rem]]);
+  await writeRange(sheetId,'Ciljevi!G'+g.row,[['Mama, '+(N-rem)+' od '+N+' rata']]);
   return n;
 }
 // ── planirane rate u budućim mjesecima ──
@@ -3956,11 +3971,11 @@ var RV_DASH='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke=
 function revCbPaint(el,st){ if(!el) return; el.className='rv-cb'+(el.dataset.sm?' sm':'')+(st==='on'?' on':st==='part'?' part':''); el.innerHTML=st==='on'?RV_TICK:st==='part'?RV_DASH:''; }
 function revRowHtml(o,i){
   const neg=o.amount<0||o.income;
-  return `<div id="revr-${i}" class="rv-r${o.on?'':' off'}">
+  return `<div id="revr-${i}" class="rv-r${o.on?'':(o.maybeDup?' maybe':' off')}${o.maybeDup?' maybe':''}">
       <div id="revc-${i}" data-sm="1" class="rv-cb sm${o.on?' on':''}" onclick="revTog(${i})">${o.on?RV_TICK:''}</div>
       <div class="rv-rt">
         <div class="d">${revEsc(o.desc)||'—'}</div>
-        <div class="m">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':(o.maybeDup?' · možda već uneseno':'')}</div>
+        <div class="m">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':(o.maybeDup?' · <span class="maybe-t">⚠ možda već uneseno</span>':'')}</div>
         <select onchange="REV_ROWS[${i}].cat=this.value">${revOpts(o.cat)}</select>
       </div>
       <div class="rv-am${neg?' pos':''}">${o.income?'+ ':''}${eur(o.amount)}</div>
@@ -4062,7 +4077,7 @@ async function revImport(){
       const data=by[m].sort((a,b)=>a.date<b.date?-1:1).map(mk);
       await writeRange(sheetId, `${m}!A${row}`, data);
     }
-    let rateN=0; try{ rateN=await rateFromImport(on); }catch(e){} _ratePlanSig='';
+    let rateN=0; try{ rateN=await rateFromImport(on); }catch(e){} try{ rateN+=await momFromImport(on); }catch(e){} _ratePlanSig='';
     let balMsg=''; try{ balMsg=await imAutoBalance(REV_ROWS._bal); }catch(e){}
     hideSaveOverlay(); revClose();
     showToast('Uvezeno '+on.length+' '+stavke(on.length,'acc')+' ✓'+(rateN?' · rate ažurirane: '+rateN:'')+(balMsg?' · stanje: '+balMsg:'')+(upFail?' (izvadak nije spremljen na Drive)':''));
