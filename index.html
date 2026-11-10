@@ -2526,6 +2526,14 @@ function fillProfileForm(){
     ['🛟 Fond sigurnosti','🏥 Zdravlje','🚗 Auto','👗 Odjeća','✈️ Odmor','🎁 Pokloni','💻 Elektronika','🏠 Dom','🐾 Ljubimci','📚 Školovanje','🏦 Mirovina']
       .forEach(name => savingsGoals.push({name, amount:0}));
   }
+  // jednokratno: štednja se unosila kao godišnji iznos → spremi kao mjesečni (godišnje/12)
+  if(!profileData.sav_yearly){
+    savingsGoals.forEach(g=>{ g.amount=(parseFloat(g.amount)||0)/12; });
+    profileData.save_goals_json=JSON.stringify(savingsGoals);
+    profileData.save_plan=savingsGoals.reduce((x,g)=>x+(parseFloat(g.amount)||0),0);
+    profileData.sav_yearly=1;
+    try{ saveProfileToSheet(profileData).catch(()=>{}); }catch(e){}
+  }
   renderSavingsGoals();
 }
 
@@ -2548,6 +2556,7 @@ async function saveProfile(){
     fixed_goals_json: JSON.stringify(fixedGoals),
     variable_goals_json: JSON.stringify(variableGoals),
     save_plan: saveTotalAmt,
+    sav_yearly: 1,
     save_goals_json: JSON.stringify(savingsGoals),
     assets_json: (profileData&&profileData.assets_json)||'[]',
     assets_hist_json: (profileData&&profileData.assets_hist_json)||'[]',
