@@ -632,7 +632,17 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 .rt-big b{font-size:20px;font-weight:800}
 .rt-h{font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#5b6291;margin:6px 0 4px}
 .rt-m{display:flex;gap:10px;padding:9px 0;border-top:1.5px solid rgba(42,60,143,.1);font-size:14px;font-weight:700}
+.rt-m{cursor:pointer;align-items:center}
 .rt-m span:first-child{flex:1;text-transform:capitalize}
+.rt-ch{flex-shrink:0;opacity:.7;transition:transform .2s}
+.rt-mw.open .rt-ch{transform:rotate(180deg)}
+.rt-det{display:none;padding:2px 0 10px}
+.rt-mw.open .rt-det{display:block}
+.rt-d{display:flex;gap:10px;font-size:13px;font-weight:600;padding:5px 0 5px 12px;border-left:3px solid #f9d548;margin:3px 0}
+.rt-d span:first-child{flex:1}
+.rt-d span:nth-child(2){color:#5b6291}
+.goal-ic{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:2.5px solid var(--dp-navy,#2a3c8f);color:var(--dp-navy,#2a3c8f);padding:0;cursor:pointer}
+.goal-ic.del{border-color:#e4572e;color:#e4572e}
 .rt-m span:nth-child(2){color:#5b6291;font-weight:600}
 .rt-seed{display:flex;flex-direction:column;gap:6px;font-size:14px}
 .rt-seed span{font-weight:600;color:#4a5080}
@@ -3354,10 +3364,9 @@ async function loadGoals(){
               ${desc ? ` · ${desc}` : ''}
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-            <span class="goal-type ${isLoan?'loan':'savings'}">${isLoan?'Rata':'Štednja'}</span>
-            ${isLoan&&rem>0?`<button class="btn-paid" onclick="payGoalRate(${row},${rem})">Plaćena ✓</button>`:''}
-            <button class="btn-danger" onclick="deleteGoal(${row})">Briši</button>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:10px">
+            ${isLoan&&rem>0?`<button class="goal-ic" title="Označi ratu kao plaćenu" aria-label="Označi ratu kao plaćenu" onclick="payGoalRate(${row},${rem})"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>`:''}
+            <button class="goal-ic del" title="Obriši" aria-label="Obriši" onclick="deleteGoal(${row})"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6M14 11v6"/></svg></button>
           </div>
         </div>
         <div class="goal-progress"><div class="goal-fill ${isLoan?'loan':'savings'}" style="width:${Math.max(0,Math.min(100,pct))}%"></div></div>
@@ -3381,9 +3390,9 @@ function rateSummaryHtml(rows){
   L.forEach(function(x){ var m=parseFloat(x.r[4])||0, r=parseInt(x.r[5])||0; mon+=m; left+=m*r; if(r>maxRem) maxRem=r; });
   var n=Math.min(maxRem,6), d0=new Date(); d0.setDate(1), cal='';
   for(var i=0;i<n;i++){
-    var d=new Date(d0.getFullYear(),d0.getMonth()+i,1), sum=0, cnt=0;
-    L.forEach(function(x){ if((parseInt(x.r[5])||0)>i){ sum+=parseFloat(x.r[4])||0; cnt++; } });
-    cal+='<div class="rt-m"><span>'+MONTHS_SHORT_HR[d.getMonth()]+' '+d.getFullYear()+'</span><span>'+cnt+(cnt===1?' rata':' rate')+'</span><b>'+eur(sum)+'</b></div>';
+    var d=new Date(d0.getFullYear(),d0.getMonth()+i,1), sum=0, cnt=0, det='';
+    L.forEach(function(x){ var rm=parseInt(x.r[5])||0; if(rm>i){ var am=parseFloat(x.r[4])||0; sum+=am; cnt++; var pd=rateParseDesc(x.r[6]); det+='<div class="rt-d"><span>'+String(x.r[0]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span><span>'+(pd?'rata '+(pd.N-rm+1+i)+'/'+pd.N:'')+'</span><b>'+eur(am)+'</b></div>'; } });
+    cal+='<div class="rt-mw"><div class="rt-m" onclick="this.parentNode.classList.toggle(\'open\')"><span>'+MONTHS_SHORT_HR[d.getMonth()]+' '+d.getFullYear()+'</span><span>'+cnt+(cnt===1?' rata':' rate')+'</span><b>'+eur(sum)+'</b><svg class="rt-ch" width="12" height="8" viewBox="0 0 14 9" fill="none"><path d="M1 1L7 7L13 1" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="rt-det">'+det+'</div></div>';
   }
   return seed+'<div class="rt-sum"><div class="rt-t">Rate koje otplaćuješ</div><div class="rt-big"><div><small>mjesečno</small><b>'+eur(mon)+'</b></div><div><small>ukupno ostaje</small><b>'+eur(left)+'</b></div></div><div class="rt-h">Što dolazi po mjesecima</div>'+cal+'</div>';
 }
