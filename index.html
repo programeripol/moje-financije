@@ -434,7 +434,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] *{color:var(--dp-navy)!important}
 [data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-label{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:0 0 2px!important}
 [data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-val-main{font-size:26px;font-weight:800}
-[data-theme="dopamin"] #s-pregled #bh-received{color:#3a9d7a!important;font-size:13px!important;font-weight:700!important}
+[data-theme="dopamin"] #s-pregled #bh-received{color:#5b6291!important;font-size:13px!important;font-weight:600!important}
 [data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"]{--pgc:#3a9d7a}
 [data-theme="dopamin"] #s-pregled div[onclick="toggleExpCard()"]{--pgc:#f9d548}
 [data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]{--pgc:#e8803a}
@@ -1146,7 +1146,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Prihod</div>
       <div class="card-spinner" id="hero-spin-inc"><div class="card-spinner-ring"></div></div>
       <div id="inc-total-display" class="sum-val-main">—</div>
-      <div id="bh-received" style="display:none;font-size:12px;font-weight:600;color:#16a34a;margin-top:3px"></div>
+      <div id="bh-received" style="display:none;font-size:12px;font-weight:600;color:#5b6291;margin-top:3px"></div>
     </div>
     <div style="display:flex;align-items:center;justify-content:flex-end"></div>
     <svg id="inc-card-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" style="flex-shrink:0;transition:transform .25s;align-self:center;margin-left:8px"><polyline points="6 9 12 15 18 9"/></svg>
@@ -2931,7 +2931,7 @@ async function updateIncTotal(){
   const recEl = document.getElementById('bh-received');
   if(_recvMonth>0){
     if(el) el.textContent = eur(_recvMonth);
-    if(recEl){ recEl.style.display='block'; recEl.textContent = 'Stvarna plaća'+(total>0?' (plan: '+eur(total)+')':''); }
+    if(recEl){ recEl.style.display='block'; recEl.textContent = total>0 ? 'Planirani prihod: '+eur(total) : ''; }
   } else {
     if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
     if(recEl){ recEl.style.display='none'; recEl.textContent=''; }
