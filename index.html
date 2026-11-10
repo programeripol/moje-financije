@@ -3118,7 +3118,7 @@ async function loadPregled(){
     let totalSpent = 0;
     let received = 0; const recvItems=[];
     entries.forEach(r=>{
-      const cat = r[8]||'Other'; // I = kategorija
+      const cat = (r[8]==='Fuel'?'Prijevoz':r[8])||'Other'; // I = kategorija
       const amt = parseFloat(r[5])||0; // F = iznos
       if(cat==='Prijenos') return; // prijenos između vlastitih računa nije trošak
       if(cat==='Prihod'){ received += amt; recvItems.push({date:r[1],desc:r[11]||r[3]||'Prihod',amt:amt}); return; } // primljeno (plaća) nije trošak
@@ -3180,12 +3180,12 @@ async function loadPregled(){
       if(!goals || !goals.length) return '';
       const catTotals = {};
       goals.forEach(g => {
-        const cat = GOAL_TO_CAT[g.name] || 'Other';
+        const cat = (GOAL_TO_CAT[g.name]==='Fuel'?'Prijevoz':GOAL_TO_CAT[g.name]) || 'Other';
         catTotals[cat] = (catTotals[cat]||0) + (parseFloat(g.amount)||0);
       });
       return goals.map(g => {
         const amt   = parseFloat(g.amount)||0;
-        const cat   = GOAL_TO_CAT[g.name] || 'Other';
+        const cat   = (GOAL_TO_CAT[g.name]==='Fuel'?'Prijevoz':GOAL_TO_CAT[g.name]) || 'Other';
         const color = CAT_COLORS[cat] || '#94a3b8';
         const hasMapping = GOAL_TO_CAT[g.name] !== undefined;
         const catAct   = (forSavings || !hasMapping) ? 0 : (actual[cat]||0);
@@ -3207,23 +3207,24 @@ async function loadPregled(){
     // Build plan-by-category map: exp_json (new) + fix/var (legacy)
     const CAT_HR_LOWER = {};
     Object.entries(CAT_HR).forEach(([k,v]) => CAT_HR_LOWER[v.toLowerCase()] = k);
+    const _cf = k => k==='Fuel'?'Prijevoz':k;
     const planByCategory = {};
     const _curMiLP = new Date().getMonth();
     let expGoalsForPlan = [];
     if(viewMonthIdx <= _curMiLP){ try { expGoalsForPlan = JSON.parse(monthPlan && monthPlan.exp_json || 'null') || []; } catch(e){} }
     if(expGoalsForPlan.length > 0){
       expGoalsForPlan.forEach(g => {
-        const key = g.cat || CAT_HR_LOWER[(g.name||'').toLowerCase()];
+        const key = _cf(g.cat || CAT_HR_LOWER[(g.name||'').toLowerCase()]);
         if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
       });
       // Always supplement with varGoals so variable costs always show
       (varGoals||[]).forEach(g => {
-        const key = GOAL_TO_CAT[g.name] || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name;
+        const key = _cf(GOAL_TO_CAT[g.name] || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name);
         if(key && !planByCategory[key]) planByCategory[key] = (parseFloat(g.amount)||0);
       });
     } else {
       [...(fixGoals||[]), ...(varGoals||[])].forEach(g => {
-        const key = GOAL_TO_CAT[g.name] || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name;
+        const key = _cf(GOAL_TO_CAT[g.name] || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name);
         if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
       });
     }
@@ -3231,7 +3232,7 @@ async function loadPregled(){
     // Build entries-by-category for expand
     window._catEntries = {};
     trackerRows.forEach(({r,sheetRow}) => {
-      const cat = r[8]||'Other';
+      const cat = _cf(r[8])||'Other';
       if(!window._catEntries[cat]) window._catEntries[cat] = [];
       const di = (r[11]||'').indexOf(' — ');
       const naziv = di>=0 ? r[11].slice(0,di) : (r[11]||'');
