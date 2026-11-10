@@ -577,6 +577,14 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 .rv-sum span{font-size:13px;font-weight:600;color:var(--rv-mut)}
 .rv-btn{height:54px;padding:0 30px;border:0;border-radius:18px;background:var(--rv-acc);color:#fff;font-family:inherit;font-size:19px;font-weight:800;cursor:pointer;flex:none}
 .rv-btn:disabled{opacity:.4}
+[data-theme="dopamin"] #edit-overlay{background:rgba(38,51,127,.55)}
+[data-theme="dopamin"] #edit-drawer{background:var(--dp-cream);border-radius:28px 28px 0 0;height:84vh;max-width:560px;overflow-y:auto;overscroll-behavior:contain;padding:12px 24px calc(30px + env(safe-area-inset-bottom,0px));box-shadow:none;color:var(--dp-navy)}
+[data-theme="dopamin"] .drawer-handle{background:rgba(42,60,143,.25);width:44px;height:5px;margin:0 auto 16px}
+[data-theme="dopamin"] .edit-hd{flex-direction:column;align-items:flex-start!important;gap:18px!important;margin-bottom:22px!important}
+[data-theme="dopamin"] .edit-hd>div{font-size:28px!important;font-weight:800!important;letter-spacing:0!important;text-transform:none!important;color:var(--dp-navy)!important;line-height:1.1}
+[data-theme="dopamin"] #edit-back-btn{align-items:center;gap:10px;color:var(--dp-navy)!important;font-family:inherit;font-size:15px!important;font-weight:800!important}
+[data-theme="dopamin"] #edit-back-btn .eb-c{width:38px;height:38px;border-radius:50%;border:2px solid var(--dp-navy);display:flex;align-items:center;justify-content:center;flex:none}
+[data-theme="dopamin"] #edit-drawer .btn{height:52px}
 [data-theme="dopamin"] #pp-ov{display:block;position:fixed;inset:0;background:rgba(38,51,127,.55);z-index:310;opacity:0;pointer-events:none;transition:opacity .3s}
 [data-theme="dopamin"] #pp-ov.open{opacity:1;pointer-events:auto}
 [data-theme="dopamin"] #pp-sheet{display:block;position:fixed;left:0;right:0;bottom:0;height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--dp-cream);border-radius:28px 28px 0 0;padding:12px 24px calc(34px + env(safe-area-inset-bottom,0px));z-index:311;box-sizing:border-box;color:var(--dp-navy);transform:translateY(105%);visibility:hidden;transition:transform .34s cubic-bezier(.32,.72,0,1),visibility 0s .34s}
@@ -4080,16 +4088,12 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   var _accOv=document.getElementById('acc-modal-overlay');
   var _accM=document.getElementById('acc-modal');
   _editFromAccModal=(_accM&&_accM.style.display!=='none'&&_accM.style.transform!=='translateY(100%)');
-  if(_editFromAccModal){
-    _accOv.style.opacity='0';_accM.style.transform='translateY(100%)';
-    setTimeout(function(){_accOv.style.display='none';_accM.style.display='none';document.body.style.overflow='';},300);
-  }
   var _backBtn=document.getElementById('edit-back-btn');
   if(_backBtn){
     if(_editFromAccModal){
       var _accTitle=document.getElementById('acc-modal-title');
-      _backBtn.textContent='\u2190 '+(_accTitle?_accTitle.textContent:'Računi');
-      _backBtn.style.display='inline-block';
+      _backBtn.innerHTML='<span class="eb-c"><svg width="9" height="14" viewBox="0 0 9 14" fill="none" aria-hidden="true"><path d="M8 1L2 7l6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="eb-l">'+(_accTitle?_accTitle.textContent:'Računi')+'</span>';
+      _backBtn.style.display='inline-flex';
     } else {
       _backBtn.style.display='none';
     }
@@ -4104,23 +4108,14 @@ function closeEditDrawer(){
   var dr=document.getElementById("edit-drawer");
   if(dr) dr.style.transform="";
 }
-function editGoBack(){
-  closeEditDrawer();
-  if(_editFromAccModal){
-    setTimeout(function(){
-      var ov=document.getElementById('acc-modal-overlay'),m=document.getElementById('acc-modal');
-      if(!ov||!m)return;
-      ov.style.display='block';m.style.display='flex';document.body.style.overflow='hidden';
-      requestAnimationFrame(function(){ov.style.opacity='1';m.style.transform='translateY(0)';});
-    },320);
-  }
-}
+function editGoBack(){ closeEditDrawer(); }
 (function(){
   var startY=0,curY=0,dragging=false;
   document.addEventListener("touchstart",function(e){
     var dr=document.getElementById("edit-drawer");
     if(!dr||!dr.classList.contains("open")) return;
     if(!dr.contains(e.target)) return;
+    if(dr.scrollTop>0) return;
     startY=e.touches[0].clientY; dragging=true; curY=0;
     dr.style.transition="none";
   },{passive:true});
@@ -4688,7 +4683,7 @@ function syncAmtDisplay(inp){
 <div id="edit-overlay" onclick="closeEditDrawer()"></div>
 <div id="edit-drawer">
   <div class="drawer-handle"></div>
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+  <div class="edit-hd" style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
     <button id="edit-back-btn" onclick="editGoBack()" style="display:none;border:none;background:none;color:var(--th1);font-size:13px;font-weight:600;cursor:pointer;padding:0;flex-shrink:0"></button>
     <div style="font-size:13px;font-weight:600;color:var(--th1);text-transform:uppercase;letter-spacing:.05em">Uredi račun</div>
   </div>
@@ -4775,7 +4770,7 @@ function syncAmtDisplay(inp){
   <input type="hidden" id="edit-sheet-row"><input type="hidden" id="edit-month-name">
   <div style="display:flex;gap:10px;margin-top:4px">
     <button class="btn btn-outline" style="flex:1" onclick="closeEditDrawer()">Odustani</button>
-    <button class="btn btn-primary" style="flex:2" onclick="saveEditedReceipt()">Spremi promjene</button>
+    <button class="btn btn-primary" style="flex:1" onclick="saveEditedReceipt()">Spremi</button>
   </div>
 </div>
 
