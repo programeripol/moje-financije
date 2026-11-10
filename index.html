@@ -2609,11 +2609,12 @@ function fillProfileForm(){
   renderSavingsGoals();
   try{ if(!localStorage.getItem('mf_pbzfix1')) setTimeout(pbzLumpFix,3000); }catch(e){}
   try{ if(!localStorage.getItem('mf_recat2')) setTimeout(recatFix,9000); }catch(e){}
-  try{ if(!localStorage.getItem('mf_keks1')) setTimeout(keksFix,15000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_keks1')) setTimeout(function(){ keksFix('mf_keks1',true); },15000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_keks2')) setTimeout(function(){ keksFix('mf_keks2',false); },30000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
-async function keksFix(){
-  if(!sheetId) return;
+async function keksFix(flag,mom){
+  if(!sheetId) return; flag=flag||'mf_keks1'; if(mom===undefined) mom=true;
   try{
     const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
     const have=new Set((meta.sheets||[]).map(x=>x.properties.title)); let n=0,n46=0;
@@ -2630,8 +2631,11 @@ async function keksFix(){
       });
       if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
     }
-    if(n46){ try{ await momFromImport(Array.from({length:n46},function(){ return {amount:46,desc:'KEKS Pay',note:''}; })); }catch(e){} }
-    try{ localStorage.setItem('mf_keks1','1'); }catch(e){}
+    if(mom && n46){ try{ await momFromImport(Array.from({length:n46},function(){ return {amount:46,desc:'KEKS Pay',note:''}; })); }catch(e){} }
+    if(flag==='mf_keks2'){ // goal Mobitel (mama) -> iPhone (mama)
+      try{ const gr=await getRows(sheetId,'Ciljevi','A2:H200'); for(let i=0;i<gr.length;i++){ const r=gr[i]; if(r&&r[1]==='loan'&&/mobitel/i.test(r[0]||'')&&/mama/i.test(r[0]||'')){ await writeRange(sheetId,'Ciljevi!A'+(i+2),[['iPhone (mama)']]); } } }catch(e){}
+    }
+    try{ localStorage.setItem(flag,'1'); }catch(e){}
     if(n){ showToast('Keks stavke ispravljene: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
   }catch(e){}
 }
@@ -3490,11 +3494,11 @@ function rateSummaryHtml(rows){
   }
   return seed+'<div class="rt-sum"><div class="rt-t">Rate koje otplaćuješ</div><div class="rt-big"><div><small>mjesečno</small><b>'+eur(mon)+'</b></div><div><small>ukupno ostaje</small><b>'+eur(left)+'</b></div></div><div class="rt-h">Što dolazi po mjesecima</div>'+cal+'</div>';
 }
-var RATE_SEED=[{n:'IKEA',m:32.86,N:4,k:2,d:'PBZ Visa Premium'},{n:'Triglav Kompare',m:22.87,N:10,k:5,d:'PBZ Visa Premium'},{n:'Emmezeta',m:26.66,N:12,k:7,d:'PBZ Visa Premium'},{n:'Mobitel (mama)',m:46,N:36,paid:4,d:'Mama'}];
+var RATE_SEED=[{n:'IKEA',m:32.86,N:4,k:2,d:'PBZ Visa Premium'},{n:'Triglav Kompare',m:22.87,N:10,k:5,d:'PBZ Visa Premium'},{n:'Emmezeta',m:26.66,N:12,k:7,d:'PBZ Visa Premium'},{n:'iPhone (mama)',m:46,N:36,paid:4,d:'Mama'}];
 function rateNorm(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d'); }
 function rateSeedHtml(rows){
   var have=rows.map(function(x){ return rateNorm(x.r[0]); });
-  var miss=RATE_SEED.filter(function(q){ return !have.some(function(h){ return h.indexOf(rateNorm(q.n).split(' ')[0])>=0; }); });
+  var miss=RATE_SEED.filter(function(q){ return !have.some(function(h){ return (h.indexOf(rateNorm(q.n).split(' ')[0])>=0||(/mama/.test(rateNorm(q.n))&&/mama/.test(h))); }); });
   if(!miss.length) return '';
   return '<div class="rt-seed"><b>Rate koje možeš dodati</b><span>'+miss.map(function(q){ return q.paid!=null ? q.n+' ('+q.paid+' od '+q.N+' plaćeno, '+eur(q.m)+'/mj)' : q.n; }).join(', ')+' — dodaj ih jednim klikom.</span><button type="button" class="btn btn-primary" onclick="rateSeedAdd()">Dodaj rate</button></div>';
 }
@@ -3502,7 +3506,7 @@ async function rateSeedAdd(){
   try{
     showSaveOverlay('Dodajem rate...');
     var rows=(await getRows(sheetId,'Ciljevi','A2:H200')).filter(function(r){ return r&&r[0]; }).map(function(r){ return rateNorm(r[0]); });
-    var add=RATE_SEED.filter(function(q){ return !rows.some(function(h){ return h.indexOf(rateNorm(q.n).split(' ')[0])>=0; }); })
+    var add=RATE_SEED.filter(function(q){ return !rows.some(function(h){ return (h.indexOf(rateNorm(q.n).split(' ')[0])>=0||(/mama/.test(rateNorm(q.n))&&/mama/.test(h))); }); })
       .map(function(q){ return q.paid!=null ? [q.n,'loan',Math.round(q.m*q.N*100)/100,0,q.m,q.N-q.paid,q.d+', '+q.paid+' od '+q.N+' rata',today()] : [q.n,'loan',Math.round(q.m*q.N*100)/100,0,q.m,q.N-q.k+1,q.d+' · rata '+q.k+'/'+q.N,today()]; });
     if(add.length) await appendRows(sheetId,'Ciljevi',add);
     hideSaveOverlay(); showToast('Rate dodane ✓'); loadGoals();
@@ -3863,7 +3867,7 @@ var REV_NEW=[
 function revCatOld(desc){ for(const [re,c] of REV_RULES){ if(re.test(desc)) return c; } return 'Other'; }
 function revCat(desc){ for(const [re,c] of REV_NEW){ if(re.test(desc)) return c; } return revCatOld(desc); }
 // Keks Pay: 46 € = rata za mamin mobitel, 16,99 € (Iskon) i 10,48 € (A1) = režije
-function keksCat(desc,amt,cat){ if(!/keks\s*pay/i.test(desc||'')) return cat; var a=Math.abs(+amt||0); if(Math.abs(a-46)<0.01) return 'Debt'; if(Math.abs(a-16.99)<0.01||Math.abs(a-10.48)<0.01) return 'Rezije'; return cat; }
+function keksCat(desc,amt,cat){ if(!/keks\s*pay/i.test(desc||'')) return cat; var a=Math.abs(+amt||0); if(Math.abs(a-46)<0.01) return 'Debt'; if(Math.abs(a-16.99)<0.01||Math.abs(a-10.48)<0.01) return 'Rezije'; if(Math.abs(a-0.70)<0.01||Math.abs(a-2.10)<0.01) return 'Prijevoz'; return cat; }
 function revParseCSV(t){
   t=t.replace(/^﻿/,'');
   const rows=[]; let r=[], f='', q=false;
