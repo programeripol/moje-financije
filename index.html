@@ -421,6 +421,41 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]:not([onclick]):not([id]){background:var(--dp-navy)!important;color:var(--dp-yellow)}
 [data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] svg path,[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] svg polyline{stroke:currentColor!important}
 [data-theme="dopamin"] #inc-card-expand,[data-theme="dopamin"] #exp-card-expand,[data-theme="dopamin"] #potros-donut-preview,[data-theme="dopamin"] #potros-card-expand{background:var(--dp-cream)!important;border-radius:0 0 26px 26px!important;margin-top:-8px;padding-top:8px;color:var(--dp-navy)}
+/* pregled — isti izgled kao Profil: krem kartice s obojenim rubom, isti razmaci i font */
+[data-theme="dopamin"] #s-pregled,[data-theme="dopamin"] #s-pregled *{font-family:'Baloo 2',sans-serif}
+[data-theme="dopamin"] #s-pregled .month-nav{margin:0 0 18px}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]{background:var(--dp-cream)!important;color:var(--dp-navy)!important;border:3px solid var(--pgc,#3a9d7a)!important;border-radius:22px!important;padding:14px 17px!important;box-shadow:0 5px 0 rgba(42,60,143,.18)!important;margin:0 0 18px!important}
+[data-theme="dopamin"] #s-pregled #exp-card-wrap,[data-theme="dopamin"] #s-pregled #potros-card-wrap{margin:0 0 18px!important}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] *{color:var(--dp-navy)!important}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-label{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:0 0 2px!important}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"] .sum-val-main{font-size:26px;font-weight:800}
+[data-theme="dopamin"] #s-pregled #bh-received{color:#3a9d7a!important;font-size:13px!important;font-weight:700!important}
+[data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"]{--pgc:#3a9d7a}
+[data-theme="dopamin"] #s-pregled div[onclick="toggleExpCard()"]{--pgc:#f9d548}
+[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]{--pgc:#e8803a}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]:not([onclick]):not([id]){--pgc:#ff9fb5}
+[data-theme="dopamin"] #s-pregled #inc-card-expand{--pgc:#3a9d7a}
+[data-theme="dopamin"] #s-pregled #exp-card-expand{--pgc:#f9d548}
+[data-theme="dopamin"] #s-pregled #potros-card-expand,[data-theme="dopamin"] #s-pregled #potros-donut-preview{--pgc:#e8803a}
+[data-theme="dopamin"] #s-pregled #inc-card-chev path,[data-theme="dopamin"] #s-pregled svg polyline{stroke:var(--dp-navy)!important}
+/* otvorena kartica: zaglavlje i sadržaj čine jednu kutiju */
+[data-theme="dopamin"] #s-pregled #inc-card-expand,[data-theme="dopamin"] #s-pregled #exp-card-expand,[data-theme="dopamin"] #s-pregled #potros-card-expand,[data-theme="dopamin"] #s-pregled #potros-donut-preview{background:var(--dp-cream)!important;border:3px solid var(--pgc)!important;border-top:none!important;border-radius:0 0 22px 22px!important;margin:0 0 18px!important;padding:6px 17px 16px!important;box-shadow:0 5px 0 rgba(42,60,143,.18)!important}
+[data-theme="dopamin"] #s-pregled #potros-donut-preview{padding:0 4px 8px!important}
+[data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"]:has(+ #inc-card-expand[style*="block"]),
+[data-theme="dopamin"] #s-pregled div[onclick="toggleExpCard()"]:has(+ #exp-card-expand[style*="block"]),
+[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]:has(+ #potros-donut-preview[style*="block"]),
+[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]:has(+ * + #potros-card-expand[style*="block"]){border-bottom:none!important;border-radius:22px 22px 0 0!important;margin-bottom:0!important;box-shadow:none!important}
+[data-theme="dopamin"] #s-pregled #exp-card-wrap{margin:0 0 18px!important}
+/* krug i popis kategorija */
+[data-theme="dopamin"] #s-pregled svg text{fill:var(--dp-navy)!important;font-weight:700}
+[data-theme="dopamin"] #s-pregled #potros-donut-preview *,[data-theme="dopamin"] #s-pregled #potros-card-expand *{color:var(--dp-navy)}
+[data-theme="dopamin"] #s-pregled #potros-card-expand [style*="background:#fff"],[data-theme="dopamin"] #s-pregled #potros-card-expand [style*="background: #fff"],[data-theme="dopamin"] #s-pregled #potros-card-expand [style*="var(--color-background-primary"]{background:#fff!important;border:2px solid rgba(42,60,143,.18)!important;border-radius:18px!important}
+[data-theme="dopamin"] #s-pregled #potros-donut-preview span[style*="color"],[data-theme="dopamin"] #s-pregled #potros-card-expand span[style*="color:#"]{color:var(--dp-navy)!important}
+[data-theme="dopamin"] #s-pregled .add-goal-btn,[data-theme="dopamin"] #s-pregled #inc-card-expand .add-goal-btn{background:var(--dp-cream)!important;border:2.5px solid var(--dp-navy)!important;color:var(--dp-navy)!important;border-radius:999px;font-weight:700}
+[data-theme="dopamin"] #s-pregled #inc-card-expand button[onclick*="Vrati"]{color:var(--dp-terra)!important}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]:not([onclick]):not([id]){background:var(--dp-cream)!important;color:var(--dp-navy)!important}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]:not([onclick]):not([id]) .sum-label{color:var(--dp-navy)!important}
+[data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"]:has(+ #inc-card-expand[style*="block"]),[data-theme="dopamin"] #s-pregled div[onclick="toggleExpCard()"]:has(+ #exp-card-expand[style*="block"]),[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]:has(+ #potros-donut-preview[style*="block"]),[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]:has(+ * + #potros-card-expand[style*="block"]){padding-bottom:4px!important}
 /* gumbi (boja po stranici) */
 [data-theme="dopamin"] .btn,[data-theme="dopamin"] .inst-btn{border-radius:999px;font-size:17px}
 [data-theme="dopamin"] .btn-primary,[data-theme="dopamin"] .inst-btn{background:var(--pg-btn);color:var(--pg-btn-ink);border:none}
