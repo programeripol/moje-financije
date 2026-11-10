@@ -3929,6 +3929,7 @@ function revFromZabaPages(pages,acc){
       if(/EKUPI/i.test(d)){ acc.items.push({date:t.date,desc:short,amount:t.amt,cat:'Prihod',on:true,type:'Plaća',income:true,note:'Zaba: '+short,dup:false}); return; }
       acc.items.push({date:t.date,desc:short,amount:-t.amt,cat:'Uplaceno',on:true,type:'Zaba uplata',note:'Zaba: '+short,dup:false});
     } else {
+      if(/PBZ\s*CARD/i.test(d)&&/izravn/i.test(d)){ acc.items.push({date:t.date,desc:'Plaćanje PBZ Visa kartice (stavke su u izvatku kartice)',amount:t.amt,cat:'Prijenos',on:true,type:'Prijenos',note:'Zaba: '+short,dup:false}); return; }
       const cat=/Podizanje gotovog|Naknada|TROŠKOVI UČINJENI/i.test(d)?'Other':/transfer nac/i.test(d)?'Drugima':revCat(short);
       acc.items.push({date:t.date,desc:short,amount:t.amt,cat:cat,on:true,type:'Zaba',note:'Zaba: '+short,dup:false});
     }
