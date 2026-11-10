@@ -335,6 +335,11 @@ details.collapsible-card[open] > .collapsible-summary::after{transform:rotate(18
 .receipt-datum{font-size:11px;color:#94a3b8;white-space:nowrap;flex-shrink:0}
 .receipt-iznos{font-size:13px;font-weight:600;color:var(--th-text);white-space:nowrap;min-width:56px;text-align:right}
 .g-edit-btn{position:absolute;top:6px;left:6px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:28px;height:28px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+#edit-bank{align-items:center;gap:12px;background:rgba(42,60,143,.08);border-radius:16px;padding:12px 14px;margin-bottom:16px;font-size:14px;color:#14183a}
+#edit-bank .eb-i{font-size:24px}
+#edit-bank small{font-size:13px;font-weight:600;color:#4a5080}
+#edit-bank a{color:#2a3c8f;font-weight:800;text-decoration:underline}
+#edit-bank b{display:block;font-weight:800}
 #edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9990;display:none}
 #edit-drawer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 36px;z-index:9991;max-width:500px;margin:0 auto;box-shadow:0 -4px 30px rgba(var(--th1r),.15);overflow:hidden;transform:translateY(100%);transition:transform .3s cubic-bezier(.25,.8,.25,1)}
 #edit-drawer.open{transform:translateY(0);will-change:transform}
@@ -3417,7 +3422,7 @@ function revPick(inp){
         if(/\.pdf$/i.test(f.name)||f.type==='application/pdf') await revFromPdf(f,acc);
         else revFromCsv(await f.text(),acc);
         const sig=acc.items.slice(n0).map(o=>o.date+'|'+o.amount+'|'+o.note).join('#');
-        if(sig&&sigs.has(sig)){ acc.items.length=n0; acc.skipped=s0; acc.other=o0; dupFiles++; } else if(sig) sigs.add(sig);
+        if(sig&&sigs.has(sig)){ acc.items.length=n0; acc.skipped=s0; acc.other=o0; dupFiles++; } else { if(sig) sigs.add(sig); for(let k=n0;k<acc.items.length;k++) acc.items[k].src=f; }
       }
       acc.dupFiles=dupFiles;
     }catch(e){ hideSaveOverlay(); showToast(String(e&&e.message||e),6000,'err'); return; }
@@ -3623,20 +3628,43 @@ function revSum(){
   });
 }
 function revClose(){ document.getElementById('rev-modal').style.display='none'; }
+async function revUploadStatement(file,monthName){
+  await ensureDriveFolders();
+  const fid=await findOrCreateFolder(monthName, yearFolderId);
+  const name='Izvadak_'+file.name;
+  const q=encodeURIComponent(`name='${name.replace(/'/g,"\\'")}' and '${fid}' in parents and trashed=false`);
+  const ex=await gfetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`);
+  let id=ex.files&&ex.files[0]&&ex.files[0].id;
+  if(!id){
+    const form=new FormData();
+    form.append('metadata', new Blob([JSON.stringify({name:name,parents:[fid]})],{type:'application/json'}));
+    form.append('file', file);
+    const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{Authorization:'Bearer '+token},body:form});
+    if(!r.ok) throw new Error(await r.text());
+    id=(await r.json()).id;
+  }
+  return 'https://drive.google.com/file/d/'+id+'/view';
+}
 async function revImport(){
   const on=REV_ROWS.filter(o=>o.on); if(!on.length) return;
   showSaveOverlay('Upisujem '+on.length+' stavki...');
   try{
     await ensureResources();
     const by={}; on.forEach(o=>{ const m=MONTHS_HR[parseInt(o.date.slice(5,7))-1]; (by[m]=by[m]||[]).push(o); });
+    let upFail=0;
     for(const m of Object.keys(by)){
       await ensureMonthSheet(m);
       const row=await findNextTrackerRow(m);
-      const data=by[m].sort((a,b)=>a.date<b.date?-1:1).map(o=>{ const d=Array(14).fill(''); d[1]=fmtDateHR(o.date); d[5]=o.amount; d[8]=o.cat; d[11]=o.note; return d; });
+      // izvadak se sprema u Drive folder tog mjeseca; stavka dobiva poveznicu (bez ID-a, da brisanje stavke ne obriše izvadak)
+      const urls=new Map();
+      for(const f of new Set(by[m].map(o=>o.src).filter(Boolean))){
+        try{ urls.set(f, await revUploadStatement(f,m)); }catch(e){ upFail++; }
+      }
+      const data=by[m].sort((a,b)=>a.date<b.date?-1:1).map(o=>{ const d=Array(14).fill(''); d[1]=fmtDateHR(o.date); d[5]=o.amount; d[8]=o.cat; d[11]=o.note; d[12]=(o.src&&urls.get(o.src))||''; return d; });
       await writeRange(sheetId, `${m}!A${row}`, data);
     }
     hideSaveOverlay(); revClose();
-    showToast('Uvezeno '+on.length+' stavki ✓');
+    showToast('Uvezeno '+on.length+' stavki ✓'+(upFail?' (izvadak nije spremljen na Drive)':''));
     try{ if(typeof loadPregled==='function') loadPregled(); }catch(e){}
   }catch(e){ hideSaveOverlay(); showToast('Greška pri uvozu: '+(e.message||e),6000,'err'); }
 }
@@ -3860,10 +3888,10 @@ async function loadGallery(){
       const safeDU=(driveUrl||'').replace(/'/g,"\\'");
       return `<div class="g-card" onclick="openEditReceipt(${sheetRow},'${curMonth()}','${datum}',${iznos},'${kat}','${safeBilj}','${safeDU}')">
         <button class="g-del-btn" title="Obriši račun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">×</button>
-        ${imgUrl
+        ${imgUrl && !/^(Revolut|Zaba): /.test(bilj)
           ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
           : ''}
-        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>🧾</div>
+        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>${/^(Revolut|Zaba): /.test(bilj)?'🏦':'🧾'}</div>
         <div class="g-info">
           <div class="g-row">
             <span class="g-name">${name}</span>
@@ -4056,6 +4084,15 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   driveUrl=driveUrl||"";
   var iw=document.getElementById("edit-img-wrap"),it=document.getElementById("edit-img-thumb");
   if(iw&&it){it.src="";iw.style.display="none";if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.style.opacity="0";var sp=document.getElementById('edit-img-spinner');if(sp)sp.style.display='flex';it.src=th;it.onload=function(){it.style.opacity="1";if(sp)sp.style.display='none';};it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
+  var bk=document.getElementById('edit-bank');
+  if(bk){
+    var bm=/^(Revolut|Zaba): /.exec(bilj||'');
+    if(bm){
+      if(iw) iw.style.display='none';
+      bk.innerHTML='<span class="eb-i">🏦</span><div><b>Uvezeno iz izvatka banke</b><small>'+bm[1]+(driveUrl?' · ':'')+'</small>'+(driveUrl?'<a href="'+driveUrl+'" target="_blank" rel="noopener">Otvori izvadak</a>':'')+'</div>';
+      bk.style.display='flex';
+    } else bk.style.display='none';
+  }
   const di=bilj.indexOf(' — ');
   const store=di>=0?bilj.slice(0,di):bilj;
   const note=di>=0?bilj.slice(di+3):'';
@@ -4688,6 +4725,7 @@ function syncAmtDisplay(inp){
     <div style="font-size:13px;font-weight:600;color:var(--th1);text-transform:uppercase;letter-spacing:.05em">Uredi račun</div>
   </div>
   <div id="edit-img-wrap" style="display:none;margin-bottom:14px;cursor:pointer;border-radius:12px;overflow:hidden;position:relative"><div id="edit-img-spinner" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f0f4ff;border-radius:12px"><span class="spin-dot"></span></div><img id="edit-img-thumb" style="width:100%;max-height:160px;object-fit:cover;display:block;border-radius:12px;opacity:0;transition:opacity .3s"></div>
+  <div id="edit-bank" style="display:none"></div>
   <div class="row2">
     <div class="field"><label>Naziv <span class="req">*</span></label><input type="text" id="edit-store" placeholder="Naziv"></div>
     <div class="field"><label>Datum <span class="req">*</span></label><input type="date" id="edit-date"></div>
