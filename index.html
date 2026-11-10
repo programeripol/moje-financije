@@ -2520,15 +2520,31 @@ async function findNextTrackerRow(monthName){
 
 // ── PROFILE ──────────────────────────────────────────────────────────
 function togglePS(s){var c=document.getElementById("ps-card-"+s);if(!c)return;var o=c.getAttribute("data-open")==="1";c.setAttribute("data-open",o?"0":"1");var v=document.getElementById("ps-c-"+s);if(v)v.style.transform=o?"":"rotate(180deg)";var b=document.getElementById("ps-badge-"+s);var t=document.getElementById(s==="stednja"?"p-save-total":"p-"+s+"-total");if(b&&t){b.textContent=o?t.textContent:"";b.style.opacity=o?"1":"0";}}
+var _profOK=false; // true samo kad je profil stvarno pročitan iz tablice
 async function loadProfile(){
+  _profOK=false;
+  var cache=null; try{ var _c=localStorage.getItem('mf_pd'); if(_c&&localStorage.getItem('mf_pd_v')==='2') cache=JSON.parse(_c); }catch(e){}
+  var fresh=null, failed=false;
   try{
     const rows = await getRows(sheetId, 'Profil', 'A2:B100');
-    profileData = {};
-    rows.forEach(r => { if(r[0]) profileData[r[0]] = (r[1]&&r[1].startsWith('['))||false ? r[1] : (parseFloat(r[1])||0); });
-  }catch(e){ profileData = {}; }
+    fresh = {};
+    rows.forEach(r => { if(r[0]) fresh[r[0]] = (r[1]&&r[1].startsWith('['))||false ? r[1] : (parseFloat(r[1])||0); });
+  }catch(e){ failed=true; }
+  if(fresh && Object.keys(fresh).length>3){ profileData=fresh; _profOK=true; return; }
+  // prazno ili greška: nikad ne prepisuj tablicu praznim; vrati zadnju dobru kopiju
+  if(cache && Object.keys(cache).length>3){
+    profileData=cache;
+    if(!failed){ // tablica je stvarno prazna → vrati profil u tablicu
+      try{ await saveProfileToSheet(cache); _profOK=true; showToast('Profil vraćen iz sigurnosne kopije ✓'); }catch(e){}
+    }
+    return;
+  }
+  profileData = fresh || {};
 }
 
 async function saveProfileToSheet(data){
+  // zaštita: nikad ne briši profil ako nemamo pravi sadržaj
+  if(!data || Object.keys(data).length<=3) throw new Error('Profil prazan - spremanje preskočeno');
   // Clear + rewrite Profil sheet from row 2
   const entries = Object.entries(data);
   const rows = entries.map(([k,v]) => [k, v]);
@@ -2583,7 +2599,7 @@ function fillProfileForm(){
       .forEach(name => savingsGoals.push({name, amount:0}));
   }
   // jednokratno: štednja se unosila kao godišnji iznos → spremi kao mjesečni (godišnje/12)
-  if(!profileData.sav_yearly){
+  if(_profOK && !profileData.sav_yearly){
     savingsGoals.forEach(g=>{ g.amount=(parseFloat(g.amount)||0)/12; });
     profileData.save_goals_json=JSON.stringify(savingsGoals);
     profileData.save_plan=savingsGoals.reduce((x,g)=>x+(parseFloat(g.amount)||0),0);
