@@ -1279,7 +1279,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
   </div>
   <div class="pf-dp pf-link" onclick="document.getElementById('rev-file').click()">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2a3c8f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
-    <div class="pf-lt"><div>Uvoz izvatka</div><small>Revolut CSV / Zaba PDF</small></div>
+    <div class="pf-lt"><div>Uvoz izvatka</div><small>Revolut CSV / Zaba PDF / PBZ Card PDF</small></div>
     <svg width="10" height="14" viewBox="0 0 9 14" fill="none" aria-hidden="true"><path d="M1 1L7 7L1 13" stroke="#2a3c8f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
   <div class="pf-dp pf-link" onclick="openSettings()">
@@ -1296,7 +1296,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div onclick="document.getElementById('rev-file').click()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:14px;font-weight:500;color:var(--th-text)">Uvoz izvatka (Revolut CSV / Zaba PDF)</span>
+      <span style="font-size:14px;font-weight:500;color:var(--th-text)">Uvoz izvatka (Revolut CSV / Zaba PDF / PBZ Card PDF)</span>
       <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M1 1L7 7L1 13" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div onclick="signOutFromProfil()" style="cursor:pointer;background:#fff;border:1px solid #fee2e2;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
@@ -3919,7 +3919,7 @@ function revRender(){
   L.innerHTML=h||'<div style="padding:30px;text-align:center;color:var(--rv-mut)">Nema stavki za uvoz.</div>';
   const _sk=(REV_ROWS._skipped||0), _ot=REV_ROWS._other||0, _df=REV_ROWS._dupFiles||0;
   document.getElementById('rev-info').classList.remove('open'); document.getElementById('rev-more').textContent='Prikaži više';
-  document.getElementById('rev-info').innerHTML='<b>Kako ovo radi</b><br>✓ = ide u tablicu, prazno = ne ide. Označi što želiš prenijeti u aplikaciju.<br>• <b>Plaćanja karticom i dizanje gotovine</b> na bankomatu → trošak u svojoj kategoriji.<br>• <b>Novac koji si ti poslala nekome</b> → „Plaćeno drugima“.<br>• <b>Novac koji je netko uplatio tebi</b> (zeleni iznos) → „Uplaćeno (od drugih)“. Ne spaja se s „Plaćeno drugima“, jer se ne zna tko je što vratio. Upiše se kao minus pa se u ukupnoj potrošnji oduzima.<br>• <b>Plaća od eKupija</b> → prihod tog mjeseca (umjesto plana).<br>• <b>Prebacivanje novca između tvojih računa</b> (Zaba ↔ Revolut) → „Prijenos između računa“. Upiše se, ali se ne računa kao trošak, pa se ništa ne udvostručuje.<br><span class="rv-skip">Preskočeno automatski: '+_sk+' (razmjene valuta unutar Revoluta, nezavršena i vraćena plaćanja)'+(_ot?'; '+_ot+' izvan ove godine ili valute':'')+(_df?'; '+_df+' duplih datoteka':'')+'.</span>';
+  document.getElementById('rev-info').innerHTML='<b>Kako ovo radi</b><br>✓ = ide u tablicu, prazno = ne ide. Označi što želiš prenijeti u aplikaciju.<br>• <b>Plaćanja karticom i dizanje gotovine</b> na bankomatu → trošak u svojoj kategoriji.<br>• <b>Novac koji si ti poslala nekome</b> → „Plaćeno drugima“.<br>• <b>Novac koji je netko uplatio tebi</b> (zeleni iznos) → „Uplaćeno (od drugih)“. Ne spaja se s „Plaćeno drugima“, jer se ne zna tko je što vratio. Upiše se kao minus pa se u ukupnoj potrošnji oduzima.<br>• <b>Plaća od eKupija</b> → prihod tog mjeseca (umjesto plana).<br>• <b>PBZ Card (Visa)</b>: rate i kupnje s kartice. Rate se upišu kao trošak mjeseca izvatka i smanje preostale rate u Ciljevima.<br>• <b>Prebacivanje novca između tvojih računa</b> (Zaba ↔ Revolut) → „Prijenos između računa“. Upiše se, ali se ne računa kao trošak, pa se ništa ne udvostručuje.<br><span class="rv-skip">Preskočeno automatski: '+_sk+' (razmjene valuta unutar Revoluta, nezavršena i vraćena plaćanja)'+(_ot?'; '+_ot+' izvan ove godine ili valute':'')+(_df?'; '+_df+' duplih datoteka':'')+'.</span>';
   revSum();
 }
 function revPaint(i){
