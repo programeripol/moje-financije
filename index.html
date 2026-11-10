@@ -2590,6 +2590,25 @@ function fillProfileForm(){
     try{ saveProfileToSheet(profileData).catch(()=>{}); }catch(e){}
   }
   renderSavingsGoals();
+  try{ if(!localStorage.getItem('mf_pbzfix1')) setTimeout(pbzLumpFix,3000); }catch(e){}
+}
+// jednokratno: Zaba redak "izravno terećenje PBZ CARD" već uvezen kao trošak → Prijenos (da se ne broji dvaput)
+async function pbzLumpFix(){
+  if(!sheetId) return;
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+    const have=new Set((meta.sheets||[]).map(x=>x.properties.title)); let n=0;
+    for(const m of MONTHS_HR){
+      if(!have.has(m)) continue;
+      const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!A57:N500')}`);
+      const vals=res.values||[];
+      for(let i=0;i<vals.length;i++){ const r=vals[i]; if(!r||!r[1]) continue;
+        const note=String(r[11]||'');
+        if(/PBZ\s*CARD/i.test(note)&&/izravn/i.test(note)&&r[8]!=='Prijenos'){ await writeRange(sheetId,`${m}!I${57+i}`,[['Prijenos']]); n++; } }
+    }
+    try{ localStorage.setItem('mf_pbzfix1','1'); }catch(e){}
+    if(n){ showToast('Ispravljeno '+n+' '+(n===1?'stavka':'stavke')+': PBZ Visa račun više se ne broji dvaput ✓'); try{ reloadMonthTotals(); }catch(e){} }
+  }catch(e){}
 }
 
 async function saveProfile(){
