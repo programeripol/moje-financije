@@ -3929,16 +3929,18 @@ async function revFinish(acc){
     const months={}; out.forEach(o=>months[parseInt(o.date.slice(5,7))-1]=1);
     const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
     const have=new Set((meta.sheets||[]).map(s=>s.properties.title));
-    const seen={}, plan={};
+    const seen={}, plan={}, fz={};
     for(const mi of Object.keys(months)){
-      const name=MONTHS_HR[mi]; seen[mi]=new Set(); plan[mi]=[];
+      const name=MONTHS_HR[mi]; seen[mi]=new Set(); plan[mi]=[]; fz[mi]=[];
       if(!have.has(name)) continue;
       try{
         const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(name+'!B57:L500')}`);
-        (res.values||[]).forEach((v,ix)=>{ if(v&&v[0]) seen[mi].add(revKey(v[0], v[4], v[10])); const nn=rateNorm((v&&v[10])||''); if(/^plan visa/.test(nn)) plan[mi].push({row:57+ix,n:nn}); });
+        (res.values||[]).forEach((v,ix)=>{ if(v&&v[0]) seen[mi].add(revKey(v[0], v[4], v[10])); const nn=rateNorm((v&&v[10])||''); if(v&&v[0]&&!/^(plan visa|pbz visa|zaba|revolut)/.test(nn)) fz[mi].push({a:parseFloat(revKey('',v[4],'').split('|')[1])||0,n:nn}); if(/^plan visa/.test(nn)) plan[mi].push({row:57+ix,n:nn}); });
       }catch(e){}
     }
+    const GEN=/^(pbz|visa|rata|premium|zagreb|zagr|kupovina|placanje|card|payment|transfer|d\.o\.o|hrv|hr)$/;
     out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; return; }
+      if(fz[mi]&&fz[mi].length){ const toks=rateNorm((o.desc||'')+' '+((o.rate&&o.rate.name)||'')).split(/[^a-z0-9]+/).filter(t=>t.length>=4&&!GEN.test(t)&&!/^\d+$/.test(t)); const hit=fz[mi].find(f=>Math.abs(f.a-Math.abs(o.amount))<=0.05&&toks.some(t=>f.n.indexOf(t)>=0)); if(hit){ o.maybeDup=true; o.on=false; } }
       if(o.rate&&plan[mi]){ const key=rateNorm(o.rate.name).split(/[^a-z0-9]+/).filter(Boolean)[0]||'', re=new RegExp('rata '+o.rate.k+'/'+o.rate.N+'(?!\\d)'); const pl=plan[mi].find(p=>re.test(p.n)&&p.n.indexOf(key)>=0); if(pl){ o.planRow=pl.row; plan[mi]=plan[mi].filter(p=>p!==pl); } } });
   }catch(e){ hideSaveOverlay(); showToast('Greška pri provjeri: '+(e.message||e),5000,'err'); return; }
   hideSaveOverlay();
@@ -3958,7 +3960,7 @@ function revRowHtml(o,i){
       <div id="revc-${i}" data-sm="1" class="rv-cb sm${o.on?' on':''}" onclick="revTog(${i})">${o.on?RV_TICK:''}</div>
       <div class="rv-rt">
         <div class="d">${revEsc(o.desc)||'—'}</div>
-        <div class="m">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':''}</div>
+        <div class="m">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':(o.maybeDup?' · možda već uneseno':'')}</div>
         <select onchange="REV_ROWS[${i}].cat=this.value">${revOpts(o.cat)}</select>
       </div>
       <div class="rv-am${neg?' pos':''}">${o.income?'+ ':''}${eur(o.amount)}</div>
