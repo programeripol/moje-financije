@@ -4,8 +4,8 @@
   "description": "Prati prihode, planiraj troškove, štedi za ciljeve.",
   "start_url": "/moje-financije/",
   "display": "standalone",
-  "background_color": "#a99be8",
-  "theme_color": "#a99be8",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "orientation": "portrait-primary",
   "icons": [
     {
