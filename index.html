@@ -1572,18 +1572,27 @@ function pfRefresh(){
     var chev='<svg width="10" height="14" viewBox="0 0 9 14" fill="none" aria-hidden="true" style="flex:none"><path d="M1 1L7 7L1 13" stroke="#2a3c8f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     var title='<div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:15px;font-weight:800;letter-spacing:.4px">OKVIRNI MJESEČNI PLAN</div>'+chev+'</div>';
     if(!(inc>0)){ box.innerHTML=title+'<div style="margin-top:10px;font-size:14px;font-weight:600;color:#5b6291">Upiši prihod, troškove i štednju pa će se ovdje vidjeti omjer.</div>'; return; }
-    var tot=inc+cost+sav;
-    var segs=[{v:inc,bg:'#3a9d7a',fg:'#fbf1de',lbl:'Prihodi'},{v:cost,bg:'#f9d548',fg:'#2a3c8f',lbl:'Troškovi'},{v:sav,bg:'#ff9fb5',fg:'#2a3c8f',lbl:'Štednja'}];
-    segs.sort(function(a,b){ return b.v-a.v; });
+    var rest=inc-cost-sav, over=rest<0;
+    var segs=[{v:cost,bg:'#f9d548',fg:'#2a3c8f',lbl:'Troškovi'},{v:sav,bg:'#ff9fb5',fg:'#2a3c8f',lbl:'Štednja'}];
+    if(!over) segs.push({v:rest,bg:'#3a9d7a',fg:'#fbf1de',lbl:'Ostaje'});
+    var tot=segs.reduce(function(s,x){ return s+x.v; },0);
+    if(!(tot>0)){ box.innerHTML=title+'<div style="margin-top:10px;font-size:14px;font-weight:600;color:#5b6291">Upiši troškove i štednju pa će se ovdje vidjeti omjer.</div>'; return; }
+    // postoci zbrajaju točno 100 (najveći ostatak)
+    var raw=segs.map(function(x){ return x.v/tot*100; }), fl=raw.map(Math.floor), left=100-fl.reduce(function(a,b){ return a+b; },0);
+    raw.map(function(r,i){ return {i:i,f:r-Math.floor(r)}; }).sort(function(a,b){ return b.f-a.f; }).slice(0,left).forEach(function(o){ fl[o.i]++; });
     var bar='',leg='';
-    segs.forEach(function(x){
-      var w=(x.v/tot*100), pct=Math.round(x.v/inc*100);
-      bar+='<div style="width:'+w+'%;background:'+x.bg+';color:'+x.fg+';display:flex;align-items:center;justify-content:center;min-width:0">'+(w>=9?pct+'%':'')+'</div>';
+    segs.forEach(function(x,i){
+      var w=x.v/tot*100;
+      if(w<=0) return;
+      bar+='<div style="width:'+w+'%;background:'+x.bg+';color:'+x.fg+';display:flex;align-items:center;justify-content:center;min-width:0">'+(w>=9?fl[i]+'%':'')+'</div>';
+    });
+    [{lbl:'Prihodi',v:inc,bg:'#3a9d7a'}].concat(segs).forEach(function(x){
       leg+='<div style="display:flex;align-items:center;gap:5px;white-space:nowrap"><i style="width:9px;height:9px;border-radius:50%;background:'+x.bg+';display:inline-block;flex:none"></i><span style="font-weight:800">'+x.lbl+'</span><span style="font-weight:600">'+pfShort(x.v)+'</span></div>';
     });
+    if(over) leg+='<div style="display:flex;align-items:center;gap:5px;white-space:nowrap;color:#e4572e"><span style="font-weight:800">Plan premašuje prihod za</span><span style="font-weight:700">'+pfShort(-rest)+'</span></div>';
     box.innerHTML=title+
       '<div style="margin-top:14px;display:flex;height:34px;border-radius:999px;overflow:hidden;font-size:14px;font-weight:800">'+bar+'</div>'+
-      '<div style="margin-top:12px;display:flex;justify-content:space-between;gap:6px;font-size:clamp(10px,3.1vw,12.5px)">'+leg+'</div>';
+      '<div style="margin-top:12px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 10px;font-size:clamp(10px,3.1vw,12.5px)">'+leg+'</div>';
   }catch(e){}
 }
 // ── detaljni prikaz plana (grafovi) ──
