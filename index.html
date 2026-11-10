@@ -586,6 +586,23 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #toast.show{transform:translate(-50%,-50%) scale(1)}
 [data-theme="dopamin"] #toast.success{background:var(--dp-navy)}
 [data-theme="dopamin"] #toast.error,[data-theme="dopamin"] #toast.err{background:var(--dp-terra)}
+.btn-paid{background:#dcfce7;color:#166534;border:none;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:700}
+.rt-sum,.rt-seed{background:#fff;border:1px solid #e8edf8;border-radius:14px;padding:16px;margin-bottom:12px}
+.rt-t{font-size:15px;font-weight:800}
+.rt-big{display:flex;gap:12px;margin:10px 0}
+.rt-big>div{flex:1}
+.rt-big small{display:block;font-size:12px;font-weight:600;color:#5b6291}
+.rt-big b{font-size:20px;font-weight:800}
+.rt-h{font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#5b6291;margin:6px 0 4px}
+.rt-m{display:flex;gap:10px;padding:9px 0;border-top:1.5px solid rgba(42,60,143,.1);font-size:14px;font-weight:700}
+.rt-m span:first-child{flex:1;text-transform:capitalize}
+.rt-m span:nth-child(2){color:#5b6291;font-weight:600}
+.rt-seed{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.rt-seed span{font-weight:600;color:#4a5080}
+.rt-seed .btn{margin-top:6px;height:46px}
+[data-theme="dopamin"] .rt-sum,[data-theme="dopamin"] .rt-seed{background:var(--dp-cream);border:3px solid #f9d548;border-radius:26px;padding:18px;color:var(--dp-navy)}
+[data-theme="dopamin"] .btn-paid{height:34px;box-sizing:border-box;background:#3a9d7a;color:#fff;border-radius:12px;font-weight:800;padding:0 12px}
+[data-theme="dopamin"] .rt-seed .btn{height:50px;border-radius:18px;font-size:17px;font-weight:800}
 [data-theme="dopamin"] #edit-overlay{background:rgba(38,51,127,.55)}
 [data-theme="dopamin"] #edit-drawer{background:var(--dp-cream);border-radius:28px 28px 0 0;height:84vh;max-width:560px;overflow-y:auto;overscroll-behavior:contain;padding:12px 24px calc(30px + env(safe-area-inset-bottom,0px));box-shadow:none;color:var(--dp-navy)}
 [data-theme="dopamin"] .drawer-handle{background:rgba(42,60,143,.25);width:44px;height:5px;margin:0 auto 16px}
@@ -3206,9 +3223,10 @@ async function loadGoals(){
   try{
     // Prazni redovi (stari obrisani ciljevi) se preskaču, ali pamtimo pravi broj retka u tablici
     const rows = (await getRows(sheetId, 'Ciljevi', 'A2:H200')).map((r,i)=>({r, row:i+2})).filter(x=>x.r && x.r[0]);
-    if(!rows.length){ list.innerHTML='<div class="empty-state">Nema ciljeva. Dodaj štednju ili ratu.</div>'; return; }
+    if(!rows.length){ list.innerHTML=rateSeedHtml(rows)+'<div class="empty-state">Nema ciljeva. Dodaj štednju ili ratu.</div>'; return; }
 
-    list.innerHTML = rows.map(({r,row})=>{
+    var rtHtml=rateSummaryHtml(rows);
+    list.innerHTML = rtHtml + rows.map(({r,row})=>{
       const [name, type, target, current, monthly, remaining, desc] = r;
       const isLoan    = type === 'loan';
       const cur  = parseFloat(current)||0;
@@ -3226,13 +3244,14 @@ async function loadGoals(){
           <div>
             <div class="goal-name">${name||''}</div>
             <div class="goal-meta">
-              ${isLoan ? `${eur(mon)}/mj · ${rem} rata preostalo` : `${eur(cur)} / ${eur(tgt)}`}
+              ${isLoan ? `${eur(mon)}/mj · još ${rem} ${rem===1?'rata':'rata'} · ostaje ${eur(rem*mon)}${rem>0?' · do '+rateEndLabel(rem):''}` : `${eur(cur)} / ${eur(tgt)}`}
               ${monthsLeft && !isLoan ? ` · još ~${monthsLeft} mj` : ''}
               ${desc ? ` · ${desc}` : ''}
             </div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
             <span class="goal-type ${isLoan?'loan':'savings'}">${isLoan?'Rata':'Štednja'}</span>
+            ${isLoan&&rem>0?`<button class="btn-paid" onclick="payGoalRate(${row},${rem})">Plaćena ✓</button>`:''}
             <button class="btn-danger" onclick="deleteGoal(${row})">Briši</button>
           </div>
         </div>
@@ -3245,6 +3264,76 @@ async function loadGoals(){
   }
 }
 
+
+// ── RATE: pregled, plaćanje, automatsko prepoznavanje iz uvoza ──
+var MONTHS_SHORT_HR=['siječanj','veljača','ožujak','travanj','svibanj','lipanj','srpanj','kolovoz','rujan','listopad','studeni','prosinac'];
+function rateEndLabel(rem){ var d=new Date(); d.setDate(1); d.setMonth(d.getMonth()+Math.max(0,rem-1)); return MONTHS_SHORT_HR[d.getMonth()]+' '+d.getFullYear(); }
+function rateLoans(rows){ return rows.filter(function(x){ return x.r[1]==='loan' && (parseInt(x.r[5])||0)>0; }); }
+function rateSummaryHtml(rows){
+  var L=rateLoans(rows), seed=rateSeedHtml(rows);
+  if(!L.length) return seed;
+  var mon=0,left=0,maxRem=0;
+  L.forEach(function(x){ var m=parseFloat(x.r[4])||0, r=parseInt(x.r[5])||0; mon+=m; left+=m*r; if(r>maxRem) maxRem=r; });
+  var n=Math.min(maxRem,6), d0=new Date(); d0.setDate(1), cal='';
+  for(var i=0;i<n;i++){
+    var d=new Date(d0.getFullYear(),d0.getMonth()+i,1), sum=0, cnt=0;
+    L.forEach(function(x){ if((parseInt(x.r[5])||0)>i){ sum+=parseFloat(x.r[4])||0; cnt++; } });
+    cal+='<div class="rt-m"><span>'+MONTHS_SHORT_HR[d.getMonth()]+' '+d.getFullYear()+'</span><span>'+cnt+(cnt===1?' rata':' rate')+'</span><b>'+eur(sum)+'</b></div>';
+  }
+  return seed+'<div class="rt-sum"><div class="rt-t">Rate koje otplaćuješ</div><div class="rt-big"><div><small>mjesečno</small><b>'+eur(mon)+'</b></div><div><small>ukupno ostaje</small><b>'+eur(left)+'</b></div></div><div class="rt-h">Što dolazi po mjesecima</div>'+cal+'</div>';
+}
+var RATE_SEED=[{n:'IKEA',m:32.86,N:4,k:2,d:'PBZ Visa Premium'},{n:'Triglav Kompare',m:22.87,N:10,k:5,d:'PBZ Visa Premium'},{n:'Emmezeta',m:26.66,N:12,k:7,d:'PBZ Visa Premium'}];
+function rateNorm(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d'); }
+function rateSeedHtml(rows){
+  var have=rows.map(function(x){ return rateNorm(x.r[0]); });
+  var miss=RATE_SEED.filter(function(q){ return !have.some(function(h){ return h.indexOf(rateNorm(q.n).split(' ')[0])>=0; }); });
+  if(!miss.length) return '';
+  return '<div class="rt-seed"><b>Rate s PBZ ekrana</b><span>'+miss.map(function(q){ return q.n; }).join(', ')+' — dodaj ih jednim klikom. Rata s ekrana računa se kao ona koja tek slijedi.</span><button type="button" class="btn btn-primary" onclick="rateSeedAdd()">Dodaj rate</button></div>';
+}
+async function rateSeedAdd(){
+  try{
+    showSaveOverlay('Dodajem rate...');
+    var rows=(await getRows(sheetId,'Ciljevi','A2:H200')).filter(function(r){ return r&&r[0]; }).map(function(r){ return rateNorm(r[0]); });
+    var add=RATE_SEED.filter(function(q){ return !rows.some(function(h){ return h.indexOf(rateNorm(q.n).split(' ')[0])>=0; }); })
+      .map(function(q){ return [q.n,'loan',Math.round(q.m*q.N*100)/100,0,q.m,q.N-q.k+1,q.d+' · rata '+q.k+'/'+q.N,today()]; });
+    if(add.length) await appendRows(sheetId,'Ciljevi',add);
+    hideSaveOverlay(); showToast('Rate dodane ✓'); loadGoals();
+  }catch(e){ hideSaveOverlay(); showToast('Greška: '+(e.message||e),5000,'err'); }
+}
+async function payGoalRate(row,rem){
+  try{
+    showSaveOverlay('Spremam...');
+    await writeRange(sheetId,'Ciljevi!F'+row,[[Math.max(0,rem-1)]]);
+    hideSaveOverlay(); showToast('Rata označena kao plaćena ✓'); loadGoals();
+  }catch(e){ hideSaveOverlay(); showToast('Greška: '+(e.message||e),5000,'err'); }
+}
+// iz uvoza: "RATA 02/04-IKEA ..." → postavi preostale rate na cilju čiji naziv se nalazi u opisu
+async function rateFromImport(items){
+  var hits=[];
+  items.forEach(function(o){
+    if(o.rate){ hits.push({k:o.rate.k,N:o.rate.N,name:o.rate.name,amt:o.rate.amt}); return; }
+    var m=/RATA\s+(\d+)\s*\/\s*(\d+)/i.exec((o.desc||'')+' '+(o.note||'')); if(m) hits.push({k:+m[1],N:+m[2],name:o.desc||'',amt:o.amount});
+  });
+  if(!hits.length) return 0;
+  var rows=(await getRows(sheetId,'Ciljevi','A2:H200')).map(function(r,i){ return {r:r,row:i+2}; }).filter(function(x){ return x.r&&x.r[0]; });
+  var n=0, add=[];
+  for(var h of hits){
+    var key=rateNorm(h.name).split(/[^a-z0-9]+/).filter(Boolean)[0]||'';
+    if(!key) continue;
+    var g=rows.find(function(x){ return x.r[1]==='loan' && rateNorm(x.r[0]).indexOf(key)>=0 && new RegExp('/\\s*'+h.N+'(?!\\d)').test(x.r[6]||''); });
+    var rem=Math.max(0,h.N-h.k);
+    if(g){
+      var cur=parseInt(g.r[5])||0;
+      if(rem<cur){ await writeRange(sheetId,'Ciljevi!F'+g.row,[[rem]]); g.r[5]=rem; n++; }
+    } else if(!add.some(function(a){ return a[0]===h.name && a[6].indexOf('/'+h.N)>=0; })){
+      var nm=h.name.replace(/\s+/g,' ').trim().split(' ').slice(0,3).join(' ');
+      add.push([nm,'loan',Math.round(h.amt*h.N*100)/100,0,h.amt,rem,'PBZ Visa · rata '+h.k+'/'+h.N,today()]);
+      n++;
+    }
+  }
+  if(add.length) await appendRows(sheetId,'Ciljevi',add);
+  return n;
+}
 function showGoalForm(){ document.getElementById('goal-form').style.display='block'; }
 function hideGoalForm(){ document.getElementById('goal-form').style.display='none'; }
 function toggleGoalType(){
@@ -3476,7 +3565,40 @@ async function revFromPdf(file,acc){
     const tc=await (await pdf.getPage(i)).getTextContent();
     pages.push(tc.items.filter(t=>t.str&&t.str.trim()).map(t=>({str:t.str.trim(),x:t.transform[4],y:t.transform[5],w:t.width})));
   }
-  revFromZabaPages(pages,acc);
+  const _all=[].concat.apply([],pages).map(t=>t.str).join(' ');
+  if(/PBZ\s*CARD/i.test(_all)&&/SPECIFIKACIJA\s+PROMETA/i.test(_all)) revFromPbzPages(pages,acc);
+  else revFromZabaPages(pages,acc);
+}
+function revFromPbzPages(pages,acc){
+  const all=[].concat.apply([],pages).map(t=>t.str).join(' ');
+  const sm=/Izvadak\s+\S+\s+Datum\s+(\d{2})\.(\d{2})\.(\d{4})/i.exec(all);
+  const stmt=sm?sm[3]+'-'+sm[2]+'-'+sm[1]:null;
+  let n=0;
+  for(const items of pages){
+    const rows=[]; items.slice().sort((a,b)=>b.y-a.y||a.x-b.x).forEach(t=>{
+      const r=rows.find(r=>Math.abs(r.y-t.y)<2.5); if(r) r.items.push(t); else rows.push({y:t.y,items:[t]});
+    });
+    rows.sort((a,b)=>b.y-a.y);
+    for(const r of rows){
+      r.items.sort((a,b)=>a.x-b.x);
+      const line=r.items.map(t=>t.str).join(' ').replace(/\s+/g,' ').trim();
+      const m=/^(\d{2})\.(\d{2})\.(\d{2})\.?\s+(\d{6,})\s+(.+?)\s+(\+?-?\d{1,3}(?:\.\d{3})*,\d{2})$/.exec(line);
+      if(!m) continue;
+      n++;
+      const desc=m[5].trim(), credit=/^\+/.test(m[6])||/PRIMLJENA UPLATA/i.test(desc);
+      if(credit){ acc.skipped++; continue; }
+      const amt=revMoney(m[6].replace('+',''));
+      const own='20'+m[3]+'-'+m[2]+'-'+m[1];
+      const rm=/^RATA\s+(\d+)\s*\/\s*(\d+)\s*-\s*(.+)$/i.exec(desc);
+      if(rm){
+        const k=+rm[1], N=+rm[2], merch=rm[3].split(/\s+-\s+/)[0].trim();
+        acc.items.push({date:stmt||own,desc:'Rata '+k+'/'+N+' · '+merch,amount:amt,cat:revCat(merch),on:true,type:'Visa rata',note:'PBZ Visa: rata '+k+'/'+N+' · '+merch,dup:false,rate:{k:k,N:N,name:merch,amt:amt}});
+      } else {
+        acc.items.push({date:own,desc:desc,amount:amt,cat:revCat(desc),on:true,type:'PBZ Visa',note:'PBZ Visa: '+desc,dup:false});
+      }
+    }
+  }
+  if(!n) throw new Error('U PBZ izvatku nisam našla prometa.');
 }
 function revMoney(t){ return parseFloat(String(t).replace(/\./g,'').replace(',','.')); }
 function revFromZabaPages(pages,acc){
@@ -3668,8 +3790,9 @@ async function revImport(){
       const data=by[m].sort((a,b)=>a.date<b.date?-1:1).map(o=>{ const d=Array(14).fill(''); d[1]=fmtDateHR(o.date); d[5]=o.amount; d[8]=o.cat; d[11]=o.note; d[12]=(o.src&&urls.get(o.src))||''; return d; });
       await writeRange(sheetId, `${m}!A${row}`, data);
     }
+    let rateN=0; try{ rateN=await rateFromImport(on); }catch(e){}
     hideSaveOverlay(); revClose();
-    showToast('Uvezeno '+on.length+' stavki ✓'+(upFail?' (izvadak nije spremljen na Drive)':''));
+    showToast('Uvezeno '+on.length+' stavki ✓'+(rateN?' · rate ažurirane: '+rateN:'')+(upFail?' (izvadak nije spremljen na Drive)':''));
     try{ if(typeof loadPregled==='function') loadPregled(); }catch(e){}
   }catch(e){ hideSaveOverlay(); showToast('Greška pri uvozu: '+(e.message||e),6000,'err'); }
 }
@@ -3893,10 +4016,10 @@ async function loadGallery(){
       const safeDU=(driveUrl||'').replace(/'/g,"\\'");
       return `<div class="g-card" onclick="openEditReceipt(${sheetRow},'${curMonth()}','${datum}',${iznos},'${kat}','${safeBilj}','${safeDU}')">
         <button class="g-del-btn" title="Obriši račun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">×</button>
-        ${imgUrl && !/^(Revolut|Zaba): /.test(bilj)
+        ${imgUrl && !/^(Revolut|Zaba|PBZ Visa): /.test(bilj)
           ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
           : ''}
-        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>${/^(Revolut|Zaba): /.test(bilj)?'🏦':'🧾'}</div>
+        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>${/^(Revolut|Zaba|PBZ Visa): /.test(bilj)?'🏦':'🧾'}</div>
         <div class="g-info">
           <div class="g-row">
             <span class="g-name">${name}</span>
@@ -4091,7 +4214,7 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   if(iw&&it){it.src="";iw.style.display="none";if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.style.opacity="0";var sp=document.getElementById('edit-img-spinner');if(sp)sp.style.display='flex';it.src=th;it.onload=function(){it.style.opacity="1";if(sp)sp.style.display='none';};it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
   var bk=document.getElementById('edit-bank');
   if(bk){
-    var bm=/^(Revolut|Zaba): /.exec(bilj||'');
+    var bm=/^(Revolut|Zaba|PBZ Visa): /.exec(bilj||'');
     if(bm){
       if(iw) iw.style.display='none';
       bk.innerHTML='<span class="eb-i">🏦</span><div><b>Uvezeno iz izvatka banke</b><small>'+bm[1]+(driveUrl?' · ':'')+'</small>'+(driveUrl?'<a href="'+driveUrl+'" target="_blank" rel="noopener">Otvori izvadak</a>':'')+'</div>';
