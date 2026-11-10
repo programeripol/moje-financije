@@ -247,6 +247,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--th1);bac
 .goal-type.savings{background:#dcfce7;color:#166534}
 .goal-type.loan{background:#fef3c7;color:#92400e}
 .goal-meta{display:flex;gap:14px;font-size:12px;color:#888;margin-bottom:10px}
+.goal-top>div:first-child{flex:1;min-width:0}
+.goal-facts{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-top:8px}
+.goal-facts small{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#5b6291}
+.goal-facts b{font-size:15px;font-weight:800;text-transform:capitalize}
+.goal-desc{font-size:12px;font-weight:600;color:#5b6291;margin-top:8px}
 .goal-progress{height:8px;background:#e8edf8;border-radius:4px;overflow:hidden;margin-bottom:6px}
 .goal-fill{height:100%;border-radius:4px;transition:width .4s}
 .goal-fill.savings{background:linear-gradient(90deg,#22c55e,#4ade80)}
@@ -3358,11 +3363,12 @@ async function loadGoals(){
         <div class="goal-top">
           <div>
             <div class="goal-name">${name||''}</div>
-            <div class="goal-meta">
-              ${isLoan ? `${eur(mon)}/mj · još ${rem} ${rem===1?'rata':'rata'} · ostaje ${eur(rem*mon)}${rem>0?' · do '+rateEndLabel(rem):''}` : `${eur(cur)} / ${eur(tgt)}`}
-              ${monthsLeft && !isLoan ? ` · još ~${monthsLeft} mj` : ''}
-              ${desc ? ` · ${desc}` : ''}
+            <div class="goal-facts">
+              ${isLoan
+                ? `<div><small>Mjesečno</small><b>${eur(mon)}</b></div><div><small>Preostaje</small><b>${eur(rem*mon)}</b></div><div><small>Rata do kraja</small><b>${rem}</b></div>${rem>0?`<div><small>Završava</small><b>${rateEndLabel(rem)}</b></div>`:''}`
+                : `<div><small>Ušteđeno</small><b>${eur(cur)}</b></div><div><small>Cilj</small><b>${eur(tgt)}</b></div>${monthsLeft?`<div><small>Do cilja</small><b>~${monthsLeft} mj</b></div>`:''}`}
             </div>
+            ${desc ? `<div class="goal-desc">${String(desc).replace(/&/g,'&amp;').replace(/</g,'&lt;').split(' · ').join(', ')}</div>` : ''}
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:10px">
             ${isLoan&&rem>0?`<button class="goal-ic" title="Označi ratu kao plaćenu" aria-label="Označi ratu kao plaćenu" onclick="payGoalRate(${row},${rem})"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>`:''}
