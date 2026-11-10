@@ -497,7 +497,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 /* Dopamin: bez sjena na kutijama i gumbima */
 [data-theme="dopamin"] *,[data-theme="dopamin"] *::before,[data-theme="dopamin"] *::after{box-shadow:none!important}
 /* ── PROFIL (Dopamin) ── */
-.pf-dp,#pf-ov,#pf-sheet,#pp-ov,#pp-sheet{display:none}
+.pf-dp,#pf-ov,#pf-sheet,#pp-ov,#pp-sheet,#im-ov,#im-sheet{display:none}
 [data-theme="dopamin"] #s-profil .pf-old{display:none!important}
 [data-theme="dopamin"] #s-profil{padding-top:var(--sk-top)}
 [data-theme="dopamin"] #s-profil .pf-head{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin:12px 0 22px}
@@ -611,6 +611,38 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #edit-back-btn{align-items:center;gap:10px;color:var(--dp-navy)!important;font-family:inherit;font-size:15px!important;font-weight:800!important}
 [data-theme="dopamin"] #edit-back-btn .eb-c{width:38px;height:38px;border-radius:50%;border:2px solid var(--dp-navy);display:flex;align-items:center;justify-content:center;flex:none}
 [data-theme="dopamin"] #edit-drawer .btn{height:52px}
+[data-theme="dopamin"] #im-ov{display:block;position:fixed;inset:0;background:rgba(38,51,127,.55);z-index:310;opacity:0;pointer-events:none;transition:opacity .3s}
+[data-theme="dopamin"] #im-ov.open{opacity:1;pointer-events:auto}
+[data-theme="dopamin"] #im-sheet{display:block;position:fixed;left:0;right:0;bottom:0;height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--dp-cream);border-radius:28px 28px 0 0;padding:12px 24px calc(34px + env(safe-area-inset-bottom,0px));z-index:311;box-sizing:border-box;color:var(--dp-navy);transform:translateY(105%);visibility:hidden;transition:transform .34s cubic-bezier(.32,.72,0,1),visibility 0s .34s}
+[data-theme="dopamin"] #im-sheet.open{transform:translateY(0);visibility:visible;transition:transform .34s cubic-bezier(.32,.72,0,1),visibility 0s}
+[data-theme="dopamin"] #im-sheet.drag{transition:none}
+.im-t{font-size:24px;font-weight:800;line-height:1.1}
+.im-s{font-size:13px;font-weight:600;color:#5b6291;margin:2px 0 14px}
+.im-net{background:#fff;border-radius:22px;padding:16px 18px;margin-bottom:12px}
+.im-net small{display:block;font-size:12px;font-weight:700;color:#5b6291;text-transform:uppercase;letter-spacing:.6px}
+.im-net b{display:block;font-size:30px;font-weight:800;margin:2px 0 8px}
+.im-two{display:flex;gap:12px;font-size:14px;font-weight:700}
+.im-two div{flex:1}
+.im-two span{display:block;font-size:12px;font-weight:600;color:#5b6291}
+.im-bar{display:flex;height:16px;border-radius:99px;overflow:hidden;margin:12px 0 6px}
+.im-g{margin:16px 2px 6px;font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#5b6291;display:flex;justify-content:space-between}
+.im-r{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:13px 14px;margin-bottom:8px;cursor:pointer}
+.im-r .n{flex:1;min-width:0}
+.im-r .n b{display:block;font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.im-r .n small{font-size:12px;font-weight:600;color:#5b6291}
+.im-r .n small.old{color:#c2410c}
+.im-r .a{text-align:right;font-size:15px;font-weight:800;white-space:nowrap}
+.im-r .a small{display:block;font-size:12px;font-weight:600;color:#5b6291}
+.im-add{width:100%;height:50px;border:2px solid #2a3c8f;border-radius:16px;background:transparent;color:#2a3c8f;font-family:inherit;font-size:16px;font-weight:800;margin:10px 0 4px}
+.im-hist{display:flex;gap:10px;padding:9px 2px;border-top:2px solid rgba(42,60,143,.1);font-size:14px;font-weight:700}
+.im-hist span:first-child{flex:1}
+.im-hist .d{color:#2e8465}.im-hist .d.neg{color:#c2410c}
+.im-f label{display:block;font-size:12px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:#5b6291;margin:14px 0 5px}
+.im-f input,.im-f select{width:100%;height:48px;box-sizing:border-box;border:1.5px solid rgba(42,60,143,.32);border-radius:12px;background:#fff;color:#2a3c8f;font-family:inherit;font-size:16px;font-weight:700;padding:0 14px}
+.im-fb{display:flex;gap:10px;margin-top:22px}
+.im-fb button{flex:1;height:52px;border-radius:18px;font-family:inherit;font-size:17px;font-weight:800;border:2px solid #2a3c8f;background:transparent;color:#2a3c8f}
+.im-fb button.p{background:#2a3c8f;color:#fff}
+.im-del{width:100%;margin-top:12px;height:44px;border:0;background:none;color:#c2410c;font-family:inherit;font-size:15px;font-weight:800}
 [data-theme="dopamin"] #pp-ov{display:block;position:fixed;inset:0;background:rgba(38,51,127,.55);z-index:310;opacity:0;pointer-events:none;transition:opacity .3s}
 [data-theme="dopamin"] #pp-ov.open{opacity:1;pointer-events:auto}
 [data-theme="dopamin"] #pp-sheet{display:block;position:fixed;left:0;right:0;bottom:0;height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--dp-cream);border-radius:28px 28px 0 0;padding:12px 24px calc(34px + env(safe-area-inset-bottom,0px));z-index:311;box-sizing:border-box;color:var(--dp-navy);transform:translateY(105%);visibility:hidden;transition:transform .34s cubic-bezier(.32,.72,0,1),visibility 0s .34s}
@@ -1240,7 +1272,12 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 
   <button class="btn btn-primary" id="profile-save-btn" onclick="saveProfile()">Spremi profil</button>
 
-  <div class="pf-dp pf-link" onclick="document.getElementById('rev-file').click()" style="margin-top:26px">
+  <div class="pf-dp pf-link" onclick="imSheet(true)" style="margin-top:26px">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2a3c8f" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+    <div class="pf-lt"><div>Imovina</div><small id="im-sub">Računi, štednja, investicije, gotovina</small></div>
+    <svg width="10" height="14" viewBox="0 0 9 14" fill="none" aria-hidden="true"><path d="M1 1L7 7L1 13" stroke="#2a3c8f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="pf-dp pf-link" onclick="document.getElementById('rev-file').click()">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2a3c8f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
     <div class="pf-lt"><div>Uvoz izvatka</div><small>Revolut CSV / Zaba PDF</small></div>
     <svg width="10" height="14" viewBox="0 0 9 14" fill="none" aria-hidden="true"><path d="M1 1L7 7L1 13" stroke="#2a3c8f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1468,6 +1505,7 @@ function katPick(v){
 function pfEur(n){ n=parseFloat(n)||0; var p=n.toFixed(2).split('.'); p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return p.join(',')+' €'; }
 function pfShort(n){ n=Math.round(parseFloat(n)||0); return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' €'; }
 function pfRefresh(){
+  try{ imSub(); }catch(e){}
   try{
     var sum=function(a){ return (a||[]).reduce(function(s,g){ return s+(parseFloat(g.amount)||0); },0); };
     var inc=sum(typeof incomeGoals!=='undefined'?incomeGoals:[]);
@@ -1570,6 +1608,13 @@ document.addEventListener('DOMContentLoaded',function(){
   sh.addEventListener('touchstart',function(e){ y0=e.touches[0].clientY; dy=0; on=(sh.scrollTop<=0); },{passive:true});
   sh.addEventListener('touchmove',function(e){ if(!on) return; var d=e.touches[0].clientY-y0; if(d>0){ dy=d; sh.classList.add('drag'); sh.style.transform='translateY('+d+'px)'; if(e.cancelable) e.preventDefault(); } else if(dy>0){ dy=0; sh.style.transform=''; } },{passive:false});
   sh.addEventListener('touchend',function(){ if(!on) return; on=false; sh.classList.remove('drag'); sh.style.transform=''; if(dy>80) ppSheet(false); dy=0; });
+});
+document.addEventListener('DOMContentLoaded',function(){
+  var sh=document.getElementById('im-sheet'); if(!sh) return;
+  var y0=0,dy=0,on=false;
+  sh.addEventListener('touchstart',function(e){ y0=e.touches[0].clientY; dy=0; on=(sh.scrollTop<=0); },{passive:true});
+  sh.addEventListener('touchmove',function(e){ if(!on) return; var d=e.touches[0].clientY-y0; if(d>0){ dy=d; sh.classList.add('drag'); sh.style.transform='translateY('+d+'px)'; if(e.cancelable) e.preventDefault(); } else if(dy>0){ dy=0; sh.style.transform=''; } },{passive:false});
+  sh.addEventListener('touchend',function(){ if(!on) return; on=false; sh.classList.remove('drag'); sh.style.transform=''; if(dy>80) imSheet(false); dy=0; });
 });
 document.addEventListener('DOMContentLoaded',katRender);
 document.addEventListener('DOMContentLoaded',function(){ try{navIcons();}catch(e){} });
@@ -2504,6 +2549,8 @@ async function saveProfile(){
     variable_goals_json: JSON.stringify(variableGoals),
     save_plan: saveTotalAmt,
     save_goals_json: JSON.stringify(savingsGoals),
+    assets_json: (profileData&&profileData.assets_json)||'[]',
+    assets_hist_json: (profileData&&profileData.assets_hist_json)||'[]',
     ...planDerived
   };
   const saveBtn = document.getElementById('profile-save-btn');
@@ -3369,6 +3416,113 @@ async function rateEnsurePlanned(rows){
   }catch(e){} finally{ _ratePlanBusy=false; }
 }
 
+// ── IMOVINA ──
+var ASSETS=[], ASSET_HIST=[], IM_DEBT=0, IM_FX=null, IM_EDIT=null;
+var IM_TYPES={tekuci:'Bankovni račun',revolut:'Revolut',stednja:'Štednja',invest:'Investicije',apy:'APY fond',valuta:'Valute',kes:'Gotovina'};
+var IM_COL={tekuci:'#2a3c8f',revolut:'#7b6cd9',stednja:'#ff9fb5',invest:'#f9d548',apy:'#e4572e',valuta:'#3a9d7a',kes:'#9aa3d6'};
+function imLoad(){
+  try{ ASSETS=JSON.parse((profileData&&profileData.assets_json)||'[]')||[]; }catch(e){ ASSETS=[]; }
+  try{ ASSET_HIST=JSON.parse((profileData&&profileData.assets_hist_json)||'[]')||[]; }catch(e){ ASSET_HIST=[]; }
+}
+async function imFx(){
+  var td=new Date().toISOString().slice(0,10), c=null;
+  try{ c=JSON.parse(localStorage.getItem('mf_fx')||'null'); }catch(e){}
+  if(c&&c.d===td){ IM_FX=c; return; }
+  try{
+    var r=await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD,GBP'); var j=await r.json();
+    if(j&&j.rates){ IM_FX={d:td,USD:j.rates.USD,GBP:j.rates.GBP}; try{ localStorage.setItem('mf_fx',JSON.stringify(IM_FX)); }catch(e){} return; }
+  }catch(e){}
+  IM_FX=c||null;
+}
+function imEur(a){
+  var b=parseFloat(a.bal)||0;
+  if(!a.cur||a.cur==='EUR') return b;
+  if(parseFloat(a.r)>0) return b*parseFloat(a.r);
+  if(IM_FX&&IM_FX[a.cur]) return b/IM_FX[a.cur];
+  return 0;
+}
+function imDate(d){ if(!d) return ''; var p=d.split('-'); return p[2]+'.'+p[1]+'.'; }
+function imOld(d){ return !d || (Date.now()-new Date(d).getTime())>35*864e5; }
+function imTotal(){ return ASSETS.reduce(function(s,a){ return s+imEur(a); },0); }
+function imSub(){ var e=document.getElementById('im-sub'); if(!e) return; imLoad(); e.textContent=ASSETS.length?('Ukupno '+pfShort(imTotal())):'Računi, štednja, investicije, gotovina'; }
+async function imSave(){
+  var m=new Date().toISOString().slice(0,7), tot=Math.round(imTotal()*100)/100;
+  ASSET_HIST=ASSET_HIST.filter(function(h){ return h.m!==m; }); ASSET_HIST.push({m:m,t:tot,d:Math.round(IM_DEBT*100)/100}); ASSET_HIST=ASSET_HIST.slice(-24);
+  profileData.assets_json=JSON.stringify(ASSETS); profileData.assets_hist_json=JSON.stringify(ASSET_HIST);
+  if(!sheetId){ await ensureResources(); }
+  await saveProfileToSheet(profileData);
+}
+async function imSheet(on){
+  var sh=document.getElementById('im-sheet'), ov=document.getElementById('im-ov'); if(!sh||!ov) return;
+  if(on){
+    imLoad(); IM_EDIT=null; sh.innerHTML='<div class="pp-grab"></div><div class="im-t">Imovina</div>'; sh.classList.add('open'); ov.classList.add('open');
+    try{ await imFx(); }catch(e){}
+    try{ var rows=(await getRows(sheetId,'Ciljevi','A2:H200')).filter(function(r){ return r&&r[0]&&r[1]==='loan'; }); IM_DEBT=rows.reduce(function(s,r){ return s+(parseFloat(r[4])||0)*(parseInt(r[5])||0); },0); }catch(e){ IM_DEBT=0; }
+    imRender(); sh.scrollTop=0;
+  } else { sh.classList.remove('open'); ov.classList.remove('open'); imSub(); }
+}
+function imRender(){
+  var sh=document.getElementById('im-sheet'); if(!sh) return;
+  var tot=imTotal(), net=tot-IM_DEBT;
+  var h='<div class="pp-grab"></div><div class="im-t">Imovina</div><div class="im-s">Sve što imaš na jednom mjestu</div>';
+  h+='<div class="im-net"><small>Neto (imovina − rate)</small><b>'+pfEur(net)+'</b><div class="im-two"><div><span>Imovina</span>'+pfEur(tot)+'</div><div><span>Ostaje rata</span>'+pfEur(IM_DEBT)+'</div></div>';
+  if(tot>0){ var bt={}; ASSETS.forEach(function(a){ bt[a.type]=(bt[a.type]||0)+imEur(a); }); h+='<div class="im-bar">'+Object.keys(bt).filter(function(k){ return bt[k]>0; }).map(function(k){ return '<i style="width:'+(bt[k]/tot*100)+'%;background:'+(IM_COL[k]||'#999')+'"></i>'; }).join('')+'</div>'; }
+  h+='</div>';
+  Object.keys(IM_TYPES).forEach(function(t){
+    var L=ASSETS.filter(function(a){ return a.type===t; }); if(!L.length) return;
+    h+='<div class="im-g"><span>'+IM_TYPES[t]+'</span><span>'+pfShort(L.reduce(function(s,a){ return s+imEur(a); },0))+'</span></div>';
+    L.forEach(function(a){
+      var nonEur=a.cur&&a.cur!=='EUR';
+      h+='<div class="im-r" onclick="imEdit(\''+a.id+'\')"><span style="width:10px;height:10px;border-radius:50%;background:'+(IM_COL[t]||'#999')+';flex:none"></span><div class="n"><b>'+revEsc(a.name||IM_TYPES[t])+'</b><small'+(imOld(a.upd)?' class="old"':'')+'>'+(a.upd?(imOld(a.upd)?'Treba ažurirati · ':'ažurirano ')+imDate(a.upd):'nije ažurirano')+'</small></div><div class="a">'+(nonEur?(pfShort(a.bal).replace('€','')+a.cur+'<small>≈ '+pfShort(imEur(a))+'</small>'):pfEur(imEur(a)))+'</div></div>';
+    });
+  });
+  if(!ASSETS.length) h+='<div class="pp-empty" style="margin:14px 2px">Još nema računa. Dodaj tekući račun, Revolut, štednju, investicije, APY fond, valute i gotovinu.</div>';
+  h+='<button type="button" class="im-add" onclick="imEdit(\'\')">+ Dodaj račun</button>';
+  var H=ASSET_HIST.slice(-6);
+  if(H.length>1){ h+='<div class="im-g"><span>Kretanje po mjesecima</span></div>'; for(var i=H.length-1;i>0;i--){ var dl=H[i].t-H[i-1].t; var p=H[i].m.split('-'); h+='<div class="im-hist"><span>'+MONTHS_SHORT_HR[parseInt(p[1])-1]+' '+p[0]+'</span><span>'+pfShort(H[i].t)+'</span><span class="d'+(dl<0?' neg':'')+'">'+(dl>=0?'+':'−')+pfShort(Math.abs(dl))+'</span></div>'; } }
+  sh.innerHTML=h;
+}
+function imEdit(id){
+  var a=id?ASSETS.find(function(x){ return x.id===id; }):null; IM_EDIT=a?a.id:'new';
+  var sh=document.getElementById('im-sheet'); a=a||{type:'tekuci',cur:'EUR',bal:'',name:'',r:''};
+  var opt=function(o,v){ return Object.keys(o).map(function(k){ return '<option value="'+k+'"'+(k===v?' selected':'')+'>'+o[k]+'</option>'; }).join(''); };
+  sh.innerHTML='<div class="pp-grab"></div><div class="im-t">'+(id?'Uredi račun':'Novi račun')+'</div><div class="im-f">'+
+   '<label>Naziv</label><input id="im-name" type="text" placeholder="npr. Zaba kartica" value="'+revEsc(a.name||'')+'">'+
+   '<label>Vrsta</label><select id="im-type" onchange="imAutoName()">'+opt(IM_TYPES,a.type)+'</select>'+
+   '<label>Valuta</label><select id="im-cur" onchange="imCurCh()">'+opt({EUR:'EUR €',USD:'USD $',GBP:'GBP £'},a.cur||'EUR')+'</select>'+
+   '<label>Stanje</label><input id="im-bal" type="text" inputmode="decimal" placeholder="0,00" value="'+(a.bal!==''&&a.bal!=null?String(a.bal).replace('.',','):'')+'">'+
+   '<div id="im-rw" style="display:'+((a.cur&&a.cur!=='EUR')?'block':'none')+'"><label>Tečaj (neobavezno, € za 1 jedinicu)</label><input id="im-r" type="text" inputmode="decimal" placeholder="automatski" value="'+(a.r?String(a.r).replace('.',','):'')+'"></div>'+
+   '</div><div class="im-fb"><button type="button" onclick="imRender()">Natrag</button><button type="button" class="p" onclick="imSaveForm()">Spremi</button></div>'+(id?'<button type="button" class="im-del" onclick="imDelete()">Obriši račun</button>':'');
+}
+function imCurCh(){ var c=document.getElementById('im-cur').value; document.getElementById('im-rw').style.display=c==='EUR'?'none':'block'; }
+function imAutoName(){ var n=document.getElementById('im-name'); if(n&&!n.value) n.value=IM_TYPES[document.getElementById('im-type').value]||''; }
+async function imSaveForm(){
+  var pn=function(v){ return parseFloat(String(v||'').replace(/\./g,'').replace(',','.'))||0; };
+  var bal=pn(document.getElementById('im-bal').value), r=pn(document.getElementById('im-r')?document.getElementById('im-r').value:'');
+  var rec={name:document.getElementById('im-name').value.trim()||IM_TYPES[document.getElementById('im-type').value],type:document.getElementById('im-type').value,cur:document.getElementById('im-cur').value,bal:bal,r:r||'',upd:new Date().toISOString().slice(0,10)};
+  if(IM_EDIT==='new'){ rec.id='a'+Date.now().toString(36); ASSETS.push(rec); }
+  else { var i=ASSETS.findIndex(function(x){ return x.id===IM_EDIT; }); rec.id=IM_EDIT; if(i>=0) ASSETS[i]=rec; }
+  try{ showSaveOverlay('Spremam...'); await imSave(); hideSaveOverlay(); imRender(); }catch(e){ hideSaveOverlay(); showToast('Greška: '+(e.message||e),5000,'err'); }
+}
+async function imDelete(){
+  if(!confirm('Obriši ovaj račun?')) return;
+  ASSETS=ASSETS.filter(function(x){ return x.id!==IM_EDIT; });
+  try{ showSaveOverlay('Brišem...'); await imSave(); hideSaveOverlay(); imRender(); }catch(e){ hideSaveOverlay(); showToast('Greška: '+(e.message||e),5000,'err'); }
+}
+// stanje iz izvatka (Revolut CSV "Balance", Zaba "Novo stanje")
+async function imAutoBalance(bal){
+  if(!bal) return '';
+  imLoad(); var msg=[], ch=false;
+  [['revolut','revolut','Revolut'],['zaba','tekuci','Zaba']].forEach(function(k){
+    var b=bal[k[0]]; if(!b||isNaN(b.bal)) return;
+    var a=ASSETS.find(function(x){ return x.type===k[1] && (!x.cur||x.cur==='EUR') && (k[0]==='revolut'||/zaba|zagreba/i.test(x.name||'')); }) || ASSETS.find(function(x){ return x.type===k[1] && (!x.cur||x.cur==='EUR'); });
+    if(!a) return;
+    if(!a.upd || (b.date||'')>=a.upd){ a.bal=b.bal; a.upd=b.date||new Date().toISOString().slice(0,10); ch=true; msg.push(k[2]+' '+pfEur(b.bal)); }
+  });
+  if(ch){ await imSave(); return msg.join(', '); }
+  return '';
+}
+
 function showGoalForm(){ document.getElementById('goal-form').style.display='block'; }
 function hideGoalForm(){ document.getElementById('goal-form').style.display='none'; }
 function toggleGoalType(){
@@ -3562,10 +3716,11 @@ function revPick(inp){
 function revFromCsv(text,acc){
   const tbl=revParseCSV(text);
   const h=tbl[0]||[]; const ix=n=>h.indexOf(n);
-  const iT=ix('Type'),iD=ix('Started Date'),iC=ix('Completed Date'),iDe=ix('Description'),iA=ix('Amount'),iF=ix('Fee'),iCu=ix('Currency'),iS=ix('State');
+  const iB=ix('Balance'),iT=ix('Type'),iD=ix('Started Date'),iC=ix('Completed Date'),iDe=ix('Description'),iA=ix('Amount'),iF=ix('Fee'),iCu=ix('Currency'),iS=ix('State');
   if(iT<0||iA<0||iDe<0||iS<0) throw new Error('Ovo ne izgleda kao Revolut CSV izvadak');
   for(const r of tbl.slice(1)){
     const type=r[iT], st=r[iS];
+    if(st==='COMPLETED'&&iB>=0&&(r[iCu]||'EUR')==='EUR'){ const bd=(r[iC]||r[iD]||'').slice(0,19), bv=parseFloat(r[iB]); if(!isNaN(bv)&&(!acc.bal||!acc.bal.revolut||bd>=acc.bal.revolut.k)) acc.bal=Object.assign(acc.bal||{},{revolut:{bal:bv,date:bd.slice(0,10),k:bd}}); }
     if(st!=='COMPLETED'||type==='Exchange'){ acc.skipped++; continue; }
     if((r[iCu]||'EUR')!=='EUR'){ acc.other++; continue; }
     const dt=(r[iC]||r[iD]||'').slice(0,10);
@@ -3653,6 +3808,7 @@ function revFromZabaPages(pages,acc){
     for(const r of rows){
       r.items.sort((a,b)=>a.x-b.x);
       const line=r.items.map(t=>t.str).join(' ');
+      if(/NOVO STANJE/i.test(line)){ const nm=line.match(/-?\d{1,3}(?:\.\d{3})*,\d{2}/g); if(nm&&txs.length){ const last=txs[txs.length-1].date; acc.bal=Object.assign(acc.bal||{},{zaba:{bal:revMoney(nm[nm.length-1]),date:last}}); } }
       if(/Zbroj prometa|NOVO STANJE/i.test(line)){ done=true; break; }
       const dm=/^(\d{2})\.(\d{2})\.(\d{4})\.?$/.exec(r.items[0].str)||/^(\d{2})\.(\d{2})\.(\d{4})\.?\s/.exec(r.items[0].str);
       if(dm){ cur={date:dm[3]+'-'+dm[2]+'-'+dm[1],text:[],amt:null,dir:null}; txs.push(cur); }
@@ -3712,7 +3868,7 @@ async function revFinish(acc){
       if(o.rate&&plan[mi]){ const key=rateNorm(o.rate.name).split(/[^a-z0-9]+/).filter(Boolean)[0]||'', re=new RegExp('rata '+o.rate.k+'/'+o.rate.N+'(?!\\d)'); const pl=plan[mi].find(p=>re.test(p.n)&&p.n.indexOf(key)>=0); if(pl){ o.planRow=pl.row; plan[mi]=plan[mi].filter(p=>p!==pl); } } });
   }catch(e){ hideSaveOverlay(); showToast('Greška pri provjeri: '+(e.message||e),5000,'err'); return; }
   hideSaveOverlay();
-  REV_OPEN={}; REV_ROWS=out; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other; REV_ROWS._dupFiles=acc.dupFiles||0;
+  REV_OPEN={}; REV_ROWS=out; REV_ROWS._bal=acc.bal||null; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other; REV_ROWS._dupFiles=acc.dupFiles||0;
   revRender();
   document.getElementById('rev-modal').style.display='block';
 }
@@ -3831,8 +3987,9 @@ async function revImport(){
       await writeRange(sheetId, `${m}!A${row}`, data);
     }
     let rateN=0; try{ rateN=await rateFromImport(on); }catch(e){} _ratePlanSig='';
+    let balMsg=''; try{ balMsg=await imAutoBalance(REV_ROWS._bal); }catch(e){}
     hideSaveOverlay(); revClose();
-    showToast('Uvezeno '+on.length+' stavki ✓'+(rateN?' · rate ažurirane: '+rateN:'')+(upFail?' (izvadak nije spremljen na Drive)':''));
+    showToast('Uvezeno '+on.length+' stavki ✓'+(rateN?' · rate ažurirane: '+rateN:'')+(balMsg?' · stanje: '+balMsg:'')+(upFail?' (izvadak nije spremljen na Drive)':''));
     try{ if(typeof loadPregled==='function') loadPregled(); }catch(e){}
   }catch(e){ hideSaveOverlay(); showToast('Greška pri uvozu: '+(e.message||e),6000,'err'); }
 }
@@ -5083,6 +5240,8 @@ function syncAmtDisplay(inp){
 <div id="kat-sheet-ov" onclick="katSheet(false)"></div>
 <div id="kat-sheet" role="dialog" aria-label="Kategorija"></div>
 
+<div id="im-ov" onclick="imSheet(false)"></div>
+<div id="im-sheet" role="dialog" aria-label="Imovina"></div>
 <div id="pp-ov" onclick="ppSheet(false)"></div>
 <div id="pp-sheet" role="dialog" aria-label="Okvirni plan"></div>
 <div id="pf-ov" onclick="pfSheet(false)"></div>
