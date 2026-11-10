@@ -2592,6 +2592,31 @@ function fillProfileForm(){
   }
   renderSavingsGoals();
   try{ if(!localStorage.getItem('mf_pbzfix1')) setTimeout(pbzLumpFix,3000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_recat1')) setTimeout(recatFix,9000); }catch(e){}
+}
+// jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
+async function recatFix(){
+  if(!sheetId) return;
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+    const have=new Set((meta.sheets||[]).map(x=>x.properties.title)); let n=0; const log=[];
+    for(const m of MONTHS_HR){
+      if(!have.has(m)) continue;
+      const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!A57:N500')}`);
+      const data=[];
+      (res.values||[]).forEach((r,i)=>{
+        if(!r||!r[1]) return;
+        const note=String(r[11]||''); if(!/^(zaba|revolut|pbz visa):/i.test(note)||/^plan visa/i.test(note)) return;
+        const cur=r[8]||'Other'; if(['Prijenos','Prihod','Uplaceno','Drugima','Debt','Savings'].indexOf(cur)>=0) return;
+        const txt=note.replace(/^(zaba|revolut|pbz visa):\s*(rata\s*\d+\/\d+\s*·\s*)?/i,'');
+        const nc=revCat(txt), oc=revCatOld(txt);
+        if(nc!==oc && nc!=='Other' && (cur===oc||cur==='Other') && cur!==nc){ data.push({range:`${m}!I${57+i}`,values:[[nc]]}); log.push({m:m,row:57+i,from:cur,to:nc,note:note.slice(0,60)}); }
+      });
+      if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
+    }
+    try{ localStorage.setItem('mf_recat1','1'); if(log.length) localStorage.setItem('mf_recat1_log',JSON.stringify(log).slice(0,200000)); }catch(e){}
+    if(n){ showToast('Kategorije ispravljene unatrag: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
+  }catch(e){}
 }
 // jednokratno: Zaba redak "izravno terećenje PBZ CARD" već uvezen kao trošak → Prijenos (da se ne broji dvaput)
 async function pbzLumpFix(){
@@ -3772,20 +3797,29 @@ async function uploadToDrive(file, filename){
 function stavke(n,m){ n=Math.abs(parseInt(n)||0); var l=n%10,h=n%100,one=(l===1&&h!==11),few=(l>=2&&l<=4&&(h<10||h>=20)); if(one) return m==='acc'?'stavku':(m==='gen'?'stavke':'stavka'); return few?'stavke':'stavki'; }
 var REV_ROWS=[];
 var REV_RULES=[
- [/zagreba[cč]ki\s+holding|zajedni[cč]ka\s+pri[cč]uva|pri[cč]uva/i,'Rezije'],
  [/keks/i,'KeksPay'],
- [/keba[bp]|kaufland|konzum|spar|lidl|tiki|studenac|mlinar|plodine|interspar|eurospin|pelati|mljekara|ledo|pekar|mcdonald|restoran|gelato|wolt|glovo|beer|ohana|bufet|cafe|caffe|kava/i,'Food'],
+ [/kaufland|konzum|spar|lidl|tiki|studenac|mlinar|plodine|interspar|eurospin|pelati|mljekara|ledo|pekar|mcdonald|restoran|gelato|wolt|glovo|beer|ohana|bufet|cafe|caffe|kava/i,'Food'],
  [/triglav|\bina\b|petrol|tifon|c plin|crodux|omv|lukoil|mol |bolt|uber|parking|autocesta|hac|arz|vulkaniz|centar za vozila/i,'Prijevoz'],
  [/apipet|pet |zoo|veterin|ljubimac/i,'Pets'],
  [/claude|openai|elevenlabs|google one|google play|apple|netflix|spotify|youtube|adobe|canva|github|icloud|microsoft/i,'Software'],
- [/notino|m[üu]ller|dm |bipa|douglas|sephora|kozmet|frizer/i,'Beauty'],
+ [/m[üu]ller|dm |bipa|douglas|sephora|kozmet|frizer/i,'Beauty'],
  [/ustanova|ljekarn|apoteka|dental|ordinacija|poliklinika|terme/i,'Zdravlje'],
  [/about you|zara|h&m|hm |temu|shein|decathlon|zalando|answear|reserved/i,'Odijelo'],
- [/zekaem|coreevent|cinestar|kino|theatre|dance|masterclass|ticket|entertainment|bikers/i,'Zabava'],
+ [/cinestar|kino|theatre|dance|masterclass|ticket|entertainment|bikers/i,'Zabava'],
  [/ikea|bauhaus|merkur|jysk|emmezeta|lesnina/i,'Dom'],
  [/air|wizz|ryanair|hotel|booking|airbnb|croatia airlines/i,'Putovanje']
 ];
-function revCat(desc){ for(const [re,c] of REV_RULES){ if(re.test(desc)) return c; } return 'Other'; }
+// pravila dodana naknadno (provjeravaju se prva); REV_RULES su osnovna
+var REV_NEW=[
+ [/zagreba[cč]ki\s+holding|zajedni[cč]ka\s+pri[cč]uva|pri[cč]uva/i,'Rezije'],
+ [/hop\s+slobo/i,'Pets'],
+ [/ukvi|etamob/i,'Putovanje'],
+ [/keba[bp]/i,'Food'],
+ [/notino/i,'Beauty'],
+ [/zekaem|coreevent/i,'Zabava']
+];
+function revCatOld(desc){ for(const [re,c] of REV_RULES){ if(re.test(desc)) return c; } return 'Other'; }
+function revCat(desc){ for(const [re,c] of REV_NEW){ if(re.test(desc)) return c; } return revCatOld(desc); }
 function revParseCSV(t){
   t=t.replace(/^﻿/,'');
   const rows=[]; let r=[], f='', q=false;
