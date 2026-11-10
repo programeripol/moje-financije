@@ -2593,8 +2593,32 @@ function fillProfileForm(){
   renderSavingsGoals();
   try{ if(!localStorage.getItem('mf_pbzfix1')) setTimeout(pbzLumpFix,3000); }catch(e){}
   try{ if(!localStorage.getItem('mf_recat2')) setTimeout(recatFix,9000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_keks1')) setTimeout(keksFix,15000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
+async function keksFix(){
+  if(!sheetId) return;
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+    const have=new Set((meta.sheets||[]).map(x=>x.properties.title)); let n=0,n46=0;
+    for(const m of MONTHS_HR){
+      if(!have.has(m)) continue;
+      const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!A57:N500')}`);
+      const data=[];
+      (res.values||[]).forEach((r,i)=>{
+        if(!r||!r[1]) return;
+        const note=String(r[11]||''); if(!/^(zaba|revolut):/i.test(note)||!/keks\s*pay/i.test(note)) return;
+        const cur=r[8]||'Other'; if(['Prijenos','Prihod','Uplaceno','Drugima'].indexOf(cur)>=0) return;
+        const nc=keksCat(note,parseFloat(r[5])||0,cur);
+        if(nc!==cur){ data.push({range:`${m}!I${57+i}`,values:[[nc]]}); if(nc==='Debt') n46++; }
+      });
+      if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
+    }
+    if(n46){ try{ await momFromImport(Array.from({length:n46},function(){ return {amount:46,desc:'KEKS Pay',note:''}; })); }catch(e){} }
+    try{ localStorage.setItem('mf_keks1','1'); }catch(e){}
+    if(n){ showToast('Keks stavke ispravljene: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
+  }catch(e){}
+}
 async function recatFix(){
   if(!sheetId) return;
   try{
@@ -3504,7 +3528,7 @@ async function rateFromImport(items){
 }
 // uplata od 46 € Danijeli (mama, mobitel) smanjuje preostale rate cilja "Mobitel (mama)"
 async function momFromImport(items){
-  var n=items.filter(function(o){ return !o.income && o.amount>0 && Math.abs(o.amount-46)<0.01 && /danijela\s+buzan/i.test(rateNorm((o.desc||'')+' '+(o.note||''))); }).length;
+  var n=items.filter(function(o){ return !o.income && o.amount>0 && Math.abs(o.amount-46)<0.01 && (/danijela\s+buzan/i.test(rateNorm((o.desc||'')+' '+(o.note||''))) || /keks\s*pay/i.test(o.desc||'')); }).length;
   if(!n) return 0;
   var rows=(await getRows(sheetId,'Ciljevi','A2:H200')).map(function(r,i){ return {r:r,row:i+2}; });
   var g=rows.find(function(x){ return x.r&&x.r[1]==='loan' && /mama/.test(rateNorm(x.r[0]+' '+(x.r[6]||''))); });
@@ -3822,6 +3846,8 @@ var REV_NEW=[
 ];
 function revCatOld(desc){ for(const [re,c] of REV_RULES){ if(re.test(desc)) return c; } return 'Other'; }
 function revCat(desc){ for(const [re,c] of REV_NEW){ if(re.test(desc)) return c; } return revCatOld(desc); }
+// Keks Pay: 46 € = rata za mamin mobitel, 16,99 € (Iskon) i 10,48 € (A1) = režije
+function keksCat(desc,amt,cat){ if(!/keks\s*pay/i.test(desc||'')) return cat; var a=Math.abs(+amt||0); if(Math.abs(a-46)<0.01) return 'Debt'; if(Math.abs(a-16.99)<0.01||Math.abs(a-10.48)<0.01) return 'Rezije'; return cat; }
 function revParseCSV(t){
   t=t.replace(/^﻿/,'');
   const rows=[]; let r=[], f='', q=false;
@@ -3878,6 +3904,7 @@ function revFromCsv(text,acc){
     else if(type==='Transfer'||type==='Rev Payment') cat=(amt>0?'Uplaceno':'Drugima');
     else if(type==='ATM') cat='Other';
     else cat=revCat(desc);
+    cat=keksCat(desc,net,cat);
     acc.items.push({date:dt,desc:desc,amount:Math.round(net*100)/100,cat:cat,on:true,type:type,note:'Revolut: '+desc,dup:false});
   }
 }
@@ -3986,7 +4013,7 @@ function revFromZabaPages(pages,acc){
       acc.items.push({date:t.date,desc:short,amount:-t.amt,cat:'Uplaceno',on:true,type:'Zaba uplata',note:'Zaba: '+short,dup:false});
     } else {
       if(/PBZ\s*CARD/i.test(d)&&/izravn/i.test(d)){ acc.items.push({date:t.date,desc:'Plaćanje PBZ Visa kartice (stavke su u izvatku kartice)',amount:t.amt,cat:'Prijenos',on:true,type:'Prijenos',note:'Zaba: '+short,dup:false}); return; }
-      const cat=/Podizanje gotovog|Naknada|TROŠKOVI UČINJENI/i.test(d)?'Other':/transfer nac/i.test(d)?'Drugima':revCat(short);
+      const cat=/Podizanje gotovog|Naknada|TROŠKOVI UČINJENI/i.test(d)?'Other':/transfer nac/i.test(d)?'Drugima':keksCat(short,t.amt,revCat(short));
       acc.items.push({date:t.date,desc:short,amount:t.amt,cat:cat,on:true,type:'Zaba',note:'Zaba: '+short,dup:false});
     }
   });
