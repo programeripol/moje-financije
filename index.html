@@ -3225,7 +3225,7 @@ async function loadGoals(){
     const rows = (await getRows(sheetId, 'Ciljevi', 'A2:H200')).map((r,i)=>({r, row:i+2})).filter(x=>x.r && x.r[0]);
     if(!rows.length){ list.innerHTML=rateSeedHtml(rows)+'<div class="empty-state">Nema ciljeva. Dodaj štednju ili ratu.</div>'; return; }
 
-    var rtHtml=rateSummaryHtml(rows);
+    var rtHtml=rateSummaryHtml(rows); setTimeout(function(){ rateEnsurePlanned(rows); },400);
     list.innerHTML = rtHtml + rows.map(({r,row})=>{
       const [name, type, target, current, monthly, remaining, desc] = r;
       const isLoan    = type === 'loan';
@@ -3334,6 +3334,41 @@ async function rateFromImport(items){
   if(add.length) await appendRows(sheetId,'Ciljevi',add);
   return n;
 }
+// ── planirane rate u budućim mjesecima ──
+var _ratePlanBusy=false, _ratePlanSig='';
+function rateParseDesc(d){ var m=/rata\s+(\d+)\s*\/\s*(\d+)/i.exec(d||''); return m?{k:+m[1],N:+m[2]}:null; }
+async function rateMonthNotes(m,cache){
+  if(cache[m]) return cache[m];
+  var out=[];
+  try{ await ensureMonthSheet(m); var res=await gfetch('https://sheets.googleapis.com/v4/spreadsheets/'+sheetId+'/values/'+encodeURIComponent(m+'!B57:L500')); out=(res.values||[]).map(function(v){ return (v&&v[10])||''; }); }catch(e){}
+  cache[m]=out; return out;
+}
+async function rateEnsurePlanned(rows){
+  if(_ratePlanBusy||!sheetId) return;
+  var L=rows.filter(function(x){ return x.r[1]==='loan' && (parseInt(x.r[5])||0)>0; });
+  var sig=L.map(function(x){ return [x.r[0],x.r[4],x.r[5],x.r[6]].join('|'); }).join('#')+'|'+new Date().getMonth();
+  if(sig===_ratePlanSig) return;
+  _ratePlanBusy=true;
+  try{
+    var now=new Date(), stm=now.getDate()>=4?now.getMonth()+1:now.getMonth(), cache={}, yr=now.getFullYear(), added=0;
+    for(var x of L){
+      var pd=rateParseDesc(x.r[6]); if(!pd) continue;
+      var N=pd.N, rem=parseInt(x.r[5])||0, nextK=N-rem+1, amt=parseFloat(x.r[4])||0;
+      var key=rateNorm(x.r[0]).split(/[^a-z0-9]+/).filter(Boolean)[0]||'';
+      for(var i=0; nextK+i<=N && stm+i<=11; i++){
+        var m=MONTHS_HR[stm+i], k=nextK+i, tag='rata '+k+'/'+N;
+        var notes=await rateMonthNotes(m,cache), re=new RegExp(tag+'(?!\\d)');
+        if(notes.some(function(n){ var t=rateNorm(n); return re.test(t)&&t.indexOf(key)>=0; })) continue;
+        var row=await findNextTrackerRow(m), d=Array(14).fill('');
+        d[1]=fmtDateHR(yr+'-'+String(stm+i+1).padStart(2,'0')+'-04'); d[5]=amt; d[8]=revCat(x.r[0]); d[11]='Plan Visa: '+tag+' · '+x.r[0];
+        await writeRange(sheetId,m+'!A'+row,[d]); notes.push(d[11]); added++;
+      }
+    }
+    _ratePlanSig=sig;
+    if(added) showToast('Planirane rate upisane u buduće mjesece ✓');
+  }catch(e){} finally{ _ratePlanBusy=false; }
+}
+
 function showGoalForm(){ document.getElementById('goal-form').style.display='block'; }
 function hideGoalForm(){ document.getElementById('goal-form').style.display='none'; }
 function toggleGoalType(){
@@ -3664,16 +3699,17 @@ async function revFinish(acc){
     const months={}; out.forEach(o=>months[parseInt(o.date.slice(5,7))-1]=1);
     const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
     const have=new Set((meta.sheets||[]).map(s=>s.properties.title));
-    const seen={};
+    const seen={}, plan={};
     for(const mi of Object.keys(months)){
-      const name=MONTHS_HR[mi]; seen[mi]=new Set();
+      const name=MONTHS_HR[mi]; seen[mi]=new Set(); plan[mi]=[];
       if(!have.has(name)) continue;
       try{
         const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(name+'!B57:L500')}`);
-        (res.values||[]).forEach(v=>{ if(v&&v[0]) seen[mi].add(revKey(v[0], v[4], v[10])); });
+        (res.values||[]).forEach((v,ix)=>{ if(v&&v[0]) seen[mi].add(revKey(v[0], v[4], v[10])); const nn=rateNorm((v&&v[10])||''); if(/^plan visa/.test(nn)) plan[mi].push({row:57+ix,n:nn}); });
       }catch(e){}
     }
-    out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; } });
+    out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; return; }
+      if(o.rate&&plan[mi]){ const key=rateNorm(o.rate.name).split(/[^a-z0-9]+/).filter(Boolean)[0]||'', re=new RegExp('rata '+o.rate.k+'/'+o.rate.N+'(?!\\d)'); const pl=plan[mi].find(p=>re.test(p.n)&&p.n.indexOf(key)>=0); if(pl){ o.planRow=pl.row; plan[mi]=plan[mi].filter(p=>p!==pl); } } });
   }catch(e){ hideSaveOverlay(); showToast('Greška pri provjeri: '+(e.message||e),5000,'err'); return; }
   hideSaveOverlay();
   REV_OPEN={}; REV_ROWS=out; REV_ROWS._skipped=acc.skipped; REV_ROWS._other=acc.other; REV_ROWS._dupFiles=acc.dupFiles||0;
@@ -3787,10 +3823,14 @@ async function revImport(){
       for(const f of new Set(by[m].map(o=>o.src).filter(Boolean))){
         try{ urls.set(f, await revUploadStatement(f,m)); }catch(e){ upFail++; }
       }
-      const data=by[m].sort((a,b)=>a.date<b.date?-1:1).map(o=>{ const d=Array(14).fill(''); d[1]=fmtDateHR(o.date); d[5]=o.amount; d[8]=o.cat; d[11]=o.note; d[12]=(o.src&&urls.get(o.src))||''; return d; });
+      const mk=o=>{ const d=Array(14).fill(''); d[1]=fmtDateHR(o.date); d[5]=o.amount; d[8]=o.cat; d[11]=o.note; d[12]=(o.src&&urls.get(o.src))||''; return d; };
+      for(const o of by[m].filter(o=>o.planRow)) await writeRange(sheetId, `${m}!A${o.planRow}`, [mk(o)]);
+      by[m]=by[m].filter(o=>!o.planRow);
+      if(!by[m].length) continue;
+      const data=by[m].sort((a,b)=>a.date<b.date?-1:1).map(mk);
       await writeRange(sheetId, `${m}!A${row}`, data);
     }
-    let rateN=0; try{ rateN=await rateFromImport(on); }catch(e){}
+    let rateN=0; try{ rateN=await rateFromImport(on); }catch(e){} _ratePlanSig='';
     hideSaveOverlay(); revClose();
     showToast('Uvezeno '+on.length+' stavki ✓'+(rateN?' · rate ažurirane: '+rateN:'')+(upFail?' (izvadak nije spremljen na Drive)':''));
     try{ if(typeof loadPregled==='function') loadPregled(); }catch(e){}
@@ -4016,10 +4056,10 @@ async function loadGallery(){
       const safeDU=(driveUrl||'').replace(/'/g,"\\'");
       return `<div class="g-card" onclick="openEditReceipt(${sheetRow},'${curMonth()}','${datum}',${iznos},'${kat}','${safeBilj}','${safeDU}')">
         <button class="g-del-btn" title="Obriši račun" onclick="event.stopPropagation();deleteReceipt(${sheetRow},'${safeId}')">×</button>
-        ${imgUrl && !/^(Revolut|Zaba|PBZ Visa): /.test(bilj)
+        ${imgUrl && !/^(Revolut|Zaba|PBZ Visa|Plan Visa): /.test(bilj)
           ? `<img class="g-thumb" src="${imgUrl}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
           : ''}
-        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>${/^(Revolut|Zaba|PBZ Visa): /.test(bilj)?'🏦':'🧾'}</div>
+        <div class="g-thumb-ph" ${imgUrl ? 'style="display:none"' : ''}>${/^(Revolut|Zaba|PBZ Visa|Plan Visa): /.test(bilj)?(/^Plan Visa/.test(bilj)?'🗓':'🏦'):'🧾'}</div>
         <div class="g-info">
           <div class="g-row">
             <span class="g-name">${name}</span>
@@ -4214,10 +4254,10 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   if(iw&&it){it.src="";iw.style.display="none";if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.style.opacity="0";var sp=document.getElementById('edit-img-spinner');if(sp)sp.style.display='flex';it.src=th;it.onload=function(){it.style.opacity="1";if(sp)sp.style.display='none';};it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
   var bk=document.getElementById('edit-bank');
   if(bk){
-    var bm=/^(Revolut|Zaba|PBZ Visa): /.exec(bilj||'');
+    var bm=/^(Revolut|Zaba|PBZ Visa|Plan Visa): /.exec(bilj||'');
     if(bm){
       if(iw) iw.style.display='none';
-      bk.innerHTML='<span class="eb-i">🏦</span><div><b>Uvezeno iz izvatka banke</b><small>'+bm[1]+(driveUrl?' · ':'')+'</small>'+(driveUrl?'<a href="'+driveUrl+'" target="_blank" rel="noopener">Otvori izvadak</a>':'')+'</div>';
+      bk.innerHTML=bm[1]==='Plan Visa'?'<span class="eb-i">🗓</span><div><b>Planirana rata (Visa)</b><small>Označit će se plaćenom kad uvezeš izvadak za taj mjesec.</small></div>':'<span class="eb-i">🏦</span><div><b>Uvezeno iz izvatka banke</b><small>'+bm[1]+(driveUrl?' · ':'')+'</small>'+(driveUrl?'<a href="'+driveUrl+'" target="_blank" rel="noopener">Otvori izvadak</a>':'')+'</div>';
       bk.style.display='flex';
     } else bk.style.display='none';
   }
