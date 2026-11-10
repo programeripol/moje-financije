@@ -1101,6 +1101,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 </div>
 <div id="inc-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-radius:0 0 14px 14px;border-left:3px solid var(--th1);overflow:hidden;margin-bottom:8px">
   <div style="overflow-y:auto;max-height:55vh;padding:12px 16px 8px">
+    <div id="mp-inc-recv"></div>
     <div id="mp-inc-list"></div>
     <button class="add-goal-btn" style="background:var(--th1);color:#fff;border:none;margin-top:8px;padding:8px 16px;border-radius:10px;font-weight:600" onclick="addMPInc()">+ Dodaj</button>
   </div>
@@ -2840,7 +2841,15 @@ function addMPSav(){ mPlanSavGoals.push({name:'',amount:0}); renderMPSav(); setT
 function removeMPSav(i){ mPlanSavGoals.splice(i,1); renderMPSav(); }
 
 
-var _recvMonth=0;
+var _recvMonth=0, _recvItems=[];
+function renderRecvList(){
+  var c=document.getElementById('mp-inc-recv'); if(!c) return;
+  if(!_recvItems.length){ c.innerHTML=''; return; }
+  var esc=function(x){return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;');};
+  c.innerHTML='<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#16a34a;margin:0 0 6px">Primljeno</div>'+
+    _recvItems.map(function(it){ return '<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #eef1f8;font-size:13px"><span style="min-width:0"><b style="color:#16a34a">'+esc(it.date)+'</b> &nbsp;'+esc(it.desc)+'</span><b style="white-space:nowrap">'+eur(it.amt)+'</b></div>'; }).join('')+
+    '<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--th-text);margin:14px 0 6px">Plan</div>';
+}
 async function updateIncTotal(){
   const sp = document.getElementById('hero-spin-inc');
   if(sp && sp.classList.contains('active')) return;
@@ -3010,16 +3019,16 @@ async function loadPregled(){
 
     const actual = {};
     let totalSpent = 0;
-    let received = 0;
+    let received = 0; const recvItems=[];
     entries.forEach(r=>{
       const cat = r[8]||'Other'; // I = kategorija
       const amt = parseFloat(r[5])||0; // F = iznos
       if(cat==='Prijenos') return; // prijenos između vlastitih računa nije trošak
-      if(cat==='Prihod'){ received += amt; return; } // primljeno (plaća) nije trošak
+      if(cat==='Prihod'){ received += amt; recvItems.push({date:r[1],desc:r[11]||r[3]||'Prihod',amt:amt}); return; } // primljeno (plaća) nije trošak
       actual[cat] = (actual[cat]||0) + amt;
       totalSpent += amt;
     });
-    _recvMonth = received;
+    _recvMonth = received; _recvItems = recvItems; renderRecvList();
 
     const monthPlan = await loadMonthPlan(viewMonthIdx);
     const effPlan   = getEffectivePlan(monthPlan);
