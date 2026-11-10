@@ -2592,7 +2592,7 @@ function fillProfileForm(){
   }
   renderSavingsGoals();
   try{ if(!localStorage.getItem('mf_pbzfix1')) setTimeout(pbzLumpFix,3000); }catch(e){}
-  try{ if(!localStorage.getItem('mf_recat1')) setTimeout(recatFix,9000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_recat2')) setTimeout(recatFix,9000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
 async function recatFix(){
@@ -2614,7 +2614,7 @@ async function recatFix(){
       });
       if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
     }
-    try{ localStorage.setItem('mf_recat1','1'); if(log.length) localStorage.setItem('mf_recat1_log',JSON.stringify(log).slice(0,200000)); }catch(e){}
+    try{ localStorage.setItem('mf_recat2','1'); if(log.length) localStorage.setItem('mf_recat2_log',JSON.stringify(log).slice(0,200000)); }catch(e){}
     if(n){ showToast('Kategorije ispravljene unatrag: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
   }catch(e){}
 }
@@ -3816,7 +3816,8 @@ var REV_NEW=[
  [/ukvi|etamob/i,'Putovanje'],
  [/keba[bp]/i,'Food'],
  [/notino/i,'Beauty'],
- [/zekaem|coreevent/i,'Zabava']
+ [/zekaem|coreevent/i,'Zabava'],
+ [/\btemu\b/i,'Dom']
 ];
 function revCatOld(desc){ for(const [re,c] of REV_RULES){ if(re.test(desc)) return c; } return 'Other'; }
 function revCat(desc){ for(const [re,c] of REV_NEW){ if(re.test(desc)) return c; } return revCatOld(desc); }
