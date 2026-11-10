@@ -3193,7 +3193,7 @@ async function loadPregled(){
           </div>
           <div style="text-align:right;flex-shrink:0;margin-right:4px">
             <div style="font-size:14px;font-weight:700;color:${over?'#ef4444':'var(--color-text-primary,#1a1a2e)'}">${eur(act)}</div>
-            <div style="font-size:11px;color:#7090b0">${planAmt>0?Math.round(pct)+'%':entries.length+' stavki'}</div>
+            <div style="font-size:11px;color:#7090b0">${planAmt>0?Math.round(pct)+'%':entries.length+' '+stavke(entries.length)}</div>
           </div>
           <span class="cat-chev" style="color:#b0bec5;font-size:18px;transition:transform .2s;flex-shrink:0">⌄</span>
         </div>
@@ -3672,6 +3672,7 @@ async function uploadToDrive(file, filename){
 // Jednokratno: stari računi su imali "svatko s poveznicom"; ovo ih vraća na privatno
 
 // ── UVOZ REVOLUT CSV ─────────────────────────────────────────────────
+function stavke(n,m){ n=Math.abs(parseInt(n)||0); var l=n%10,h=n%100,one=(l===1&&h!==11),few=(l>=2&&l<=4&&(h<10||h>=20)); if(one) return m==='acc'?'stavku':(m==='gen'?'stavke':'stavka'); return few?'stavke':'stavki'; }
 var REV_ROWS=[];
 var REV_RULES=[
  [/zagreba[cč]ki\s+holding|zajedni[cč]ka\s+pri[cč]uva|pri[cč]uva/i,'Rezije'],
@@ -3942,7 +3943,7 @@ function revMonth(m){
 }
 function revSum(){
   const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
-  const w=n=>n+' '+(n%10===1&&n%100!==11?'stavka':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'stavke':'stavki'));
+  const w=n=>n+' '+stavke(n);
   document.getElementById('rev-sum').textContent=w(on.length);
   document.getElementById('rev-sum2').textContent='troškovi '+eur(tot)+(inc?' · plaća +'+eur(inc):'');
   document.getElementById('rev-btn').disabled=!on.length;
@@ -3954,7 +3955,7 @@ function revSum(){
     const exp=sel.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0), pay=sel.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
     const c=document.getElementById('revmc-'+m), t=document.getElementById('revms-'+m);
     revCbPaint(c, sel.length===rows.length?'on':(sel.length?'part':''));
-    if(t) t.textContent=sel.length+' od '+rows.length+' stavki · '+eur(exp)+(pay?' · plaća +'+eur(pay):'');
+    if(t) t.textContent=sel.length+' od '+rows.length+' '+stavke(rows.length,'gen')+' · '+eur(exp)+(pay?' · plaća +'+eur(pay):'');
   });
 }
 function revClose(){ document.getElementById('rev-modal').style.display='none'; }
@@ -3977,7 +3978,7 @@ async function revUploadStatement(file,monthName){
 }
 async function revImport(){
   const on=REV_ROWS.filter(o=>o.on); if(!on.length) return;
-  showSaveOverlay('Upisujem '+on.length+' stavki...');
+  showSaveOverlay('Upisujem '+on.length+' '+stavke(on.length,'acc')+'...');
   try{
     await ensureResources();
     const by={}; on.forEach(o=>{ const m=MONTHS_HR[parseInt(o.date.slice(5,7))-1]; (by[m]=by[m]||[]).push(o); });
@@ -4000,7 +4001,7 @@ async function revImport(){
     let rateN=0; try{ rateN=await rateFromImport(on); }catch(e){} _ratePlanSig='';
     let balMsg=''; try{ balMsg=await imAutoBalance(REV_ROWS._bal); }catch(e){}
     hideSaveOverlay(); revClose();
-    showToast('Uvezeno '+on.length+' stavki ✓'+(rateN?' · rate ažurirane: '+rateN:'')+(balMsg?' · stanje: '+balMsg:'')+(upFail?' (izvadak nije spremljen na Drive)':''));
+    showToast('Uvezeno '+on.length+' '+stavke(on.length,'acc')+' ✓'+(rateN?' · rate ažurirane: '+rateN:'')+(balMsg?' · stanje: '+balMsg:'')+(upFail?' (izvadak nije spremljen na Drive)':''));
     try{ if(typeof loadPregled==='function') loadPregled(); }catch(e){}
   }catch(e){ hideSaveOverlay(); showToast('Greška pri uvozu: '+(e.message||e),6000,'err'); }
 }
