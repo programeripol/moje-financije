@@ -1349,6 +1349,11 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
     <div class="pf-lt"><div>Uvoz izvatka</div><small>Revolut CSV / Zaba PDF / PBZ Card PDF</small></div>
     <svg width="10" height="14" viewBox="0 0 9 14" fill="none" aria-hidden="true"><path d="M1 1L7 7L1 13" stroke="#2a3c8f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
+  <div class="pf-dp pf-link" onclick="bkpOpen()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2a3c8f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v5c0 5-3.4 8.3-8 10-4.6-1.7-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+    <div class="pf-lt"><div>Sigurnosne kopije</div><small id="bkp-sub">Profil i rate, spremaju se same u Drive</small></div>
+    <svg width="10" height="14" viewBox="0 0 9 14" fill="none" aria-hidden="true"><path d="M1 1L7 7L1 13" stroke="#2a3c8f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
   <div class="pf-dp pf-link" onclick="openSettings()">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2a3c8f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
     <div class="pf-lt"><div>Postavke</div></div>
@@ -2473,6 +2478,7 @@ async function ensureResources(){
   await ensurePlanSheet();
   await loadProfile();
   try{if(profileData&&Object.keys(profileData).length>3){localStorage.setItem('mf_pd',JSON.stringify(profileData));localStorage.setItem('mf_pd_v','2');}}catch(e){}
+  try{ if(_profOK) setTimeout(function(){ bkpAuto(); },5000); }catch(e){}
 }
 
 async function findOrCreateYearSpreadsheet(){
@@ -2553,6 +2559,7 @@ async function loadProfile(){
     return;
   }
   profileData = fresh || {};
+  if(!failed){ try{ setTimeout(function(){ bkpOffer(); },1500); }catch(e){} }
 }
 
 async function saveProfileToSheet(data){
@@ -5607,6 +5614,101 @@ function srchRun(){
     var yy=x.d?x.d.getFullYear():'';
     return '<div class="srch-it"><div class="srch-d">'+dd+'<small>'+yy+'</small></div><div class="srch-m">'+srchEsc(x.name||x.note)+'<small>'+srchEsc((x.desc?x.desc+' · ':'')+x.catL+' · '+x.m)+pl+'</small>'+(x.url?'<a class="srch-r" href="'+srchEsc(x.url)+'" target="_blank" rel="noopener">Pogledaj račun</a>':'')+'</div><div class="srch-a">'+eur(x.amt)+'</div></div>';
   }).join('')+(res.length>200?'<div class="srch-empty">Prikazano prvih 200. Upiši preciznije.</div>':'');
+}
+</script>
+
+<style>
+#bkp-modal{position:fixed;inset:0;z-index:9999;background:#fff;display:none;flex-direction:column;font-family:inherit}
+#bkp-modal.open{display:flex}
+.bkp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 12px;border-bottom:2px solid #e3ebd3}
+.bkp-top b{font-size:20px;color:#2a3c8f;font-weight:800}
+.bkp-x{background:#6b8046;color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:22px;line-height:40px;cursor:pointer;flex:none}
+.bkp-body{flex:1;overflow:auto;padding:14px 16px calc(env(safe-area-inset-bottom,0px) + 24px)}
+.bkp-note{font-weight:600;font-size:13px;line-height:1.4;color:#5b6a45;margin:0 0 14px}
+.bkp-it{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1.5px solid #eef3e1}
+.bkp-it div{flex:1;font-weight:700;font-size:15px;color:#1b1a1a}
+.bkp-it small{display:block;font-weight:600;color:#7a7a6e;font-size:12px;margin-top:2px}
+.bkp-btn{border:none;border-radius:999px;padding:9px 18px;background:#2a3c8f;color:#fff;font-weight:800;font-size:13px;font-family:inherit;cursor:pointer;box-shadow:0 3px 0 rgba(42,60,143,.28)}
+.bkp-big{display:block;width:100%;margin:0 0 14px;padding:13px;font-size:15px}
+</style>
+<div id="bkp-modal">
+  <div class="bkp-top"><b>Sigurnosne kopije</b><button class="bkp-x" onclick="bkpClose()" aria-label="Zatvori">×</button></div>
+  <div class="bkp-body">
+    <p class="bkp-note">App sama sprema kopiju profila i rata u tvoj Drive, najviše jednom dnevno, i čuva zadnjih 7. Kopija se nikad ne pravi od praznog profila.</p>
+    <button class="bkp-btn bkp-big" onclick="bkpNow()">Napravi kopiju sada</button>
+    <div id="bkp-list"></div>
+  </div>
+</div>
+<script>
+// ── sigurnosne kopije profila i rata (Drive) ──
+var BKP_KEEP=7;
+async function bkpFolder(){ if(!rootFolderId&&!yearFolderId) await ensureResources(); return await findOrCreateFolder('Sigurnosne kopije', rootFolderId||yearFolderId||null); }
+async function bkpList(){
+  var f=await bkpFolder();
+  var q="'"+f+"' in parents and trashed=false and name contains 'profil-'";
+  var r=await gfetch('https://www.googleapis.com/drive/v3/files?q='+encodeURIComponent(q)+'&orderBy=createdTime%20desc&pageSize=30&fields=files(id,name,createdTime)');
+  return r.files||[];
+}
+async function bkpCreate(){
+  if(!_profOK||!profileData||Object.keys(profileData).length<=3) return false;
+  var ciljevi=[]; try{ ciljevi=await getRows(sheetId,'Ciljevi','A2:H200'); }catch(e){}
+  var data={v:1,ts:new Date().toISOString(),profile:profileData,ciljevi:ciljevi};
+  var folder=await bkpFolder();
+  var d=new Date(), pad=function(n){ return String(n).padStart(2,'0'); };
+  var name='profil-'+d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'-'+pad(d.getHours())+pad(d.getMinutes())+'.json';
+  var form=new FormData();
+  form.append('metadata',new Blob([JSON.stringify({name:name,parents:[folder]})],{type:'application/json'}));
+  form.append('file',new Blob([JSON.stringify(data)],{type:'application/json'}));
+  var r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{Authorization:'Bearer '+token},body:form});
+  if(!r.ok) throw new Error(await r.text());
+  try{ var all=await bkpList(); for(var i=BKP_KEEP;i<all.length;i++){ await fetch('https://www.googleapis.com/drive/v3/files/'+all[i].id,{method:'DELETE',headers:{Authorization:'Bearer '+token}}); } }catch(e){}
+  try{ localStorage.setItem('mf_bkp_last',String(Date.now())); }catch(e){}
+  return true;
+}
+async function bkpAuto(){
+  try{ var last=+(localStorage.getItem('mf_bkp_last')||0); if(Date.now()-last<20*3600*1000) return; await bkpCreate(); }catch(e){ console.warn('bkpAuto',e); }
+}
+function bkpDateLabel(iso){ var d=new Date(iso); var pad=function(n){ return String(n).padStart(2,'0'); }; return d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear()+'. u '+pad(d.getHours())+':'+pad(d.getMinutes()); }
+async function bkpRender(){
+  var L=document.getElementById('bkp-list'); L.innerHTML='<p class="bkp-note">Učitavam…</p>';
+  try{
+    var all=await bkpList();
+    if(!all.length){ L.innerHTML='<p class="bkp-note">Još nema kopija. Pritisni "Napravi kopiju sada".</p>'; return; }
+    L.innerHTML=all.map(function(f){ return '<div class="bkp-it"><div>'+bkpDateLabel(f.createdTime)+'<small>profil, ciljevi i rate</small></div><button class="bkp-btn" onclick="bkpRestore(\''+f.id+'\')">Vrati</button></div>'; }).join('');
+    var sub=document.getElementById('bkp-sub'); if(sub) sub.textContent='Zadnja kopija: '+bkpDateLabel(all[0].createdTime);
+  }catch(e){ L.innerHTML='<p class="bkp-note">Ne mogu učitati kopije: '+String(e.message||e).slice(0,120).replace(/</g,'&lt;')+'</p>'; }
+}
+function bkpOpen(){ document.getElementById('bkp-modal').classList.add('open'); bkpRender(); }
+function bkpClose(){ document.getElementById('bkp-modal').classList.remove('open'); }
+async function bkpNow(){
+  try{ if(!_profOK){ showToast('Profil nije učitan, kopija se ne pravi'); return; } await bkpCreate(); showToast('Kopija spremljena ✓'); bkpRender(); }catch(e){ showToast('Kopija nije uspjela'); }
+}
+async function bkpRestore(id,skipConfirm){
+  try{
+    var r=await fetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media',{headers:{Authorization:'Bearer '+token}});
+    if(!r.ok) throw new Error('Ne mogu pročitati kopiju');
+    var data=await r.json();
+    if(!data||!data.profile||Object.keys(data.profile).length<=3) throw new Error('Kopija je prazna');
+    if(!skipConfirm && !confirm('Vratiti profil i rate iz ove kopije? Trenutni profil i rate bit će zamijenjeni.')) return;
+    await saveProfileToSheet(data.profile);
+    if(Array.isArray(data.ciljevi) && data.ciljevi.length){
+      await gfetch('https://sheets.googleapis.com/v4/spreadsheets/'+sheetId+'/values/'+encodeURIComponent('Ciljevi!A2:H200')+':clear',{method:'POST'});
+      await writeRange(sheetId,'Ciljevi!A2',data.ciljevi);
+    }
+    profileData=data.profile; _profOK=true;
+    try{ localStorage.setItem('mf_pd',JSON.stringify(profileData)); localStorage.setItem('mf_pd_v','2'); }catch(e){}
+    try{ fillProfileForm(); }catch(e){}
+    try{ reloadMonthTotals(); }catch(e){}
+    showToast('Profil vraćen iz kopije ✓'); bkpClose();
+  }catch(e){ showToast('Vraćanje nije uspjelo: '+String(e.message||e).slice(0,80)); }
+}
+var _bkpOffered=false;
+async function bkpOffer(){
+  if(_bkpOffered||_profOK) return; _bkpOffered=true;
+  try{
+    var all=await bkpList(); if(!all.length) return;
+    if(confirm('Profil je prazan. Našla sam sigurnosnu kopiju od '+bkpDateLabel(all[0].createdTime)+'. Vratiti je?')) await bkpRestore(all[0].id,true);
+  }catch(e){}
 }
 </script>
 </body>
