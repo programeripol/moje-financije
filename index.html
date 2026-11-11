@@ -462,6 +462,16 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]:not([onclick]):not([id]) .sum-label{color:var(--dp-navy)!important}
 [data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"]:has(+ #inc-card-expand[style*="block"]),[data-theme="dopamin"] #s-pregled div[onclick="toggleExpCard()"]:has(+ #exp-card-expand[style*="block"]),[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]:has(+ #potros-donut-preview[style*="block"]),[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"]:has(+ * + #potros-card-expand[style*="block"]){padding-bottom:4px!important}
 .inc-reset{display:inline-flex;align-items:center;gap:5px;background:transparent;border:1.5px solid #e4572e;color:#e4572e;border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+/* pregled u bojama logotipa: maslinasta, crna, boja kože, bijela + šareni nokti */
+[data-theme="dopamin"] #s-pregled{--dp-navy:#1b1a1a;--dp-cream:#ffffff;--dp-green:#6b8046;--dp-terra:#d8506f;--dp-yellow:#f5d3b9}
+[data-theme="dopamin"] #s-pregled div[onclick="toggleIncCard()"],[data-theme="dopamin"] #s-pregled #inc-card-expand{--pgc:#6b8046}
+[data-theme="dopamin"] #s-pregled div[onclick="toggleExpCard()"],[data-theme="dopamin"] #s-pregled #exp-card-expand{--pgc:#e8b896}
+[data-theme="dopamin"] #s-pregled div[onclick="togglePotrosCard()"],[data-theme="dopamin"] #s-pregled #potros-card-expand,[data-theme="dopamin"] #s-pregled #potros-donut-preview{--pgc:#1b1a1a}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]:not([onclick]):not([id]){--pgc:#d8506f}
+[data-theme="dopamin"] #s-pregled div[style*="border-left"][style*="var(--th1)"]{box-shadow:0 5px 0 rgba(27,26,26,.16)!important}
+[data-theme="dopamin"] #s-pregled #bh-received{color:#6a6a5e!important}
+[data-theme="dopamin"] #s-pregled #potros-card-expand [style*="background:#fff"],[data-theme="dopamin"] #s-pregled #potros-card-expand [style*="background: #fff"],[data-theme="dopamin"] #s-pregled #potros-card-expand [style*="var(--color-background-primary"]{border-color:rgba(27,26,26,.16)!important}
+[data-theme="dopamin"][data-tab="pregled"]{--pg-c:#fbfaf5;--pg-bg:radial-gradient(circle,rgba(107,128,70,.10) 0 6px,transparent 7px) 0 0/46px 46px,#fbfaf5;--pg-btn:#6b8046;--pg-btn-ink:#ffffff}
 /* gumbi (boja po stranici) */
 [data-theme="dopamin"] .btn,[data-theme="dopamin"] .inst-btn{border-radius:999px;font-size:17px}
 [data-theme="dopamin"] .btn-primary,[data-theme="dopamin"] .inst-btn{background:var(--pg-btn);color:var(--pg-btn-ink);border:none}
