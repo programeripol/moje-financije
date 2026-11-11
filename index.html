@@ -1146,6 +1146,8 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 <!-- ══ PREGLED TAB ════════════════════════════════════════════════════ -->
 <div class="screen" id="s-pregled">
 
+  <button id="srch-open" class="srch-open" onclick="srchOpen()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Traži u računima</span></button>
+
   <div class="month-nav">
     <button class="month-nav-btn" id="prev-month-btn" onclick="changeViewMonth(-1)">‹</button>
     <span class="month-nav-label" id="month-nav-label">Svibanj 2026</span>
@@ -5522,6 +5524,85 @@ function syncAmtDisplay(inp){
     if(dx>0&&idx>0)goTab(SWIPE_TABS[idx-1]);
   },{passive:true});
 })();
+</script>
+
+<style>
+.srch-open{display:flex;align-items:center;gap:9px;width:100%;margin:0 0 14px;padding:11px 16px;background:#fff;border:2.5px solid #6b8046;border-radius:999px;color:#6b8046;font-weight:700;font-size:15px;line-height:1;font-family:inherit;cursor:pointer;box-shadow:0 3px 0 rgba(107,128,70,.2)}
+#srch-modal{position:fixed;inset:0;z-index:9999;background:#fff;display:none;flex-direction:column;font-family:inherit}
+#srch-modal.open{display:flex}
+.srch-top{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 10px;border-bottom:2px solid #e3ebd3}
+.srch-top input{flex:1;min-width:0;font-weight:600;font-size:17px;line-height:1.2;font-family:inherit;border:2.5px solid #6b8046;border-radius:999px;padding:11px 16px;outline:none;color:#1b1a1a;background:#fff}
+.srch-x{background:#6b8046;color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:22px;line-height:40px;cursor:pointer;flex:none}
+.srch-sum{padding:10px 18px 4px;font-weight:600;font-size:13px;line-height:1.3;font-family:inherit;color:#5b6a45}
+.srch-list{flex:1;overflow:auto;padding:6px 14px calc(env(safe-area-inset-bottom,0px) + 24px)}
+.srch-it{display:flex;gap:12px;align-items:flex-start;padding:12px 4px;border-bottom:1.5px solid #eef3e1}
+.srch-d{flex:none;width:64px;font-weight:700;font-size:13px;line-height:1.2;font-family:inherit;color:#6b8046}
+.srch-d small{display:block;font-weight:600;color:#8a9a70;font-size:11px;margin-top:2px}
+.srch-m{flex:1;min-width:0;color:#1b1a1a;font-weight:600;font-size:15px;line-height:1.3;font-family:inherit;word-break:break-word}
+.srch-m small{display:block;font-weight:600;color:#7a7a6e;font-size:12px;margin-top:3px}
+.srch-a{flex:none;text-align:right;font-weight:800;font-size:15px;line-height:1.2;font-family:inherit;color:#1b1a1a}
+.srch-r{display:inline-block;margin-top:6px;padding:4px 11px;border:2px solid #3f9be0;border-radius:999px;color:#3f9be0;font-weight:700;font-size:12px;line-height:1;font-family:inherit;background:#fff;cursor:pointer}
+.srch-empty{padding:40px 20px;text-align:center;color:#7a7a6e;font-weight:600;font-size:15px;line-height:1.4;font-family:inherit}
+</style>
+<div id="srch-modal">
+  <div class="srch-top"><input id="srch-q" type="search" inputmode="search" placeholder="npr. stolice, JYSK, 46" autocomplete="off" oninput="srchRun()"><button class="srch-x" onclick="srchClose()" aria-label="Zatvori">×</button></div>
+  <div class="srch-sum" id="srch-sum"></div>
+  <div class="srch-list" id="srch-list"></div>
+</div>
+<script>
+// ── pretraga svih stavki (svi mjeseci ove godine) ──
+var _srchIdx=null, _srchLoading=false;
+function srchNorm(t){ return String(t==null?'':t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d'); }
+function srchDate(s){ var m=/^(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(String(s||'')); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
+async function srchLoad(force){
+  if(_srchIdx&&!force) return _srchIdx;
+  if(_srchLoading) return _srchIdx||[];
+  _srchLoading=true;
+  var out=[];
+  try{
+    var meta=await gfetch('https://sheets.googleapis.com/v4/spreadsheets/'+sheetId+'?fields=sheets.properties.title');
+    var have=new Set((meta.sheets||[]).map(function(x){ return x.properties.title; }));
+    for(var i=0;i<MONTHS_HR.length;i++){
+      var m=MONTHS_HR[i]; if(!have.has(m)) continue;
+      var rows=await getRows(sheetId,m,'A57:N500');
+      rows.forEach(function(r,ri){
+        if(!r||!r[1]) return;
+        var amt=parseFloat(r[5])||0, cat=r[8]||'Other', note=String(r[11]||'');
+        var catL=(typeof CAT_HR!=='undefined'&&CAT_HR[cat])||cat;
+        var di=note.indexOf(' — ');
+        out.push({m:m,mi:i,row:57+ri,date:r[1],d:srchDate(r[1]),amt:amt,cat:cat,catL:catL,name:di>=0?note.slice(0,di):note,desc:di>=0?note.slice(di+3):'',note:note,url:r[12]||'',
+          hay:srchNorm([note,catL,m,r[1],String(amt).replace('.',','),String(amt)].join(' | '))});
+      });
+    }
+  }catch(e){ console.warn('srchLoad',e); }
+  _srchLoading=false;
+  _srchIdx=out; return out;
+}
+function srchOpen(){
+  var m=document.getElementById('srch-modal'); m.classList.add('open');
+  var q=document.getElementById('srch-q'); setTimeout(function(){ try{q.focus();}catch(e){} },80);
+  document.getElementById('srch-sum').textContent=_srchIdx?'':'Učitavam sve mjesece…';
+  srchLoad().then(function(){ srchRun(); });
+}
+function srchClose(){ document.getElementById('srch-modal').classList.remove('open'); }
+function srchEsc(t){ return String(t).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function srchRun(){
+  var q=srchNorm(document.getElementById('srch-q').value).trim();
+  var L=document.getElementById('srch-list'), S=document.getElementById('srch-sum');
+  if(!_srchIdx){ S.textContent='Učitavam sve mjesece…'; return; }
+  if(!q){ S.textContent=_srchIdx.length+' stavki u ovoj godini. Upiši što tražiš (naziv, trgovina, iznos, mjesec).'; L.innerHTML=''; return; }
+  var w=q.split(/\s+/).filter(Boolean);
+  var res=_srchIdx.filter(function(x){ return w.every(function(t){ return x.hay.indexOf(t)>=0; }); });
+  res.sort(function(a,b){ return (b.d?b.d.getTime():0)-(a.d?a.d.getTime():0); });
+  var tot=res.reduce(function(s,x){ return s+x.amt; },0);
+  S.textContent=res.length?(res.length+' '+(res.length===1?'stavka':'stavki')+' · ukupno '+eur(tot)):'';
+  if(!res.length){ L.innerHTML='<div class="srch-empty">Ništa nije nađeno.<br>Probaj kraću riječ ili naziv trgovine.</div>'; return; }
+  L.innerHTML=res.slice(0,200).map(function(x){
+    var dd=x.d?(x.d.getDate()+'.'+(x.d.getMonth()+1)+'.'):x.date;
+    var yy=x.d?x.d.getFullYear():'';
+    return '<div class="srch-it"><div class="srch-d">'+dd+'<small>'+yy+'</small></div><div class="srch-m">'+srchEsc(x.name||x.note)+'<small>'+srchEsc((x.desc?x.desc+' · ':'')+x.catL+' · '+x.m)+'</small>'+(x.url?'<a class="srch-r" href="'+srchEsc(x.url)+'" target="_blank" rel="noopener">Pogledaj račun</a>':'')+'</div><div class="srch-a">'+eur(x.amt)+'</div></div>';
+  }).join('')+(res.length>200?'<div class="srch-empty">Prikazano prvih 200. Upiši preciznije.</div>':'');
+}
 </script>
 </body>
 </html>
