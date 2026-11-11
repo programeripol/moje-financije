@@ -2056,6 +2056,18 @@ const GOAL_TO_CAT = {
   'Ostalo':'Other','Other':'Other'
 };
 
+// Kategorija stavke plana: odabrana > poznati naziv > prepoznavanje po nazivu (npr. Netflix → Pretplate)
+var PLAN_INF=[[/rat[ae]\b|visa|kredit|iphone|leasing/i,'Debt'],[/netflix|canva|claude|openai|spotify|youtube|apple|icloud|pretplat|google|adobe|github/i,'Software'],[/iskon|tomato|internet|mobiln|\ba1\b|t-?com|struja|plin|voda|komunal|re[zž]ij/i,'Rezije'],[/veterin|ljubimac|\bpas\b|ma[cč]k/i,'Pets'],[/gorivo|benzin|parking|autocest/i,'Prijevoz'],[/hrana|namirnic|supermarket/i,'Food'],[/frizer|kozmet|nokti|manikir/i,'Beauty']];
+function planCat(g){
+  if(!g) return '';
+  if(g.cat) return g.cat==='Fuel'?'Prijevoz':g.cat;
+  var n=(g.name||'').trim(); if(!n) return '';
+  if(GOAL_TO_CAT[n]) return GOAL_TO_CAT[n]==='Fuel'?'Prijevoz':GOAL_TO_CAT[n];
+  var low=n.toLowerCase();
+  for(var k in CAT_HR){ if(CAT_HR[k].toLowerCase()===low) return k==='Fuel'?'Prijevoz':k; }
+  for(var i=0;i<PLAN_INF.length;i++){ if(PLAN_INF[i][0].test(n)) return PLAN_INF[i][1]; }
+  return '';
+}
 // ── FIXED GOALS ────────────────────────────────────────────────────────
 let fixedGoals = [];
 
@@ -3053,9 +3065,10 @@ function renderMPExp(){
     const catColor = CAT_COLORS[g.cat]||'#94a3b8';
     const safeName = (g.name||'').replace(/"/g,'&quot;');
     let prog='';
-    if(g.cat && mPlanExpGoals.findIndex(x=>x.cat===g.cat)===i){
-      const pl=mPlanExpGoals.filter(x=>x.cat===g.cat).reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
-      const ac=(window._actualCat&&window._actualCat[g.cat])||0;
+    const gc=planCat(g);
+    if(gc && mPlanExpGoals.findIndex(x=>planCat(x)===gc)===i){
+      const pl=mPlanExpGoals.filter(x=>planCat(x)===gc).reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+      const ac=(window._actualCat&&window._actualCat[gc])||0;
       if(pl>0||ac>0){
         const ov=pl>0&&ac>pl, pc=pl>0?Math.min(100,ac/pl*100):100, cl=ov?'#ef4444':'#3a9d7a';
         prog='<div style="flex-basis:100%;padding:0 0 4px 34px"><div style="height:5px;background:rgba(0,0,0,.09);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pc+'%;background:'+cl+'"></div></div><div style="font-size:11px;font-weight:700;margin-top:3px;color:'+cl+'">'+(pl>0?(ov?'+'+eur(ac-pl)+' preko plana (potrošeno '+eur(ac)+')':'potrošeno '+eur(ac)+' od '+eur(pl)):'potrošeno '+eur(ac)+' (bez plana)')+'</div></div>';
@@ -3377,17 +3390,17 @@ async function loadPregled(){
     if(viewMonthIdx <= _curMiLP){ try { expGoalsForPlan = JSON.parse(monthPlan && monthPlan.exp_json || 'null') || []; } catch(e){} }
     if(expGoalsForPlan.length > 0){
       expGoalsForPlan.forEach(g => {
-        const key = _cf(g.cat || CAT_HR_LOWER[(g.name||'').toLowerCase()]);
+        const key = _cf(planCat(g) || CAT_HR_LOWER[(g.name||'').toLowerCase()]);
         if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
       });
       // Always supplement with varGoals so variable costs always show
       (varGoals||[]).forEach(g => {
-        const key = _cf(GOAL_TO_CAT[g.name] || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name);
+        const key = _cf(planCat(g) || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name);
         if(key && !planByCategory[key]) planByCategory[key] = (parseFloat(g.amount)||0);
       });
     } else {
       [...(fixGoals||[]), ...(varGoals||[])].forEach(g => {
-        const key = _cf(GOAL_TO_CAT[g.name] || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name);
+        const key = _cf(planCat(g) || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name);
         if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
       });
     }
