@@ -120,7 +120,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--th1);bac
 #splash{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;animation:splashAuto .5s 2.5s forwards}
 #splash.hide{animation:splashAuto .4s 0s forwards}
 .splash-logo{width:140px;height:140px;border-radius:32px;object-fit:contain;margin-bottom:24px;animation:splashPop .5s cubic-bezier(.175,.885,.32,1.275) both}
-.splash-title{font-size:26px;font-weight:700;color:var(--th-text);letter-spacing:.01em;margin-bottom:8px;text-align:center;animation:splashFade .6s .2s both}
+.splash-title{font-size:26px;font-weight:700;color:#111;letter-spacing:.01em;margin-bottom:8px;text-align:center;animation:splashFade .6s .2s both}
 
 .splash-bar{width:84px;height:5px;background:rgba(107,128,70,.2);border-radius:2px;margin-top:40px;overflow:hidden;animation:splashFade .6s .4s both}
 .splash-bar-fill{height:100%;background:#6b8046;border-radius:2px;animation:splashLoad 1.8s .15s ease-out both}
@@ -1222,7 +1222,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
 <!-- ══ PREGLED TAB ════════════════════════════════════════════════════ -->
 <div class="screen" id="s-pregled">
 
-  <button id="srch-open" class="srch-open" onclick="srchOpen()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Traži u računima</span></button>
+  <div class="srch-row"><button id="srch-open" class="srch-open" onclick="srchOpen()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Traži u računima</span></button><button id="yr-open" class="yr-open" onclick="yrOpen()" aria-label="Godišnji pregled"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></button></div>
 
   <div class="month-nav">
     <button class="month-nav-btn" id="prev-month-btn" onclick="changeViewMonth(-1)">‹</button>
@@ -1254,7 +1254,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
     <div>
       <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Planirano</div>
       <div class="card-spinner" id="hero-spin-plan"><div class="card-spinner-ring-dark"></div></div>
-      <div class="sum-val-main" id="bh-plan">0,00 €</div>
+      <div class="sum-val-main" id="bh-plan">0,00 €</div><div id="plan-status" style="margin-top:7px;min-width:190px"></div>
     </div>
     <svg id="exp-card-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" style="flex-shrink:0;transition:transform .25s;align-self:center;margin-left:8px"><polyline points="6 9 12 15 18 9"/></svg>
   </div>
@@ -3052,13 +3052,23 @@ function renderMPExp(){
     const selOpts = MP_CAT_OPTS.replace('value="'+(g.cat||'')+'"','value="'+(g.cat||'')+'" selected');
     const catColor = CAT_COLORS[g.cat]||'#94a3b8';
     const safeName = (g.name||'').replace(/"/g,'&quot;');
-    return `<div class="exp-plan-card" data-idx="${i}" style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #f0f4ff;position:relative">
+    let prog='';
+    if(g.cat && mPlanExpGoals.findIndex(x=>x.cat===g.cat)===i){
+      const pl=mPlanExpGoals.filter(x=>x.cat===g.cat).reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+      const ac=(window._actualCat&&window._actualCat[g.cat])||0;
+      if(pl>0||ac>0){
+        const ov=pl>0&&ac>pl, pc=pl>0?Math.min(100,ac/pl*100):100, cl=ov?'#ef4444':'#3a9d7a';
+        prog='<div style="flex-basis:100%;padding:0 0 4px 34px"><div style="height:5px;background:rgba(0,0,0,.09);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pc+'%;background:'+cl+'"></div></div><div style="font-size:11px;font-weight:700;margin-top:3px;color:'+cl+'">'+(pl>0?(ov?'+'+eur(ac-pl)+' preko plana (potrošeno '+eur(ac)+')':'potrošeno '+eur(ac)+' od '+eur(pl)):'potrošeno '+eur(ac)+' (bez plana)')+'</div></div>';
+      }
+    }
+    return `<div class="exp-plan-card" data-idx="${i}" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #f0f4ff;position:relative">
       <span class="drag-handle" style="cursor:grab;color:#b0b8cc;font-size:16px;flex-shrink:0">⠿</span>
       <span id="exp-dot-${i}" title="Promijeni kategoriju" style="width:11px;height:11px;border-radius:50%;background:${catColor};flex-shrink:0;cursor:pointer;border:2px solid ${catColor}44" onclick="document.getElementById('exp-cat-sel-${i}').style.display='block';document.getElementById('exp-cat-sel-${i}').focus()"></span>
       <input type="text" class="goal-name" style="flex:3;min-width:0" value="${safeName}" placeholder="Naziv" oninput="mPlanExpGoals[${i}].name=this.value">
       <input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00" value="${fmtVal(g.amount)}" onfocus="amtFocus(this)" oninput="amtInput(this,mPlanExpGoals,${i})" onblur="amtBlur(this,mPlanExpGoals,${i},()=>{})">
       <button class="save-goal-del" onclick="removeMPExp(${i})">×</button>
       <select id="exp-cat-sel-${i}" style="position:absolute;left:18px;top:100%;z-index:99;display:none;background:#fff;border:1px solid #dde3f0;border-radius:8px;padding:4px;font-size:13px" onchange="mPlanExpGoals[${i}].cat=this.value;renderMPExp()" onblur="this.style.display='none'">${selOpts}</select>
+      ${prog}
     </div>`;
   }).join('');
   setupDragSort(c, mPlanExpGoals, renderMPExp);
@@ -3283,6 +3293,15 @@ async function loadPregled(){
 
     const planEl = document.getElementById('bh-plan');
     if(planEl) planEl.textContent = eur(totalPlan);
+    window._actualCat = actual;
+    { const ps=document.getElementById('plan-status');
+      if(ps){
+        if(totalPlan>0){
+          const over=totalSpent>totalPlan, pct=Math.min(100,totalSpent/totalPlan*100), col=over?'#ef4444':'#3a9d7a';
+          ps.innerHTML='<div style="height:6px;background:rgba(0,0,0,.09);border-radius:4px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:4px"></div></div><div style="font-size:12px;font-weight:700;margin-top:4px;color:'+col+'">'+(over?eur(totalSpent-totalPlan)+' preko plana':'Potrošeno '+eur(totalSpent)+' · još '+eur(totalPlan-totalSpent))+'</div>';
+        } else ps.innerHTML='';
+      }
+    }
     document.getElementById('bh-spent').textContent = eur(totalSpent);
         const _rem=income-totalSpent;_bhRem=_rem;
         // prenos: manual override > auto iz prošlog mj
@@ -5634,6 +5653,34 @@ function syncAmtDisplay(inp){
 .srch-r{display:inline-block;margin-top:8px;padding:7px 16px;border:none;border-radius:999px;background:#2a3c8f;color:#fff!important;text-decoration:none!important;font-weight:800;font-size:13px;line-height:1;font-family:inherit;cursor:pointer;box-shadow:0 3px 0 rgba(42,60,143,.28)}
 .srch-r:active{transform:translateY(2px);box-shadow:none}
 .srch-empty{padding:40px 20px;text-align:center;color:#7a7a6e;font-weight:600;font-size:15px;line-height:1.4;font-family:inherit}
+
+.srch-row{display:flex;gap:10px;margin:0 0 14px}
+.srch-row .srch-open{margin:0;flex:1;width:auto;min-width:0}
+.yr-open{flex:none;width:50px;border-radius:50%;border:2.5px solid #6b8046;background:#fff;color:#1a1a1a;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 0 rgba(107,128,70,.2)}
+#yr-modal{position:fixed;inset:0;z-index:9999;background:#f6f1e6;display:none;flex-direction:column;font-family:inherit;color:#1b1a1a}
+#yr-modal.open{display:flex}
+.yr-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 10px}
+.yr-top b{font-size:22px;font-weight:800}
+.yr-x{background:transparent;color:#2a3c8f;border:2.5px solid #2a3c8f;border-radius:50%;width:40px;height:40px;font-size:22px;line-height:1;cursor:pointer;flex:none}
+.yr-body{flex:1;overflow:auto;padding:4px 16px calc(env(safe-area-inset-bottom,0px) + 28px);display:flex;flex-direction:column;gap:12px}
+.yr-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.yr-tile{background:#fff;border:3px solid var(--c);border-radius:20px;padding:10px 14px;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.yr-tile small{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.yr-tile strong{font-size:20px;font-variant-numeric:tabular-nums}
+.yr-card{background:#fff;border:3px solid var(--c);border-radius:22px;padding:12px 14px 14px;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.yr-card h3{margin:0 0 2px;font-size:16px;font-weight:800}
+.yr-card p{margin:0 0 10px;font-size:13px;font-weight:600;color:#5a584f;line-height:1.35}
+.yr-bars{display:flex;align-items:flex-end;gap:4px;height:92px}
+.yr-b{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:0}
+.yr-b i{display:block;width:100%;border-radius:6px 6px 2px 2px;background:var(--c);min-height:2px}
+.yr-b.cur i{opacity:.55}
+.yr-lbl{display:flex;gap:4px;margin-top:4px}
+.yr-lbl span{flex:1;min-width:0;text-align:center;font-size:9px;font-weight:700;color:#7a7a6e}
+.yr-cat{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-top:7px}
+.yr-cat span:first-child{flex:none;width:92px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yr-cat div{flex:1;height:8px;background:rgba(0,0,0,.08);border-radius:5px;overflow:hidden}
+.yr-cat div i{display:block;height:100%;border-radius:5px}
+.yr-cat span:last-child{flex:none;font-variant-numeric:tabular-nums}
 </style>
 <div id="srch-modal">
   <div class="srch-top"><input id="srch-q" type="search" inputmode="search" placeholder="npr. stolice, JYSK, 46" autocomplete="off" oninput="srchRun()"><button class="srch-x" onclick="srchClose()" aria-label="Zatvori">×</button></div>
@@ -5808,6 +5855,85 @@ async function bkpOffer(){
     var all=await bkpList(); if(!all.length) return;
     if(confirm('Profil je prazan. Našla sam sigurnosnu kopiju od '+bkpDateLabel(all[0].createdTime)+'. Vratiti je?')) await bkpRestore(all[0].id,true);
   }catch(e){}
+}
+</script>
+
+<div id="yr-modal">
+  <div class="yr-top"><b id="yr-title">Godina</b><button class="yr-x" onclick="yrClose()" aria-label="Zatvori">×</button></div>
+  <div class="yr-body" id="yr-body"></div>
+</div>
+<script>
+var _yrData=null,_yrTs=0;
+function yrOpen(){
+  document.getElementById('yr-modal').classList.add('open');
+  document.getElementById('yr-title').textContent='Godina '+curYear();
+  if(_yrData&&Date.now()-_yrTs<120000){ yrRender(); return; }
+  document.getElementById('yr-body').innerHTML='<div style="padding:40px 10px;text-align:center;font-weight:700;color:#5a584f">Učitavam mjesece…</div>';
+  yrLoad();
+}
+function yrClose(){ document.getElementById('yr-modal').classList.remove('open'); }
+async function yrLoad(){
+  var nowIdx=new Date().getMonth();
+  var res=await Promise.all(MONTHS_HR.map(function(m,i){
+    if(i>nowIdx) return Promise.resolve(null);
+    return getRows(sheetId,m,'A57:N500').catch(function(){return null;});
+  }));
+  var months=[],cats={};
+  res.forEach(function(rows,i){
+    var inc=0,sp=0,n=0;
+    (rows||[]).forEach(function(r){
+      if(!r[1]) return;
+      var cat=(r[8]==='Fuel'?'Prijevoz':r[8])||'Other', a=parseFloat(r[5])||0;
+      if(cat==='Prijenos') return;
+      n++;
+      if(cat==='Prihod'){ inc+=a; return; }
+      sp+=a; cats[cat]=(cats[cat]||0)+a;
+    });
+    months.push({i:i,inc:inc,sp:sp,n:n,cur:i===nowIdx});
+  });
+  _yrData={months:months,cats:cats}; _yrTs=Date.now(); yrRender();
+}
+function yrBars(vals,col,curI){
+  var mx=Math.max.apply(null,vals.map(function(v){return Math.abs(v);}).concat([1]));
+  return '<div class="yr-bars" style="--c:'+col+'">'+vals.map(function(v,i){
+    return '<div class="yr-b'+(i===curI?' cur':'')+'" title="'+MONTHS_HR[i]+'"><i style="height:'+(v?Math.max(2,Math.abs(v)/mx*100):0)+'%;min-height:0"></i></div>';
+  }).join('')+'</div><div class="yr-lbl">'+MONTHS_HR.map(function(m){return '<span>'+m.slice(0,3)+'</span>';}).join('')+'</div>';
+}
+function yrRender(){
+  var d=_yrData, ms=d.months, nowI=new Date().getMonth();
+  var withInc=ms.filter(function(m){return m.inc>0;});
+  var done=ms.filter(function(m){return m.n>0&&!m.cur;});
+  var totInc=ms.reduce(function(s,m){return s+m.inc;},0), totSp=ms.reduce(function(s,m){return s+m.sp;},0);
+  var avgInc=withInc.length?totInc/withInc.length:0;
+  var rate=totInc>0?Math.round((totInc-totSp)/totInc*100):0;
+  var inc12=MONTHS_HR.map(function(m,i){return ms[i]?ms[i].inc:0;}), sp12=MONTHS_HR.map(function(m,i){return ms[i]?ms[i].sp:0;});
+  var sv12=MONTHS_HR.map(function(m,i){var x=ms[i];return x&&x.n>0?x.inc-x.sp:0;});
+  // plaća
+  var incTxt='Još nema primljene plaće.';
+  if(withInc.length>=2){ var f=withInc[0],l=withInc[withInc.length-1], ch=f.inc>0?Math.round((l.inc-f.inc)/f.inc*100):0;
+    incTxt=MONTHS_HR[f.i]+' '+eur(f.inc)+' → '+MONTHS_HR[l.i]+' '+eur(l.inc)+' ('+(ch>=0?'+':'')+ch+'%)'; }
+  else if(withInc.length===1) incTxt='Samo '+MONTHS_HR[withInc[0].i]+': '+eur(withInc[0].inc);
+  // potrošnja
+  var spTxt='Nema podataka.', spM=ms.filter(function(m){return m.sp>0;});
+  if(spM.length){ var mxm=spM.reduce(function(a,b){return b.sp>a.sp?b:a;}), mnm=(done.length?done:spM).reduce(function(a,b){return b.sp<a.sp?b:a;});
+    spTxt='Prosjek '+eur(totSp/spM.length)+'/mj · najviše '+MONTHS_HR[mxm.i]+' '+eur(mxm.sp)+' · najmanje '+MONTHS_HR[mnm.i]+' '+eur(mnm.sp); }
+  // višak
+  var svM=ms.filter(function(m){return m.n>0;}), svTot=totInc-totSp;
+  var svTxt=svM.length?('Ukupno '+(svTot>=0?'+':'')+eur(svTot)+' · prosjek '+eur(svTot/svM.length)+'/mj'):'Nema podataka.';
+  var cats=Object.keys(d.cats).map(function(k){return [k,d.cats[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,6);
+  var cmx=cats.length?cats[0][1]:1;
+  var h='<div class="yr-tiles">'+
+   '<div class="yr-tile" style="--c:#6b8046"><small>Prosječna plaća</small><strong>'+eur(avgInc)+'</strong></div>'+
+   '<div class="yr-tile" style="--c:#e8527f"><small>Potrošeno</small><strong>'+eur(totSp)+'</strong></div>'+
+   '<div class="yr-tile" style="--c:#3f9be0"><small>Višak</small><strong>'+eur(svTot)+'</strong></div>'+
+   '<div class="yr-tile" style="--c:#f2b705"><small>Stopa štednje</small><strong>'+rate+'%</strong></div></div>'+
+   '<div class="yr-card" style="--c:#6b8046"><h3>Plaća po mjesecima</h3><p>'+incTxt+'</p>'+yrBars(inc12,'#6b8046',nowI)+'</div>'+
+   '<div class="yr-card" style="--c:#e8527f"><h3>Potrošnja po mjesecima</h3><p>'+spTxt+'</p>'+yrBars(sp12,'#e8527f',nowI)+'</div>'+
+   '<div class="yr-card" style="--c:#3f9be0"><h3>Višak po mjesecima</h3><p>'+svTxt+'</p>'+yrBars(sv12,'#3f9be0',nowI)+'</div>';
+  if(cats.length) h+='<div class="yr-card" style="--c:#f2b705"><h3>Na što ide novac</h3><p>Najveće kategorije ove godine</p>'+cats.map(function(c){
+    return '<div class="yr-cat"><span>'+((CAT_HR[c[0]]||c[0])+'').replace(/</g,'&lt;')+'</span><div><i style="width:'+Math.max(3,c[1]/cmx*100)+'%;background:'+(CAT_COLORS[c[0]]||'#94a3b8')+'"></i></div><span>'+eur(c[1])+'</span></div>';}).join('')+'</div>';
+  h+='<p style="margin:2px 4px 0;font-size:12px;font-weight:600;color:#7a7a6e">Višak je prihod minus potrošnja. Tekući mjesec je svjetliji jer još traje.</p>';
+  document.getElementById('yr-body').innerHTML=h;
 }
 </script>
 </body>
