@@ -2057,7 +2057,7 @@ const GOAL_TO_CAT = {
 };
 
 // Kategorija stavke plana: odabrana > poznati naziv > prepoznavanje po nazivu (npr. Netflix → Pretplate)
-var PLAN_INF=[[/rat[ae]\b|visa|kredit|iphone|leasing/i,'Debt'],[/netflix|canva|claude|openai|spotify|youtube|apple|icloud|pretplat|google|adobe|github/i,'Software'],[/iskon|tomato|internet|mobiln|\ba1\b|t-?com|struja|plin|voda|komunal|re[zž]ij/i,'Rezije'],[/veterin|ljubimac|\bpas\b|ma[cč]k/i,'Pets'],[/gorivo|benzin|parking|autocest/i,'Prijevoz'],[/hrana|namirnic|supermarket/i,'Food'],[/frizer|kozmet|nokti|manikir/i,'Beauty']];
+var PLAN_INF=[[/rat[ae]\b|visa|kredit|iphone|leasing/i,'Debt'],[/netflix|canva|claude|openai|spotify|youtube|apple|icloud|pretplat|google|adobe|github/i,'Software'],[/iskon|tomato|internet|mobiln|\ba1\b|t-?com|struja|plin|voda|komunal|re[zž]ij/i,'Rezije'],[/veterin|ljubimac|\bpas\b|ma[cč]k/i,'Pets'],[/gorivo|benzin|parking|autocest/i,'Prijevoz'],[/hrana|namirnic|supermarket/i,'Food'],[/frizer|kozmet|nokti|manikir/i,'Beauty'],[/cug[ae]|izlask|zabav/i,'Zabava']];
 function planCat(g){
   if(!g) return '';
   if(g.cat) return g.cat==='Fuel'?'Prijevoz':g.cat;
