@@ -5622,7 +5622,8 @@ function srchRun(){
 #bkp-modal.open{display:flex}
 .bkp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 12px;border-bottom:2px solid #e3ebd3}
 .bkp-top b{font-size:20px;color:#2a3c8f;font-weight:800}
-.bkp-x{background:#6b8046;color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:22px;line-height:40px;cursor:pointer;flex:none}
+.bkp-x{background:transparent;color:#2a3c8f;border:2.5px solid #2a3c8f;border-radius:50%;width:40px;height:40px;font-size:22px;line-height:1;padding:0;cursor:pointer;flex:none}
+.bkp-btn[disabled]{opacity:.55;pointer-events:none}
 .bkp-body{flex:1;overflow:auto;padding:14px 16px calc(env(safe-area-inset-bottom,0px) + 24px)}
 .bkp-note{font-weight:600;font-size:13px;line-height:1.4;color:#5b6a45;margin:0 0 14px}
 .bkp-it{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1.5px solid #eef3e1}
@@ -5635,7 +5636,7 @@ function srchRun(){
   <div class="bkp-top"><b>Sigurnosne kopije</b><button class="bkp-x" onclick="bkpClose()" aria-label="Zatvori">×</button></div>
   <div class="bkp-body">
     <p class="bkp-note">App sama sprema kopiju profila i rata u tvoj Drive, najviše jednom dnevno, i čuva zadnjih 7. Kopija se nikad ne pravi od praznog profila.</p>
-    <button class="bkp-btn bkp-big" onclick="bkpNow()">Napravi kopiju sada</button>
+    <button class="bkp-btn bkp-big" id="bkp-now" onclick="bkpNow()">Napravi kopiju sada</button>
     <div id="bkp-list"></div>
   </div>
 </div>
@@ -5650,6 +5651,10 @@ async function bkpList(){
   return r.files||[];
 }
 async function bkpCreate(){
+  if(window._bkpMaking) return false; window._bkpMaking=true;
+  try{ return await bkpCreate2(); } finally { window._bkpMaking=false; }
+}
+async function bkpCreate2(){
   if(!_profOK||!profileData||Object.keys(profileData).length<=3) return false;
   var ciljevi=[]; try{ ciljevi=await getRows(sheetId,'Ciljevi','A2:H200'); }catch(e){}
   var data={v:1,ts:new Date().toISOString(),profile:profileData,ciljevi:ciljevi};
@@ -5680,8 +5685,16 @@ async function bkpRender(){
 }
 function bkpOpen(){ document.getElementById('bkp-modal').classList.add('open'); bkpRender(); }
 function bkpClose(){ document.getElementById('bkp-modal').classList.remove('open'); }
+var _bkpBusy=false;
 async function bkpNow(){
-  try{ if(!_profOK){ showToast('Profil nije učitan, kopija se ne pravi'); return; } await bkpCreate(); showToast('Kopija spremljena ✓'); bkpRender(); }catch(e){ showToast('Kopija nije uspjela'); }
+  if(_bkpBusy) return;
+  var btn=document.getElementById('bkp-now');
+  try{
+    if(!_profOK){ showToast('Profil nije učitan, kopija se ne pravi'); return; }
+    _bkpBusy=true; if(btn){ btn.disabled=true; btn.textContent='Spremam kopiju…'; }
+    await bkpCreate(); showToast('Kopija spremljena ✓'); await bkpRender();
+  }catch(e){ showToast('Kopija nije uspjela'); }
+  _bkpBusy=false; if(btn){ btn.disabled=false; btn.textContent='Napravi kopiju sada'; }
 }
 async function bkpRestore(id,skipConfirm){
   try{
