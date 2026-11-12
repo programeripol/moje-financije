@@ -5727,6 +5727,20 @@ function syncAmtDisplay(inp){
 .yr-r1 span:first-child i{flex:none;width:9px;height:9px;border-radius:50%}
 .yr-row{margin-top:9px}.yr-bar{height:6px;background:rgba(0,0,0,.07);border-radius:4px;overflow:hidden;margin-top:4px}.yr-bar i{display:block;height:100%;border-radius:4px}
 .yr-hint{font-size:11px;font-weight:700;margin-top:3px}
+.yr-row{cursor:pointer}.yr-row:active{opacity:.6}
+#cd-modal{position:fixed;inset:0;z-index:10000;background:#f6f1e6;display:none;flex-direction:column;font-family:inherit;color:#1b1a1a}
+#cd-modal.open{display:flex}
+.cd-chips{display:flex;gap:8px;flex-wrap:wrap}
+.cd-chip{border:2.5px solid #1b1a1a;background:#faf1df;border-radius:999px;padding:6px 12px;font:700 13px inherit;font-family:inherit;color:#1b1a1a;cursor:pointer}
+.cd-chip.on{background:#1b1a1a;color:#fff}
+.cd-sel{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:700}
+.cd-sel select{flex:1;min-width:0;border:2.5px solid #1b1a1a;background:#faf1df;border-radius:999px;padding:6px 10px;font:700 13px inherit;font-family:inherit;color:#1b1a1a}
+.cd-it{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.08);font-size:14px;font-weight:700}
+.cd-it:last-child{border-bottom:none}
+.cd-d{flex:none;width:48px;font-size:12px;color:#7a7a6e;font-variant-numeric:tabular-nums}
+.cd-n{flex:1;min-width:0;overflow-wrap:anywhere}.cd-n small{display:block;font-size:11px;font-weight:600;color:#7a7a6e;margin-top:1px}
+.cd-a{flex:none;font-variant-numeric:tabular-nums}
+.cd-top{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:700;margin-top:7px}.cd-top span:last-child{font-variant-numeric:tabular-nums}
 .yr-cat{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-top:7px}
 .yr-cat span:first-child{flex:none;width:92px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .yr-cat div{flex:1;height:8px;background:rgba(0,0,0,.08);border-radius:5px;overflow:hidden}
@@ -5985,18 +5999,65 @@ function yrRender(){
    '<div class="yr-card" style="--c:#e8527f"><h3>Potrošnja po mjesecima</h3><p>'+spTxt+'</p>'+yrBars(sp12,'#e8527f',nowI)+'</div>'+
    '<div class="yr-card" style="--c:#3f9be0"><h3>Višak po mjesecima</h3><p>'+svTxt+'</p>'+yrBars(sv12,'#3f9be0',nowI)+'</div>';
   if(cats.length){
-    h+='<div class="yr-card" style="--c:#f2b705"><h3>Na što ide novac</h3><p>Ukupno i prosjek po mjesecu ('+nM+' '+(nM===1?'mjesec':(nM<5?'mjeseca':'mjeseci'))+' podataka) u odnosu na plan iz Profila. Crveno = trošiš više od plana, zeleno = manje.</p>'+
+    h+='<div class="yr-card" style="--c:#f2b705"><h3>Na što ide novac</h3><p>Ukupno i prosjek po mjesecu ('+nM+' '+(nM===1?'mjesec':(nM<5?'mjeseca':'mjeseci'))+' podataka) u odnosu na plan iz Profila. Crveno = trošiš više od plana, zeleno = manje. Dodirni kategoriju za sve stavke.</p>'+
     '<div class="yr-th"><span>Kategorija</span><span>Ukupno</span><span>Prosjek/mj</span><span>Plan</span></div>'+
     cats.map(function(c){
       var avg=c[1]/nM, pl=plan[c[0]]||0, diff=pl?avg-pl:0, col=!pl?'#7a7a6e':(diff>pl*0.05?'#d8506f':(diff<-pl*0.05?'#4f7a2f':'#7a7a6e'));
       var nm=((CAT_HR[c[0]]||c[0])+'').replace(/</g,'&lt;'), cc=CAT_COLORS[c[0]]||'#94a3b8';
-      return '<div class="yr-row"><div class="yr-r1"><span><i style="background:'+cc+'"></i>'+nm+'</span><span>'+eur(c[1])+'</span><b style="color:'+col+'">'+eur(avg)+'</b><span>'+(pl?eur(pl):'—')+'</span></div>'+
+      return '<div class="yr-row" onclick="cdOpen(\''+c[0].replace(/\'/g,'')+'\')"><div class="yr-r1"><span><i style="background:'+cc+'"></i>'+nm+'</span><span>'+eur(c[1])+'</span><b style="color:'+col+'">'+eur(avg)+'</b><span>'+(pl?eur(pl):'—')+'</span></div>'+
         '<div class="yr-bar"><i style="width:'+Math.max(3,c[1]/cmx*100)+'%;background:'+cc+'"></i></div>'+
         (pl&&Math.abs(diff)>pl*0.05?'<div class="yr-hint" style="color:'+col+'">'+(diff>0?'Prosječno ~'+eur(diff)+' više od plana':'Prosječno ~'+eur(-diff)+' manje od plana')+'</div>':'')+'</div>';
     }).join('')+'</div>';
   }
   h+='<p style="margin:2px 4px 0;font-size:12px;font-weight:600;color:#7a7a6e">Višak je prihod minus potrošnja. Tekući mjesec je svjetliji jer još traje.</p>';
   document.getElementById('yr-body').innerHTML=h;
+}
+</script>
+<div id="cd-modal">
+  <div class="yr-top"><b id="cd-title">Kategorija</b><button class="yr-x" onclick="cdClose()" aria-label="Zatvori">×</button></div>
+  <div class="yr-body" id="cd-body"></div>
+</div>
+<script>
+var _cdCat=null,_cdFrom=0,_cdTo=0,_cdPre='year',_cdMode=false;
+function cdOpen(cat){
+  _cdCat=cat; var n=new Date().getMonth(); _cdFrom=0;_cdTo=n;_cdPre='year';
+  document.getElementById('cd-title').textContent=((CAT_HR[cat]||cat)+'');
+  document.getElementById('cd-modal').classList.add('open');
+  document.getElementById('cd-body').innerHTML='<div style="padding:40px 10px;text-align:center;font-weight:700;color:#5a584f">Učitavam stavke…</div>';
+  srchLoad().then(cdRender);
+}
+function cdClose(){ document.getElementById('cd-modal').classList.remove('open'); }
+function cdPre(p){
+  var n=new Date().getMonth(); _cdPre=p;
+  if(p==='cur'){_cdFrom=n;_cdTo=n;} else if(p==='prev'){_cdFrom=Math.max(0,n-1);_cdTo=Math.max(0,n-1);} else if(p==='3m'){_cdFrom=Math.max(0,n-2);_cdTo=n;} else {_cdFrom=0;_cdTo=n;}
+  cdRender();
+}
+function cdRange(){ _cdPre='custom'; _cdFrom=+document.getElementById('cd-from').value; _cdTo=+document.getElementById('cd-to').value; if(_cdTo<_cdFrom){ var x=_cdFrom;_cdFrom=_cdTo;_cdTo=x; } cdRender(); }
+function cdRender(){
+  var cat=_cdCat, n=new Date().getMonth(), all=(_srchIdx||[]).filter(function(x){ return !x.plan && x.cat!=='Prijenos' && x.cat!=='Prihod' && ((x.cat==='Fuel'?'Prijevoz':x.cat)===cat); });
+  var items=all.filter(function(x){ return x.mi>=_cdFrom && x.mi<=_cdTo; });
+  items.sort(function(a,b){ return (b.d||0)-(a.d||0) || b.row-a.row; });
+  var tot=items.reduce(function(s,x){return s+x.amt;},0), nm=_cdTo-_cdFrom+1, avg=tot/nm;
+  var plan=0; try{ (fixedGoals||[]).concat(variableGoals||[]).forEach(function(g){ var k=planCat(g); if(k==='Fuel')k='Prijevoz'; if(k===cat) plan+=(parseFloat(g.amount)||0); }); }catch(e){}
+  var col=CAT_COLORS[cat]||'#94a3b8', mv=MONTHS_HR.map(function(m,i){ return (i>=_cdFrom&&i<=_cdTo)?all.filter(function(x){return x.mi===i;}).reduce(function(s,x){return s+x.amt;},0):0; });
+  function chip(k,l){ return '<button class="cd-chip'+(_cdPre===k?' on':'')+'" onclick="cdPre(\''+k+'\')">'+l+'</button>'; }
+  function opts(sel){ return MONTHS_HR.map(function(m,i){ return i>n?'':'<option value="'+i+'"'+(i===sel?' selected':'')+'>'+m+'</option>'; }).join(''); }
+  var h='<div class="cd-chips">'+chip('cur','Ovaj mjesec')+chip('prev','Prošli mjesec')+chip('3m','3 mjeseca')+chip('year','Ova godina')+'</div>'+
+    '<div class="cd-sel"><span>Od</span><select id="cd-from" onchange="cdRange()">'+opts(_cdFrom)+'</select><span>do</span><select id="cd-to" onchange="cdRange()">'+opts(_cdTo)+'</select></div>'+
+    '<div class="yr-tiles">'+
+    '<div class="yr-tile" style="--c:'+col+'"><small>Ukupno</small><strong>'+eur(tot)+'</strong></div>'+
+    '<div class="yr-tile" style="--c:'+col+'"><small>Prosjek/mj</small><strong>'+eur(avg)+'</strong></div>'+
+    '<div class="yr-tile" style="--c:'+col+'"><small>Stavki</small><strong>'+items.length+'</strong></div>'+
+    '<div class="yr-tile" style="--c:'+col+'"><small>Plan/mj</small><strong>'+(plan?eur(plan):'—')+'</strong></div></div>';
+  if(nm>1) h+='<div class="yr-card" style="--c:'+col+'"><h3>Po mjesecima</h3>'+yrBars(mv,col,_cdTo===n?n:-1)+'</div>';
+  var g={}; items.forEach(function(x){ var k=(x.name||x.note||'—').trim()||'—'; (g[k]=g[k]||{s:0,c:0}); g[k].s+=x.amt; g[k].c++; });
+  var top=Object.keys(g).map(function(k){return [k,g[k].s,g[k].c];}).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+  if(top.length>1) h+='<div class="yr-card" style="--c:'+col+'"><h3>Najviše ide na</h3>'+top.map(function(r){ return '<div class="cd-top"><span>'+srchEsc(r[0])+(r[2]>1?' ×'+r[2]:'')+'</span><span>'+eur(r[1])+'</span></div>'; }).join('')+'</div>';
+  h+='<div class="yr-card" style="--c:'+col+'"><h3>Sve stavke</h3>'+(items.length?items.map(function(x){
+    var dd=x.d?(x.d.getDate()+'.'+(x.d.getMonth()+1)+'.'):x.date;
+    return '<div class="cd-it"><span class="cd-d">'+dd+'</span><span class="cd-n">'+srchEsc(x.name||x.note||'—')+(x.desc?'<small>'+srchEsc(x.desc)+'</small>':'')+'</span><span class="cd-a">'+eur(x.amt)+'</span></div>';
+  }).join(''):'<p style="margin:8px 0 0">Nema stavki u ovom razdoblju.</p>')+'</div>';
+  document.getElementById('cd-body').innerHTML=h;
 }
 </script>
 </body>
