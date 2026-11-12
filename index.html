@@ -5719,6 +5719,13 @@ function syncAmtDisplay(inp){
 .yr-b.cur i{opacity:.55}
 .yr-lbl{display:flex;gap:4px;margin-top:4px}
 .yr-lbl span{flex:1;min-width:0;text-align:center;font-size:9px;font-weight:700;color:#7a7a6e}
+.yr-th,.yr-r1{display:grid;grid-template-columns:minmax(0,1.5fr) 1fr 1fr 1fr;gap:6px;align-items:center;font-size:12px;font-weight:700}
+.yr-th{color:#7a7a6e;font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-top:6px}
+.yr-th span:not(:first-child),.yr-r1 span:not(:first-child),.yr-r1 b{text-align:right;font-variant-numeric:tabular-nums}
+.yr-r1 span:first-child{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yr-r1 span:first-child i{flex:none;width:9px;height:9px;border-radius:50%}
+.yr-row{margin-top:9px}.yr-bar{height:6px;background:rgba(0,0,0,.07);border-radius:4px;overflow:hidden;margin-top:4px}.yr-bar i{display:block;height:100%;border-radius:4px}
+.yr-hint{font-size:11px;font-weight:700;margin-top:3px}
 .yr-cat{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-top:7px}
 .yr-cat span:first-child{flex:none;width:92px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .yr-cat div{flex:1;height:8px;background:rgba(0,0,0,.08);border-radius:5px;overflow:hidden}
@@ -5964,7 +5971,9 @@ function yrRender(){
   // višak
   var svM=ms.filter(function(m){return m.n>0;}), svTot=totInc-totSp;
   var svTxt=svM.length?('Ukupno '+(svTot>=0?'+':'')+eur(svTot)+' · prosjek '+eur(svTot/svM.length)+'/mj'):'Nema podataka.';
-  var cats=Object.keys(d.cats).map(function(k){return [k,d.cats[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,6);
+  var nM=svM.length||1, plan={};
+  try{ (fixedGoals||[]).concat(variableGoals||[]).forEach(function(g){ var k=planCat(g); if(k==='Fuel')k='Prijevoz'; if(k) plan[k]=(plan[k]||0)+(parseFloat(g.amount)||0); }); }catch(e){}
+  var cats=Object.keys(d.cats).map(function(k){return [k,d.cats[k]];}).sort(function(a,b){return b[1]-a[1];});
   var cmx=cats.length?cats[0][1]:1;
   var h='<div class="yr-tiles">'+
    '<div class="yr-tile" style="--c:#6b8046"><small>Prosječna plaća</small><strong>'+eur(avgInc)+'</strong></div>'+
@@ -5974,8 +5983,17 @@ function yrRender(){
    '<div class="yr-card" style="--c:#6b8046"><h3>Plaća po mjesecima</h3><p>'+incTxt+'</p>'+yrBars(inc12,'#6b8046',nowI)+'</div>'+
    '<div class="yr-card" style="--c:#e8527f"><h3>Potrošnja po mjesecima</h3><p>'+spTxt+'</p>'+yrBars(sp12,'#e8527f',nowI)+'</div>'+
    '<div class="yr-card" style="--c:#3f9be0"><h3>Višak po mjesecima</h3><p>'+svTxt+'</p>'+yrBars(sv12,'#3f9be0',nowI)+'</div>';
-  if(cats.length) h+='<div class="yr-card" style="--c:#f2b705"><h3>Na što ide novac</h3><p>Najveće kategorije ove godine</p>'+cats.map(function(c){
-    return '<div class="yr-cat"><span>'+((CAT_HR[c[0]]||c[0])+'').replace(/</g,'&lt;')+'</span><div><i style="width:'+Math.max(3,c[1]/cmx*100)+'%;background:'+(CAT_COLORS[c[0]]||'#94a3b8')+'"></i></div><span>'+eur(c[1])+'</span></div>';}).join('')+'</div>';
+  if(cats.length){
+    h+='<div class="yr-card" style="--c:#f2b705"><h3>Na što ide novac</h3><p>Ukupno i prosjek po mjesecu ('+nM+' '+(nM===1?'mjesec':(nM<5?'mjeseca':'mjeseci'))+' podataka) u odnosu na plan iz Profila. Crveno = trošiš više od plana, zeleno = manje.</p>'+
+    '<div class="yr-th"><span>Kategorija</span><span>Ukupno</span><span>Prosjek/mj</span><span>Plan</span></div>'+
+    cats.map(function(c){
+      var avg=c[1]/nM, pl=plan[c[0]]||0, diff=pl?avg-pl:0, col=!pl?'#7a7a6e':(diff>pl*0.05?'#d8506f':(diff<-pl*0.05?'#4f7a2f':'#7a7a6e'));
+      var nm=((CAT_HR[c[0]]||c[0])+'').replace(/</g,'&lt;'), cc=CAT_COLORS[c[0]]||'#94a3b8';
+      return '<div class="yr-row"><div class="yr-r1"><span><i style="background:'+cc+'"></i>'+nm+'</span><span>'+eur(c[1])+'</span><b style="color:'+col+'">'+eur(avg)+'</b><span>'+(pl?eur(pl):'—')+'</span></div>'+
+        '<div class="yr-bar"><i style="width:'+Math.max(3,c[1]/cmx*100)+'%;background:'+cc+'"></i></div>'+
+        (pl&&Math.abs(diff)>pl*0.05?'<div class="yr-hint" style="color:'+col+'">'+(diff>0?'Prosječno ~'+eur(diff)+' više od plana':'Prosječno ~'+eur(-diff)+' manje od plana')+'</div>':'')+'</div>';
+    }).join('')+'</div>';
+  }
   h+='<p style="margin:2px 4px 0;font-size:12px;font-weight:600;color:#7a7a6e">Višak je prihod minus potrošnja. Tekući mjesec je svjetliji jer još traje.</p>';
   document.getElementById('yr-body').innerHTML=h;
 }
