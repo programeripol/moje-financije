@@ -1141,7 +1141,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
           <option value="Beauty">Kozmetika</option>
           <option value="Zdravlje">Zdravlje</option>
           <option value="Odijelo">Odjeća</option>
-          <option value="Prijevoz">Prijevoz</option>
+          <option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option>
         </optgroup>
         <optgroup label="Interesi">
           <option value="Zabava">Zabava</option>
@@ -1169,7 +1169,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
           <li data-v="Beauty" onclick="cselPick(this,'Beauty','Kozmetika')">Kozmetika</li>
           <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li>
           <li data-v="Odijelo" onclick="cselPick(this,'Odijelo','Odje&#263;a')">Odje&#263;a</li>
-          <li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li>
+          <li data-v="Gorivo" onclick="cselPick(this,'Gorivo','Gorivo')">Gorivo</li><li data-v="Auto" onclick="cselPick(this,'Auto','Auto')">Auto</li><li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li>
           <li class="csel-grp">Interesi</li>
           <li data-v="Zabava" onclick="cselPick(this,'Zabava','Zabava')">Zabava</li>
           <li data-v="Edukacija" onclick="cselPick(this,'Edukacija','Edukacija')">Edukacija</li>
@@ -1581,15 +1581,15 @@ if('serviceWorker' in navigator){
 }
 
 const CAT_HR = {
-  Food:'Hrana', Pets:'Ljubimci', Fuel:'Prijevoz', Software:'Pretplate', Beauty:'Kozmetika',
+  Food:'Hrana', Pets:'Ljubimci', Fuel:'Gorivo', Gorivo:'Gorivo', Auto:'Auto', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
   Allianz:'Osiguranje', Debt:'Rate', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
   Savings:'Štednja', KeksPay:'Keks Pay', Drugima:'Plaćeno drugima', Prihod:'Prihod (primljeno)', Prijenos:'Prijenos između računa', Uplaceno:'Uplaćeno (od drugih)', Other:'Ostalo'
 };
 const CAT_COLORS = {
-  Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Software:'#60a5fa', Beauty:'#f472b6',
+  Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Gorivo:'#f59e0b', Auto:'#0ea5e9', Software:'#60a5fa', Beauty:'#f472b6',
   Stanarina:'var(--th1)', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
-  Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Prijevoz:'#38bdf8', Hobi:'#f97316', Putovanje:'#818cf8', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
+  Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Prijevoz:'#2dd4bf', Hobi:'#f97316', Putovanje:'#818cf8', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
   Savings:'#10b981', KeksPay:'#06b6d4', Drugima:'#fb7185', Prihod:'#16a34a', Prijenos:'#cbd5e1', Uplaceno:'#34d399', Other:'#94a3b8'
 };
 
@@ -1623,7 +1623,7 @@ document.addEventListener('keydown',function(e){
 });
 var KAT_GROUPS=[
  ['Stanovanje',[['Stanarina','Stanarina'],['Rezije','Režije'],['Dom','Dom']]],
- ['Svakodnevno',[['Food','Hrana'],['Pets','Ljubimci'],['Beauty','Kozmetika'],['Zdravlje','Zdravlje'],['Odijelo','Odjeća'],['Prijevoz','Prijevoz']]],
+ ['Svakodnevno',[['Food','Hrana'],['Pets','Ljubimci'],['Beauty','Kozmetika'],['Zdravlje','Zdravlje'],['Odijelo','Odjeća'],['Gorivo','Gorivo'],['Auto','Auto'],['Prijevoz','Prijevoz']]],
  ['Interesi',[['Zabava','Zabava'],['Edukacija','Edukacija'],['Software','Pretplate'],['Hobi','Hobi'],['Putovanje','Putovanje']]],
  ['Financije',[['Debt','Rate'],['Savings','Štednja'],['KeksPay','Keks Pay'],['Drugima','Plaćeno drugima'],['Other','Ostalo']]]
 ];
@@ -2053,21 +2053,21 @@ const GOAL_TO_CAT = {
   'Zdravstveno osiguranje':'Allianz','Osiguranje':'Allianz','Allianz':'Allianz',
   'Pretplate':'Software','Software':'Software','Netflix':'Software','Streaming':'Software',
   'Hrana':'Food','Food':'Food','Namirnice':'Food','Supermarket':'Food',
-  'Gorivo':'Fuel','Fuel':'Fuel','Benzin':'Fuel',
+  'Gorivo':'Gorivo','Fuel':'Gorivo','Benzin':'Gorivo','Plin':'Gorivo','Auto':'Auto','Prijevoz':'Prijevoz',
   'Ljubimci':'Pets','Pets':'Pets',
   'Kozmetika':'Beauty','Beauty':'Beauty','Ljepota':'Beauty','Drogerija':'Beauty',
   'Ostalo':'Other','Other':'Other'
 };
 
 // Kategorija stavke plana: odabrana > poznati naziv > prepoznavanje po nazivu (npr. Netflix → Pretplate)
-var PLAN_INF=[[/rat[ae]\b|visa|kredit|iphone|leasing/i,'Debt'],[/netflix|canva|claude|openai|spotify|youtube|apple|icloud|pretplat|google|adobe|github/i,'Software'],[/iskon|tomato|internet|mobiln|\ba1\b|t-?com|struja|plin|voda|komunal|re[zž]ij/i,'Rezije'],[/veterin|ljubimac|\bpas\b|ma[cč]k/i,'Pets'],[/gorivo|benzin|parking|autocest/i,'Prijevoz'],[/hrana|namirnic|supermarket/i,'Food'],[/frizer|kozmet|nokti|manikir/i,'Beauty'],[/cug[ae]|izlask|zabav/i,'Zabava']];
+var PLAN_INF=[[/rat[ae]\b|visa|kredit|iphone|leasing/i,'Debt'],[/netflix|canva|claude|openai|spotify|youtube|apple|icloud|pretplat|google|adobe|github/i,'Software'],[/iskon|tomato|internet|mobiln|\ba1\b|t-?com|struja|plin|voda|komunal|re[zž]ij/i,'Rezije'],[/veterin|ljubimac|\bpas\b|ma[cč]k/i,'Pets'],[/gorivo|benzin|dizel|\bplin\b|punjenje/i,'Gorivo'],[/servis|rega|registracij|vulkaniz|parking|autocest|\bauto\b|automobil|tehni[cč]ki/i,'Auto'],[/taxi|taksi|bolt|uber|nextbike|autobus|vlak|tramvaj|zet|prijevoz/i,'Prijevoz'],[/hrana|namirnic|supermarket/i,'Food'],[/frizer|kozmet|nokti|manikir/i,'Beauty'],[/cug[ae]|izlask|zabav/i,'Zabava']];
 function planCat(g){
   if(!g) return '';
-  if(g.cat) return g.cat==='Fuel'?'Prijevoz':g.cat;
+  if(g.cat) return g.cat==='Fuel'?'Gorivo':(g.cat==='Prijevoz'&&/gorivo|benzin|plin|servis|rega|auto/i.test(g.name||'')?planCat({name:g.name}):g.cat);
   var n=(g.name||'').trim(); if(!n) return '';
-  if(GOAL_TO_CAT[n]) return GOAL_TO_CAT[n]==='Fuel'?'Prijevoz':GOAL_TO_CAT[n];
+  if(GOAL_TO_CAT[n]) return GOAL_TO_CAT[n]==='Fuel'?'Gorivo':GOAL_TO_CAT[n];
   var low=n.toLowerCase();
-  for(var k in CAT_HR){ if(CAT_HR[k].toLowerCase()===low) return k==='Fuel'?'Prijevoz':k; }
+  for(var k in CAT_HR){ if(CAT_HR[k].toLowerCase()===low) return k==='Fuel'?'Gorivo':k; }
   for(var i=0;i<PLAN_INF.length;i++){ if(PLAN_INF[i][0].test(n)) return PLAN_INF[i][1]; }
   return '';
 }
@@ -2727,6 +2727,7 @@ function fillProfileForm(){
   try{ if(!localStorage.getItem('mf_keks1')) setTimeout(function(){ keksFix('mf_keks1',true); },15000); }catch(e){}
   try{ if(!localStorage.getItem('mf_keks2')) setTimeout(function(){ keksFix('mf_keks2',false); },30000); }catch(e){}
   try{ if(!localStorage.getItem('mf_nb1')) setTimeout(function(){ nextbikeFix(); },12000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_car1')) setTimeout(function(){ carFix(); },16000); }catch(e){}
   try{ setTimeout(function(){ planSnap(); },20000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
@@ -2770,7 +2771,7 @@ async function nextbikeFix(manual){
       (res.values||[]).forEach((r,i)=>{
         if(!r||!r[1]) return;
         if(!/next\s*bike/i.test(String(r[11]||'')+' '+String(r[3]||''))) return;
-        const cur=r[8]||'Other'; if(['Prijevoz','Fuel','Prijenos','Prihod','Uplaceno'].indexOf(cur)>=0) return;
+        const cur=r[8]||'Other'; if(['Prijevoz','Fuel','Gorivo','Auto','Prijenos','Prihod','Uplaceno'].indexOf(cur)>=0) return;
         data.push({range:`${m}!I${57+i}`,values:[['Prijevoz']]});
       });
       if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
@@ -2778,6 +2779,29 @@ async function nextbikeFix(manual){
     try{ localStorage.setItem('mf_nb1','1'); }catch(e){}
     if(n){ showToast('Nextbike prebačen u Prijevoz: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
     else if(manual===true) showToast('Nema Nextbike stavki za ispraviti.');
+  }catch(e){ if(manual===true) showToast('Greška: '+(e&&e.message||e),5000,'err'); }
+}
+async function carFix(manual){
+  if(!sheetId){ if(manual===true) showToast('Prvo se prijavi i pričekaj da se učita.'); return; }
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+    const have=new Set((meta.sheets||[]).map(x=>x.properties.title)); let n=0;
+    const fuelRe=/\bina\b|petrol|tifon|c plin|crodux|omv|lukoil|mol |gorivo|benzin|dizel/i, autoRe=/triglav|parking|autocest|\bhac\b|\barz\b|vulkaniz|centar za vozila|servis|registracij|tehni[cč]ki|rega/i;
+    for(const m of MONTHS_HR){
+      if(!have.has(m)) continue;
+      const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!A57:N500')}`);
+      const data=[];
+      (res.values||[]).forEach((r,i)=>{
+        if(!r||!r[1]) return;
+        const cur=r[8]||''; if(cur!=='Fuel'&&cur!=='Prijevoz') return;
+        const txt=String(r[11]||'')+' '+String(r[3]||'');
+        let to=fuelRe.test(txt)?'Gorivo':(autoRe.test(txt)?'Auto':(cur==='Fuel'?'Gorivo':null));
+        if(to&&to!==cur) data.push({range:`${m}!I${57+i}`,values:[[to]]});
+      });
+      if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
+    }
+    try{ localStorage.setItem('mf_car1','1'); }catch(e){}
+    if(n){ showToast('Gorivo i auto razvrstani: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
   }catch(e){ if(manual===true) showToast('Greška: '+(e&&e.message||e),5000,'err'); }
 }
 async function keksFix(flag,mom){
@@ -3111,7 +3135,7 @@ function renderMPInc(){
 function addMPInc(){ mPlanIncGoals.push({name:'',amount:0}); renderMPInc(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-inc-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
 function removeMPInc(i){ mPlanIncGoals.splice(i,1); renderMPInc(); }
 
-const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Prijevoz">Prijevoz</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="KeksPay">Keks Pay</option><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>`;
+const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="KeksPay">Keks Pay</option><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>`;
 
 function renderMPExp(){
   const c = document.getElementById('mp-exp-list'); if(!c) return;
@@ -3341,7 +3365,7 @@ async function loadPregled(){
     let totalSpent = 0;
     let received = 0; const recvItems=[];
     entries.forEach(r=>{
-      const cat = (r[8]==='Fuel'?'Prijevoz':r[8])||'Other'; // I = kategorija
+      const cat = (r[8]==='Fuel'?'Gorivo':r[8])||'Other'; // I = kategorija
       const amt = parseFloat(r[5])||0; // F = iznos
       if(cat==='Prijenos') return; // prijenos između vlastitih računa nije trošak
       if(cat==='Prihod'){ received += amt; recvItems.push({date:r[1],desc:r[11]||r[3]||'Prihod',amt:amt}); return; } // primljeno (plaća) nije trošak
@@ -3404,12 +3428,12 @@ async function loadPregled(){
       if(!goals || !goals.length) return '';
       const catTotals = {};
       goals.forEach(g => {
-        const cat = (GOAL_TO_CAT[g.name]==='Fuel'?'Prijevoz':GOAL_TO_CAT[g.name]) || 'Other';
+        const cat = (GOAL_TO_CAT[g.name]==='Fuel'?'Gorivo':GOAL_TO_CAT[g.name]) || 'Other';
         catTotals[cat] = (catTotals[cat]||0) + (parseFloat(g.amount)||0);
       });
       return goals.map(g => {
         const amt   = parseFloat(g.amount)||0;
-        const cat   = (GOAL_TO_CAT[g.name]==='Fuel'?'Prijevoz':GOAL_TO_CAT[g.name]) || 'Other';
+        const cat   = (GOAL_TO_CAT[g.name]==='Fuel'?'Gorivo':GOAL_TO_CAT[g.name]) || 'Other';
         const color = CAT_COLORS[cat] || '#94a3b8';
         const hasMapping = GOAL_TO_CAT[g.name] !== undefined;
         const catAct   = (forSavings || !hasMapping) ? 0 : (actual[cat]||0);
@@ -3431,7 +3455,7 @@ async function loadPregled(){
     // Build plan-by-category map: exp_json (new) + fix/var (legacy)
     const CAT_HR_LOWER = {};
     Object.entries(CAT_HR).forEach(([k,v]) => CAT_HR_LOWER[v.toLowerCase()] = k);
-    const _cf = k => k==='Fuel'?'Prijevoz':k;
+    const _cf = k => k==='Fuel'?'Gorivo':k;
     const planByCategory = {};
     const _curMiLP = new Date().getMonth();
     let expGoalsForPlan = [];
@@ -4044,7 +4068,9 @@ var REV_ROWS=[];
 var REV_RULES=[
  [/keks/i,'KeksPay'],
  [/kaufland|konzum|spar|lidl|tiki|studenac|mlinar|plodine|interspar|eurospin|pelati|mljekara|ledo|pekar|mcdonald|restoran|gelato|wolt|glovo|beer|ohana|bufet|cafe|caffe|kava/i,'Food'],
- [/triglav|\bina\b|petrol|tifon|c plin|crodux|omv|lukoil|mol |bolt|uber|nextbike|next bike|parking|autocesta|hac|arz|vulkaniz|centar za vozila/i,'Prijevoz'],
+ [/\bina\b|petrol|tifon|c plin|crodux|omv|lukoil|mol /i,'Gorivo'],
+ [/triglav|parking|autocesta|hac|arz|vulkaniz|centar za vozila|autoservis|servis auto|tehni[cč]ki|registracij/i,'Auto'],
+ [/bolt|uber|nextbike|next bike|cammeo|taxi|taksi|\bzet\b|hzpp/i,'Prijevoz'],
  [/apipet|pet |zoo|veterin|ljubimac/i,'Pets'],
  [/claude|openai|elevenlabs|google one|google play|apple|netflix|spotify|youtube|adobe|canva|github|icloud|microsoft/i,'Software'],
  [/m[üu]ller|dm |bipa|douglas|sephora|kozmet|frizer/i,'Beauty'],
@@ -5495,7 +5521,7 @@ function syncAmtDisplay(inp){
       <option value="Beauty">Kozmetika</option>
       <option value="Zdravlje">Zdravlje</option>
       <option value="Odijelo">Odjeća</option>
-        <option value="Prijevoz">Prijevoz</option>
+        <option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option>
       </optgroup>
       <optgroup label="Interesi">
       <option value="Zabava">Zabava</option>
@@ -5523,7 +5549,7 @@ function syncAmtDisplay(inp){
           <li data-v="Beauty" onclick="cselPick(this,'Beauty','Kozmetika')">Kozmetika</li>
           <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li>
           <li data-v="Odijelo" onclick="cselPick(this,'Odijelo','Odjeća')">Odjeća</li>
-          <li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li>
+          <li data-v="Gorivo" onclick="cselPick(this,'Gorivo','Gorivo')">Gorivo</li><li data-v="Auto" onclick="cselPick(this,'Auto','Auto')">Auto</li><li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li>
           <li class="csel-grp">Interesi</li>
           <li data-v="Zabava" onclick="cselPick(this,'Zabava','Zabava')">Zabava</li>
           <li data-v="Edukacija" onclick="cselPick(this,'Edukacija','Edukacija')">Edukacija</li>
@@ -5735,7 +5761,7 @@ async function aiScan(file){
     var block;
     if(isPdf) block={type:'document',source:{type:'base64',media_type:'application/pdf',data:await aiB64(file)}};
     else block={type:'image',source:{type:'base64',media_type:'image/jpeg',data:await aiShrink(file)}};
-    var prompt='Ovo je račun iz Hrvatske (papirnati ili e-račun). Vrati SAMO JSON, bez teksta oko njega: {"store":"naziv dućana/tvrtke (kratko)","date":"YYYY-MM-DD","total":ukupni iznos računa kao broj u eurima,"category":"jedan od: Food, Pets, Beauty, Zdravlje, Odijelo, Prijevoz, Zabava, Edukacija, Software, Hobi, Putovanje, Rezije, Dom, Other","items":[{"name":"naziv proizvoda","qty":količina kao broj,"price":cijena stavke kao broj}]}. Ako nešto ne možeš pročitati, stavi null. Ne izmišljaj. Ako ovo nije račun, vrati {"error":"nije račun"}.';
+    var prompt='Ovo je račun iz Hrvatske (papirnati ili e-račun). Vrati SAMO JSON, bez teksta oko njega: {"store":"naziv dućana/tvrtke (kratko)","date":"YYYY-MM-DD","total":ukupni iznos računa kao broj u eurima,"category":"jedan od: Food, Pets, Beauty, Zdravlje, Odijelo, Gorivo, Auto, Prijevoz, Zabava, Edukacija, Software, Hobi, Putovanje, Rezije, Dom, Other","items":[{"name":"naziv proizvoda","qty":količina kao broj,"price":cijena stavke kao broj}]}. Ako nešto ne možeš pročitati, stavi null. Ne izmišljaj. Ako ovo nije račun, vrati {"error":"nije račun"}.';
     var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:AI_MODEL,max_tokens:2000,messages:[{role:'user',content:[block,{type:'text',text:prompt}]}]})});
     if(r.status===401){ showScan('AI ključ nije ispravan, provjeri u Postavkama. Upiši ručno.','err'); return; }
@@ -6064,7 +6090,7 @@ async function yrLoad(){
     var inc=0,sp=0,n=0;
     (rows||[]).forEach(function(r){
       if(!r[1]) return;
-      var cat=(r[8]==='Fuel'?'Prijevoz':r[8])||'Other', a=parseFloat(r[5])||0;
+      var cat=(r[8]==='Fuel'?'Gorivo':r[8])||'Other', a=parseFloat(r[5])||0;
       if(cat==='Prijenos') return;
       n++;
       if(cat==='Prihod'){ inc+=a; return; }
@@ -6102,7 +6128,7 @@ function yrRender(){
   var svM=ms.filter(function(m){return m.n>0;}), svTot=totInc-totSp;
   var svTxt=svM.length?('Ukupno '+(svTot>=0?'+':'')+eur(svTot)+', prosjek '+eur(svTot/svM.length)+'/mj'):'Nema podataka.';
   var nM=svM.length||1, plan={};
-  try{ (fixedGoals||[]).concat(variableGoals||[]).forEach(function(g){ var k=planCat(g); if(k==='Fuel')k='Prijevoz'; if(k) plan[k]=(plan[k]||0)+(parseFloat(g.amount)||0); }); }catch(e){}
+  try{ (fixedGoals||[]).concat(variableGoals||[]).forEach(function(g){ var k=planCat(g); if(k==='Fuel')k='Gorivo'; if(k) plan[k]=(plan[k]||0)+(parseFloat(g.amount)||0); }); }catch(e){}
   var cats=Object.keys(d.cats).map(function(k){return [k,d.cats[k]];}).sort(function(a,b){return b[1]-a[1];});
   var cmx=cats.length?cats[0][1]:1;
   var h='<div class="yr-tiles">'+
@@ -6149,11 +6175,11 @@ function cdPre(p){
 }
 function cdRange(){ _cdPre='custom'; _cdFrom=+document.getElementById('cd-from').value; _cdTo=+document.getElementById('cd-to').value; if(_cdTo<_cdFrom){ var x=_cdFrom;_cdFrom=_cdTo;_cdTo=x; } cdRender(); }
 function cdRender(){
-  var cat=_cdCat, n=new Date().getMonth(), all=(_srchIdx||[]).filter(function(x){ return !x.plan && x.cat!=='Prijenos' && x.cat!=='Prihod' && ((x.cat==='Fuel'?'Prijevoz':x.cat)===cat); });
+  var cat=_cdCat, n=new Date().getMonth(), all=(_srchIdx||[]).filter(function(x){ return !x.plan && x.cat!=='Prijenos' && x.cat!=='Prihod' && ((x.cat==='Fuel'?'Gorivo':x.cat)===cat); });
   var items=all.filter(function(x){ return x.mi>=_cdFrom && x.mi<=_cdTo; });
   items.sort(function(a,b){ return (b.d||0)-(a.d||0) || b.row-a.row; });
   var tot=items.reduce(function(s,x){return s+x.amt;},0), nm=_cdTo-_cdFrom+1, avg=tot/nm;
-  var plan=0; try{ (fixedGoals||[]).concat(variableGoals||[]).forEach(function(g){ var k=planCat(g); if(k==='Fuel')k='Prijevoz'; if(k===cat) plan+=(parseFloat(g.amount)||0); }); }catch(e){}
+  var plan=0; try{ (fixedGoals||[]).concat(variableGoals||[]).forEach(function(g){ var k=planCat(g); if(k==='Fuel')k='Gorivo'; if(k===cat) plan+=(parseFloat(g.amount)||0); }); }catch(e){}
   var col=CAT_COLORS[cat]||'#94a3b8', mv=MONTHS_HR.map(function(m,i){ return (i>=_cdFrom&&i<=_cdTo)?all.filter(function(x){return x.mi===i;}).reduce(function(s,x){return s+x.amt;},0):0; });
   function chip(k,l){ return '<button class="cd-chip'+(_cdPre===k?' on':'')+'" onclick="cdPre(\''+k+'\')">'+l+'</button>'; }
   function opts(sel){ return MONTHS_HR.map(function(m,i){ return i>n?'':'<option value="'+i+'"'+(i===sel?' selected':'')+'>'+m+'</option>'; }).join(''); }
