@@ -5068,6 +5068,10 @@ function savFund(){
   try{ if(typeof imLoad==='function') imLoad(); }catch(e){}
   try{ return (ASSETS||[]).filter(function(a){ return a.type==='apy'||a.type==='stednja'; }).reduce(function(s,a){ return s+imEur(a); },0); }catch(e){ return 0; }
 }
+function savFundLabel(){
+  try{ var L=(ASSETS||[]).filter(function(a){ return a.type==='apy'||a.type==='stednja'; }); if(L.length===1 && L[0].name) return String(L[0].name).replace(/</g,'&lt;'); }catch(e){}
+  return 'Štednja';
+}
 function savTarget(g){ return (parseFloat(g.amount)||0)*12; }
 // podjednako na sve kuverte; što premašuje cilj kuverte, prelijeva se ostalima
 function savAlloc(goals,fund){
@@ -5163,7 +5167,7 @@ function renderSavCardExpand(){
   var fund=savFund(), al=savAlloc(goals,fund), html='';
   var totalGoal=goals.reduce(function(s,g){return s+savTarget(g);},0);
   var head='<div style="background:#f0f4ff;border-radius:12px;padding:12px;margin-bottom:12px">'
-    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Fond (stanje)</span><span style="font-size:14px;font-weight:700;color:#1565c0">'+(fund>0?fmt(fund):'—')+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">'+savFundLabel()+'</span><span style="font-size:14px;font-weight:700;color:#1565c0">'+(fund>0?fmt(fund):'—')+'</span></div>'
     +'<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Ukupni cilj</span><span style="font-size:13px;font-weight:700;color:#1a1a2e">'+fmt(totalGoal)+'</span></div>'
     +(fund<=0?'<div style="font-size:12px;color:#94a3b8;margin-top:8px;line-height:1.35">Upiši stanje štednje u Profil → Imovina (vrsta "APY fond" ili "Štednja").</div>':'')
     +'</div>';
