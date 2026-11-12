@@ -3148,11 +3148,12 @@ async function updateIncTotal(){
   const el = document.getElementById('inc-total-display');
   const recEl = document.getElementById('bh-received');
   if(_recvMonth>0){
-    if(el) el.textContent = eur(_recvMonth);
+    if(el){ el.textContent = eur(_recvMonth); el.style.removeProperty('color'); }
     if(recEl){ recEl.style.display='block'; recEl.textContent = total>0 ? 'Planirani prihod: '+eur(total) : ''; }
   } else {
+    if(el){ el.style.setProperty('color', total>0?'#9a978c':'', total>0?'important':''); }
     if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
-    if(recEl){ if(total>0){ recEl.style.display='block'; recEl.textContent='Planirano · još nema uplata'; } else { recEl.style.display='none'; recEl.textContent=''; } }
+    if(recEl){ if(total>0){ recEl.style.display='block'; recEl.textContent='Planirano, još nema prihoda'; } else { recEl.style.display='none'; recEl.textContent=''; } }
   }
   var _ch=document.getElementById('inc-card-chev'); if(_ch) _ch.style.display=(_recvMonth>0)?'':'none';
 }
@@ -3475,7 +3476,7 @@ async function loadPregled(){
       if(ps){
         if(planSum>0){
           const over=totalSpent>planSum, pct=Math.min(100,totalSpent/planSum*100), col=over?'#ef4444':'#3a9d7a';
-          ps.innerHTML='<div style="height:6px;background:rgba(0,0,0,.09);border-radius:4px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:4px"></div></div><div style="font-size:12px;font-weight:700;margin-top:4px;color:'+col+'">'+(over?eur(totalSpent-planSum)+' preko plana od '+eur(planSum):'Plan '+eur(planSum)+' · još '+eur(planSum-totalSpent))+'</div>';
+          ps.innerHTML='<div style="height:6px;background:rgba(0,0,0,.09);border-radius:4px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:4px"></div></div><div style="font-size:12px;font-weight:700;margin-top:4px;color:'+col+'">'+(over?eur(totalSpent-planSum)+' preko plana od '+eur(planSum):'Plan '+eur(planSum)+', još '+eur(planSum-totalSpent))+'</div>';
         } else ps.innerHTML='';
       }
     }
@@ -3812,7 +3813,7 @@ function imRender(){
     h+='<div class="im-g"><span>'+IM_TYPES[t]+'</span><span>'+pfShort(L.reduce(function(s,a){ return s+imEur(a); },0))+'</span></div>';
     L.forEach(function(a){
       var nonEur=a.cur&&a.cur!=='EUR';
-      h+='<div class="im-r" onclick="imEdit(\''+a.id+'\')"><span style="width:10px;height:10px;border-radius:50%;background:'+(IM_COL[t]||'#999')+';flex:none"></span><div class="n"><b>'+revEsc(a.name||IM_TYPES[t])+'</b><small'+(imOld(a.upd)?' class="old"':'')+'>'+(a.upd?(imOld(a.upd)?'Treba ažurirati · ':'ažurirano ')+imDate(a.upd):'nije ažurirano')+'</small></div><div class="a">'+(nonEur?(pfShort(a.bal).replace('€','')+a.cur+'<small>≈ '+pfShort(imEur(a))+'</small>'):pfEur(imEur(a)))+'</div></div>';
+      h+='<div class="im-r" onclick="imEdit(\''+a.id+'\')"><span style="width:10px;height:10px;border-radius:50%;background:'+(IM_COL[t]||'#999')+';flex:none"></span><div class="n"><b>'+revEsc(a.name||IM_TYPES[t])+'</b><small'+(imOld(a.upd)?' class="old"':'')+'>'+(a.upd?(imOld(a.upd)?'Treba ažurirati, ':'ažurirano ')+imDate(a.upd):'nije ažurirano')+'</small></div><div class="a">'+(nonEur?(pfShort(a.bal).replace('€','')+a.cur+'<small>≈ '+pfShort(imEur(a))+'</small>'):pfEur(imEur(a)))+'</div></div>';
     });
   });
   if(!ASSETS.length) h+='<div class="pp-empty" style="margin:14px 2px">Još nema računa. Dodaj tekući račun, Revolut, štednju, investicije, APY fond, valute i gotovinu.</div>';
@@ -4240,7 +4241,7 @@ function revRowHtml(o,i){
       <div id="revc-${i}" data-sm="1" class="rv-cb sm${o.on?' on':''}" onclick="revTog(${i})">${o.on?RV_TICK:''}</div>
       <div class="rv-rt">
         <div class="d">${revEsc(o.desc)||'—'}</div>
-        <div class="m">${fmtDateHR(o.date)} · ${revEsc(o.type)}${o.dup?' · već uneseno':(o.maybeDup?' · <span class="maybe-t">⚠ možda već uneseno</span>':'')}</div>
+        <div class="m">${fmtDateHR(o.date)}, ${revEsc(o.type)}${o.dup?', već uneseno':(o.maybeDup?', <span class="maybe-t">⚠ možda već uneseno</span>':'')}</div>
         <select onchange="REV_ROWS[${i}].cat=this.value">${revOpts(o.cat)}</select>
       </div>
       <div class="rv-am${neg?' pos':''}">${o.income?'+ ':''}${eur(o.amount)}</div>
@@ -4289,7 +4290,7 @@ function revSum(){
   const on=REV_ROWS.filter(o=>o.on); const tot=on.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0); const inc=on.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
   const w=n=>n+' '+stavke(n);
   document.getElementById('rev-sum').textContent=w(on.length);
-  document.getElementById('rev-sum2').textContent='troškovi '+eur(tot)+(inc?' · plaća +'+eur(inc):'');
+  document.getElementById('rev-sum2').textContent='troškovi '+eur(tot)+(inc?', plaća +'+eur(inc):'');
   document.getElementById('rev-btn').disabled=!on.length;
   const el=REV_ROWS.filter(o=>!o.dup);
   revCbPaint(document.getElementById('rev-allcb'), on.length&&on.length===el.length?'on':(on.length?'part':''));
@@ -4299,7 +4300,7 @@ function revSum(){
     const exp=sel.filter(o=>!o.income&&o.cat!=='Prijenos').reduce((a,o)=>a+o.amount,0), pay=sel.filter(o=>o.income).reduce((a,o)=>a+o.amount,0);
     const c=document.getElementById('revmc-'+m), t=document.getElementById('revms-'+m);
     revCbPaint(c, sel.length===rows.length?'on':(sel.length?'part':''));
-    if(t) t.textContent=sel.length+' od '+rows.length+' '+stavke(rows.length,'gen')+' · '+eur(exp)+(pay?' · plaća +'+eur(pay):'');
+    if(t) t.textContent=sel.length+' od '+rows.length+' '+stavke(rows.length,'gen')+', '+eur(exp)+(pay?', plaća +'+eur(pay):'');
   });
 }
 function revClose(){ document.getElementById('rev-modal').style.display='none'; }
@@ -4345,7 +4346,7 @@ async function revImport(){
     let rateN=0; try{ rateN=await rateFromImport(on); }catch(e){} try{ rateN+=await momFromImport(on); }catch(e){} _ratePlanSig='';
     let balMsg=''; try{ balMsg=await imAutoBalance(REV_ROWS._bal); }catch(e){}
     hideSaveOverlay(); revClose();
-    showToast('Uvezeno '+on.length+' '+stavke(on.length,'acc')+' ✓'+(rateN?' · rate ažurirane: '+rateN:'')+(balMsg?' · stanje: '+balMsg:'')+(upFail?' (izvadak nije spremljen na Drive)':''));
+    showToast('Uvezeno '+on.length+' '+stavke(on.length,'acc')+' ✓'+(rateN?', rate ažurirane: '+rateN:'')+(balMsg?', stanje: '+balMsg:'')+(upFail?' (izvadak nije spremljen na Drive)':''));
     try{ if(typeof loadPregled==='function') loadPregled(); }catch(e){}
   }catch(e){ hideSaveOverlay(); showToast('Greška pri uvozu: '+(e.message||e),6000,'err'); }
 }
@@ -4467,7 +4468,7 @@ async function saveReceipt(){
     }
     setProgress(100);
 
-    showToast('✓ Spremljeno! ' + store + ' · ' + eur(amount), 3000, 'success');
+    showToast('✓ Spremljeno! ' + store + ', ' + eur(amount), 3000, 'success');
     showScan(null);
     setTimeout(()=>{ setProgress(0); loadGallery(); noviRacun(); }, 1800);
   }catch(e){
@@ -4770,7 +4771,7 @@ function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
     var bm=/^(Revolut|Zaba|PBZ Visa|Plan Visa): /.exec(bilj||'');
     if(bm){
       if(iw) iw.style.display='none';
-      bk.innerHTML=bm[1]==='Plan Visa'?'<span class="eb-i">🗓</span><div><b>Planirana rata (Visa)</b><small>Označit će se plaćenom kad uvezeš izvadak za taj mjesec.</small></div>':'<span class="eb-i">🏦</span><div><b>Uvezeno iz izvatka banke</b><small>'+bm[1]+(driveUrl?' · ':'')+'</small>'+(driveUrl?'<a href="'+driveUrl+'" target="_blank" rel="noopener">Otvori izvadak</a>':'')+'</div>';
+      bk.innerHTML=bm[1]==='Plan Visa'?'<span class="eb-i">🗓</span><div><b>Planirana rata (Visa)</b><small>Označit će se plaćenom kad uvezeš izvadak za taj mjesec.</small></div>':'<span class="eb-i">🏦</span><div><b>Uvezeno iz izvatka banke</b><small>'+bm[1]+(driveUrl?', ':'')+'</small>'+(driveUrl?'<a href="'+driveUrl+'" target="_blank" rel="noopener">Otvori izvadak</a>':'')+'</div>';
       bk.style.display='flex';
     } else bk.style.display='none';
   }
@@ -5784,13 +5785,13 @@ function srchRun(){
   var res=_srchIdx.filter(function(x){ return (withPlan||!x.plan)&&w.every(function(t){ return x.hay.indexOf(t)>=0; }); });
   res.sort(function(a,b){ return (b.d?b.d.getTime():0)-(a.d?a.d.getTime():0); });
   var tot=res.reduce(function(s,x){ return s+x.amt; },0);
-  S.textContent=res.length?(res.length+' '+(res.length===1?'stavka':'stavki')+' · ukupno '+eur(tot)):'';
+  S.textContent=res.length?(res.length+' '+(res.length===1?'stavka':'stavki')+', ukupno '+eur(tot)):'';
   if(!res.length){ L.innerHTML='<div class="srch-empty">Ništa nije nađeno.<br>Probaj kraću riječ ili naziv trgovine.</div>'; return; }
   L.innerHTML=res.slice(0,200).map(function(x){
-    var pl=x.plan?'<span style="color:#b08a00"> · planirano</span>':'';
+    var pl=x.plan?'<span style="color:#b08a00">, planirano</span>':'';
     var dd=x.d?(x.d.getDate()+'.'+(x.d.getMonth()+1)+'.'):x.date;
     var yy=x.d?x.d.getFullYear():'';
-    return '<div class="srch-it"><div class="srch-d">'+dd+'<small>'+yy+'</small></div><div class="srch-m">'+srchEsc(x.name||x.note)+'<small>'+srchEsc((x.desc?x.desc+' · ':'')+x.catL+' · '+x.m)+pl+'</small>'+(x.url?'<a class="srch-r" href="'+srchEsc(x.url)+'" target="_blank" rel="noopener">Pogledaj račun</a>':'')+'</div><div class="srch-a">'+eur(x.amt)+'</div></div>';
+    return '<div class="srch-it"><div class="srch-d">'+dd+'<small>'+yy+'</small></div><div class="srch-m">'+srchEsc(x.name||x.note)+'<small>'+srchEsc((x.desc?x.desc+', ':'')+x.catL+', '+x.m)+pl+'</small>'+(x.url?'<a class="srch-r" href="'+srchEsc(x.url)+'" target="_blank" rel="noopener">Pogledaj račun</a>':'')+'</div><div class="srch-a">'+eur(x.amt)+'</div></div>';
   }).join('')+(res.length>200?'<div class="srch-empty">Prikazano prvih 200. Upiši preciznije.</div>':'');
 }
 </script>
@@ -5967,10 +5968,10 @@ function yrRender(){
   // potrošnja
   var spTxt='Nema podataka.', spM=ms.filter(function(m){return m.sp>0;});
   if(spM.length){ var mxm=spM.reduce(function(a,b){return b.sp>a.sp?b:a;}), mnm=(done.length?done:spM).reduce(function(a,b){return b.sp<a.sp?b:a;});
-    spTxt='Prosjek '+eur(totSp/spM.length)+'/mj · najviše '+MONTHS_HR[mxm.i]+' '+eur(mxm.sp)+' · najmanje '+MONTHS_HR[mnm.i]+' '+eur(mnm.sp); }
+    spTxt='Prosjek '+eur(totSp/spM.length)+'/mj, najviše '+MONTHS_HR[mxm.i]+' '+eur(mxm.sp)+', najmanje '+MONTHS_HR[mnm.i]+' '+eur(mnm.sp); }
   // višak
   var svM=ms.filter(function(m){return m.n>0;}), svTot=totInc-totSp;
-  var svTxt=svM.length?('Ukupno '+(svTot>=0?'+':'')+eur(svTot)+' · prosjek '+eur(svTot/svM.length)+'/mj'):'Nema podataka.';
+  var svTxt=svM.length?('Ukupno '+(svTot>=0?'+':'')+eur(svTot)+', prosjek '+eur(svTot/svM.length)+'/mj'):'Nema podataka.';
   var nM=svM.length||1, plan={};
   try{ (fixedGoals||[]).concat(variableGoals||[]).forEach(function(g){ var k=planCat(g); if(k==='Fuel')k='Prijevoz'; if(k) plan[k]=(plan[k]||0)+(parseFloat(g.amount)||0); }); }catch(e){}
   var cats=Object.keys(d.cats).map(function(k){return [k,d.cats[k]];}).sort(function(a,b){return b[1]-a[1];});
