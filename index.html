@@ -3152,8 +3152,9 @@ async function updateIncTotal(){
     if(recEl){ recEl.style.display='block'; recEl.textContent = total>0 ? 'Planirani prihod: '+eur(total) : ''; }
   } else {
     if(el) el.textContent = total>0 ? total.toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €' : '—';
-    if(recEl){ recEl.style.display='none'; recEl.textContent=''; }
+    if(recEl){ if(total>0){ recEl.style.display='block'; recEl.textContent='Planirano · još nema uplata'; } else { recEl.style.display='none'; recEl.textContent=''; } }
   }
+  var _ch=document.getElementById('inc-card-chev'); if(_ch) _ch.style.display=(_recvMonth>0)?'':'none';
 }
 function initIncomePanel(){
   const _incFb=()=>{ try{ const r=JSON.parse((profileData&&profileData.income_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (incomeGoals&&incomeGoals.length)?incomeGoals.map(g=>Object.assign({},g)):[]; };
@@ -3319,7 +3320,7 @@ async function loadPregled(){
       actual[cat] = (actual[cat]||0) + amt;
       totalSpent += amt;
     });
-    _recvMonth = received; _recvItems = recvItems; renderRecvList();
+    _recvMonth = received; _recvItems = recvItems; renderRecvList(); try{updateIncTotal();}catch(e){}
 
     const monthPlan = (viewMonthIdx >= new Date().getMonth()) ? null : await loadMonthPlan(viewMonthIdx);
     const effPlan   = getEffectivePlan(monthPlan);
@@ -4983,6 +4984,7 @@ function toggleIncCard(){
   const chev=document.getElementById('inc-card-chev');
   const card=document.querySelector('[onclick="toggleIncCard()"]');
   if(!el)return;
+  if(!(_recvMonth>0)){ closeIncModal(); return; }
   const open=el.style.display!=='none';
   el.style.display=open?'none':'block';
   if(chev)chev.style.transform=open?'':'rotate(180deg)';
