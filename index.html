@@ -2726,6 +2726,7 @@ function fillProfileForm(){
   try{ if(!localStorage.getItem('mf_recat2')) setTimeout(recatFix,9000); }catch(e){}
   try{ if(!localStorage.getItem('mf_keks1')) setTimeout(function(){ keksFix('mf_keks1',true); },15000); }catch(e){}
   try{ if(!localStorage.getItem('mf_keks2')) setTimeout(function(){ keksFix('mf_keks2',false); },30000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_nb1')) setTimeout(nextbikeFix,20000); }catch(e){}
   try{ setTimeout(function(){ planSnap(); },20000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
@@ -2754,6 +2755,27 @@ async function planSnap(){
     }
     if(add.length) await appendRows(sheetId,'Planovi',add);
     localStorage.setItem(fk,'1');
+  }catch(e){}
+}
+async function nextbikeFix(){
+  if(!sheetId) return;
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+    const have=new Set((meta.sheets||[]).map(x=>x.properties.title)); let n=0;
+    for(const m of MONTHS_HR){
+      if(!have.has(m)) continue;
+      const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!A57:N500')}`);
+      const data=[];
+      (res.values||[]).forEach((r,i)=>{
+        if(!r||!r[1]) return;
+        if(!/next\s*bike/i.test(String(r[11]||'')+' '+String(r[3]||''))) return;
+        const cur=r[8]||'Other'; if(['Prijevoz','Fuel','Prijenos','Prihod','Uplaceno'].indexOf(cur)>=0) return;
+        data.push({range:`${m}!I${57+i}`,values:[['Prijevoz']]});
+      });
+      if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
+    }
+    try{ localStorage.setItem('mf_nb1','1'); }catch(e){}
+    if(n){ showToast('Nextbike prebačen u Prijevoz: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
   }catch(e){}
 }
 async function keksFix(flag,mom){
