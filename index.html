@@ -573,7 +573,7 @@ hr.divider{border:none;border-top:1px solid var(--th-bg);margin:14px 0}
 [data-theme="dopamin"] #s-profil .ps-hdr [id^="ps-c-"] path{stroke:var(--dp-navy);stroke-width:2.4}
 [data-theme="dopamin"] #s-profil .ps-card[data-open="1"]>.ps-hdr{margin-bottom:14px}
 [data-theme="dopamin"] #s-profil .save-goal-row{display:flex;align-items:center;gap:0;height:48px;box-sizing:border-box;border:1.5px solid rgba(42,60,143,.32);border-radius:12px;background:#fff;padding:0 6px 0 14px;margin:0 0 10px}
-[data-theme="dopamin"] #s-profil .save-goal-row .drag-handle{display:none}
+[data-theme="dopamin"] #s-profil .save-goal-row .drag-handle{display:flex;align-items:center;justify-content:center;width:26px;height:34px;margin-left:-8px;margin-right:4px;color:#2a3c8f;opacity:.55;font-size:20px;padding:0}
 [data-theme="dopamin"] #s-profil .save-goal-row input{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;outline:none;color:var(--dp-navy)!important;font-family:inherit;font-size:16px!important;font-weight:700;min-width:0;padding:0!important;height:auto!important;min-height:0!important}
 [data-theme="dopamin"] #s-profil .save-goal-row .goal-name{flex:1}
 [data-theme="dopamin"] #s-profil .save-goal-row .goal-amt{width:104px!important;flex:0 0 104px!important;text-align:right}
@@ -1377,7 +1377,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
     </div>
   </div>
 
-  <div class="card ps-card" data-open="0" id="ps-card-income"><div class="ps-hdr" onclick="togglePS('income')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-income"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a9d7a" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-3"/><path d="M21 9v6h-5a3 3 0 0 1 0-6z"/></svg></span><div class="card-title">Prihodi<small class="pf-sub">mjesečno</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-income"></span><span id="ps-badge-income" style="font-size:12px;font-weight:700;color:#fff;background:var(--th1);padding:2px 9px;border-radius:20px;opacity:0;transition:opacity .3s"></span><span id="ps-c-income" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
+  <div class="card ps-card" data-open="0" id="ps-card-income"><div class="ps-hdr" onclick="togglePS('income')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-income"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a9d7a" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-3"/><path d="M21 9v6h-5a3 3 0 0 1 0-6z"/></svg></span><div class="card-title">Planirani prihodi<small class="pf-sub">mjesečni plan</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-income"></span><span id="ps-badge-income" style="font-size:12px;font-weight:700;color:#fff;background:var(--th1);padding:2px 9px;border-radius:20px;opacity:0;transition:opacity .3s"></span><span id="ps-c-income" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
     <div id="income-list"></div>
     <button type="button" class="add-goal-btn" onclick="addIncomeGoal()">+ Dodaj</button>
     <div class="plan-total-row" style="margin-top:10px">
@@ -1386,8 +1386,9 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
     </div>
   </div>
 
-  <div class="card ps-card" data-open="0" id="ps-card-troskovi"><div class="ps-hdr" onclick="togglePS('troskovi')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-troskovi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e4572e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l1 13H5z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></span><div class="card-title">Troškovi<small class="pf-sub">mjesečno</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-troskovi"></span><span id="ps-c-troskovi" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
+  <div class="card ps-card" data-open="0" id="ps-card-troskovi"><div class="ps-hdr" onclick="togglePS('troskovi')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-troskovi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e4572e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l1 13H5z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></span><div class="card-title">Planirani troškovi<small class="pf-sub">mjesečni plan</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-troskovi"></span><span id="ps-c-troskovi" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
 
+    <div style="font-size:12px;font-weight:700;color:#5a5f8f;margin:0 0 8px">Ovo je plan za svaki mjesec. Povuci ⠿ da promijeniš redoslijed.</div>
     <div class="costs-section-title"><span>Fiksni</span><span class="cs-tot" id="p-fixed-total">—</span></div>
     <div id="fixed-list"></div>
     <button type="button" class="add-goal-btn" onclick="addFixedGoal()">+ Dodaj fiksni trošak</button>
@@ -5679,7 +5680,7 @@ function syncAmtDisplay(inp){
 #srch-modal.open{display:flex}
 .srch-top{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 10px;border-bottom:2px solid #e3ebd3}
 .srch-top input{flex:1;min-width:0;font-weight:600;font-size:17px;line-height:1.2;font-family:inherit;border:2.5px solid #6b8046;border-radius:999px;padding:11px 16px;outline:none;color:#1b1a1a;background:#fff}
-.srch-x{background:transparent;color:#2a3c8f;border:2.5px solid #2a3c8f;border-radius:50%;width:40px;height:40px;font-size:22px;line-height:1;cursor:pointer;flex:none}
+.srch-x{background:transparent;color:#6b8046;border:2.5px solid #6b8046;border-radius:50%;width:46px;height:46px;font-size:22px;line-height:1;cursor:pointer;flex:none}
 .srch-pl{display:flex;align-items:center;gap:8px;padding:10px 18px 0;font-weight:600;font-size:13px;color:#5b6a45;font-family:inherit}
 .srch-pl input{width:18px;height:18px;accent-color:#6b8046}
 .srch-sum{padding:10px 18px 4px;font-weight:600;font-size:13px;line-height:1.3;font-family:inherit;color:#5b6a45}
@@ -5701,7 +5702,7 @@ function syncAmtDisplay(inp){
 #yr-modal.open{display:flex}
 .yr-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 10px}
 .yr-top b{font-size:22px;font-weight:800}
-.yr-x{background:transparent;color:#2a3c8f;border:2.5px solid #2a3c8f;border-radius:50%;width:40px;height:40px;font-size:22px;line-height:1;cursor:pointer;flex:none}
+.yr-x{background:transparent;color:#2a3c8f;border:2.5px solid #2a3c8f;border-radius:50%;width:46px;height:46px;font-size:22px;line-height:1;cursor:pointer;flex:none}
 .yr-body{flex:1;overflow:auto;padding:4px 16px calc(env(safe-area-inset-bottom,0px) + 28px);display:flex;flex-direction:column;gap:12px}
 .yr-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .yr-tile{background:#fff;border:3px solid var(--c);border-radius:20px;padding:10px 14px;box-shadow:0 4px 0 rgba(0,0,0,.1)}
