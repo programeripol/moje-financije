@@ -3544,7 +3544,7 @@ async function loadPregled(){
       const subText = over ? '+'+eur(act-planAmt)+' iznad plana' : planAmt>0 ? 'od plana '+eur(planAmt) : 'bez plana';
       const entries = window._catEntries[cat] || [];
       const _pit = planItemsByCat[cat] || [];
-      const planBreak = _pit.length ? `<div style="font-size:12px;font-weight:600;color:#7090b0;padding:2px 0 8px;line-height:1.5">Plan ${eur(planAmt)}: ${_pit.map(x=>x.n.replace(/</g,'&lt;')+' '+eur(x.a)).join(', ')}</div>` : '';
+      const planBreak = (_pit.length>1 || (_pit.length===1 && _pit[0].n.trim().toLowerCase()!==(CAT_HR[cat]||cat).toLowerCase())) ? `<div style="font-size:12px;font-weight:600;color:#7090b0;padding:2px 0 8px;line-height:1.5">Plan ${eur(planAmt)}: ${_pit.map(x=>x.n.replace(/</g,'&lt;')+' '+eur(x.a)).join(', ')}</div>` : '';
       const entriesHtml = entries.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).map(e => `<div onclick="editCatEntry(${e.sheetRow})" style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;cursor:pointer;border-top:1px solid #f0f4ff;font-size:12px">
           <span style="color:#7090b0;flex-shrink:0;margin-right:8px">${e.datum}</span>
           <span style="flex:1;color:#1a1a2e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.naziv||name}</span>
