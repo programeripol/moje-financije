@@ -3956,6 +3956,7 @@ function handleFile(file){
   setTimeout(()=>{ document.getElementById('meta-store').scrollIntoView({behavior:'smooth',block:'start'}); }, 300);
   document.getElementById('meta-date').value = today();
   document.getElementById('save-btn').disabled = false;
+  try{ aiScan(file); }catch(e){}
   if(isPdf){
     currentImgSrc = null;
     document.getElementById('receipt-preview').style.display = 'none';
@@ -5643,10 +5644,62 @@ function syncAmtDisplay(inp){
           <button class="theme-btn" data-t="black" onclick="setTheme('black')" style="display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;padding:4px;border-radius:16px;font-family:inherit"><div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#1a1a1a,#444);box-shadow:3px 3px 8px rgba(0,0,0,.18),-2px -2px 6px rgba(255,255,255,.7);transition:box-shadow .15s,transform .15s"></div><div style="font-size:11px;color:var(--th-text)">Crna</div></button>
         </div>
       </div>
+      <div style="margin-bottom:22px">
+        <div style="font-size:11px;font-weight:700;color:#1a1a2e;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">AI čitanje računa</div>
+        <div style="font-size:12px;color:#5a584f;line-height:1.4;margin-bottom:8px">Zalijepi Claude API ključ (console.anthropic.com). Ostaje samo na ovom mobitelu. Slika računa šalje se Claudeu radi čitanja.</div>
+        <input id="ai-key-inp" type="password" autocomplete="off" placeholder="sk-ant-…" style="width:100%;box-sizing:border-box;border:2px solid #1a1a1a;border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:8px;background:#fff">
+        <div style="display:flex;gap:8px;align-items:center">
+          <button type="button" onclick="aiKeySave()" style="border:2px solid #1a1a1a;background:#1a1a1a;color:#fff;border-radius:999px;padding:8px 16px;font-weight:700;font-size:14px;cursor:pointer">Spremi ključ</button>
+          <button type="button" onclick="aiKeyClear()" style="border:2px solid #1a1a1a;background:transparent;color:#1a1a1a;border-radius:999px;padding:8px 16px;font-weight:700;font-size:14px;cursor:pointer">Ukloni</button>
+          <span id="ai-key-st" style="font-size:12px;font-weight:700;color:#4f7a2f"></span>
+        </div>
+      </div>
           </div>
   </div>
 </div>
 
+<script>
+// ── AI čitanje računa (Claude API, ključ samo na uređaju) ──
+var AI_MODEL='claude-haiku-5-5';
+function aiKey(){ try{ return localStorage.getItem('mf_ai_key')||''; }catch(e){ return ''; } }
+function aiKeyUi(){ var s=document.getElementById('ai-key-st'); if(s) s.textContent=aiKey()?'✓ ključ spremljen':''; var i=document.getElementById('ai-key-inp'); if(i) i.value=''; }
+function aiKeySave(){ var v=(document.getElementById('ai-key-inp').value||'').trim(); if(!v) return; try{ localStorage.setItem('mf_ai_key',v); }catch(e){} aiKeyUi(); }
+function aiKeyClear(){ try{ localStorage.removeItem('mf_ai_key'); }catch(e){} aiKeyUi(); }
+document.addEventListener('DOMContentLoaded',aiKeyUi);
+function aiB64(file){ return new Promise(function(res,rej){ var r=new FileReader(); r.onload=function(){ res(String(r.result).split(',')[1]); }; r.onerror=rej; r.readAsDataURL(file); }); }
+function aiShrink(file){ return new Promise(function(res,rej){
+  var url=URL.createObjectURL(file), im=new Image();
+  im.onload=function(){ var mx=1568, k=Math.min(1,mx/Math.max(im.width,im.height)), c=document.createElement('canvas'); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height); URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg',0.85).split(',')[1]); };
+  im.onerror=function(){ URL.revokeObjectURL(url); aiB64(file).then(res,rej); }; im.src=url; }); }
+async function aiScan(file){
+  var key=aiKey(); if(!key||!file) return;
+  var isPdf=file.type==='application/pdf'||/\.pdf$/i.test(file.name);
+  showScan('Čitam račun…','loading');
+  try{
+    var block;
+    if(isPdf) block={type:'document',source:{type:'base64',media_type:'application/pdf',data:await aiB64(file)}};
+    else block={type:'image',source:{type:'base64',media_type:'image/jpeg',data:await aiShrink(file)}};
+    var prompt='Ovo je račun iz Hrvatske (papirnati ili e-račun). Vrati SAMO JSON, bez teksta oko njega: {"store":"naziv dućana/tvrtke (kratko)","date":"YYYY-MM-DD","total":ukupni iznos računa kao broj u eurima,"category":"jedan od: Food, Pets, Beauty, Zdravlje, Odijelo, Prijevoz, Zabava, Edukacija, Software, Hobi, Putovanje, Rezije, Dom, Other","items":[{"name":"naziv proizvoda","qty":količina kao broj,"price":cijena stavke kao broj}]}. Ako nešto ne možeš pročitati, stavi null. Ne izmišljaj. Ako ovo nije račun, vrati {"error":"nije račun"}.';
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:AI_MODEL,max_tokens:2000,messages:[{role:'user',content:[block,{type:'text',text:prompt}]}]})});
+    if(r.status===401){ showScan('AI ključ nije ispravan, provjeri u Postavkama. Upiši ručno.','err'); return; }
+    if(!r.ok){ var et=''; try{ et=(await r.json()).error.message; }catch(e){} showScan('AI nije uspio pročitati ('+r.status+(et?': '+et:'')+'). Upiši ručno.','err'); return; }
+    var j=await r.json(), txt=(j.content||[]).map(function(c){return c.text||'';}).join(''), m=/\{[\s\S]*\}/.exec(txt);
+    if(!m) throw new Error('prazan odgovor');
+    var d=JSON.parse(m[0]);
+    if(d.error){ showScan('Ovo ne izgleda kao račun. Upiši ručno.','err'); return; }
+    if(d.store){ var st=document.getElementById('meta-store'); st.value=String(d.store).slice(0,60); }
+    if(/^\d{4}-\d{2}-\d{2}$/.test(d.date||'')){ var dt=document.getElementById('meta-date'); dt.value=d.date; var fd=document.getElementById('fl-datum'); if(fd) fd.classList.add('fl-has-val'); }
+    var tot=parseFloat(d.total); if(tot>0){ var am=document.getElementById('meta-amount'); am.value=tot.toFixed(2).replace('.',','); try{ syncAmtDisplay(am); }catch(e){} var fi=document.getElementById('fl-iznos'); if(fi) fi.classList.add('fl-has-val'); }
+    if(d.category && document.querySelector('#csel-cat li[data-v="'+d.category+'"]')) katPick(d.category);
+    var its=(d.items||[]).filter(function(x){return x&&x.name;});
+    if(its.length){ var s=its.map(function(x){ var q=(x.qty&&x.qty!==1)?(' ×'+x.qty):''; var p=(x.price!=null&&x.price!=='')?(' '+String(Number(x.price).toFixed(2)).replace('.',',')+'€'):''; return String(x.name).trim()+q+p; }).join('; ');
+      document.getElementById('meta-note').value=s.slice(0,900); }
+    showScan('✓ Račun pročitan ('+its.length+' '+(its.length===1?'stavka':'stavki')+'). Provjeri i spremi.','ok');
+  }catch(e){ console.warn('aiScan',e); showScan('Nisam uspjela pročitati račun. Upiši ručno.','err'); }
+}
+</script>
 <script>
 // ── Swipe između tabova ─────────────────────────────────────────────
 (function(){
