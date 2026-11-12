@@ -3523,6 +3523,7 @@ async function loadPregled(){
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
     allRecentEntries = trackerRows.slice().sort(function(a,b){return parseDateHR(a.r[1])-parseDateHR(b.r[1]);});
     renderRecentList();
+    try{ imFx().then(function(){ loadSavingsAccumulated(); renderSavCardDonut(); renderSavCardExpand(); }); }catch(e){}
     loadSavingsAccumulated(_lastPreostalo);
 
     // Drive folder link
@@ -5025,6 +5026,29 @@ let _savGoalsCache=null;
 let _lastPreostalo=0;
 let _bhRem=0;
 
+
+// ── FOND (stvarna štednja iz Imovine: vrste "Štednja" i "APY fond") ──
+function savFund(){
+  try{ if(typeof imLoad==='function') imLoad(); }catch(e){}
+  try{ return (ASSETS||[]).filter(function(a){ return a.type==='apy'||a.type==='stednja'; }).reduce(function(s,a){ return s+imEur(a); },0); }catch(e){ return 0; }
+}
+function savTarget(g){ return (parseFloat(g.amount)||0)*12; }
+// podjednako na sve kuverte; što premašuje cilj kuverte, prelijeva se ostalima
+function savAlloc(goals,fund){
+  var res=goals.map(function(){return 0;}), open=goals.map(function(g,i){return i;}), left=Math.max(0,fund);
+  for(var k=0;k<20 && open.length && left>0.004;k++){
+    var share=left/open.length, next=[];
+    open.forEach(function(i){
+      var cap=savTarget(goals[i]), room=cap>0?cap-res[i]:share; // bez cilja: dobiva ravnomjerno
+      var add=Math.min(share,Math.max(0,room));
+      res[i]+=add; left-=add;
+      if(cap>0 && res[i]<cap-0.004) next.push(i); else if(cap<=0) next.push(i);
+    });
+    if(next.length===open.length && left<0.01) break;
+    open=next;
+  }
+  return res;
+}
 function loadSavingsAccumulated(preostalo){
   if(preostalo!==undefined) _lastPreostalo=preostalo;
   const sp=document.getElementById('hero-spin-sav');
@@ -5035,14 +5059,15 @@ function loadSavingsAccumulated(preostalo){
   try{
     _savGoalsCache=savingsGoals.filter(g=>g.name);
     const n=_savGoalsCache.length;
-    const pre=_lastPreostalo;
+    const pre=savFund();
     if(el) el.textContent=pre!==0?eur(pre):'—';
     if(!n||!barsEl){if(sp)sp.classList.remove('active');return;}
+    const _al=savAlloc(_savGoalsCache,pre);
     const perFund=pre/n;
     if(perFundEl) perFundEl.innerHTML=n>0?`<span style="font-weight:600;color:var(--th1)">${eur(perFund)}</span><br><span>po fondu</span>`:'';
     barsEl.innerHTML=_savGoalsCache.map((g,i)=>{
-      const goal=parseFloat(g.amount)||0;
-      const pct=goal>0?Math.min(100,Math.round(perFund/goal*100)):0;
+      const goal=savTarget(g);
+      const pct=goal>0?Math.min(100,Math.round(_al[i]/goal*100)):0;
       const color=SAV_COLORS[i%SAV_COLORS.length];
       const name=(g.name||'').replace(/^[^\w\u0100-\u017f]+/,'').trim();
       return`<div style="margin-bottom:5px">
@@ -5063,9 +5088,9 @@ function renderSavCardDonut(){
   const goals=(savingsGoals||[]).filter(g=>g.name);
   if(!goals.length){el.innerHTML='';el.style.display='none';return;}
   const fmt=v=>(v||0).toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
-  const totalGoal=goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
-  const totalSaved=_lastPreostalo||0;
-  const hEl=document.getElementById('sav-total-display');if(hEl)hEl.textContent=goals.length?fmt(totalSaved):'—';
+  const totalGoal=goals.reduce((s,g)=>s+savTarget(g),0);
+  const totalSaved=savFund();
+  const hEl=document.getElementById('sav-total-display');if(hEl)hEl.textContent=goals.length?(totalSaved>0?fmt(totalSaved):'—'):'—';
   const circ=2*Math.PI*36;
   const pct=totalGoal>0?Math.min(1,totalSaved/totalGoal):0;
   const savedArc=pct*circ;
@@ -5074,7 +5099,7 @@ function renderSavCardDonut(){
   let arcs='<circle cx="45" cy="45" r="36" fill="none" stroke="#e8edf8" stroke-width="11"/>';
   let off=0;
   goals.forEach((g,i)=>{
-    const arcLen=totalGoal>0?((parseFloat(g.amount)||0)/totalGoal)*savedArc:0;
+    const arcLen=totalGoal>0?(savTarget(g)/totalGoal)*savedArc:0;
     if(arcLen>0.01){
       arcs+='<circle cx="45" cy="45" r="36" fill="none" stroke="'+colors[i%colors.length]+'" stroke-width="11" stroke-dasharray="'+arcLen+' '+circ+'" stroke-dashoffset="'+(-off)+'" stroke-linecap="butt" transform="rotate(-90 45 45)"/>';
       off+=arcLen;
@@ -5097,52 +5122,26 @@ function renderSavCardExpand(){
   var el=document.getElementById('sav-card-expand');
   if(!el)return;
   var goals=(savingsGoals||[]).filter(function(g){return g.name;});
-  var noGoalMsg=goals.length?'':'<div style="text-align:center;color:#94a3b8;font-size:13px;padding:10px 0">Nema ciljeva štednje</div>';
   var colors=['#f43f5e','#f97316','#eab308','#22c55e','#06b6d4','#818cf8','#a855f7','#ec4899'];
   var fmt=function(v){return(parseFloat(v)||0).toLocaleString('hr-HR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';};
-  var n=goals.length;
-  var pre=_lastPreostalo||0;
-  var perFund=n>0?pre/n:0;
-  var html='';
-  goals.forEach(function(g,i){
-    var goal=parseFloat(g.amount)||0;
-    var color=colors[i%colors.length];
-    var pct=goal>0?Math.min(100,Math.round(perFund/goal*100)):0;
-    html+='<div style="background:#f8f9ff;border-radius:12px;padding:12px 14px;margin-bottom:8px">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
-    html+='<div style="font-weight:600;font-size:14px;color:#1a1a2e">'+g.name+'</div>';
-    html+='<div style="font-size:12px;font-weight:700;color:'+color+'">'+pct+'%</div>';
-    html+='</div>';
-    html+='<div style="height:6px;background:#e8edf8;border-radius:3px;overflow:hidden;margin-bottom:8px">';
-    html+='<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;transition:width .6s"></div>';
-    html+='</div>';
-    html+='<div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8">';
-    html+='<span>Ušteđeno: <span style="color:'+color+';font-weight:600">'+fmt(perFund)+'</span></span>';
-    html+='<span>Cilj: <span style="color:var(--th-text);font-weight:600">'+fmt(goal)+'</span></span>';
-    html+='</div></div>';
-  });
-  var curMon=(typeof MONTHS_HR!=='undefined'&&typeof viewMonthIdx!=='undefined')?MONTHS_HR[viewMonthIdx]:'';
-  var prevMon=(typeof MONTHS_GEN!=='undefined'&&typeof viewMonthIdx!=='undefined'&&viewMonthIdx>0)?MONTHS_GEN[viewMonthIdx-1]:'';
-  var bhPre=_lastPreostalo-_bhRem;
-  var remVal=_bhRem!==0?eur(_bhRem):'—';
-  var prenosVal=Math.abs(bhPre)>0.005?eur(bhPre):'—';
-  var availVal=_lastPreostalo!==0?eur(_lastPreostalo):'—';
-  var showPrenos=Math.abs(bhPre)>0.005;
-  var curLabel=(curMon||'Ovaj mj.')+' (prihodi - rashodi)';
-  var prenosLabel=prevMon?('Prijenos iz '+prevMon):'Prijenos';
-  var breakdown='<div style="background:#f0f4ff;border-radius:12px;padding:12px;margin-bottom:14px">'
-    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
-    +'<span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">'+curLabel+'</span>'
-    +'<span style="font-size:13px;font-weight:700;color:#1565c0">'+remVal+'</span>'
-    +'</div>'
-    +(showPrenos?'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">'+prenosLabel+'</span><span style="font-size:13px;font-weight:700;color:#1565c0;background:#e8edf8;border-radius:6px;padding:3px 8px">'+prenosVal+'</span></div>':'')
-    +'<div style="border-top:1px solid #dce5f5;margin:6px 0"></div>'
-    +'<div style="display:flex;justify-content:space-between;align-items:center">'
-    +'<span style="font-size:11px;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:.5px">Ukupno</span>'
-    +'<span style="font-size:14px;font-weight:700;color:#1565c0">'+availVal+'</span>'
-    +'</div>'
+  var fund=savFund(), al=savAlloc(goals,fund), html='';
+  var totalGoal=goals.reduce(function(s,g){return s+savTarget(g);},0);
+  var head='<div style="background:#f0f4ff;border-radius:12px;padding:12px;margin-bottom:12px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Fond (stanje)</span><span style="font-size:14px;font-weight:700;color:#1565c0">'+(fund>0?fmt(fund):'—')+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px">Ukupni cilj</span><span style="font-size:13px;font-weight:700;color:#1a1a2e">'+fmt(totalGoal)+'</span></div>'
+    +(fund<=0?'<div style="font-size:12px;color:#94a3b8;margin-top:8px;line-height:1.35">Upiši stanje štednje u Profil → Imovina (vrsta "APY fond" ili "Štednja").</div>':'')
     +'</div>';
-  el.innerHTML=breakdown+(html||noGoalMsg);
+  goals.forEach(function(g,i){
+    var goal=savTarget(g), color=colors[i%colors.length], have=al[i];
+    var pct=goal>0?Math.min(100,Math.round(have/goal*100)):0;
+    html+='<div style="background:#f8f9ff;border-radius:12px;padding:12px 14px;margin-bottom:8px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px">';
+    html+='<div style="font-weight:600;font-size:14px;color:#1a1a2e;min-width:0;overflow-wrap:anywhere">'+String(g.name).replace(/</g,'&lt;')+'</div>';
+    html+='<div style="font-size:12px;font-weight:700;color:'+color+';flex:none">'+pct+'%</div></div>';
+    html+='<div style="height:6px;background:#e8edf8;border-radius:3px;overflow:hidden;margin-bottom:8px"><div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;transition:width .6s"></div></div>';
+    html+='<div style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8"><span>Ušteđeno: <span style="color:'+color+';font-weight:600">'+fmt(have)+'</span></span><span>Cilj: <span style="color:var(--th-text);font-weight:600">'+fmt(goal)+'</span></span></div></div>';
+  });
+  el.innerHTML=head+(html||'<div style="text-align:center;color:#94a3b8;font-size:13px;padding:10px 0">Nema ciljeva štednje</div>');
 }
 function ciljanPadez(n){
   var abs=Math.abs(Math.round(n));
@@ -5165,19 +5164,20 @@ async function openSavOvModal(){
     const goals=savingsGoals.filter(g=>g.name);
     if(!goals.length){body.innerHTML='<div class="empty-state">Nema fondova štednje. Dodaj ih u Profil.</div>';return;}
     const n=goals.length;
-    const pre=_lastPreostalo;
-    const perFund=pre/n;
-    const totalGoal=goals.reduce((s,g)=>s+(parseFloat(g.amount)||0),0);
+    const pre=savFund();
+    const _alo=savAlloc(goals,pre);
+    const totalGoal=goals.reduce((s,g)=>s+savTarget(g),0);
     // donut — cilj = 100%, boje = udio svakog fonda od ušteđenog
     const circ=2*Math.PI*36;
     let dashOff=0;
     const slices=goals.map((g,i)=>{
       const color=SAV_COLORS[i%SAV_COLORS.length];
-      const arcLen=totalGoal>0?Math.min(perFund,parseFloat(g.amount)||0)/totalGoal*circ:0;
+      const perFund=_alo[i];
+      const arcLen=totalGoal>0?Math.min(perFund,savTarget(g))/totalGoal*circ:0;
       const sl=`<circle cx="45" cy="45" r="36" fill="none" stroke="${color}" stroke-width="11" stroke-dasharray="${arcLen} ${circ}" stroke-dashoffset="${-dashOff}" stroke-linecap="butt" transform="rotate(-90 45 45)"/>`;
       dashOff+=arcLen;
       const displayName=(g.name||'').replace(/^[^\w\u0100-\u017f]+/,'').trim();
-      const goal=parseFloat(g.amount)||0;
+      const goal=savTarget(g);
       const pct=goal>0?Math.min(100,Math.round(perFund/goal*100)):0;
       return{sl,color,name:displayName,fullName:g.name||'',perFund,goal,pct};
     });
@@ -5884,6 +5884,10 @@ html[data-skin="bozic"] .save-spinner,html[data-skin="bozic"] .spin-dot,html[dat
 .srch-top input:focus{border-color:#6b8046!important;box-shadow:0 0 0 3px rgba(107,128,70,.22)!important}
 .srch-top input::placeholder{color:#8a9a70;opacity:1}
 [data-theme="dopamin"] .srch-open,[data-theme="dopamin"] .yr-open{background:#faf1df}
+[data-theme="dopamin"] #s-profil .save-goal-row{flex-wrap:wrap}
+[data-theme="dopamin"] #s-profil .save-goal-row .goal-name{flex:1 1 100%;min-width:0;order:1}
+[data-theme="dopamin"] #s-profil .save-goal-row .drag-handle,[data-theme="dopamin"] #s-profil .save-goal-row .fund-info-btn,[data-theme="dopamin"] #s-profil .save-goal-row .goal-amt,[data-theme="dopamin"] #s-profil .save-goal-row .save-goal-del{order:2}
+[data-theme="dopamin"] #s-profil .save-goal-row .goal-amt{flex:1 1 auto}
 </style>
 <div id="bkp-modal">
   <div class="bkp-top"><b>Sigurnosne kopije</b><button class="bkp-x" onclick="bkpClose()" aria-label="Zatvori">×</button></div>
