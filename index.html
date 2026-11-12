@@ -3456,24 +3456,25 @@ async function loadPregled(){
     const CAT_HR_LOWER = {};
     Object.entries(CAT_HR).forEach(([k,v]) => CAT_HR_LOWER[v.toLowerCase()] = k);
     const _cf = k => k==='Fuel'?'Gorivo':k;
-    const planByCategory = {};
+    const planByCategory = {}; const planItemsByCat = {};
+    const _pi=(key,g)=>{ const a=parseFloat(g.amount)||0; if(key&&a>0&&g.name){ (planItemsByCat[key]=planItemsByCat[key]||[]).push({n:String(g.name),a:a}); } };
     const _curMiLP = new Date().getMonth();
     let expGoalsForPlan = [];
     if(viewMonthIdx <= _curMiLP){ try { expGoalsForPlan = JSON.parse(monthPlan && monthPlan.exp_json || 'null') || []; } catch(e){} }
     if(expGoalsForPlan.length > 0){
       expGoalsForPlan.forEach(g => {
         const key = _cf(planCat(g) || CAT_HR_LOWER[(g.name||'').toLowerCase()]);
-        if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
+        if(key){ planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0); _pi(key,g); }
       });
       // Always supplement with varGoals so variable costs always show
       (varGoals||[]).forEach(g => {
         const key = _cf(planCat(g) || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name);
-        if(key && !planByCategory[key]) planByCategory[key] = (parseFloat(g.amount)||0);
+        if(key && !planByCategory[key]){ planByCategory[key] = (parseFloat(g.amount)||0); _pi(key,g); }
       });
     } else {
       [...(fixGoals||[]), ...(varGoals||[])].forEach(g => {
         const key = _cf(planCat(g) || CAT_HR_LOWER[(g.name||'').toLowerCase()] || g.name);
-        if(key) planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0);
+        if(key){ planByCategory[key] = (planByCategory[key]||0) + (parseFloat(g.amount)||0); _pi(key,g); }
       });
     }
 
@@ -3542,6 +3543,8 @@ async function loadPregled(){
       const name = (CAT_HR[cat]||cat).replace(/</g,'&lt;');
       const subText = over ? '+'+eur(act-planAmt)+' iznad plana' : planAmt>0 ? 'od plana '+eur(planAmt) : 'bez plana';
       const entries = window._catEntries[cat] || [];
+      const _pit = planItemsByCat[cat] || [];
+      const planBreak = _pit.length ? `<div style="font-size:12px;font-weight:600;color:#7090b0;padding:2px 0 8px;line-height:1.5">Plan ${eur(planAmt)}: ${_pit.map(x=>x.n.replace(/</g,'&lt;')+' '+eur(x.a)).join(', ')}</div>` : '';
       const entriesHtml = entries.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).map(e => `<div onclick="editCatEntry(${e.sheetRow})" style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;cursor:pointer;border-top:1px solid #f0f4ff;font-size:12px">
           <span style="color:#7090b0;flex-shrink:0;margin-right:8px">${e.datum}</span>
           <span style="flex:1;color:#1a1a2e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.naziv||name}</span>
@@ -3563,7 +3566,7 @@ async function loadPregled(){
           </div>
           <span class="cat-chev" style="color:#b0bec5;font-size:18px;transition:transform .2s;flex-shrink:0">⌄</span>
         </div>
-        <div style="display:none;padding:0 14px 10px">${entriesHtml}</div>
+        <div style="display:none;padding:0 14px 10px">${planBreak}${entriesHtml}</div>
       </div>`;
     }).join('');
     clearPregledLoading();
