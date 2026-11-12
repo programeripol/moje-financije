@@ -3819,7 +3819,7 @@ function imRender(){
     h+='<div class="im-g"><span>'+IM_TYPES[t]+'</span><span>'+pfShort(L.reduce(function(s,a){ return s+imEur(a); },0))+'</span></div>';
     L.forEach(function(a){
       var nonEur=a.cur&&a.cur!=='EUR';
-      h+='<div class="im-r" onclick="imEdit(\''+a.id+'\')"><span style="width:10px;height:10px;border-radius:50%;background:'+(IM_COL[t]||'#999')+';flex:none"></span><div class="n"><b>'+revEsc(a.name||IM_TYPES[t])+'</b><small'+(imOld(a.upd)?' class="old"':'')+'>'+(a.upd?(imOld(a.upd)?'Treba ažurirati, ':'ažurirano ')+imDate(a.upd):'nije ažurirano')+'</small></div><div class="a">'+(nonEur?(pfShort(a.bal).replace('€','')+a.cur+'<small>'+((a.r>0||(IM_FX&&IM_FX[a.cur]))?('≈ '+pfShort(imEur(a))):'tečaj nedostupan, upiši ga ili odaberi EUR')+'</small>'):pfEur(imEur(a)))+'</div></div>';
+      h+='<div class="im-r" onclick="imEdit(\''+a.id+'\')"><span style="width:10px;height:10px;border-radius:50%;background:'+(IM_COL[t]||'#999')+';flex:none"></span><div class="n"><b>'+revEsc(a.name||IM_TYPES[t])+'</b><small'+(imOld(a.upd)?' class="old"':'')+'>'+(a.upd?(imOld(a.upd)?'Treba ažurirati, ':'ažurirano ')+imDate(a.upd):'nije ažurirano')+'</small></div><div class="a">'+(nonEur?(pfEur(a.bal).replace('€','').trim()+' '+a.cur+'<small>'+((a.r>0||(IM_FX&&IM_FX[a.cur]))?('≈ '+pfEur(imEur(a))):'tečaj nedostupan, upiši ga ili odaberi EUR')+'</small>'):pfEur(imEur(a)))+'</div></div>';
     });
   });
   if(!ASSETS.length) h+='<div class="pp-empty" style="margin:14px 2px">Još nema računa. Dodaj tekući račun, Revolut, štednju, investicije, APY fond, valute i gotovinu.</div>';
@@ -3837,7 +3837,7 @@ function imEdit(id){
    '<label>Vrsta</label><select id="im-type" onchange="imAutoName()">'+opt(IM_TYPES,a.type)+'</select>'+
    '<label>Valuta</label><select id="im-cur" onchange="imCurCh()">'+opt({EUR:'EUR €',USD:'USD $',GBP:'GBP £'},a.cur||'EUR')+'</select>'+
    '<label>Stanje</label><input id="im-bal" type="text" inputmode="decimal" placeholder="0,00" value="'+(a.bal!==''&&a.bal!=null?String(a.bal).replace('.',','):'')+'">'+
-   '<div id="im-rw" style="display:'+((a.cur&&a.cur!=='EUR')?'block':'none')+'"><label>Tečaj (neobavezno, € za 1 jedinicu)</label><input id="im-r" type="text" inputmode="decimal" placeholder="automatski" value="'+(a.r?String(a.r).replace('.',','):'')+'"></div>'+
+   '<div id="im-rw" style="display:'+((a.cur&&a.cur!=='EUR')?'block':'none')+'"><label>Iznos u eurima (neobavezno, točno iz Revoluta)</label><input id="im-eur" type="text" inputmode="decimal" placeholder="npr. 1924,34" oninput="this.dataset.t=1" value="'+((parseFloat(a.r)>0&&parseFloat(a.bal)>0)?(Math.round(parseFloat(a.bal)*parseFloat(a.r)*100)/100).toFixed(2).replace('.',','):'')+'"><label>Tečaj (neobavezno, € za 1 jedinicu)</label><input id="im-r" type="text" inputmode="decimal" placeholder="automatski" value="'+(a.r?String(a.r).replace('.',','):'')+'"></div>'+
    '</div><div class="im-fb"><button type="button" onclick="imRender()">Natrag</button><button type="button" class="p" onclick="imSaveForm()">Spremi</button></div>'+(id?'<button type="button" class="im-del" onclick="imDelete()">Obriši račun</button>':'');
 }
 function imCurCh(){ var c=document.getElementById('im-cur').value; document.getElementById('im-rw').style.display=c==='EUR'?'none':'block'; }
@@ -3845,6 +3845,8 @@ function imAutoName(){ var n=document.getElementById('im-name'); if(n&&!n.value)
 async function imSaveForm(){
   var pn=function(v){ return parseFloat(String(v||'').replace(/\./g,'').replace(',','.'))||0; };
   var bal=pn(document.getElementById('im-bal').value), r=pn(document.getElementById('im-r')?document.getElementById('im-r').value:'');
+  var _ee=document.getElementById('im-eur');
+  if(_ee && _ee.dataset.t==='1'){ var ev=pn(_ee.value); if(ev>0 && bal>0) r=Math.round(ev/bal*1e6)/1e6; }
   var rec={name:document.getElementById('im-name').value.trim()||IM_TYPES[document.getElementById('im-type').value],type:document.getElementById('im-type').value,cur:document.getElementById('im-cur').value,bal:bal,r:r||'',upd:new Date().toISOString().slice(0,10)};
   if(IM_EDIT==='new'){ rec.id='a'+Date.now().toString(36); ASSETS.push(rec); }
   else { var i=ASSETS.findIndex(function(x){ return x.id===IM_EDIT; }); rec.id=IM_EDIT; if(i>=0) ASSETS[i]=rec; }
