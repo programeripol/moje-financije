@@ -5669,7 +5669,7 @@ function syncAmtDisplay(inp){
 
 .srch-row{display:flex;gap:10px;margin:0 0 14px}
 .srch-row .srch-open{margin:0;flex:1;width:auto;min-width:0}
-.yr-open{flex:none;width:50px;border-radius:50%;border:2.5px solid #6b8046;background:#fff;color:#1a1a1a;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 0 rgba(107,128,70,.2)}
+.yr-open{flex:none;width:auto;aspect-ratio:1/1;border-radius:50%;border:2.5px solid #6b8046;background:#fff;color:#1a1a1a;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 0 rgba(107,128,70,.2)}
 #yr-modal{position:fixed;inset:0;z-index:9999;background:#f6f1e6;display:none;flex-direction:column;font-family:inherit;color:#1b1a1a}
 #yr-modal.open{display:flex}
 .yr-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 10px}
@@ -5777,6 +5777,8 @@ function srchRun(){
 html[data-skin="bozic"] .save-spinner,html[data-skin="bozic"] .spin-dot,html[data-skin="bozic"] .card-spinner-ring-dark{border-color:rgba(36,82,58,.2);border-top-color:#24523a}
 [data-theme="dopamin"] #s-pregled #inc-card-expand input,[data-theme="dopamin"] #s-pregled #exp-card-expand input,[data-theme="dopamin"] #s-pregled #potros-card-expand input{border-color:var(--pgc)!important}
 [data-theme="dopamin"] #s-pregled #inc-card-expand .add-goal-btn,[data-theme="dopamin"] #s-pregled #exp-card-expand .add-goal-btn,[data-theme="dopamin"] #s-pregled #potros-card-expand .add-goal-btn{border-color:var(--pgc)!important;color:var(--pgc)!important}
+.srch-top input:focus{border-color:#6b8046!important;box-shadow:0 0 0 3px rgba(107,128,70,.22)!important}
+.srch-top input::placeholder{color:#8a9a70;opacity:1}
 </style>
 <div id="bkp-modal">
   <div class="bkp-top"><b>Sigurnosne kopije</b><button class="bkp-x" onclick="bkpClose()" aria-label="Zatvori">×</button></div>
