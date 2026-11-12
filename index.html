@@ -2060,7 +2060,7 @@ const GOAL_TO_CAT = {
 };
 
 // Kategorija stavke plana: odabrana > poznati naziv > prepoznavanje po nazivu (npr. Netflix → Pretplate)
-var PLAN_INF=[[/^ostal/i,'Other'],[/iphone|mam[aeiu]\b|mami/i,'Drugima'],[/rat[ae]\b|visa|kredit|iphone|leasing/i,'Debt'],[/netflix|canva|claude|openai|spotify|youtube|apple|icloud|pretplat|google|adobe|github/i,'Software'],[/iskon|tomato|internet|mobiln|\ba1\b|t-?com|struja|plin|voda|komunal|re[zž]ij/i,'Rezije'],[/veterin|ljubimac|\bpas\b|ma[cč]k|\btori\b|\bpsa\b|pseć/i,'Pets'],[/gorivo|benzin|dizel|\bplin\b|punjenje/i,'Gorivo'],[/servis|rega|registracij|vulkaniz|parking|autocest|\bauto\b|automobil|tehni[cč]ki/i,'Auto'],[/taxi|taksi|bolt|uber|nextbike|autobus|vlak|tramvaj|zet|prijevoz/i,'Prijevoz'],[/hrana|namirnic|supermarket/i,'Food'],[/frizer|kozmet|nokti|manikir/i,'Beauty'],[/cug[ae]|izlask|zabav/i,'Zabava']];
+var PLAN_INF=[[/^ostal/i,'Other'],[/rat[ae]\b|visa|kredit|iphone|leasing/i,'Debt'],[/netflix|canva|claude|openai|spotify|youtube|apple|icloud|pretplat|google|adobe|github/i,'Software'],[/iskon|tomato|internet|mobiln|\ba1\b|t-?com|struja|plin|voda|komunal|re[zž]ij/i,'Rezije'],[/veterin|ljubimac|\bpas\b|ma[cč]k|\btori\b|\bpsa\b|pseć/i,'Pets'],[/gorivo|benzin|dizel|\bplin\b|punjenje/i,'Gorivo'],[/servis|rega|registracij|vulkaniz|parking|autocest|\bauto\b|automobil|tehni[cč]ki/i,'Auto'],[/taxi|taksi|bolt|uber|nextbike|autobus|vlak|tramvaj|zet|prijevoz/i,'Prijevoz'],[/hrana|namirnic|supermarket/i,'Food'],[/frizer|kozmet|nokti|manikir/i,'Beauty'],[/cug[ae]|izlask|zabav/i,'Zabava']];
 function planCat(g){
   if(!g) return '';
   if(g.cat) return g.cat==='Fuel'?'Gorivo':(g.cat==='Prijevoz'&&/gorivo|benzin|plin|servis|rega|auto/i.test(g.name||'')?planCat({name:g.name}):g.cat);
@@ -2727,7 +2727,7 @@ function fillProfileForm(){
   try{ if(!localStorage.getItem('mf_keks1')) setTimeout(function(){ keksFix('mf_keks1',true); },15000); }catch(e){}
   try{ if(!localStorage.getItem('mf_keks2')) setTimeout(function(){ keksFix('mf_keks2',false); },30000); }catch(e){}
   try{ if(!localStorage.getItem('mf_nb1')) setTimeout(function(){ nextbikeFix(); },12000); }catch(e){}
-  try{ if(!localStorage.getItem('mf_car3')) setTimeout(function(){ carFix(); },16000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_car4')) setTimeout(function(){ carFix(); },16000); }catch(e){}
   try{ setTimeout(function(){ planSnap(); },20000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
@@ -2793,14 +2793,14 @@ async function carFix(manual){
       const data=[];
       (res.values||[]).forEach((r,i)=>{
         if(!r||!r[1]) return;
-        const cur=r[8]||''; if(cur==='Debt'&&/keks/i.test(String(r[11]||'')+' '+String(r[3]||''))&&Math.abs((parseFloat(r[5])||0)-46)<0.01){ data.push({range:`${m}!I${57+i}`,values:[['Drugima']]}); return; } if(cur==='KeksPay'){ data.push({range:`${m}!I${57+i}`,values:[['Other']]}); return; } if(cur!=='Fuel'&&cur!=='Prijevoz') return;
+        const cur=r[8]||''; if(cur==='Drugima'&&/keks/i.test(String(r[11]||'')+' '+String(r[3]||''))&&Math.abs((parseFloat(r[5])||0)-46)<0.01){ data.push({range:`${m}!I${57+i}`,values:[['Debt']]}); return; } if(cur==='KeksPay'){ data.push({range:`${m}!I${57+i}`,values:[['Other']]}); return; } if(cur!=='Fuel'&&cur!=='Prijevoz') return;
         const txt=String(r[11]||'')+' '+String(r[3]||'');
         let to=fuelRe.test(txt)?'Gorivo':(autoRe.test(txt)?'Auto':(cur==='Fuel'?'Gorivo':null));
         if(to&&to!==cur) data.push({range:`${m}!I${57+i}`,values:[[to]]});
       });
       if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
     }
-    try{ localStorage.setItem('mf_car3','1'); }catch(e){}
+    try{ localStorage.setItem('mf_car4','1'); }catch(e){}
     if(n){ showToast('Gorivo i auto razvrstani: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
   }catch(e){ if(manual===true) showToast('Greška: '+(e&&e.message||e),5000,'err'); }
 }
@@ -4095,8 +4095,8 @@ var REV_NEW=[
 ];
 function revCatOld(desc){ for(const [re,c] of REV_RULES){ if(re.test(desc)) return c; } return 'Other'; }
 function revCat(desc){ for(const [re,c] of REV_NEW){ if(re.test(desc)) return c; } return revCatOld(desc); }
-// Keks Pay: 46 € = rata za mamin mobitel (Plaćeno drugima), 16,99 € (Iskon) i 10,48 € (A1) = režije
-function keksCat(desc,amt,cat){ if(!/keks\s*pay/i.test(desc||'')) return cat; var a=Math.abs(+amt||0); if(Math.abs(a-46)<0.01) return 'Drugima'; if(Math.abs(a-16.99)<0.01||Math.abs(a-10.48)<0.01) return 'Rezije'; if(Math.abs(a-0.70)<0.01||Math.abs(a-2.10)<0.01) return 'Prijevoz'; return cat; }
+// Keks Pay: 46 € = rata za mamin mobitel (Rate), 16,99 € (Iskon) i 10,48 € (A1) = režije
+function keksCat(desc,amt,cat){ if(!/keks\s*pay/i.test(desc||'')) return cat; var a=Math.abs(+amt||0); if(Math.abs(a-46)<0.01) return 'Debt'; if(Math.abs(a-16.99)<0.01||Math.abs(a-10.48)<0.01) return 'Rezije'; if(Math.abs(a-0.70)<0.01||Math.abs(a-2.10)<0.01) return 'Prijevoz'; return cat; }
 function revParseCSV(t){
   t=t.replace(/^﻿/,'');
   const rows=[]; let r=[], f='', q=false;
