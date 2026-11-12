@@ -3568,7 +3568,7 @@ async function loadPregled(){
     }).join('');
     clearPregledLoading();
     document.getElementById('cat-list').innerHTML = _allSortedCats.length > 0 ? donutHtml + catCards : '<div class="empty-state">Nema troškova ovaj mjesec.</div>';
-    { const _pmb=document.getElementById('potros-modal-body'), _pex=document.getElementById('potros-card-expand'); if(_pmb && _pex && _pex.style.display==='block') _pmb.innerHTML=document.getElementById('cat-list').innerHTML; }
+    { const _pmb=document.getElementById('potros-modal-body'), _pex=document.getElementById('potros-card-expand'); if(_pmb && _pex && _pex.style.display==='block') {_pmb.innerHTML=document.getElementById('cat-list').innerHTML;potrosBodyFix(_pmb);} }
     const _pdp=document.getElementById('potros-donut-preview');if(_pdp){if(_allSortedCats.length>0){const _td=document.createElement('div');_td.innerHTML=donutHtml;const _fc=_td.firstElementChild;if(_fc)_fc.style.cssText='display:flex;align-items:center;gap:16px;padding:16px;margin:0;background:transparent';_pdp.innerHTML=_td.innerHTML;}else{_pdp.innerHTML='';} const _pce=document.getElementById('potros-card-expand');if(!_pce||_pce.style.display!=='block'){_pdp.style.display=_allSortedCats.length>0?'block':'none';const _ph=document.querySelector('[onclick="togglePotrosCard()"]');if(_ph){const _pv=_allSortedCats.length>0;_ph.style.borderBottom=_pv?'none':'';_ph.style.borderRadius=_pv?'14px 14px 0 0':'14px';}}}
 
     // Računi ovog mjeseca — zadnje 3 + expandabilne sve
@@ -5042,7 +5042,7 @@ function togglePotrosCard(force){
   if(ch) ch.style.transform=show?'rotate(180deg)':'rotate(0)';
   const preview=document.getElementById('potros-donut-preview');if(preview)preview.style.display=show?'none':'block';
   if(hdr){const _pvVis=!show&&preview&&preview.children.length>0;hdr.style.borderBottom=(show||_pvVis)?'none':'';hdr.style.borderRadius=(show||_pvVis)?'14px 14px 0 0':'14px';}
-  if(show){setTimeout(()=>{const s=document.getElementById('cat-list');const b=document.getElementById('potros-modal-body');if(s&&b)b.innerHTML=s.innerHTML;},400);}
+  if(show){setTimeout(()=>{const s=document.getElementById('cat-list');const b=document.getElementById('potros-modal-body');if(s&&b){b.innerHTML=s.innerHTML;potrosBodyFix(b);}},400);}
 }
 function openExpModal(){toggleExpCard(true);}
 function closeExpModal(){toggleExpCard(false);}
@@ -5076,6 +5076,7 @@ function saveIncomeFromModal(){
   closeIncModal();
 }
 
+function potrosBodyFix(b){ try{ var f=b&&b.firstElementChild; if(f&&f.querySelector&&f.querySelector('svg')&&f.style.display==='flex') f.style.cssText='display:flex;align-items:center;gap:16px;padding:16px 0;margin:0;background:transparent;border:none'; }catch(e){} }
 function openPotrosModal(){togglePotrosCard(true);}
 function closePotrosModal(){togglePotrosCard(false);}
 
