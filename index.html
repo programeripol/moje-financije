@@ -5147,7 +5147,18 @@ function renderSavCardDonut(){
   });
   arcs+='<text x="45" y="40" text-anchor="middle" font-size="13" fill="#1a1a2e" font-weight="600" font-family="sans-serif">'+overallPct+'%<\/text>';
   arcs+='<text x="45" y="53" text-anchor="middle" font-size="8" fill="#7090b0" font-family="sans-serif">od cilja<\/text>';
-  el.innerHTML='<div style="display:flex;align-items:center;gap:16px;padding:4px 0"><div style="flex:1"><div style="font-size:11px;color:#94a3b8;margin-bottom:2px">Ukupni cilj<\/div><div style="font-size:14px;font-weight:600;color:var(--th-text)">'+fmt(totalGoal)+'<\/div><\/div><svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0">'+arcs+'<\/svg><\/div>';
+  // zatvorena kartica: iznos + "od cilja" lijevo, krug s postotkom desno
+  el.innerHTML=''; el.style.display='none';
+  var hd=document.getElementById('sav-total-display'); if(hd){
+    var sub=document.getElementById('sav-sub');
+    if(!sub){ sub=document.createElement('div'); sub.id='sav-sub'; hd.parentNode.appendChild(sub); }
+    var left=Math.max(0,totalGoal-totalSaved);
+    sub.innerHTML='<div style="font-size:13px;font-weight:700;margin-top:8px;opacity:.75">od cilja '+fmt(totalGoal)+'<\/div>'+(left>0?'<div style="font-size:13px;font-weight:700;margin-top:2px;color:#4f7a2f">još '+fmt(left)+'<\/div>':'<div style="font-size:13px;font-weight:700;margin-top:2px;color:#4f7a2f">cilj postignut ✓<\/div>');
+    var ring=document.getElementById('sav-ring');
+    if(!ring){ ring=document.createElement('div'); ring.id='sav-ring'; ring.style.cssText='flex:none;margin-left:auto'; var chev=document.getElementById('sav-card-chev'); chev.parentNode.insertBefore(ring,chev); }
+    var c2=2*Math.PI*36, p2=Math.max(0,Math.min(1,totalGoal>0?totalSaved/totalGoal:0));
+    ring.innerHTML='<svg width="96" height="96" viewBox="0 0 90 90"><circle cx="45" cy="45" r="36" fill="none" stroke="#e8edf8" stroke-width="11"\/>'+(p2>0?'<circle cx="45" cy="45" r="36" fill="none" stroke="#f2b705" stroke-width="11" stroke-linecap="round" stroke-dasharray="'+(Math.max(0.5,p2*c2))+' '+c2+'" transform="rotate(-90 45 45)"\/>':'')+'<text x="45" y="51" text-anchor="middle" font-size="18" font-weight="800" fill="#1b1a1a" font-family="inherit">'+overallPct+'%<\/text><\/svg>';
+  }
   el.style.display='block';
 }
 function toggleSavCard(){
@@ -5928,10 +5939,12 @@ html[data-skin="bozic"] .save-spinner,html[data-skin="bozic"] .spin-dot,html[dat
 .srch-top input:focus{border-color:#6b8046!important;box-shadow:0 0 0 3px rgba(107,128,70,.22)!important}
 .srch-top input::placeholder{color:#8a9a70;opacity:1}
 [data-theme="dopamin"] .srch-open,[data-theme="dopamin"] .yr-open{background:#faf1df}
-[data-theme="dopamin"] #s-profil .save-goal-row{flex-wrap:wrap}
-[data-theme="dopamin"] #s-profil .save-goal-row .goal-name{flex:1 1 100%;min-width:0;order:1}
-[data-theme="dopamin"] #s-profil .save-goal-row .drag-handle,[data-theme="dopamin"] #s-profil .save-goal-row .fund-info-btn,[data-theme="dopamin"] #s-profil .save-goal-row .goal-amt,[data-theme="dopamin"] #s-profil .save-goal-row .save-goal-del{order:2}
-[data-theme="dopamin"] #s-profil .save-goal-row .goal-amt{flex:1 1 auto}
+[data-theme="dopamin"][data-skin] #s-profil #save-goals-list .save-goal-row,[data-theme="dopamin"] #s-profil #save-goals-list .save-goal-row{display:grid!important;grid-template-columns:auto auto 1fr auto;align-items:center;column-gap:8px;row-gap:0;height:auto!important;min-height:0;padding:8px 8px 8px 14px!important}
+[data-theme="dopamin"] #s-profil #save-goals-list .save-goal-row .goal-name{grid-column:1/-1;grid-row:1;width:100%!important;min-width:0;height:30px}
+[data-theme="dopamin"] #s-profil #save-goals-list .save-goal-row .drag-handle{grid-column:1;grid-row:2}
+[data-theme="dopamin"] #s-profil #save-goals-list .save-goal-row .fund-info-btn{grid-column:2;grid-row:2}
+[data-theme="dopamin"] #s-profil #save-goals-list .save-goal-row .goal-amt{grid-column:3;grid-row:2;width:100%!important;flex:none!important;height:30px;text-align:right}
+[data-theme="dopamin"] #s-profil #save-goals-list .save-goal-row .save-goal-del{grid-column:4;grid-row:2}
 </style>
 <div id="bkp-modal">
   <div class="bkp-top"><b>Sigurnosne kopije</b><button class="bkp-x" onclick="bkpClose()" aria-label="Zatvori">×</button></div>
