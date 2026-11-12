@@ -1141,7 +1141,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
           <option value="Beauty">Kozmetika</option>
           <option value="Zdravlje">Zdravlje</option>
           <option value="Odijelo">Odjeća</option>
-          <option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Mobitel">Mobitel</option>
+          <option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Tehnika">Tehnika</option>
         </optgroup>
         <optgroup label="Interesi">
           <option value="Zabava">Zabava</option>
@@ -1169,7 +1169,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
           <li data-v="Beauty" onclick="cselPick(this,'Beauty','Kozmetika')">Kozmetika</li>
           <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li>
           <li data-v="Odijelo" onclick="cselPick(this,'Odijelo','Odje&#263;a')">Odje&#263;a</li>
-          <li data-v="Gorivo" onclick="cselPick(this,'Gorivo','Gorivo')">Gorivo</li><li data-v="Auto" onclick="cselPick(this,'Auto','Auto')">Auto</li><li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li><li data-v="Mobitel" onclick="cselPick(this,'Mobitel','Mobitel')">Mobitel</li>
+          <li data-v="Gorivo" onclick="cselPick(this,'Gorivo','Gorivo')">Gorivo</li><li data-v="Auto" onclick="cselPick(this,'Auto','Auto')">Auto</li><li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li><li data-v="Tehnika" onclick="cselPick(this,'Tehnika','Tehnika')">Tehnika</li>
           <li class="csel-grp">Interesi</li>
           <li data-v="Zabava" onclick="cselPick(this,'Zabava','Zabava')">Zabava</li>
           <li data-v="Edukacija" onclick="cselPick(this,'Edukacija','Edukacija')">Edukacija</li>
@@ -1581,13 +1581,13 @@ if('serviceWorker' in navigator){
 }
 
 const CAT_HR = {
-  Food:'Hrana', Pets:'Ljubimci', Fuel:'Gorivo', Gorivo:'Gorivo', Auto:'Auto', Mobitel:'Mobitel', Software:'Pretplate', Beauty:'Kozmetika',
+  Food:'Hrana', Pets:'Ljubimci', Fuel:'Gorivo', Gorivo:'Gorivo', Auto:'Auto', Tehnika:'Tehnika', Software:'Pretplate', Beauty:'Kozmetika',
   Stanarina:'Stanarina', Rezije:'Režije', 'T-com':'Internet',
   Allianz:'Osiguranje', Debt:'Rate', Zdravlje:'Zdravlje', Odijelo:'Odjeća', Prijevoz:'Prijevoz', Hobi:'Hobi', Putovanje:'Putovanje', Zabava:'Zabava', Edukacija:'Edukacija', Dom:'Dom',
   Savings:'Štednja', KeksPay:'Keks Pay', Drugima:'Plaćeno drugima', Prihod:'Prihod (primljeno)', Prijenos:'Prijenos između računa', Uplaceno:'Uplaćeno (od drugih)', Other:'Ostalo'
 };
 const CAT_COLORS = {
-  Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Gorivo:'#f59e0b', Auto:'#0ea5e9', Mobitel:'#a855f7', Software:'#60a5fa', Beauty:'#f472b6',
+  Food:'#22c55e', Pets:'#a78bfa', Fuel:'#f59e0b', Gorivo:'#f59e0b', Auto:'#0ea5e9', Tehnika:'#a855f7', Software:'#60a5fa', Beauty:'#f472b6',
   Stanarina:'var(--th1)', Rezije:'#06b6d4', 'T-com':'#8b5cf6',
   Allianz:'#ec4899', Debt:'#ef4444', Zdravlje:'#14b8a6', Odijelo:'#e879f9', Prijevoz:'#2dd4bf', Hobi:'#f97316', Putovanje:'#818cf8', Zabava:'#fb923c', Edukacija:'#facc15', Dom:'#84cc16',
   Savings:'#10b981', KeksPay:'#06b6d4', Drugima:'#fb7185', Prihod:'#16a34a', Prijenos:'#cbd5e1', Uplaceno:'#34d399', Other:'#94a3b8'
@@ -1623,7 +1623,7 @@ document.addEventListener('keydown',function(e){
 });
 var KAT_GROUPS=[
  ['Stanovanje',[['Stanarina','Stanarina'],['Rezije','Režije'],['Dom','Dom']]],
- ['Svakodnevno',[['Food','Hrana'],['Pets','Ljubimci'],['Beauty','Kozmetika'],['Zdravlje','Zdravlje'],['Odijelo','Odjeća'],['Gorivo','Gorivo'],['Auto','Auto'],['Prijevoz','Prijevoz'],['Mobitel','Mobitel']]],
+ ['Svakodnevno',[['Food','Hrana'],['Pets','Ljubimci'],['Beauty','Kozmetika'],['Zdravlje','Zdravlje'],['Odijelo','Odjeća'],['Gorivo','Gorivo'],['Auto','Auto'],['Prijevoz','Prijevoz'],['Tehnika','Tehnika']]],
  ['Interesi',[['Zabava','Zabava'],['Edukacija','Edukacija'],['Software','Pretplate'],['Hobi','Hobi'],['Putovanje','Putovanje']]],
  ['Financije',[['Debt','Rate'],['Savings','Štednja'],['Drugima','Plaćeno drugima'],['Other','Ostalo']]]
 ];
@@ -2053,14 +2053,14 @@ const GOAL_TO_CAT = {
   'Zdravstveno osiguranje':'Allianz','Osiguranje':'Allianz','Allianz':'Allianz',
   'Pretplate':'Software','Software':'Software','Netflix':'Software','Streaming':'Software',
   'Hrana':'Food','Food':'Food','Namirnice':'Food','Supermarket':'Food',
-  'Gorivo':'Gorivo','Fuel':'Gorivo','Benzin':'Gorivo','Plin':'Gorivo','Auto':'Auto','Prijevoz':'Prijevoz','Mobitel':'Mobitel',
+  'Gorivo':'Gorivo','Fuel':'Gorivo','Benzin':'Gorivo','Plin':'Gorivo','Auto':'Auto','Prijevoz':'Prijevoz','Tehnika':'Tehnika',
   'Ljubimci':'Pets','Pets':'Pets',
   'Kozmetika':'Beauty','Beauty':'Beauty','Ljepota':'Beauty','Drogerija':'Beauty',
   'Ostalo':'Other','Other':'Other'
 };
 
 // Kategorija stavke plana: odabrana > poznati naziv > prepoznavanje po nazivu (npr. Netflix → Pretplate)
-var PLAN_INF=[[/^ostal/i,'Other'],[/iphone|mobitel|telefon/i,'Mobitel'],[/rat[ae]\b|visa|kredit|iphone|leasing/i,'Debt'],[/netflix|canva|claude|openai|spotify|youtube|apple|icloud|pretplat|google|adobe|github/i,'Software'],[/iskon|tomato|internet|mobiln|\ba1\b|t-?com|struja|plin|voda|komunal|re[zž]ij/i,'Rezije'],[/veterin|ljubimac|\bpas\b|ma[cč]k|\btori\b|\bpsa\b|pseć/i,'Pets'],[/gorivo|benzin|dizel|\bplin\b|punjenje/i,'Gorivo'],[/servis|rega|registracij|vulkaniz|parking|autocest|\bauto\b|automobil|tehni[cč]ki/i,'Auto'],[/taxi|taksi|bolt|uber|nextbike|autobus|vlak|tramvaj|zet|prijevoz/i,'Prijevoz'],[/hrana|namirnic|supermarket/i,'Food'],[/frizer|kozmet|nokti|manikir/i,'Beauty'],[/cug[ae]|izlask|zabav/i,'Zabava']];
+var PLAN_INF=[[/^ostal/i,'Other'],[/iphone|mobitel|telefon|laptop|ra[cč]unalo|tablet|slu[sš]alice|punja[cč]|tv\b|televizor|kamera|printer/i,'Tehnika'],[/rat[ae]\b|visa|kredit|iphone|leasing/i,'Debt'],[/netflix|canva|claude|openai|spotify|youtube|apple|icloud|pretplat|google|adobe|github/i,'Software'],[/iskon|tomato|internet|mobiln|\ba1\b|t-?com|struja|plin|voda|komunal|re[zž]ij/i,'Rezije'],[/veterin|ljubimac|\bpas\b|ma[cč]k|\btori\b|\bpsa\b|pseć/i,'Pets'],[/gorivo|benzin|dizel|\bplin\b|punjenje/i,'Gorivo'],[/servis|rega|registracij|vulkaniz|parking|autocest|\bauto\b|automobil|tehni[cč]ki/i,'Auto'],[/taxi|taksi|bolt|uber|nextbike|autobus|vlak|tramvaj|zet|prijevoz/i,'Prijevoz'],[/hrana|namirnic|supermarket/i,'Food'],[/frizer|kozmet|nokti|manikir/i,'Beauty'],[/cug[ae]|izlask|zabav/i,'Zabava']];
 function planCat(g){
   if(!g) return '';
   if(g.cat) return g.cat==='Fuel'?'Gorivo':(g.cat==='Prijevoz'&&/gorivo|benzin|plin|servis|rega|auto/i.test(g.name||'')?planCat({name:g.name}):g.cat);
@@ -2193,7 +2193,7 @@ const FUND_INFO = {
   'odjeća':          {tip:'Sezonska obnova i posebne prilike. Cilj: 300–600 €/god.', pct:'Odvajaj min. 25 €/mj'},
   'odmor':           {tip:'Godišnji odmor, izleti, putovanja. Cilj: ovisi o stilu života (1.000–2.000+ €/god).', pct:'Podijeli cilj s 12, min. 50 €/mj'},
   'pokloni':         {tip:'Božić, rođendani, vjenčanja, kolege koji idu u penziju. Cilj: 500–1.500 €/god.', pct:'Odvajaj 40–120 €/mj, min. 30 €/mj'},
-  'elektronika':     {tip:'Mobitel, laptop, kućanski aparati — Murphy\'s law: kad crkne jedan, crkne i drugi. Cilj: 500–1.000 €.', pct:'Odvajaj 2–3% od plaće, min. 20 €/mj'},
+  'elektronika':     {tip:'Tehnika, laptop, kućanski aparati — Murphy\'s law: kad crkne jedan, crkne i drugi. Cilj: 500–1.000 €.', pct:'Odvajaj 2–3% od plaće, min. 20 €/mj'},
   'dom':             {tip:'Popravci, oprema, renovacija, preseljenje, depozit. Cilj: 500–1.500 €.', pct:'Odvajaj min. 50 €/mj'},
   'ljubimci':        {tip:'Veterinar, hitni pregledi, oprema, osiguranje (hrana ide u varijabilne troškove). Hitni vet može koštati 500+ €. Cilj: 500–1.000 €.', pct:'Odvajaj min. 30 €/mj'},
   'školovanje':      {tip:'Tečajevi, certifikati, edukacija. Ulaganje u sebe s najboljim povratom. Cilj: 300–600 €/god.', pct:'Odvajaj min. 25 €/mj'},
@@ -2727,7 +2727,7 @@ function fillProfileForm(){
   try{ if(!localStorage.getItem('mf_keks1')) setTimeout(function(){ keksFix('mf_keks1',true); },15000); }catch(e){}
   try{ if(!localStorage.getItem('mf_keks2')) setTimeout(function(){ keksFix('mf_keks2',false); },30000); }catch(e){}
   try{ if(!localStorage.getItem('mf_nb1')) setTimeout(function(){ nextbikeFix(); },12000); }catch(e){}
-  try{ if(!localStorage.getItem('mf_car5')) setTimeout(function(){ carFix(); },16000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_car6')) setTimeout(function(){ carFix(); },16000); }catch(e){}
   try{ setTimeout(function(){ planSnap(); },20000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
@@ -2793,14 +2793,14 @@ async function carFix(manual){
       const data=[];
       (res.values||[]).forEach((r,i)=>{
         if(!r||!r[1]) return;
-        const cur=r[8]||''; if((cur==='Drugima'||cur==='Debt')&&/keks/i.test(String(r[11]||'')+' '+String(r[3]||''))&&Math.abs((parseFloat(r[5])||0)-46)<0.01){ data.push({range:`${m}!I${57+i}`,values:[['Mobitel']]}); return; } if(cur==='KeksPay'){ data.push({range:`${m}!I${57+i}`,values:[['Other']]}); return; } if(cur!=='Fuel'&&cur!=='Prijevoz') return;
+        const cur=r[8]||''; if(cur==='Mobitel'){ data.push({range:`${m}!I${57+i}`,values:[['Tehnika']]}); return; } if((cur==='Drugima'||cur==='Debt')&&/keks/i.test(String(r[11]||'')+' '+String(r[3]||''))&&Math.abs((parseFloat(r[5])||0)-46)<0.01){ data.push({range:`${m}!I${57+i}`,values:[['Tehnika']]}); return; } if(cur==='KeksPay'){ data.push({range:`${m}!I${57+i}`,values:[['Other']]}); return; } if(cur!=='Fuel'&&cur!=='Prijevoz') return;
         const txt=String(r[11]||'')+' '+String(r[3]||'');
         let to=fuelRe.test(txt)?'Gorivo':(autoRe.test(txt)?'Auto':(cur==='Fuel'?'Gorivo':null));
         if(to&&to!==cur) data.push({range:`${m}!I${57+i}`,values:[[to]]});
       });
       if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
     }
-    try{ localStorage.setItem('mf_car5','1'); }catch(e){}
+    try{ localStorage.setItem('mf_car6','1'); }catch(e){}
     if(n){ showToast('Gorivo i auto razvrstani: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
   }catch(e){ if(manual===true) showToast('Greška: '+(e&&e.message||e),5000,'err'); }
 }
@@ -2823,7 +2823,7 @@ async function keksFix(flag,mom){
       if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
     }
     if(mom && n46){ try{ await momFromImport(Array.from({length:n46},function(){ return {amount:46,desc:'KEKS Pay',note:''}; })); }catch(e){} }
-    if(flag==='mf_keks2'){ // goal Mobitel (mama) -> iPhone (mama)
+    if(flag==='mf_keks2'){ // goal Tehnika (mama) -> iPhone (mama)
       try{ const gr=await getRows(sheetId,'Ciljevi','A2:H200'); for(let i=0;i<gr.length;i++){ const r=gr[i]; if(r&&r[1]==='loan'&&/mobitel/i.test(r[0]||'')&&/mama/i.test(r[0]||'')){ await writeRange(sheetId,'Ciljevi!A'+(i+2),[['iPhone (mama)']]); } } }catch(e){}
     }
     try{ localStorage.setItem(flag,'1'); }catch(e){}
@@ -3135,7 +3135,7 @@ function renderMPInc(){
 function addMPInc(){ mPlanIncGoals.push({name:'',amount:0}); renderMPInc(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-inc-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
 function removeMPInc(i){ mPlanIncGoals.splice(i,1); renderMPInc(); }
 
-const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Mobitel">Mobitel</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>`;
+const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Tehnika">Tehnika</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>`;
 
 function renderMPExp(){
   const c = document.getElementById('mp-exp-list'); if(!c) return;
@@ -3763,7 +3763,7 @@ async function rateFromImport(items){
   if(add.length) await appendRows(sheetId,'Ciljevi',add);
   return n;
 }
-// uplata od 46 € Danijeli (mama, mobitel) smanjuje preostale rate cilja "Mobitel (mama)"
+// uplata od 46 € Danijeli (mama, mobitel) smanjuje preostale rate cilja "Tehnika (mama)"
 async function momFromImport(items){
   var n=items.filter(function(o){ return !o.income && o.amount>0 && Math.abs(o.amount-46)<0.01 && (/danijela\s+buzan/i.test(rateNorm((o.desc||'')+' '+(o.note||''))) || /keks\s*pay/i.test(o.desc||'')); }).length;
   if(!n) return 0;
@@ -4076,6 +4076,7 @@ var REV_RULES=[
  [/bolt|uber|nextbike|next bike|cammeo|taxi|taksi|\bzet\b|hzpp/i,'Prijevoz'],
  [/apipet|pet |zoo|veterin|ljubimac/i,'Pets'],
  [/claude|openai|elevenlabs|google one|google play|apple|netflix|spotify|youtube|adobe|canva|github|icloud|microsoft/i,'Software'],
+ [/mediamarkt|\blinks\b|instar|mikronis|ele-kon|elipso/i,'Tehnika'],
  [/m[üu]ller|dm |bipa|douglas|sephora|kozmet|frizer/i,'Beauty'],
  [/ustanova|ljekarn|apoteka|dental|ordinacija|poliklinika|terme/i,'Zdravlje'],
  [/about you|zara|h&m|hm |temu|shein|decathlon|zalando|answear|reserved/i,'Odijelo'],
@@ -4095,8 +4096,8 @@ var REV_NEW=[
 ];
 function revCatOld(desc){ for(const [re,c] of REV_RULES){ if(re.test(desc)) return c; } return 'Other'; }
 function revCat(desc){ for(const [re,c] of REV_NEW){ if(re.test(desc)) return c; } return revCatOld(desc); }
-// Keks Pay: 46 € = rata za mamin mobitel (Mobitel), 16,99 € (Iskon) i 10,48 € (A1) = režije
-function keksCat(desc,amt,cat){ if(!/keks\s*pay/i.test(desc||'')) return cat; var a=Math.abs(+amt||0); if(Math.abs(a-46)<0.01) return 'Mobitel'; if(Math.abs(a-16.99)<0.01||Math.abs(a-10.48)<0.01) return 'Rezije'; if(Math.abs(a-0.70)<0.01||Math.abs(a-2.10)<0.01) return 'Prijevoz'; return cat; }
+// Keks Pay: 46 € = rata za mamin mobitel (Tehnika), 16,99 € (Iskon) i 10,48 € (A1) = režije
+function keksCat(desc,amt,cat){ if(!/keks\s*pay/i.test(desc||'')) return cat; var a=Math.abs(+amt||0); if(Math.abs(a-46)<0.01) return 'Tehnika'; if(Math.abs(a-16.99)<0.01||Math.abs(a-10.48)<0.01) return 'Rezije'; if(Math.abs(a-0.70)<0.01||Math.abs(a-2.10)<0.01) return 'Prijevoz'; return cat; }
 function revParseCSV(t){
   t=t.replace(/^﻿/,'');
   const rows=[]; let r=[], f='', q=false;
@@ -5532,7 +5533,7 @@ function syncAmtDisplay(inp){
       <option value="Beauty">Kozmetika</option>
       <option value="Zdravlje">Zdravlje</option>
       <option value="Odijelo">Odjeća</option>
-        <option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Mobitel">Mobitel</option>
+        <option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Tehnika">Tehnika</option>
       </optgroup>
       <optgroup label="Interesi">
       <option value="Zabava">Zabava</option>
@@ -5560,7 +5561,7 @@ function syncAmtDisplay(inp){
           <li data-v="Beauty" onclick="cselPick(this,'Beauty','Kozmetika')">Kozmetika</li>
           <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li>
           <li data-v="Odijelo" onclick="cselPick(this,'Odijelo','Odjeća')">Odjeća</li>
-          <li data-v="Gorivo" onclick="cselPick(this,'Gorivo','Gorivo')">Gorivo</li><li data-v="Auto" onclick="cselPick(this,'Auto','Auto')">Auto</li><li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li><li data-v="Mobitel" onclick="cselPick(this,'Mobitel','Mobitel')">Mobitel</li>
+          <li data-v="Gorivo" onclick="cselPick(this,'Gorivo','Gorivo')">Gorivo</li><li data-v="Auto" onclick="cselPick(this,'Auto','Auto')">Auto</li><li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li><li data-v="Tehnika" onclick="cselPick(this,'Tehnika','Tehnika')">Tehnika</li>
           <li class="csel-grp">Interesi</li>
           <li data-v="Zabava" onclick="cselPick(this,'Zabava','Zabava')">Zabava</li>
           <li data-v="Edukacija" onclick="cselPick(this,'Edukacija','Edukacija')">Edukacija</li>
