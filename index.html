@@ -1245,11 +1245,10 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
 <div id="inc-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-radius:0 0 14px 14px;border-left:3px solid var(--th1);overflow:hidden;margin-bottom:8px">
   <div style="overflow-y:auto;max-height:55vh;padding:12px 16px 8px">
     <div id="mp-inc-recv"></div>
-    <div id="mp-inc-list"></div>
-    <button class="add-goal-btn" style="background:var(--th1);color:#fff;border:none;margin-top:8px;padding:8px 16px;border-radius:10px;font-weight:600" onclick="addMPInc()">+ Dodaj</button>
+    <div id="mp-inc-list" style="display:none"></div>
   </div>
 </div>
-  <div id="exp-card-wrap" style="margin-bottom:8px">
+  <div id="exp-card-wrap" style="display:none">
   <div onclick="toggleExpCard()" style="cursor:pointer;background:#fff;border:1px solid #e8edf8;border-left:3px solid var(--th1);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-end">
     <div>
       <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Planirano</div>
@@ -1269,7 +1268,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
     <div>
       <div class="sum-label" style="margin:0 0 4px;font-weight:600;color:var(--th-text)">Potrošeno</div>
       <div class="card-spinner" id="hero-spin-spent"><div class="card-spinner-ring-dark"></div></div>
-      <div class="sum-val-main" id="bh-spent">0,00 €</div>
+      <div class="sum-val-main" id="bh-spent">0,00 €</div><div id="spent-status" style="margin-top:7px;min-width:190px"></div>
     </div>
     <svg id="potros-card-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" style="flex-shrink:0;transition:transform .25s;align-self:center;margin-left:8px"><polyline points="6 9 12 15 18 9"/></svg>
   </div>
@@ -2723,8 +2722,36 @@ function fillProfileForm(){
   try{ if(!localStorage.getItem('mf_recat2')) setTimeout(recatFix,9000); }catch(e){}
   try{ if(!localStorage.getItem('mf_keks1')) setTimeout(function(){ keksFix('mf_keks1',true); },15000); }catch(e){}
   try{ if(!localStorage.getItem('mf_keks2')) setTimeout(function(){ keksFix('mf_keks2',false); },30000); }catch(e){}
+  try{ setTimeout(function(){ planSnap(); },20000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
+
+// Snimka plana za prošle mjesece: kad plan u Profilu kasnije promijeniš, stari mjeseci ostaju kakvi su bili
+async function planSnap(){
+  try{
+    if(!sheetId||!_profOK) return;
+    var cur=new Date().getMonth(); if(cur<1) return;
+    var fk='mf_plansnap_'+curYear()+'_'+cur; if(localStorage.getItem(fk)) return;
+    var fix=[],vr=[],inc=[];
+    try{fix=JSON.parse(profileData.fixed_goals_json||'null')||[];}catch(e){}
+    try{vr=JSON.parse(profileData.variable_goals_json||'null')||[];}catch(e){}
+    try{inc=JSON.parse(profileData.income_goals_json||'null')||[];}catch(e){}
+    var exp=fix.concat(vr).map(function(g){return {name:g.name||'',cat:planCat(g),amount:g.amount||0};});
+    if(!exp.length) return;
+    await ensurePlanSheet();
+    var rows=await getRows(sheetId,'Planovi','A2:C2000');
+    var add=[];
+    for(var i=0;i<cur;i++){
+      var key=monthKey(i);
+      if(rows.some(function(r){return r[2]===key&&r[0]==='exp_json';})) continue;
+      add.push(['exp_json',JSON.stringify(exp),key]);
+      if(inc.length&&!rows.some(function(r){return r[2]===key&&r[0]==='inc_json';})) add.push(['inc_json',JSON.stringify(inc),key]);
+      delete monthPlanCache[key];
+    }
+    if(add.length) await appendRows(sheetId,'Planovi',add);
+    localStorage.setItem(fk,'1');
+  }catch(e){}
+}
 async function keksFix(flag,mom){
   if(!sheetId) return; flag=flag||'mf_keks1'; if(mom===undefined) mom=true;
   try{
@@ -3111,8 +3138,7 @@ function renderRecvList(){
   if(!_recvItems.length){ c.innerHTML=''; return; }
   var esc=function(x){return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;');};
   c.innerHTML='<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#16a34a;margin:0 0 6px">Primljeno</div>'+
-    _recvItems.map(function(it){ return '<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #eef1f8;font-size:13px"><span style="min-width:0"><b style="color:#16a34a">'+esc(it.date)+'</b> &nbsp;'+esc(it.desc)+'</span><b style="white-space:nowrap">'+eur(it.amt)+'</b></div>'; }).join('')+
-    '<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--th-text);margin:14px 0 6px">Plan</div>';
+    _recvItems.map(function(it){ return '<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #eef1f8;font-size:13px"><span style="min-width:0"><b style="color:#16a34a">'+esc(it.date)+'</b> &nbsp;'+esc(it.desc)+'</span><b style="white-space:nowrap">'+eur(it.amt)+'</b></div>'; }).join('');
 }
 async function updateIncTotal(){
   const sp = document.getElementById('hero-spin-inc');
@@ -3135,7 +3161,7 @@ function initIncomePanel(){
     if(mPlanIncGoals.length) renderMPInc();
     try{
       const plan = await loadMonthPlan(viewMonthIdx);
-      if(viewMonthIdx > new Date().getMonth()){
+      if(viewMonthIdx >= new Date().getMonth()){
         mPlanIncGoals = _incFb();
       } else {
         try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb(); } catch(e){ mPlanIncGoals = _incFb(); }
@@ -3189,7 +3215,7 @@ async function fillMonthPlanForm(){
   const _savFb2=()=>{ try{ const r=JSON.parse((profileData&&profileData.save_goals_json)||'null'); if(r&&r.length) return r; }catch(e){} return (savingsGoals&&savingsGoals.length)?cp(savingsGoals):[]; };
   const _fixFb=()=>{ try{ return JSON.parse((profileData&&profileData.fixed_goals_json)||'null')||[]; }catch(e){ return (fixedGoals&&fixedGoals.length)?cp(fixedGoals):[]; } };
   const _varFb=()=>{ try{ return JSON.parse((profileData&&profileData.variable_goals_json)||'null')||[]; }catch(e){ return (variableGoals&&variableGoals.length)?cp(variableGoals):[]; } };
-  try { mPlanIncGoals = JSON.parse(plan && plan.inc_json || 'null') || _incFb2(); } catch(e){ mPlanIncGoals = _incFb2(); }
+  try { mPlanIncGoals = (viewMonthIdx>=new Date().getMonth() ? null : JSON.parse(plan && plan.inc_json || 'null')) || _incFb2(); } catch(e){ mPlanIncGoals = _incFb2(); }
   try { mPlanSavGoals = JSON.parse(plan && plan.sav_json || 'null') || _savFb2(); } catch(e){ mPlanSavGoals = _savFb2(); }
   // Load unified expense list
   // Budući i trenutni mjesec → uvijek svježe iz profila (fix + var)
@@ -3294,7 +3320,7 @@ async function loadPregled(){
     });
     _recvMonth = received; _recvItems = recvItems; renderRecvList();
 
-    const monthPlan = await loadMonthPlan(viewMonthIdx);
+    const monthPlan = (viewMonthIdx >= new Date().getMonth()) ? null : await loadMonthPlan(viewMonthIdx);
     const effPlan   = getEffectivePlan(monthPlan);
     const income    = received>0 ? received : effectiveIncomePlan(monthPlan); // stvarna plaća ima prednost pred planom
     const savePlan  = (monthPlan && monthPlan.save_plan != null) ? monthPlan.save_plan : totalSavingsPlan();
@@ -3307,14 +3333,6 @@ async function loadPregled(){
     const planEl = document.getElementById('bh-plan');
     if(planEl) planEl.textContent = eur(totalPlan);
     window._actualCat = actual;
-    { const ps=document.getElementById('plan-status');
-      if(ps){
-        if(totalPlan>0){
-          const over=totalSpent>totalPlan, pct=Math.min(100,totalSpent/totalPlan*100), col=over?'#ef4444':'#3a9d7a';
-          ps.innerHTML='<div style="height:6px;background:rgba(0,0,0,.09);border-radius:4px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:4px"></div></div><div style="font-size:12px;font-weight:700;margin-top:4px;color:'+col+'">'+(over?eur(totalSpent-totalPlan)+' preko plana':'Potrošeno '+eur(totalSpent)+' · još '+eur(totalPlan-totalSpent))+'</div>';
-        } else ps.innerHTML='';
-      }
-    }
     document.getElementById('bh-spent').textContent = eur(totalSpent);
         const _rem=income-totalSpent;_bhRem=_rem;
         // prenos: manual override > auto iz prošlog mj
@@ -3450,6 +3468,15 @@ async function loadPregled(){
       </div>
     </div>` : '';
 
+    { const ps=document.getElementById('spent-status');
+      const planSum=Object.keys(planByCategory).reduce((s,k)=>s+(planByCategory[k]||0),0);
+      if(ps){
+        if(planSum>0){
+          const over=totalSpent>planSum, pct=Math.min(100,totalSpent/planSum*100), col=over?'#ef4444':'#3a9d7a';
+          ps.innerHTML='<div style="height:6px;background:rgba(0,0,0,.09);border-radius:4px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:4px"></div></div><div style="font-size:12px;font-weight:700;margin-top:4px;color:'+col+'">'+(over?eur(totalSpent-planSum)+' preko plana od '+eur(planSum):'Plan '+eur(planSum)+' · još '+eur(planSum-totalSpent))+'</div>';
+        } else ps.innerHTML='';
+      }
+    }
     // Category cards with expandable entries
     const _allCatKeys = new Set([...Object.keys(actual), ...Object.keys(planByCategory)]);
     const _allSortedCats = Array.from(_allCatKeys).map(c=>[c,actual[c]||0]).sort((a,b)=>b[1]!==a[1]?b[1]-a[1]:(planByCategory[b[0]]||0)-(planByCategory[a[0]]||0));
@@ -5345,7 +5372,7 @@ async function reloadMonthTotals(){
     const plan = await loadMonthPlan(viewMonthIdx);
     if(plan && plan.sav_json){ try{ mPlanSavGoals=JSON.parse(plan.sav_json)||[]; }catch(e){} }
     const curMi2 = new Date().getMonth();
-    if(viewMonthIdx <= curMi2 && plan && plan.inc_json){ try{ mPlanIncGoals=JSON.parse(plan.inc_json)||[]; }catch(e){} }
+    if(viewMonthIdx < curMi2 && plan && plan.inc_json){ try{ mPlanIncGoals=JSON.parse(plan.inc_json)||[]; }catch(e){} }
   }catch(e){}
   if(!mPlanIncGoals.length){ try{ mPlanIncGoals=JSON.parse((profileData&&profileData.income_goals_json)||'null')||[]; }catch(e){} if(!mPlanIncGoals.length && typeof incomeGoals!=='undefined') mPlanIncGoals=incomeGoals.map(g=>Object.assign({},g)); }
   if(!mPlanSavGoals.length){ try{ mPlanSavGoals=JSON.parse((profileData&&profileData.save_goals_json)||'null')||[]; }catch(e){} if(!mPlanSavGoals.length && typeof savingsGoals!=='undefined') mPlanSavGoals=savingsGoals.map(g=>Object.assign({},g)); }
