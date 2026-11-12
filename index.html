@@ -1277,7 +1277,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
   </div>
   <div id="potros-donut-preview" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-left:3px solid var(--th1);border-radius:0 0 14px 14px;overflow:hidden;margin-bottom:8px"></div>
   <div id="potros-card-expand" style="display:none;background:#fff;border:1px solid #e8edf8;border-top:none;border-left:3px solid var(--th1);border-radius:0 0 14px 14px;padding:0 16px 12px;overflow:hidden">
-    <div style="overflow-y:auto;max-height:55vh;padding:4px 0">
+    <div style="overflow-y:auto;max-height:55vh;padding:0">
       <div id="potros-modal-body"></div>
     </div>
   </div>
@@ -5076,7 +5076,7 @@ function saveIncomeFromModal(){
   closeIncModal();
 }
 
-function potrosBodyFix(b){ try{ var f=b&&b.firstElementChild; if(f&&f.querySelector&&f.querySelector('svg')&&f.style.display==='flex') f.style.cssText='display:flex;align-items:center;gap:16px;padding:16px 0;margin:0;background:transparent;border:none'; }catch(e){} }
+function potrosBodyFix(b){ try{ var f=b&&b.firstElementChild; if(f&&f.querySelector&&f.querySelector('svg')&&f.style.display==='flex') f.style.cssText='display:flex;align-items:center;gap:16px;padding:'+(document.documentElement.getAttribute('data-skin')==='bozic'?'16px':(document.documentElement.getAttribute('data-theme')==='dopamin'?'16px 3px':'16px 0'))+';margin:0;background:transparent;border:none'; }catch(e){} }
 function openPotrosModal(){togglePotrosCard(true);}
 function closePotrosModal(){togglePotrosCard(false);}
 
@@ -5987,6 +5987,8 @@ html[data-theme] .srch-open span{color:#8a8a8a!important}
 html[data-theme] .srch-top input{border-color:#1b1a1a!important;box-shadow:none!important}
 .srch-top input::placeholder{color:#8a8a8a;opacity:1}
 html[data-theme] .srch-x{color:#1b1a1a!important;border-color:#1b1a1a!important}
+[data-theme="dopamin"] #s-pregled #potros-card-expand,html[data-skin][data-theme="dopamin"] #s-pregled #potros-card-expand{padding-top:0!important}
+html[data-skin="bozic"][data-theme="dopamin"] #s-pregled #potros-card-expand{padding-top:6px!important}
 </style>
 <div id="bkp-modal">
   <div class="bkp-top"><b>Sigurnosne kopije</b><button class="bkp-x" onclick="bkpClose()" aria-label="Zatvori">×</button></div>
