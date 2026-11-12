@@ -3526,7 +3526,7 @@ async function loadPregled(){
       const planSum=Object.keys(planByCategory).reduce((s,k)=>s+(planByCategory[k]||0),0);
       if(ps){
         if(planSum>0){
-          const over=totalSpent>planSum, pct=Math.min(100,totalSpent/planSum*100), col=over?'#ef4444':'#3a9d7a';
+          const over=totalSpent>planSum, pct=Math.min(100,totalSpent/planSum*100), col=over?'#ef4444':'#3f9be0';
           ps.innerHTML='<div style="height:6px;background:rgba(0,0,0,.09);border-radius:4px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:4px"></div></div><div style="font-size:12px;font-weight:700;margin-top:4px;color:'+col+'">'+(over?eur(totalSpent-planSum)+' preko plana od '+eur(planSum):'Plan '+eur(planSum)+', još '+eur(planSum-totalSpent))+'</div>';
         } else ps.innerHTML='';
       }
