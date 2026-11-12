@@ -1187,7 +1187,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
       <label class="fl-lbl" for="meta-cat">Kategorija <span class="req">*</span></label>
     </div>
     <div class="fl-field">
-      <input type="text" id="meta-note" placeholder="Opis">
+      <textarea id="meta-note" rows="1" placeholder="Opis" oninput="mnGrow()" enterkeyhint="done"></textarea>
       <label class="fl-lbl" for="meta-note">Opis</label>
     </div>
     <div class="fl-field fl-rate-row" style="border-bottom:none">
@@ -4580,7 +4580,7 @@ function noviRacun(){
   document.getElementById('meta-store').value  = '';
   document.getElementById('meta-amount').value = '';
   syncAmtDisplay(document.getElementById('meta-amount'));
-  document.getElementById('meta-note').value   = '';
+  document.getElementById('meta-note').value   = ''; try{mnGrow();}catch(e){}
   var _rt=document.getElementById('rate-toggle');if(_rt){_rt.checked=false;toggleRateFields();}
   document.getElementById('meta-date').value   = today();
   const cselV=document.getElementById('csel-cat-val'); if(cselV){cselV.textContent='Odaberi kategoriju';} document.getElementById('meta-cat').value=''; document.querySelectorAll('#csel-cat li[data-v]').forEach(l=>l.classList.remove('csel-sel'));
@@ -4605,6 +4605,7 @@ const NOTE_PLACEHOLDERS = [
   'Npr. poklon za dušu',
   'Npr. kulturno uzdizanje',
 ];
+function mnGrow(){ var e=document.getElementById('meta-note'); if(!e) return; e.style.height='auto'; e.style.height=Math.min(e.scrollHeight,220)+'px'; }
 function setNotePlaceholder(){
   const el = document.getElementById('meta-note');
   if(el) el.placeholder = NOTE_PLACEHOLDERS[Math.floor(Math.random()*NOTE_PLACEHOLDERS.length)];
@@ -5788,7 +5789,7 @@ async function aiScan(file){
     if(d.category && document.querySelector('#csel-cat li[data-v="'+d.category+'"]')) katPick(d.category);
     var its=(d.items||[]).filter(function(x){return x&&x.name;});
     if(its.length){ var s=its.map(function(x){ var q=(x.qty&&x.qty!==1)?(' ×'+x.qty):''; var p=(x.price!=null&&x.price!=='')?(' '+String(Number(x.price).toFixed(2)).replace('.',',')+'€'):''; return String(x.name).trim()+q+p; }).join('; ');
-      document.getElementById('meta-note').value=s.slice(0,900); }
+      document.getElementById('meta-note').value=s.slice(0,900); mnGrow(); }
     showScan('✓ Račun pročitan ('+its.length+' '+(its.length===1?'stavka':'stavki')+'). Provjeri i spremi.','ok');
   }catch(e){ console.warn('aiScan',e); showScan('Nisam uspjela pročitati račun. Upiši ručno.','err'); }
 }
@@ -5993,6 +5994,12 @@ html[data-theme] .srch-top input{border-color:#1b1a1a!important;box-shadow:none!
 html[data-theme] .srch-x{color:#1b1a1a!important;border-color:#1b1a1a!important}
 [data-theme="dopamin"] #s-pregled #potros-card-expand,html[data-skin][data-theme="dopamin"] #s-pregled #potros-card-expand{padding-top:0!important}
 html[data-skin="bozic"][data-theme="dopamin"] #s-pregled #potros-card-expand{padding-top:6px!important}
+.fl-field>textarea{display:block;width:100%;padding:16px 14px;min-height:54px;font-size:15px;line-height:1.35;font-family:inherit;color:var(--th-text);background:transparent;border:none;outline:none;-webkit-appearance:none;box-sizing:border-box;resize:none;overflow-y:auto}
+.fl-field>textarea::placeholder{color:#94a3b8}
+[data-theme="dopamin"] .fl-field>textarea{border:none!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:var(--dp-navy)}
+[data-theme="dopamin"] #s-skener .fl-field>textarea{padding:34px 20px 12px!important;min-height:70px}
+[data-theme="dopamin"] .status.ok{background:var(--dp-cream)!important;border:2.5px solid #6b8046!important;color:#1b1a1a!important;border-radius:18px;font-weight:700;box-shadow:0 3px 0 rgba(107,128,70,.2)}
+[data-theme="dopamin"] .status.err{background:var(--dp-cream)!important;border:2.5px solid var(--dp-terra)!important;color:#1b1a1a!important;border-radius:18px;font-weight:700}
 </style>
 <div id="bkp-modal">
   <div class="bkp-top"><b>Sigurnosne kopije</b><button class="bkp-x" onclick="bkpClose()" aria-label="Zatvori">×</button></div>
