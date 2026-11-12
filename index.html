@@ -4960,6 +4960,8 @@ function editCatEntry(sheetRow){
   var e=null; for(var c in (window._catEntries||{})){ var f=window._catEntries[c].find(function(x){return x.sheetRow===sheetRow;}); if(f){e=f;break;} }
   if(!e) return;
   openEditReceipt(e.sheetRow,MONTHS_HR[viewMonthIdx],e.datum||'',e.iznos||0,e.kat||'Other',e.bilj||e.naziv||'',e.driveUrl||'');
+  var bb=document.getElementById('edit-back-btn');
+  if(bb){ bb.innerHTML='<span class="eb-c"><svg width="9" height="14" viewBox="0 0 9 14" fill="none" aria-hidden="true"><path d="M8 1L2 7l6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="eb-l">Potrošeno '+(MONTHS_HR[viewMonthIdx]||'').toLowerCase()+'</span>'; bb.style.display='inline-flex'; }
 }
 function openReceiptView(sheetRow){
   // Find entry in _catEntries
@@ -5976,6 +5978,7 @@ html[data-skin="bozic"] .save-spinner,html[data-skin="bozic"] .spin-dot,html[dat
 [data-theme="dopamin"] #s-profil #save-goals-list .save-goal-row .fund-info-btn{grid-column:2;grid-row:2}
 [data-theme="dopamin"] #s-profil #save-goals-list .save-goal-row .goal-amt{grid-column:3;grid-row:2;width:100%!important;flex:none!important;height:30px;text-align:right}
 [data-theme="dopamin"] #s-profil #save-goals-list .save-goal-row .save-goal-del{grid-column:4;grid-row:2}
+[data-theme="dopamin"] #edit-drawer .btn-primary{background:var(--dp-navy)!important;color:#fff!important;border-color:var(--dp-navy)!important}
 </style>
 <div id="bkp-modal">
   <div class="bkp-top"><b>Sigurnosne kopije</b><button class="bkp-x" onclick="bkpClose()" aria-label="Zatvori">×</button></div>
