@@ -1140,7 +1140,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
           <option value="Food">Hrana</option>
           <option value="Pets">Ljubimci</option>
           <option value="Beauty">Kozmetika</option>
-          <option value="Zdravlje">Zdravlje</option>
+          <option value="Zdravlje">Zdravlje</option><option value="Allianz">Osiguranje</option>
           <option value="Odijelo">Odjeća</option>
           <option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Tehnika">Tehnika</option>
         </optgroup>
@@ -1168,7 +1168,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
           <li data-v="Food" onclick="cselPick(this,'Food','Hrana')">Hrana</li>
           <li data-v="Pets" onclick="cselPick(this,'Pets','Ljubimci')">Ljubimci</li>
           <li data-v="Beauty" onclick="cselPick(this,'Beauty','Kozmetika')">Kozmetika</li>
-          <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li>
+          <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li><li data-v="Allianz" onclick="cselPick(this,'Allianz','Osiguranje')">Osiguranje</li>
           <li data-v="Odijelo" onclick="cselPick(this,'Odijelo','Odje&#263;a')">Odje&#263;a</li>
           <li data-v="Gorivo" onclick="cselPick(this,'Gorivo','Gorivo')">Gorivo</li><li data-v="Auto" onclick="cselPick(this,'Auto','Auto')">Auto</li><li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li><li data-v="Tehnika" onclick="cselPick(this,'Tehnika','Tehnika')">Tehnika</li>
           <li class="csel-grp">Interesi</li>
@@ -1629,7 +1629,7 @@ document.addEventListener('keydown',function(e){
 });
 var KAT_GROUPS=[
  ['Stanovanje',[['Stanarina','Stanarina'],['Rezije','Režije'],['Dom','Dom']]],
- ['Svakodnevno',[['Food','Hrana'],['Pets','Ljubimci'],['Beauty','Kozmetika'],['Zdravlje','Zdravlje'],['Odijelo','Odjeća'],['Gorivo','Gorivo'],['Auto','Auto'],['Prijevoz','Prijevoz'],['Tehnika','Tehnika']]],
+ ['Svakodnevno',[['Food','Hrana'],['Pets','Ljubimci'],['Beauty','Kozmetika'],['Zdravlje','Zdravlje'],['Allianz','Osiguranje'],['Odijelo','Odjeća'],['Gorivo','Gorivo'],['Auto','Auto'],['Prijevoz','Prijevoz'],['Tehnika','Tehnika']]],
  ['Interesi',[['Zabava','Zabava'],['Edukacija','Edukacija'],['Software','Pretplate'],['Hobi','Hobi'],['Putovanje','Putovanje']]],
  ['Financije',[['Debt','Rate'],['Savings','Štednja'],['Drugima','Plaćeno drugima'],['Other','Ostalo']]]
 ];
@@ -3184,7 +3184,7 @@ function renderMPInc(){
 function addMPInc(){ mPlanIncGoals.push({name:'',amount:0}); renderMPInc(); setTimeout(()=>{ const x=document.querySelectorAll('#mp-inc-list .goal-name'); if(x.length) x[x.length-1].focus(); },50); }
 function removeMPInc(i){ mPlanIncGoals.splice(i,1); renderMPInc(); }
 
-const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Odijelo">Odjeća</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Tehnika">Tehnika</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>`;
+const MP_CAT_OPTS = `<option value="">Kategorija</option><optgroup label="Stanovanje"><option value="Stanarina">Stanarina</option><option value="Rezije">Režije</option><option value="Dom">Dom</option></optgroup><optgroup label="Svakodnevno"><option value="Food">Hrana</option><option value="Pets">Ljubimci</option><option value="Beauty">Kozmetika</option><option value="Zdravlje">Zdravlje</option><option value="Allianz">Osiguranje</option><option value="Odijelo">Odjeća</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Tehnika">Tehnika</option></optgroup><optgroup label="Interesi"><option value="Zabava">Zabava</option><option value="Edukacija">Edukacija</option><option value="Software">Pretplate</option><option value="Hobi">Hobi</option><option value="Putovanje">Putovanje</option></optgroup><optgroup label="Financije"><option value="Debt">Rate</option><option value="Savings">Štednja</option></optgroup><option value="Drugima">Plaćeno drugima</option><option value="Other">Ostalo</option>`;
 
 function renderMPExp(){
   const c = document.getElementById('mp-exp-list'); if(!c) return;
@@ -4119,6 +4119,7 @@ function stavke(n,m){ n=Math.abs(parseInt(n)||0); var l=n%10,h=n%100,one=(l===1&
 var REV_ROWS=[];
 var REV_RULES=[
  [/keks/i,'Other'],
+ [/allianz|croatia osiguranje|wiener|generali|uniqa|grawe|adriatic osig|euroherc/i,'Allianz'],
  [/kaufland|konzum|spar|lidl|tiki|studenac|mlinar|plodine|interspar|eurospin|pelati|mljekara|ledo|pekar|mcdonald|restoran|gelato|wolt|glovo|beer|ohana|bufet|cafe|caffe|kava/i,'Food'],
  [/\bina\b|petrol|tifon|c plin|crodux|omv|lukoil|mol /i,'Gorivo'],
  [/triglav|parking|autocesta|hac|arz|vulkaniz|centar za vozila|autoservis|servis auto|tehni[cč]ki|registracij/i,'Auto'],
@@ -5581,7 +5582,7 @@ function syncAmtDisplay(inp){
       
       <option value="Pets">Ljubimci</option>
       <option value="Beauty">Kozmetika</option>
-      <option value="Zdravlje">Zdravlje</option>
+      <option value="Zdravlje">Zdravlje</option><option value="Allianz">Osiguranje</option>
       <option value="Odijelo">Odjeća</option>
         <option value="Gorivo">Gorivo</option><option value="Auto">Auto</option><option value="Prijevoz">Prijevoz</option><option value="Tehnika">Tehnika</option>
       </optgroup>
@@ -5609,7 +5610,7 @@ function syncAmtDisplay(inp){
           <li data-v="Food" onclick="cselPick(this,'Food','Hrana')">Hrana</li>
           <li data-v="Pets" onclick="cselPick(this,'Pets','Ljubimci')">Ljubimci</li>
           <li data-v="Beauty" onclick="cselPick(this,'Beauty','Kozmetika')">Kozmetika</li>
-          <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li>
+          <li data-v="Zdravlje" onclick="cselPick(this,'Zdravlje','Zdravlje')">Zdravlje</li><li data-v="Allianz" onclick="cselPick(this,'Allianz','Osiguranje')">Osiguranje</li>
           <li data-v="Odijelo" onclick="cselPick(this,'Odijelo','Odjeća')">Odjeća</li>
           <li data-v="Gorivo" onclick="cselPick(this,'Gorivo','Gorivo')">Gorivo</li><li data-v="Auto" onclick="cselPick(this,'Auto','Auto')">Auto</li><li data-v="Prijevoz" onclick="cselPick(this,'Prijevoz','Prijevoz')">Prijevoz</li><li data-v="Tehnika" onclick="cselPick(this,'Tehnika','Tehnika')">Tehnika</li>
           <li class="csel-grp">Interesi</li>
@@ -5823,7 +5824,7 @@ async function aiScan(file){
     var block;
     if(isPdf) block={type:'document',source:{type:'base64',media_type:'application/pdf',data:await aiB64(file)}};
     else block={type:'image',source:{type:'base64',media_type:'image/jpeg',data:await aiShrink(file)}};
-    var prompt='Ovo je račun iz Hrvatske (papirnati ili e-račun). Vrati SAMO JSON, bez teksta oko njega: {"store":"naziv dućana/tvrtke (kratko)","date":"YYYY-MM-DD","total":ukupni iznos računa kao broj u eurima,"category":"jedan od: Food, Pets, Beauty, Zdravlje, Odijelo, Gorivo, Auto, Prijevoz, Zabava, Edukacija, Software, Hobi, Putovanje, Rezije, Dom, Other","items":[{"name":"naziv proizvoda","qty":količina kao broj,"price":cijena stavke kao broj}]}. Ako nešto ne možeš pročitati, stavi null. Ne izmišljaj. Ako ovo nije račun, vrati {"error":"nije račun"}.';
+    var prompt='Ovo je račun iz Hrvatske (papirnati ili e-račun). Vrati SAMO JSON, bez teksta oko njega: {"store":"naziv dućana/tvrtke (kratko)","date":"YYYY-MM-DD","total":ukupni iznos računa kao broj u eurima,"category":"jedan od: Food, Pets, Beauty, Zdravlje, Allianz, Odijelo, Gorivo, Auto, Prijevoz, Zabava, Edukacija, Software, Hobi, Putovanje, Rezije, Dom, Other","items":[{"name":"naziv proizvoda","qty":količina kao broj,"price":cijena stavke kao broj}]}. Ako nešto ne možeš pročitati, stavi null. Ne izmišljaj. Ako ovo nije račun, vrati {"error":"nije račun"}.';
     var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:AI_MODEL,max_tokens:2000,messages:[{role:'user',content:[block,{type:'text',text:prompt}]}]})});
     if(r.status===401){ showScan('AI ključ nije ispravan, provjeri u Postavkama. Upiši ručno.','err'); return; }

@@ -1,5 +1,5 @@
 // Service Worker — Moje Financije
-const CACHE = 'moje-financije-v165';
+const CACHE = 'moje-financije-v166';
 const OFFLINE = ['/', './index.html'];
 
 self.addEventListener('install', e => {
