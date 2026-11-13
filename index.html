@@ -1392,7 +1392,10 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
 
   <div class="card ps-card" data-open="0" id="ps-card-troskovi"><div class="ps-hdr" onclick="togglePS('troskovi')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-troskovi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e4572e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l1 13H5z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></span><div class="card-title">Planirani troškovi<small class="pf-sub">mjesečni plan</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-troskovi"></span><span id="ps-c-troskovi" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
 
-    <div style="font-size:12px;font-weight:700;color:#5a5f8f;margin:0 0 8px">Ovo je plan za svaki mjesec. Povuci ⠿ da promijeniš redoslijed.</div>
+    <div style="font-size:12px;font-weight:700;color:#5a5f8f;margin:0 0 8px">Ovo je plan za svaki mjesec, složen po kategorijama kao u Pregledu.</div>
+    <div id="cost-groups"></div>
+    <select class="add-goal-btn cg-newcat" id="cg-newcat" onchange="cgNewCat(this)"></select>
+    <div id="cost-legacy" style="display:none">
     <div class="costs-section-title"><span>Fiksni</span><span class="cs-tot" id="p-fixed-total">—</span></div>
     <div id="fixed-list"></div>
     <button type="button" class="add-goal-btn" onclick="addFixedGoal()">+ Dodaj fiksni trošak</button>
@@ -1401,6 +1404,8 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
     <div class="costs-section-title" style="margin-top:24px"><span>Varijabilni</span><span class="cs-tot" id="p-variable-total">—</span></div>
     <div id="variable-list"></div>
     <button type="button" class="add-goal-btn" onclick="addVariableGoal()">+ Dodaj varijabilni trošak</button>
+
+        </div>
 
     <div class="costs-total-row" style="margin-top:12px">
       <span class="costs-total-label">Ukupni troškovi</span>
@@ -2073,6 +2078,47 @@ function planCat(g){
   return '';
 }
 // ── FIXED GOALS ────────────────────────────────────────────────────────
+
+// ── Troškovi složeni po kategorijama (Profil) ─────────────────────────
+var CG_ORDER=['Stanarina','Rezije','Dom','Food','Pets','Beauty','Zdravlje','Odijelo','Gorivo','Auto','Prijevoz','Tehnika','Zabava','Edukacija','Software','Hobi','Putovanje','Debt','T-com','Allianz','Savings','Drugima','Other'];
+function cgKey(g){ var k=''; try{ k=planCat(g); }catch(e){} if(k==='Fuel') k='Gorivo'; return k||'Other'; }
+function cgEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function cgRender(){
+  var box=document.getElementById('cost-groups'); if(!box) return;
+  var items=[]; fixedGoals.forEach(function(g,i){ items.push({g:g,l:'f',i:i}); }); variableGoals.forEach(function(g,i){ items.push({g:g,l:'v',i:i}); });
+  var groups={}; items.forEach(function(x){ var k=cgKey(x.g); (groups[k]=groups[k]||[]).push(x); });
+  var keys=CG_ORDER.filter(function(k){ return groups[k]; }).concat(Object.keys(groups).filter(function(k){ return CG_ORDER.indexOf(k)<0; }));
+  box.innerHTML=keys.map(function(k){
+    var lab=cgEsc(CAT_HR[k]||k), tot=groups[k].reduce(function(s,x){ return s+(parseFloat(x.g.amount)||0); },0);
+    return '<div class="costs-section-title" style="margin-top:18px"><span>'+lab+'</span><span class="cs-tot cg-tot" data-cat="'+k+'">'+fmtVal(tot)+'</span></div>'+
+    groups[k].map(function(x){
+      var L=x.l==='f'?'fixedGoals':'variableGoals';
+      return '<div class="save-goal-row cg-row" data-cg="'+x.l+x.i+'"><input type="text" class="goal-name" value="'+cgEsc(x.g.name)+'" placeholder="Naziv" oninput="'+L+'['+x.i+'].name=this.value">'+
+      '<input type="text" class="goal-amt" inputmode="decimal" placeholder="0,00 €" value="'+fmtVal(x.g.amount)+'" onfocus="amtFocus(this)" oninput="amtInput(this,'+L+','+x.i+')" onblur="amtBlur(this,'+L+','+x.i+',cgRecalc)">'+
+      '<button class="save-goal-del" onclick="cgDel(\''+x.l+'\','+x.i+')" title="Ukloni">×</button></div>';
+    }).join('')+
+    '<button type="button" class="add-goal-btn cg-add" onclick="cgAdd(\''+k+'\')">+ Dodaj u '+lab+'</button>';
+  }).join('');
+  var sel=document.getElementById('cg-newcat');
+  if(sel){ var rest=CG_ORDER.filter(function(k){ return !groups[k]; });
+    sel.innerHTML='<option value="">+ Nova kategorija</option>'+rest.map(function(k){ return '<option value="'+k+'">'+cgEsc(CAT_HR[k]||k)+'</option>'; }).join(''); }
+}
+function cgRecalc(){
+  try{ recalcFixed(); recalcVariable(); }catch(e){}
+  var tot={}; fixedGoals.concat(variableGoals).forEach(function(g){ var k=cgKey(g); tot[k]=(tot[k]||0)+(parseFloat(g.amount)||0); });
+  document.querySelectorAll('.cg-tot').forEach(function(el){ el.textContent=fmtVal(tot[el.getAttribute('data-cat')]||0); });
+}
+function cgAdd(k){
+  variableGoals.push({name:'',amount:0,cat:k}); renderVariableList();
+  setTimeout(function(){ var r=document.querySelector('[data-cg="v'+(variableGoals.length-1)+'"] .goal-name'); if(r) r.focus(); },60);
+}
+function cgNewCat(sel){ var k=sel.value; sel.value=''; if(k) cgAdd(k); }
+function cgDel(l,i){
+  var arr=l==='f'?fixedGoals:variableGoals; var n=(arr[i]&&arr[i].name)||'ovaj trošak';
+  if(!confirm('Obriši "'+n+'"?')) return;
+  arr.splice(i,1); if(l==='f') renderFixedList(); else renderVariableList();
+}
+
 let fixedGoals = [];
 
 function renderFixedList(){
@@ -2092,6 +2138,7 @@ function renderFixedList(){
   `).join('');
   setupDragSort(container, fixedGoals, renderFixedList);
   recalcFixed();
+  try{ cgRender(); }catch(e){}
 }
 
 function addFixedGoal(name='', amount=0){
@@ -2152,6 +2199,7 @@ function renderVariableList(){
   `).join('');
   setupDragSort(container, variableGoals, renderVariableList);
   recalcVariable();
+  try{ cgRender(); }catch(e){}
 }
 
 function addVariableGoal(name='', amount=0){
@@ -6003,6 +6051,8 @@ html[data-skin="bozic"][data-theme="dopamin"] #s-pregled #potros-card-expand{pad
 [data-theme="dopamin"] .status.err{background:#fff!important;border:2.5px solid var(--dp-terra)!important;color:var(--dp-terra)!important;border-radius:18px;font-weight:700}
 html[data-theme="dopamin"] #login-card,html[data-theme="dopamin"][data-skin="bozic"] #login-card{background:#fff!important}
 html[data-theme="dopamin"] #login-card h2,html[data-theme="dopamin"] #login-card p,html[data-theme="dopamin"] #login-card .feat,html[data-theme="dopamin"] #login-card #switch-acc{color:#1b1a1a!important}
+html[data-theme] #cost-groups .cg-add{margin:0 0 4px;padding:4px 6px;font-size:13px;border:none!important;background:transparent!important;box-shadow:none!important;text-align:left;width:auto;display:block;color:var(--dp-navy,#2a3c8f);opacity:.8}
+select.cg-newcat{display:block;width:100%;margin-top:16px;text-align:center;text-align-last:center;-webkit-appearance:none;appearance:none;cursor:pointer}
 </style>
 <div id="bkp-modal">
   <div class="bkp-top"><b>Sigurnosne kopije</b><button class="bkp-x" onclick="bkpClose()" aria-label="Zatvori">×</button></div>
