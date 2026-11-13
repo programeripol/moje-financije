@@ -2527,7 +2527,9 @@ function showScreen(id){
 async function gfetch(url, opts={}){
   if(!opts.headers) opts.headers = {};
   opts.headers['Authorization'] = 'Bearer ' + token;
+  if(opts.method && opts.method!=='GET'){ try{ rowsCacheClear(); }catch(e){} }
   const r = await fetch(url, opts);
+  if(opts.method && opts.method!=='GET'){ try{ rowsCacheClear(); }catch(e){} }
   if(!r.ok){
     const txt = await r.text();
     if(r.status === 401){
@@ -2564,10 +2566,23 @@ async function appendRows(ssId, sheet, rows){
   );
 }
 
+const _rowsCache = {};
+function rowsCacheClear(){ for(const k in _rowsCache) delete _rowsCache[k]; }
 async function getRows(ssId, sheet, range='A2:Z1000'){
   const r = encodeURIComponent(sheet+'!'+range);
-  const res = await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${r}`);
-  return res.values || [];
+  const useCache = (range==='A57:N500');
+  const ck = ssId+'|'+sheet+'|'+range;
+  if(useCache){
+    const c=_rowsCache[ck];
+    if(c && Date.now()-c.t<120000) return c.p.then(v=>v.map(x=>x.slice()));
+  }
+  const p = gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${r}`).then(res=>res.values||[]);
+  if(useCache){
+    _rowsCache[ck]={t:Date.now(),p};
+    p.catch(()=>{ if(_rowsCache[ck] && _rowsCache[ck].p===p) delete _rowsCache[ck]; });
+    return p.then(v=>v.map(x=>x.slice()));
+  }
+  return p;
 }
 
 async function setCell(ssId, sheet, cell, value){
@@ -2777,6 +2792,7 @@ function fillProfileForm(){
   try{ if(!localStorage.getItem('mf_keks2')) setTimeout(function(){ keksFix('mf_keks2',false); },30000); }catch(e){}
   try{ if(!localStorage.getItem('mf_nb1')) setTimeout(function(){ nextbikeFix(); },12000); }catch(e){}
   try{ if(!localStorage.getItem('mf_car6')) setTimeout(function(){ carFix(); },16000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_ins1')) setTimeout(function(){ insFix(); },9000); }catch(e){}
   try{ setTimeout(function(){ planSnap(); },20000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
@@ -2852,6 +2868,27 @@ async function carFix(manual){
     try{ localStorage.setItem('mf_car6','1'); }catch(e){}
     if(n){ showToast('Gorivo i auto razvrstani: '+n+' '+stavke(n,'gen')+' ✓'); try{ reloadMonthTotals(); }catch(e){} }
   }catch(e){ if(manual===true) showToast('Greška: '+(e&&e.message||e),5000,'err'); }
+}
+async function insFix(){
+  if(!sheetId) return;
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+    const have=new Set((meta.sheets||[]).map(x=>x.properties.title)); let n=0;
+    const re=/allianz|croatia osiguranj|wiener|generali|uniqa|grawe|adriatic osig|euroherc/i;
+    for(const m of MONTHS_HR){
+      if(!have.has(m)) continue;
+      const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!A57:N500')}`);
+      const data=[];
+      (res.values||[]).forEach((r,i)=>{
+        if(!r||!r[1]) return;
+        const cur=r[8]||'Other'; if(['Drugima','Other','Debt'].indexOf(cur)<0) return;
+        if(re.test(String(r[11]||'')+' '+String(r[3]||''))) data.push({range:`${m}!I${57+i}`,values:[['Allianz']]});
+      });
+      if(data.length){ await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchUpdate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({valueInputOption:'USER_ENTERED',data:data})}); n+=data.length; }
+    }
+    try{ localStorage.setItem('mf_ins1','1'); }catch(e){}
+    if(n){ showToast('Osiguranja prebačena u Osiguranje: '+n+' ✓'); try{ loadPregled(); }catch(e){} }
+  }catch(e){}
 }
 async function keksFix(flag,mom){
   if(!sheetId) return; flag=flag||'mf_keks1'; if(mom===undefined) mom=true;
@@ -3396,7 +3433,9 @@ function clearPregledLoading(){
   ['hero-spin-plan','hero-spin-spent','hero-spin-inc'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
   updateIncTotal();
 }
+let _pregledTok=0;
 async function loadPregled(){
+  const _myTok=++_pregledTok;
   renderMonthNav();
   reloadMonthTotals();
   // Show loading state
@@ -3407,6 +3446,8 @@ async function loadPregled(){
     // Čitaj iz EXPENSE TRACKER sekcije odabranog mjeseca
     const monthName = MONTHS_HR[viewMonthIdx];
     const rows = await getRows(sheetId, monthName, 'A57:N500');
+    if(_myTok!==_pregledTok) return; // u međuvremenu je odabran drugi mjesec
+    try{ [viewMonthIdx-1,viewMonthIdx+1].forEach(i=>{ if(i>=0&&i<=11){ getRows(sheetId, MONTHS_HR[i], 'A57:N500').catch(()=>{}); loadMonthPlan(i).catch(()=>{}); } }); }catch(e){}
     const trackerRows = rows.map((r,i)=>({r,sheetRow:57+i})).filter(({r})=>r[1]);
     const entries = trackerRows.map(({r})=>r);
 
@@ -3424,6 +3465,7 @@ async function loadPregled(){
     _recvMonth = received; _recvItems = recvItems; renderRecvList(); try{updateIncTotal();}catch(e){}
 
     const monthPlan = (viewMonthIdx >= new Date().getMonth()) ? null : await loadMonthPlan(viewMonthIdx);
+    if(_myTok!==_pregledTok) return;
     const effPlan   = getEffectivePlan(monthPlan);
     const income    = received>0 ? received : effectiveIncomePlan(monthPlan); // stvarna plaća ima prednost pred planom
     const savePlan  = (monthPlan && monthPlan.save_plan != null) ? monthPlan.save_plan : totalSavingsPlan();
@@ -3446,6 +3488,7 @@ async function loadPregled(){
           _pre=parseFloat(_manualVal)||0;
         } else {
           _pre=await calcAutoPrenostalo(viewMonthIdx);
+          if(_myTok!==_pregledTok) return;
         }
         const _isManual=_manualVal!==null;
         const _tot=_rem+_pre;
