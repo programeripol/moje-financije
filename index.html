@@ -4272,6 +4272,7 @@ async function revFromPdf(file,acc){
   }
   const _all=[].concat.apply([],pages).map(t=>t.str).join(' ');
   if(/PBZ\s*CARD/i.test(_all)&&/SPECIFIKACIJA\s+PROMETA/i.test(_all)) revFromPbzPages(pages,acc);
+  else if(/PBZ\s*CARD/i.test(_all)&&/potvrda o transakciji/i.test(_all)) throw new Error('Ovo je potvrda jedne uplate na PBZ karticu, a ne izvadak. U PBZ MyWay: Kartice → Izvadci → preuzmi mjesečni izvadak kartice (PDF).');
   else revFromZabaPages(pages,acc);
 }
 function revFromPbzPages(pages,acc){
