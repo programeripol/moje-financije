@@ -1390,7 +1390,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
     </div>
   </div>
 
-  <div class="card ps-card" data-open="0" id="ps-card-troskovi"><div class="ps-hdr" onclick="togglePS('troskovi')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-troskovi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e4572e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l1 13H5z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></span><div class="card-title">Planirani troškovi<small class="pf-sub">mjesečni plan</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-troskovi"></span><span id="ps-c-troskovi" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
+  <div class="card ps-card" data-open="0" id="ps-card-troskovi"><div class="ps-hdr" onclick="togglePS('troskovi')"><div class="pf-l"><span class="pf-ico pf-dp pf-ico-troskovi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e4572e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l1 13H5z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></span><div class="card-title">Planirani troškovi<small class="pf-sub">mjesečni plan</small></div></div><div style="display:flex;align-items:center;gap:6px"><span class="pf-amt pf-dp" id="pf-amt-troskovi"></span><span id="ps-badge-troskovi" style="font-size:12px;font-weight:700;color:#fff;background:var(--th1);padding:2px 9px;border-radius:20px;opacity:0;transition:opacity .3s"></span><span id="ps-c-troskovi" style="display:inline-flex;align-items:center;transition:transform .3s"><svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>
 
     <div style="font-size:12px;font-weight:700;color:#5a5f8f;margin:0 0 8px">Ovo je plan za svaki mjesec, složen po kategorijama kao u Pregledu.</div>
     <div id="cost-groups"></div>
@@ -2697,7 +2697,21 @@ async function findNextTrackerRow(monthName){
 }
 
 // ── PROFILE ──────────────────────────────────────────────────────────
-function togglePS(s){var c=document.getElementById("ps-card-"+s);if(!c)return;var o=c.getAttribute("data-open")==="1";c.setAttribute("data-open",o?"0":"1");var v=document.getElementById("ps-c-"+s);if(v)v.style.transform=o?"":"rotate(180deg)";var b=document.getElementById("ps-badge-"+s);var t=document.getElementById(s==="stednja"?"p-save-total":"p-"+s+"-total");if(b&&t){b.textContent=o?t.textContent:"";b.style.opacity=o?"1":"0";}}
+function togglePS(s){var c=document.getElementById("ps-card-"+s);if(!c)return;var o=c.getAttribute("data-open")==="1";c.setAttribute("data-open",o?"0":"1");var v=document.getElementById("ps-c-"+s);if(v)v.style.transform=o?"":"rotate(180deg)";psBadges();}
+function psBadges(){
+  try{
+    var sum=function(a){ return (a||[]).reduce(function(x,g){ return x+(parseFloat(g&&g.amount)||0); },0); };
+    var txt={ income:(document.getElementById('p-income-total')||{}).textContent, stednja:(document.getElementById('p-save-total')||{}).textContent };
+    try{ var tr=sum(fixedGoals)+sum(variableGoals); txt.troskovi=tr>0?eur(tr):''; }catch(e){}
+    ['income','troskovi','stednja'].forEach(function(k){
+      var c=document.getElementById('ps-card-'+k), b=document.getElementById('ps-badge-'+k); if(!c||!b) return;
+      var t=txt[k]; var show=c.getAttribute('data-open')!=='1' && t && t!=='—' && t!=='0,00 €';
+      if(show && b.textContent!==t) b.textContent=t;
+      b.style.opacity=show?'1':'0';
+    });
+  }catch(e){}
+}
+setInterval(psBadges,1200); setTimeout(psBadges,600);
 var _profOK=false; // true samo kad je profil stvarno pročitan iz tablice
 async function loadProfile(){
   _profOK=false;
@@ -6141,6 +6155,8 @@ html:not([data-theme="dopamin"]) .yr-bars{--c:var(--th1)!important}
 html:not([data-theme="dopamin"]) .yr-tile small{color:var(--th1)}
 html:not([data-theme="dopamin"]) .cd-chip,html:not([data-theme="dopamin"]) .cd-sel select{background:#fff;border-color:var(--th1);color:var(--th1)}
 html:not([data-theme="dopamin"]) .cd-chip.on{background:var(--th1);color:#fff}
+html:not([data-theme="dopamin"]) .ps-hdr .pf-sub{display:block;margin-top:2px}
+html:not([data-theme="dopamin"]):not([data-skin="bozic"]) .rt-d{border-left-color:var(--th1)}
 html:not([data-theme="dopamin"]):not([data-skin="bozic"]) .goal-ic:not(.del){border-color:var(--th1);color:var(--th1)}
 html:not([data-theme="dopamin"]):not([data-skin="bozic"]) .goal-fill.loan,html:not([data-theme="dopamin"]):not([data-skin="bozic"]) .goal-fill.savings{background:linear-gradient(90deg,var(--th1),var(--th2))}
 [data-theme="dopamin"] #s-pregled #potros-card-expand,html[data-skin][data-theme="dopamin"] #s-pregled #potros-card-expand{padding-top:0!important}
