@@ -6120,6 +6120,27 @@ html[data-theme] .srch-open span{color:#8a8a8a!important}
 html[data-theme] .srch-top input{border-color:#1b1a1a!important;box-shadow:none!important}
 .srch-top input::placeholder{color:#8a8a8a;opacity:1}
 html[data-theme] .srch-x{color:#1b1a1a!important;border-color:#1b1a1a!important}
+/* neutralna i ostale boje: plavo (th1) umjesto zelenog */
+html:not([data-theme="dopamin"]) .srch-open,html:not([data-theme="dopamin"]) .yr-open{border-color:var(--th1);color:var(--th1);box-shadow:0 3px 0 rgba(var(--th1r),.2)}
+html:not([data-theme="dopamin"]) .srch-open span{color:var(--th1)}
+html:not([data-theme="dopamin"]) .yr-open{color:var(--th1)}
+html:not([data-theme="dopamin"]) .srch-top{border-bottom-color:rgba(var(--th1r),.15)}
+html:not([data-theme="dopamin"]) .srch-top input{border-color:var(--th1)}
+html:not([data-theme="dopamin"]) .srch-top input:focus{border-color:var(--th1)!important;box-shadow:0 0 0 3px rgba(var(--th1r),.2)!important}
+html:not([data-theme="dopamin"]) .srch-top input::placeholder{color:#8a8fa3}
+html:not([data-theme="dopamin"]) .srch-x{color:var(--th1);border-color:var(--th1)}
+html:not([data-theme="dopamin"]) .srch-pl,html:not([data-theme="dopamin"]) .srch-sum{color:#4a5a7a}
+html:not([data-theme="dopamin"]) .srch-pl input{accent-color:var(--th1)}
+html:not([data-theme="dopamin"]) .srch-it{border-bottom-color:rgba(var(--th1r),.1)}
+html:not([data-theme="dopamin"]) .srch-d{color:var(--th1)}
+html:not([data-theme="dopamin"]) .srch-d small{color:#7b88a6}
+html:not([data-theme="dopamin"]) #yr-modal,html:not([data-theme="dopamin"]) #cd-modal{background:var(--th-bg)}
+html:not([data-theme="dopamin"]) .yr-top b{color:var(--th1)}
+html:not([data-theme="dopamin"]) .yr-tile,html:not([data-theme="dopamin"]) .yr-card{--c:var(--th1)!important;border:none;border-left:4px solid var(--th1);border-radius:18px;box-shadow:0 2px 10px rgba(var(--th1r),.08)}
+html:not([data-theme="dopamin"]) .yr-bars{--c:var(--th1)!important}
+html:not([data-theme="dopamin"]) .yr-tile small{color:var(--th1)}
+html:not([data-theme="dopamin"]) .cd-chip,html:not([data-theme="dopamin"]) .cd-sel select{background:#fff;border-color:var(--th1);color:var(--th1)}
+html:not([data-theme="dopamin"]) .cd-chip.on{background:var(--th1);color:#fff}
 [data-theme="dopamin"] #s-pregled #potros-card-expand,html[data-skin][data-theme="dopamin"] #s-pregled #potros-card-expand{padding-top:0!important}
 html[data-skin="bozic"][data-theme="dopamin"] #s-pregled #potros-card-expand{padding-top:6px!important}
 .fl-field>textarea{display:block;width:100%;padding:16px 14px;min-height:54px;font-size:15px;line-height:1.35;font-family:inherit;color:var(--th-text);background:transparent;border:none;outline:none;-webkit-appearance:none;box-sizing:border-box;resize:none;overflow-y:auto}
