@@ -2793,6 +2793,7 @@ function fillProfileForm(){
   try{ if(!localStorage.getItem('mf_nb1')) setTimeout(function(){ nextbikeFix(); },12000); }catch(e){}
   try{ if(!localStorage.getItem('mf_car6')) setTimeout(function(){ carFix(); },16000); }catch(e){}
   try{ if(!localStorage.getItem('mf_ins1')) setTimeout(function(){ insFix(); },9000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_dup1')) setTimeout(function(){ dupFix(); },12000); }catch(e){}
   try{ setTimeout(function(){ planSnap(); },20000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
@@ -2888,6 +2889,35 @@ async function insFix(){
     }
     try{ localStorage.setItem('mf_ins1','1'); }catch(e){}
     if(n){ showToast('Osiguranja prebačena u Osiguranje: '+n+' ✓'); try{ loadPregled(); }catch(e){} }
+  }catch(e){}
+}
+async function dupFix(){
+  if(!sheetId) return;
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+    const have=new Set((meta.sheets||[]).map(x=>x.properties.title)); let n=0;
+    const GEN=/^(pbz|visa|rata|premium|zagreb|zagr|kupovina|placanje|card|payment|transfer|d\.o\.o|hrv|hr)$/;
+    const tk=t=>rateNorm(t).split(/[^a-z0-9]+/).filter(x=>x.length>=4&&!GEN.test(x)&&!/^\d+$/.test(x));
+    const num=v=>parseFloat(revKey('',v,'').split('|')[1])||0;
+    for(const m of MONTHS_HR){
+      if(!have.has(m)) continue;
+      const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!A57:N500')}`);
+      const rows=(res.values||[]).map((r,i)=>({r,row:57+i})).filter(x=>x.r&&x.r[1]);
+      const imp=rows.filter(x=>/^pbz visa:\s*rata\s*\d+\/\d+/.test(rateNorm(x.r[11]||'')));
+      const man=rows.filter(x=>{ const nn=rateNorm(x.r[11]||''); return nn&&!/^(zaba|revolut|pbz visa|plan visa):/.test(nn)&&['Prijenos','Prihod'].indexOf(x.r[8]||'')<0; });
+      for(const im of imp){
+        const ia=num(im.r[5]), it=tk(im.r[11]);
+        const mt=man.find(x=>!x.used&&Math.abs(num(x.r[5])-ia)<=0.05&&tk(x.r[11]).some(t=>it.indexOf(t)>=0));
+        if(!mt) continue; mt.used=true;
+        await writeRange(sheetId, `${m}!B${mt.row}`, [[im.r[1]]]);
+        await writeRange(sheetId, `${m}!F${mt.row}`, [[ia]]);
+        if(im.r[12]&&!mt.r[12]) await writeRange(sheetId, `${m}!M${mt.row}`, [[im.r[12]]]);
+        await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!B'+im.row+':N'+im.row)}:clear`,{method:'POST'});
+        n++;
+      }
+    }
+    try{ localStorage.setItem('mf_dup1','1'); }catch(e){}
+    if(n){ showToast('Spojeno duplih rata: '+n+' ✓ (opis ostaje tvoj)'); try{ loadPregled(); }catch(e){} }
   }catch(e){}
 }
 async function keksFix(flag,mom){
@@ -4377,13 +4407,15 @@ async function revFinish(acc){
       const name=MONTHS_HR[mi]; seen[mi]=new Set(); plan[mi]=[]; fz[mi]=[];
       if(!have.has(name)) continue;
       try{
-        const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(name+'!B57:L500')}`);
-        (res.values||[]).forEach((v,ix)=>{ if(v&&v[0]) seen[mi].add(revKey(v[0], v[4], v[10])); const nn=rateNorm((v&&v[10])||''); if(v&&v[0]&&!/^(plan visa|pbz visa|zaba|revolut)/.test(nn)) fz[mi].push({a:parseFloat(revKey('',v[4],'').split('|')[1])||0,n:nn}); if(/^plan visa/.test(nn)) plan[mi].push({row:57+ix,n:nn}); });
+        const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(name+'!B57:M500')}`);
+        (res.values||[]).forEach((v,ix)=>{ if(v&&v[0]) seen[mi].add(revKey(v[0], v[4], v[10])); const nn=rateNorm((v&&v[10])||''); if(v&&v[0]&&!/^(plan visa|pbz visa|zaba|revolut)/.test(nn)&&['Prijenos','Prihod'].indexOf(v[7]||'')<0) fz[mi].push({a:parseFloat(revKey('',v[4],'').split('|')[1])||0,n:nn,row:57+ix,d:String(v[0]).trim(),note0:v[10]||'',cat:v[7]||'',url:v[11]||''}); if(/^plan visa/.test(nn)) plan[mi].push({row:57+ix,n:nn}); });
       }catch(e){}
     }
     const GEN=/^(pbz|visa|rata|premium|zagreb|zagr|kupovina|placanje|card|payment|transfer|d\.o\.o|hrv|hr)$/;
     out.forEach(o=>{ const mi=parseInt(o.date.slice(5,7))-1; if(seen[mi]&&seen[mi].has(revKey(fmtDateHR(o.date),o.amount,o.note))){ o.dup=true; o.on=false; return; }
-      if(fz[mi]&&fz[mi].length){ const toks=rateNorm((o.desc||'')+' '+((o.rate&&o.rate.name)||'')).split(/[^a-z0-9]+/).filter(t=>t.length>=4&&!GEN.test(t)&&!/^\d+$/.test(t)); const hit=fz[mi].find(f=>Math.abs(f.a-Math.abs(o.amount))<=0.05&&toks.some(t=>f.n.indexOf(t)>=0)); if(hit){ o.maybeDup=true; o.on=false; } }
+      if(fz[mi]&&fz[mi].length){ const toks=rateNorm((o.desc||'')+' '+((o.rate&&o.rate.name)||'')).split(/[^a-z0-9]+/).filter(t=>t.length>=4&&!GEN.test(t)&&!/^\d+$/.test(t)); const _dd=function(x){ const m=/^(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(String(x||'')); return m?Date.UTC(+m[3],+m[2]-1,+m[1])/864e5:null; }; const _od=_dd(fmtDateHR(o.date));
+        const hit=fz[mi].find(f=>{ if(!(Math.abs(f.a-Math.abs(o.amount))<=0.05&&toks.some(t=>f.n.indexOf(t)>=0))) return false; if(o.rate) return true; const fd=_dd(f.d); return fd==null||_od==null||Math.abs(fd-_od)<=10; });
+        if(hit){ fz[mi]=fz[mi].filter(f=>f!==hit); if(hit.d===fmtDateHR(o.date)&&Math.abs(hit.a-Math.abs(o.amount))<0.005){ o.dup=true; o.on=false; } else { o.merge={row:hit.row,cat:hit.cat,url:hit.url}; o.on=true; } } }
       if(o.rate&&plan[mi]){ const key=rateNorm(o.rate.name).split(/[^a-z0-9]+/).filter(Boolean)[0]||'', re=new RegExp('rata '+o.rate.k+'/'+o.rate.N+'(?!\\d)'); const pl=plan[mi].find(p=>re.test(p.n)&&p.n.indexOf(key)>=0); if(pl){ o.planRow=pl.row; plan[mi]=plan[mi].filter(p=>p!==pl); } } });
   }catch(e){ hideSaveOverlay(); showToast('Greška pri provjeri: '+(e.message||e),5000,'err'); return; }
   hideSaveOverlay();
@@ -4403,7 +4435,7 @@ function revRowHtml(o,i){
       <div id="revc-${i}" data-sm="1" class="rv-cb sm${o.on?' on':''}" onclick="revTog(${i})">${o.on?RV_TICK:''}</div>
       <div class="rv-rt">
         <div class="d">${revEsc(o.desc)||'—'}</div>
-        <div class="m">${fmtDateHR(o.date)}, ${revEsc(o.type)}${o.dup?', već uneseno':(o.maybeDup?', <span class="maybe-t">⚠ možda već uneseno</span>':'')}</div>
+        <div class="m">${fmtDateHR(o.date)}, ${revEsc(o.type)}${o.dup?', već uneseno':(o.merge?', <span class="maybe-t">spaja se s tvojim unosom (opis ostaje tvoj)</span>':o.maybeDup?', <span class="maybe-t">⚠ možda već uneseno</span>':'')}</div>
         <select onchange="REV_ROWS[${i}].cat=this.value">${revOpts(o.cat)}</select>
       </div>
       <div class="rv-am${neg?' pos':''}">${o.income?'+ ':''}${eur(o.amount)}</div>
@@ -4499,6 +4531,8 @@ async function revImport(){
         try{ urls.set(f, await revUploadStatement(f,m)); }catch(e){ upFail++; }
       }
       const mk=o=>{ const d=Array(14).fill(''); d[1]=fmtDateHR(o.date); d[5]=o.amount; d[8]=o.cat; d[11]=o.note; d[12]=(o.src&&urls.get(o.src))||''; return d; };
+      for(const o of by[m].filter(o=>o.merge)){ const r=o.merge.row; await writeRange(sheetId, `${m}!B${r}`, [[fmtDateHR(o.date)]]); await writeRange(sheetId, `${m}!F${r}`, [[o.amount]]); const u=(o.src&&urls.get(o.src))||''; if(u&&!o.merge.url) await writeRange(sheetId, `${m}!M${r}`, [[u]]); if(!o.merge.cat||o.merge.cat==='Other') await writeRange(sheetId, `${m}!I${r}`, [[o.cat]]); }
+      by[m]=by[m].filter(o=>!o.merge);
       for(const o of by[m].filter(o=>o.planRow)) await writeRange(sheetId, `${m}!A${o.planRow}`, [mk(o)]);
       by[m]=by[m].filter(o=>!o.planRow);
       if(!by[m].length) continue;
