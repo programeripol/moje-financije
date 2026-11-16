@@ -1108,6 +1108,11 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
     </div>
     <button id="remove-file" onclick="removeSelectedFile()">×</button>
   </div>
+  <div id="extra-imgs-box" style="display:none;margin:8px 0 4px">
+    <div id="extra-imgs" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"></div>
+  </div>
+  <input type="file" id="file-extra" accept="image/*" multiple style="display:none" onchange="addExtraImgs(this)">
+  <button type="button" id="extra-add-btn" onclick="document.getElementById('file-extra').click()" style="display:none;width:100%;margin:6px 0 4px;padding:10px;border-radius:12px;border:1.5px dashed var(--th1);background:transparent;color:var(--th1);font-weight:700;font-size:14px;font-family:inherit;cursor:pointer">+ Dodaj još sliku (velik račun)</button>
 
   <div class="fl-group">
     <div class="fl-field">
@@ -4161,7 +4166,24 @@ function handleDrop(e){
   document.getElementById('upload-zone').classList.remove('drag');
   handleFile(e.dataTransfer.files[0]);
 }
+var extraImgFiles=[];
+function renderExtraImgs(){
+  var box=document.getElementById('extra-imgs-box'), h=document.getElementById('extra-imgs'), btn=document.getElementById('extra-add-btn');
+  if(!box||!h) return;
+  var has=!!currentImgFile;
+  if(btn) btn.style.display=has&&extraImgFiles.length<4?'block':'none';
+  box.style.display=extraImgFiles.length?'block':'none';
+  h.innerHTML=extraImgFiles.map(function(f,i){ var u=URL.createObjectURL(f); return '<div style="position:relative;width:64px;height:64px"><img src="'+u+'" style="width:64px;height:64px;object-fit:cover;border-radius:10px;border:1.5px solid rgba(0,0,0,.12)"><button type="button" onclick="removeExtraImg('+i+')" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:none;background:#1b1a1a;color:#fff;font-size:12px;line-height:1;cursor:pointer;padding:0">×</button></div>'; }).join('')+(extraImgFiles.length?'<span style="font-size:12px;font-weight:600;color:#7090b0">dio istog računa</span>':'');
+}
+function addExtraImgs(inp){
+  var fs=Array.prototype.slice.call(inp.files||[]); inp.value='';
+  fs.forEach(function(f){ if(extraImgFiles.length<4) extraImgFiles.push(f); });
+  renderExtraImgs();
+  try{ aiScan(currentImgFile); }catch(e){}
+}
+function removeExtraImg(i){ extraImgFiles.splice(i,1); renderExtraImgs(); if(currentImgFile){ try{ aiScan(currentImgFile); }catch(e){} } }
 function removeSelectedFile(){
+  extraImgFiles=[]; try{renderExtraImgs();}catch(e){}
   currentImgFile = null;
   currentImgSrc  = null;
   document.getElementById('receipt-preview').style.display = 'none';
@@ -4184,6 +4206,7 @@ function handleFile(file){
   setTimeout(()=>{ document.getElementById('meta-store').scrollIntoView({behavior:'smooth',block:'start'}); }, 300);
   document.getElementById('meta-date').value = today();
   document.getElementById('save-btn').disabled = false;
+  extraImgFiles=[]; try{renderExtraImgs();}catch(e){}
   try{ aiScan(file); }catch(e){}
   if(isPdf){
     currentImgSrc = null;
@@ -4681,6 +4704,10 @@ async function saveReceipt(){
       const d = await uploadToDrive(currentImgFile, buildFilename());
       driveUrl = d.url; driveId = d.id;
     }
+    const _extraParts=[];
+    for(let _xi=0;_xi<extraImgFiles.length;_xi++){
+      try{ const _xf=extraImgFiles[_xi]; const _xe=(_xf.name.split('.').pop()||'jpg').toLowerCase(); const _xd=await uploadToDrive(_xf, buildFilename().replace(/\.[^.]+$/,'')+'_'+(_xi+2)+'.'+_xe); _extraParts.push(_xd.url+'|'+_xd.id); }catch(_xe2){ console.warn('dodatna slika',_xe2); }
+    }
     setProgress(90);
     const _rateTog=document.getElementById('rate-toggle');
     const _isRate=_rateTog&&_rateTog.checked;
@@ -4698,9 +4725,10 @@ async function saveReceipt(){
         if(_isRate && !/rata\s*\d+\/\d+/i.test(_nn)) _nn=_nn+' (rata 1/'+_rateN+(_rateCard?' · '+_rateCard:'')+')';
         if(_nn!==_en) await writeRange(sheetId, `${month}!L${_sim.row}`, [[_nn]]);
         if(driveUrl && !_sim.r[12]) await writeRange(sheetId, `${month}!M${_sim.row}:N${_sim.row}`, [[driveUrl, driveId]]);
-        else if(driveUrl){ // stavka već ima sliku: dodatna slika ide u stupac O (url|id; više njih odvojeno s ;)
+        const _toO=(driveUrl && _sim.r[12]) ? [driveUrl+'|'+driveId].concat(_extraParts) : _extraParts;
+        if(_toO.length){ // dodatne slike idu u stupac O (url|id; više njih odvojeno s ;)
           let _ex=''; try{ const _g=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(month+'!O'+_sim.row)}`); _ex=((_g.values||[])[0]||[])[0]||''; }catch(e){}
-          await writeRange(sheetId, `${month}!O${_sim.row}`, [[(_ex?_ex+';':'')+driveUrl+'|'+driveId]]);
+          await writeRange(sheetId, `${month}!O${_sim.row}`, [[(_ex?_ex+';':'')+_toO.join(';')]]);
         }
         if(!_sim.r[8] || _sim.r[8]==='Other') await writeRange(sheetId, `${month}!I${_sim.row}`, [[cat]]);
         _merged=true;
@@ -4715,6 +4743,7 @@ async function saveReceipt(){
     rowData[11] = (note ? `${store} — ${note}` : store) + _rateLabel1;
     rowData[12] = driveUrl;
     rowData[13] = driveId;
+    rowData[14] = _extraParts.join(';');
     if(!_merged) await writeRange(sheetId, `${month}!A${row}`, [rowData]);
     try{ katCount(cat); }catch(_e){}
     // Rate - buduće rate
@@ -4770,6 +4799,7 @@ function setProgress(pct){
 }
 
 function noviRacun(){
+  extraImgFiles=[]; try{renderExtraImgs();}catch(e){}
   currentImgFile = null;
   currentImgSrc  = null;
   document.getElementById('receipt-preview').style.display = 'none';
@@ -5989,12 +6019,14 @@ async function aiScan(file){
   var isPdf=file.type==='application/pdf'||/\.pdf$/i.test(file.name);
   showScan('Čitam račun…','loading');
   try{
-    var block;
+    var block, blocks=[];
     if(isPdf) block={type:'document',source:{type:'base64',media_type:'application/pdf',data:await aiB64(file)}};
     else block={type:'image',source:{type:'base64',media_type:'image/jpeg',data:await aiShrink(file)}};
+    blocks.push(block);
+    for(var xi=0;xi<extraImgFiles.length;xi++){ try{ blocks.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:await aiShrink(extraImgFiles[xi])}}); }catch(e){} }
     var prompt='Ovo je račun iz Hrvatske (papirnati ili e-račun). Vrati SAMO JSON, bez teksta oko njega: {"store":"naziv dućana/tvrtke (kratko)","date":"YYYY-MM-DD","total":ukupni iznos računa kao broj u eurima,"category":"jedan od: Food, Pets, Beauty, Zdravlje, Allianz, Odijelo, Gorivo, Auto, Prijevoz, Zabava, Edukacija, Software, Hobi, Putovanje, Rezije, Dom, Other","items":[{"name":"naziv proizvoda","qty":količina kao broj,"price":cijena stavke kao broj}]}. Ako nešto ne možeš pročitati, stavi null. Ne izmišljaj. Ako ovo nije račun, vrati {"error":"nije račun"}.';
     var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:AI_MODEL,max_tokens:2000,messages:[{role:'user',content:[block,{type:'text',text:prompt}]}]})});
+      body:JSON.stringify({model:AI_MODEL,max_tokens:2000,messages:[{role:'user',content:blocks.concat([{type:'text',text:(blocks.length>1?'Ove '+blocks.length+' slike su dijelovi ISTOG računa (dugačak račun snimljen u više dijelova): spoji ih u jedan račun, ne zbrajaj dvaput iste stavke. ':'')+prompt}])}]})});
     if(r.status===401){ showScan('AI ključ nije ispravan, provjeri u Postavkama. Upiši ručno.','err'); return; }
     if(!r.ok){ var et=''; try{ et=(await r.json()).error.message; }catch(e){} showScan('AI nije uspio pročitati ('+r.status+(et?': '+et:'')+'). Upiši ručno.','err'); return; }
     var j=await r.json(), txt=(j.content||[]).map(function(c){return c.text||'';}).join(''), m=/\{[\s\S]*\}/.exec(txt);
