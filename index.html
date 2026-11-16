@@ -4183,9 +4183,10 @@ function addExtraImgs(inp){
 }
 function removeExtraImg(i){ extraImgFiles.splice(i,1); renderExtraImgs(); if(currentImgFile){ try{ aiScan(currentImgFile); }catch(e){} } }
 function removeSelectedFile(){
-  extraImgFiles=[]; try{renderExtraImgs();}catch(e){}
+  extraImgFiles=[];
   currentImgFile = null;
   currentImgSrc  = null;
+  try{renderExtraImgs();}catch(e){}
   document.getElementById('receipt-preview').style.display = 'none';
   document.getElementById('pdf-preview').style.display     = 'none';
   document.getElementById('remove-file').style.display     = 'none';
@@ -4799,9 +4800,10 @@ function setProgress(pct){
 }
 
 function noviRacun(){
-  extraImgFiles=[]; try{renderExtraImgs();}catch(e){}
+  extraImgFiles=[];
   currentImgFile = null;
   currentImgSrc  = null;
+  try{renderExtraImgs();}catch(e){}
   document.getElementById('receipt-preview').style.display = 'none';
   document.getElementById('pdf-preview').style.display     = 'none';
   document.getElementById('remove-file').style.display     = 'none';
