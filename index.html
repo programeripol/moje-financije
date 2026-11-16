@@ -2809,6 +2809,7 @@ function fillProfileForm(){
   try{ if(!localStorage.getItem('mf_car6')) setTimeout(function(){ carFix(); },16000); }catch(e){}
   try{ if(!localStorage.getItem('mf_ins1')) setTimeout(function(){ insFix(); },9000); }catch(e){}
   try{ if(!localStorage.getItem('mf_dup1')) setTimeout(function(){ dupFix(); },12000); }catch(e){}
+  try{ if(!localStorage.getItem('mf_dup2')) setTimeout(function(){ dupFix2(); },15000); }catch(e){}
   try{ setTimeout(function(){ planSnap(); },20000); }catch(e){}
 }
 // jednokratno: nova pravila kategorija primijeni unatrag na uvezene stavke (ne dira ono što si ručno promijenila)
@@ -2933,6 +2934,32 @@ async function dupFix(){
     }
     try{ localStorage.setItem('mf_dup1','1'); }catch(e){}
     if(n){ showToast('Spojeno duplih rata: '+n+' ✓ (opis ostaje tvoj)'); try{ loadPregled(); }catch(e){} }
+  }catch(e){}
+}
+async function dupFix2(){
+  if(!sheetId) return;
+  try{
+    const meta=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`);
+    const have=new Set((meta.sheets||[]).map(x=>x.properties.title)); let n=0;
+    const num=v=>parseFloat(revKey('',v,'').split('|')[1])||0;
+    for(const m of MONTHS_HR){
+      if(!have.has(m)) continue;
+      const res=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!A57:N500')}`);
+      const rows=(res.values||[]).map((r,i)=>({r,row:57+i})).filter(x=>x.r&&x.r[1]&&x.r[11]&&['Prijenos','Prihod','Uplaceno'].indexOf(x.r[8]||'')<0&&!/^(zaba|revolut|pbz visa|plan visa):/i.test(x.r[11]));
+      const used=new Set();
+      for(const b of rows){
+        if(used.has(b.row)||!/\(rata\s*\d+\/\d+/i.test(b.r[11])) continue;
+        const a=rows.find(x=>x!==b&&!used.has(x.row)&&!/\(rata\s*\d+\/\d+/i.test(x.r[11])&&x.r[1]===b.r[1]&&Math.abs(num(x.r[5])-num(b.r[5]))<0.005&&simTok(x.r[11]).some(t=>simTok(b.r[11]).indexOf(t)>=0));
+        if(!a) continue; used.add(a.row); used.add(b.row);
+        const mk=/\(rata\s*\d+\/\d+[^)]*\)/i.exec(b.r[11]);
+        if(mk) await writeRange(sheetId, `${m}!L${a.row}`, [[a.r[11]+' '+mk[0]]]);
+        if(b.r[12]&&!a.r[12]) await writeRange(sheetId, `${m}!M${a.row}:N${a.row}`, [[b.r[12], b.r[13]||'']]);
+        await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(m+'!B'+b.row+':N'+b.row)}:clear`,{method:'POST'});
+        n++;
+      }
+    }
+    try{ localStorage.setItem('mf_dup2','1'); }catch(e){}
+    if(n){ showToast('Spojeno duplih računa: '+n+' ✓'); try{ loadPregled(); }catch(e){} }
   }catch(e){}
 }
 async function keksFix(flag,mom){
@@ -4616,6 +4643,16 @@ function toggleEditRateFields(){
   if(vis)vis.style.background=on?'var(--acc-on,var(--th1))':'#ccc';
   if(thumb)thumb.style.left=on?'22px':'2px';
 }
+function simTok(t){ const GEN=/^(pbz|visa|rata|premium|zagreb|zagr|kupovina|placanje|card|payment|transfer|d\.o\.o|hrv|hr)$/; return rateNorm(t).split(/[^a-z0-9]+/).filter(x=>x.length>=4&&!GEN.test(x)&&!/^\d+$/.test(x)); }
+async function findSimilarRow(month, store, amt){
+  try{
+    const rows=await getRows(sheetId, month, 'A57:N500'), tk=simTok(store); if(!tk.length) return null;
+    for(let i=0;i<rows.length;i++){ const r=rows[i]; if(!r||!r[1]) continue; if(['Prijenos','Prihod','Uplaceno'].indexOf(r[8]||'')>=0) continue;
+      const a=parseFloat(revKey('',r[5],'').split('|')[1])||0; if(Math.abs(a-amt)>0.05) continue;
+      if(simTok(r[11]||'').some(t=>tk.indexOf(t)>=0)) return {row:57+i,r:r}; }
+  }catch(e){}
+  return null;
+}
 async function saveReceipt(){
   const store  = document.getElementById('meta-store').value.trim();
   const date   = document.getElementById('meta-date').value;
@@ -4645,21 +4682,36 @@ async function saveReceipt(){
       driveUrl = d.url; driveId = d.id;
     }
     setProgress(90);
-    const row   = await findNextTrackerRow(month);
-    const rowData = Array(14).fill('');
-    rowData[1]  = fmtDateHR(date);
     const _rateTog=document.getElementById('rate-toggle');
     const _isRate=_rateTog&&_rateTog.checked;
     const _rateN=_isRate?Math.max(2,Math.min(36,parseInt((document.getElementById('rate-count')||{}).value)||6)):1;
     const _rateCard=_isRate?((document.getElementById('rate-card')||{}).value||'').trim():'';
     const _rataAmt=_isRate?Math.round(amount/_rateN*100)/100:amount;
+    // već postoji ista stavka (isti trgovac i iznos u istom mjesecu)? spoji umjesto dupliciranja
+    let _merged=false;
+    const _sim=await findSimilarRow(month, store, _rataAmt);
+    if(_sim){
+      const _en=String(_sim.r[11]||'');
+      if(confirm('Već postoji stavka "'+_en+'" ('+eur(_rataAmt)+', '+_sim.r[1]+').\n\nU redu = spoji s njom (dodaje se slika računa i stavke, ništa se ne udvostručuje).\nOdustani = spremi kao novu stavku.')){
+        const _up=[];
+        let _nn=_en; if(note && _nn.toLowerCase().indexOf(note.toLowerCase())<0) _nn=_nn+' — '+note;
+        if(_isRate && !/rata\s*\d+\/\d+/i.test(_nn)) _nn=_nn+' (rata 1/'+_rateN+(_rateCard?' · '+_rateCard:'')+')';
+        if(_nn!==_en) await writeRange(sheetId, `${month}!L${_sim.row}`, [[_nn]]);
+        if(driveUrl && !_sim.r[12]) await writeRange(sheetId, `${month}!M${_sim.row}:N${_sim.row}`, [[driveUrl, driveId]]);
+        if(!_sim.r[8] || _sim.r[8]==='Other') await writeRange(sheetId, `${month}!I${_sim.row}`, [[cat]]);
+        _merged=true;
+      }
+    }
+    const row   = _merged ? 0 : await findNextTrackerRow(month);
+    const rowData = Array(14).fill('');
+    rowData[1]  = fmtDateHR(date);
     rowData[5]  = _rataAmt;
     rowData[8]  = cat;
     var _rateLabel1=_isRate?' (rata 1/'+_rateN+(_rateCard?' · '+_rateCard:'')+')':'';
     rowData[11] = (note ? `${store} — ${note}` : store) + _rateLabel1;
     rowData[12] = driveUrl;
     rowData[13] = driveId;
-    await writeRange(sheetId, `${month}!A${row}`, [rowData]);
+    if(!_merged) await writeRange(sheetId, `${month}!A${row}`, [rowData]);
     try{ katCount(cat); }catch(_e){}
     // Rate - buduće rate
     if(_isRate&&_rateN>1){
@@ -4669,6 +4721,7 @@ async function saveReceipt(){
         var _fm=_MHR[(_curIdx+(_ri-1))%12];
         try{
           await ensureMonthSheet(_fm);
+          if(await findSimilarRow(_fm, store, _rataAmt)) continue; // rata za taj mjesec već postoji (npr. iz izvatka)
           var _fr=await findNextTrackerRow(_fm);
           var _fd=Array(14).fill('');
           _fd[1]=fmtDateHR(date);_fd[5]=_rataAmt;_fd[8]=cat;
@@ -4679,7 +4732,7 @@ async function saveReceipt(){
     }
     setProgress(100);
 
-    showToast('✓ Spremljeno! ' + store + ', ' + eur(amount), 3000, 'success');
+    showToast((_merged?'✓ Spojeno s postojećom stavkom: ':'✓ Spremljeno! ') + store + ', ' + eur(amount), 3000, 'success');
     showScan(null);
     setTimeout(()=>{ setProgress(0); loadGallery(); noviRacun(); }, 1800);
   }catch(e){
