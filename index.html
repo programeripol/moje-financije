@@ -1854,6 +1854,7 @@ function fmtDateHR(iso){
   const [y,m,d] = iso.split('-');
   return d ? d.replace(/^0/,'')+'.'+m.replace(/^0/,'')+'.'+y+'.' : iso;
 }
+function eurIn(n,col){ const x=parseFloat(n||0); return x<0?'<span style="color:'+(col||'#16a34a')+'">+'+eur(-x)+'</span>':eur(x); }
 function eur(n){ const x=parseFloat(n||0); const parts=x.toFixed(2).split('.'); parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return parts.join(',') + ' €'; }
 function fmtAmtBlur(inp){const raw=inp.value.replace(/[^0-9,]/g,'').replace(',','.');const n=parseFloat(raw)||0;inp.value=n?eur(n):'';}
 function fmtAmtFocus(inp){inp.value=inp.value.replace(/\s*€/,'').replace(/\./g,'');}
@@ -3684,7 +3685,7 @@ async function loadPregled(){
       const entriesHtml = entries.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).map(e => `<div onclick="editCatEntry(${e.sheetRow})" style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;cursor:pointer;border-top:1px solid #f0f4ff;font-size:12px">
           <span style="color:#7090b0;flex-shrink:0;margin-right:8px">${e.datum}</span>
           <span style="flex:1;color:#1a1a2e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.naziv||name}</span>
-          <span style="font-weight:600;color:var(--th1);flex-shrink:0;margin-left:8px">${eur(e.iznos)}</span>
+          <span style="font-weight:600;color:var(--th1);flex-shrink:0;margin-left:8px">${eurIn(e.iznos)}</span>
         </div>`).join('');
       return `<div style="background:var(--color-background-primary,#fff);border:1px solid #e8edf8;border-radius:14px;margin-bottom:8px;overflow:hidden">
         <div onclick="(function(el){el.nextElementSibling.style.display=el.nextElementSibling.style.display==='none'?'block':'none';el.querySelector('.cat-chev').style.transform=el.nextElementSibling.style.display==='none'?'rotate(0deg)':'rotate(180deg)';})(this)" style="padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer">
@@ -3697,7 +3698,7 @@ async function loadPregled(){
             <div style="font-size:11px;color:${over?'#ef4444':'#7090b0'}">${subText}</div>
           </div>
           <div style="text-align:right;flex-shrink:0;margin-right:4px">
-            <div style="font-size:14px;font-weight:700;color:${over?'#ef4444':'var(--color-text-primary,#1a1a2e)'}">${eur(act)}</div>
+            <div style="font-size:14px;font-weight:700;color:${over?'#ef4444':'var(--color-text-primary,#1a1a2e)'}">${eurIn(act)}</div>
             <div style="font-size:11px;color:#7090b0">${planAmt>0?Math.round(pct)+'%':entries.length+' '+stavke(entries.length)}</div>
           </div>
           <span class="cat-chev" style="color:#b0bec5;font-size:18px;transition:transform .2s;flex-shrink:0">⌄</span>
@@ -6095,7 +6096,7 @@ function srchRun(){
     var pl=x.plan?'<span style="color:#b08a00">, planirano</span>':'';
     var dd=x.d?(x.d.getDate()+'.'+(x.d.getMonth()+1)+'.'):x.date;
     var yy=x.d?x.d.getFullYear():'';
-    return '<div class="srch-it"><div class="srch-d">'+dd+'<small>'+yy+'</small></div><div class="srch-m">'+srchEsc(x.name||x.note)+'<small>'+srchEsc((x.desc?x.desc+', ':'')+x.catL+', '+x.m)+pl+'</small>'+(x.url?'<a class="srch-r" href="'+srchEsc(x.url)+'" target="_blank" rel="noopener">Pogledaj račun</a>':'')+'</div><div class="srch-a">'+eur(x.amt)+'</div></div>';
+    return '<div class="srch-it"><div class="srch-d">'+dd+'<small>'+yy+'</small></div><div class="srch-m">'+srchEsc(x.name||x.note)+'<small>'+srchEsc((x.desc?x.desc+', ':'')+x.catL+', '+x.m)+pl+'</small>'+(x.url?'<a class="srch-r" href="'+srchEsc(x.url)+'" target="_blank" rel="noopener">Pogledaj račun</a>':'')+'</div><div class="srch-a">'+eurIn(x.amt)+'</div></div>';
   }).join('')+(res.length>200?'<div class="srch-empty">Prikazano prvih 200. Upiši preciznije.</div>':'');
 }
 </script>
@@ -6396,7 +6397,7 @@ function cdRender(){
   if(top.length>1) h+='<div class="yr-card" style="--c:'+col+'"><h3>Najviše ide na</h3>'+top.map(function(r){ return '<div class="cd-top"><span>'+srchEsc(r[0])+(r[2]>1?' ×'+r[2]:'')+'</span><span>'+eur(r[1])+'</span></div>'; }).join('')+'</div>';
   h+='<div class="yr-card" style="--c:'+col+'"><h3>Sve stavke</h3>'+(items.length?items.map(function(x){
     var dd=x.d?(x.d.getDate()+'.'+(x.d.getMonth()+1)+'.'):x.date;
-    return '<div class="cd-it"><span class="cd-d">'+dd+'</span><span class="cd-n">'+srchEsc(x.name||x.note||'—')+(x.desc?'<small>'+srchEsc(x.desc)+'</small>':'')+'</span><span class="cd-a">'+eur(x.amt)+'</span></div>';
+    return '<div class="cd-it"><span class="cd-d">'+dd+'</span><span class="cd-n">'+srchEsc(x.name||x.note||'—')+(x.desc?'<small>'+srchEsc(x.desc)+'</small>':'')+'</span><span class="cd-a">'+eurIn(x.amt)+'</span></div>';
   }).join(''):'<p style="margin:8px 0 0">Nema stavki u ovom razdoblju.</p>')+'</div>';
   document.getElementById('cd-body').innerHTML=h;
 }
