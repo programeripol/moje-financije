@@ -4698,6 +4698,10 @@ async function saveReceipt(){
         if(_isRate && !/rata\s*\d+\/\d+/i.test(_nn)) _nn=_nn+' (rata 1/'+_rateN+(_rateCard?' · '+_rateCard:'')+')';
         if(_nn!==_en) await writeRange(sheetId, `${month}!L${_sim.row}`, [[_nn]]);
         if(driveUrl && !_sim.r[12]) await writeRange(sheetId, `${month}!M${_sim.row}:N${_sim.row}`, [[driveUrl, driveId]]);
+        else if(driveUrl){ // stavka već ima sliku: dodatna slika ide u stupac O (url|id; više njih odvojeno s ;)
+          let _ex=''; try{ const _g=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(month+'!O'+_sim.row)}`); _ex=((_g.values||[])[0]||[])[0]||''; }catch(e){}
+          await writeRange(sheetId, `${month}!O${_sim.row}`, [[(_ex?_ex+';':'')+driveUrl+'|'+driveId]]);
+        }
         if(!_sim.r[8] || _sim.r[8]==='Other') await writeRange(sheetId, `${month}!I${_sim.row}`, [[cat]]);
         _merged=true;
       }
@@ -4902,10 +4906,15 @@ async function deleteReceipt(sheetRow, driveId){
       });
       if(!dr.ok && dr.status !== 404) throw new Error('Drive: '+dr.status);
     }
-    // 2. Obriši red iz sheeta
+    // 2. Obriši red iz sheeta (i dodatne slike iz stupca O)
     const month = curMonth();
+    try{
+      const _g=await gfetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(month+'!O'+sheetRow)}`);
+      const _v=((_g.values||[])[0]||[])[0]||'';
+      for(const p of _v.split(';').filter(Boolean)){ const id=p.split('|')[1]; if(id){ try{ await fetch(`https://www.googleapis.com/drive/v3/files/${id}`,{method:'DELETE',headers:{'Authorization':'Bearer '+token}}); }catch(e){} } }
+    }catch(e){}
     await gfetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(month+'!B'+sheetRow+':N'+sheetRow)}:clear`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(month+'!B'+sheetRow+':O'+sheetRow)}:clear`,
       {method:'POST'}
     );
     hideSaveOverlay();
@@ -5027,8 +5036,21 @@ window.incomeGoals          = incomeGoals;
 window.fixedGoals           = fixedGoals;
 window.variableGoals        = variableGoals;
 
+async function editExtraImgs(sheetRow,monthName){
+  var host=document.getElementById('edit-extra-imgs');
+  if(!host){ var iw=document.getElementById('edit-img-wrap'); if(!iw) return; host=document.createElement('div'); host.id='edit-extra-imgs'; host.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:-6px 0 14px'; iw.parentNode.insertBefore(host,iw.nextSibling); }
+  host.innerHTML=''; host.style.display='none';
+  try{
+    var g=await gfetch('https://sheets.googleapis.com/v4/spreadsheets/'+sheetId+'/values/'+encodeURIComponent(monthName+'!O'+sheetRow));
+    var v=((g.values||[])[0]||[])[0]||''; if(!v) return;
+    var parts=v.split(';').filter(Boolean);
+    host.innerHTML=parts.map(function(p,i){ var u=p.split('|')[0]; var th=u.replace('https://drive.google.com/file/d/','https://drive.google.com/thumbnail?sz=w200&id=').replace('/view',''); return '<a href="'+u+'" target="_blank" rel="noopener" style="display:block;width:64px;height:64px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(0,0,0,.12)"><img src="'+th+'" alt="Račun '+(i+2)+'" style="width:100%;height:100%;object-fit:cover"></a>'; }).join('')+'<span style="align-self:center;font-size:12px;font-weight:600;color:#7090b0">dodatne slike računa</span>';
+    host.style.display='flex';
+  }catch(e){}
+}
 function openEditReceipt(sheetRow,monthName,datum,iznos,kat,bilj,driveUrl){
   driveUrl=driveUrl||"";
+  try{ editExtraImgs(sheetRow,monthName); }catch(e){}
   var iw=document.getElementById("edit-img-wrap"),it=document.getElementById("edit-img-thumb");
   if(iw&&it){it.src="";iw.style.display="none";if(driveUrl){var th=driveUrl.replace("https://drive.google.com/file/d/","https://drive.google.com/thumbnail?sz=w400&id=").replace("/view","");it.style.opacity="0";var sp=document.getElementById('edit-img-spinner');if(sp)sp.style.display='flex';it.src=th;it.onload=function(){it.style.opacity="1";if(sp)sp.style.display='none';};it.onclick=function(){window.open(driveUrl,"_blank");};iw.style.display="block";}else{iw.style.display="none";}}
   var bk=document.getElementById('edit-bank');
