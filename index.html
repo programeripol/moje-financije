@@ -1112,7 +1112,7 @@ html[data-skin="bozic"]::after{content:"";position:fixed;inset:0;z-index:9990;po
     <div id="extra-imgs" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"></div>
   </div>
   <input type="file" id="file-extra" accept="image/*" multiple style="display:none" onchange="addExtraImgs(this)">
-  <button type="button" id="extra-add-btn" onclick="document.getElementById('file-extra').click()" style="display:none;width:100%;margin:6px 0 4px;padding:10px;border-radius:12px;border:1.5px dashed var(--th1);background:transparent;color:var(--th1);font-weight:700;font-size:14px;font-family:inherit;cursor:pointer">+ Dodaj još sliku (velik račun)</button>
+  <div id="extra-add-wrap" style="display:none"><button type="button" id="extra-add-btn" onclick="document.getElementById('file-extra').click()" style="width:100%;margin:6px 0 4px;padding:10px;border-radius:12px;border:1.5px dashed var(--th1);background:transparent;color:var(--th1);font-weight:700;font-size:14px;font-family:inherit;cursor:pointer">+ Dodaj još sliku (velik račun)</button></div>
 
   <div class="fl-group">
     <div class="fl-field">
@@ -4170,8 +4170,8 @@ var extraImgFiles=[];
 function renderExtraImgs(){
   var box=document.getElementById('extra-imgs-box'), h=document.getElementById('extra-imgs'), btn=document.getElementById('extra-add-btn');
   if(!box||!h) return;
-  var has=!!currentImgFile;
-  if(btn) btn.style.display=has&&extraImgFiles.length<4?'block':'none';
+  var has=!!currentImgFile, wrap=document.getElementById('extra-add-wrap');
+  if(wrap) wrap.style.display=has&&extraImgFiles.length<4?'block':'none';
   box.style.display=extraImgFiles.length?'block':'none';
   h.innerHTML=extraImgFiles.map(function(f,i){ var u=URL.createObjectURL(f); return '<div style="position:relative;width:64px;height:64px"><img src="'+u+'" style="width:64px;height:64px;object-fit:cover;border-radius:10px;border:1.5px solid rgba(0,0,0,.12)"><button type="button" onclick="removeExtraImg('+i+')" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:none;background:#1b1a1a;color:#fff;font-size:12px;line-height:1;cursor:pointer;padding:0">×</button></div>'; }).join('')+(extraImgFiles.length?'<span style="font-size:12px;font-weight:600;color:#7090b0">dio istog računa</span>':'');
 }
